@@ -9,7 +9,7 @@ ReactDOM.render(
     document.getElementById("example")
 );
 
-client.channels.get("log:test").subscribe((message) => 
+client.channels.get("log:9c4a890f76eb4de79c7d464e1375a502").subscribe((message) => 
 {
     console.log(message);
 });
