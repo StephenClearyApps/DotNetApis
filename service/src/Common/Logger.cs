@@ -9,10 +9,15 @@ using Microsoft.Azure.WebJobs.Host;
 
 namespace Common
 {
+    public interface ILogger
+    {
+        void Trace(string message);
+    }
+
     /// <summary>
     /// A logger that writes messages both to Ably (if possible) and the <see cref="TextWriter"/> 
     /// </summary>
-    public sealed class Logger
+    public sealed class Logger : ILogger
     {
         private readonly TraceWriter _writer;
         private readonly string _service;
