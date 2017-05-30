@@ -29,7 +29,7 @@ namespace Common
 
         private void Write(string type, string message)
         {
-            _writer?.Info(_service + ": " + message, _service); // TODO: fixup `message`.
+            _writer?.Info($"{_service}: {type}: {message}", _service);
             _channel.LogMessage(_service, type, message);
         }
     }
