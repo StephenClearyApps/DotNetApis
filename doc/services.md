@@ -9,3 +9,11 @@ Ably is used for progress reports of background operations. Each background oper
 There are two API keys used with Ably: `Log Viewer` (has `Subscribe` and `History` access to `log:*`) and `Log Writer` (has `Publish` access to `log:*`).
 
 The web front-end uses the `Log Viewer` API key directly, as messages sent over the `log:*` channels are not private. Background processes use the `Log Writer` key, which is kept private.
+
+## Azure Functions
+
+Most of the logic lives in an Azure Function (consumption plan).
+
+## Azure Storage
+
+All of the persistent storage lives in Azure Blobs and Azure Queues.
