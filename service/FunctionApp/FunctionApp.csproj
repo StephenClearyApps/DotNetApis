@@ -6,6 +6,7 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuget\Nuget.csproj" />
     <ProjectReference Include="..\src\Common\Common.csproj" />
     <ProjectReference Include="..\src\Logic\Logic.csproj" />
   </ItemGroup>

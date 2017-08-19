@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 
-namespace FunctionApp
+namespace Common
 {
     public sealed class ExpectedException : Exception
     {
@@ -18,10 +16,5 @@ namespace FunctionApp
         }
         
         public HttpStatusCode HttpStatusCode { get; }
-    }
-
-    public static class ExpectedExceptionExtensions
-    {
-        public static HttpResponseMessage CreateErrorResponse(this HttpRequestMessage @this, ExpectedException exception) => @this.CreateErrorResponse(exception.HttpStatusCode, exception);
     }
 }

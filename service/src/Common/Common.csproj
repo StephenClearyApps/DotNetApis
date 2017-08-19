@@ -95,6 +95,7 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="ExpectedException.cs" />
     <Compile Include="Internals\AblyChannel.cs" />
     <Compile Include="Internals\AblyService.cs" />
     <Compile Include="Logger.cs" />
