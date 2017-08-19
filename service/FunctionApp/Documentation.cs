@@ -15,7 +15,7 @@ namespace FunctionApp
         [FunctionName("Documentation")]
         public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
-            req.GetRequestContext().IncludeErrorDetail = true;
+            Defaults.ApplyRequestHandlingDefaults(req);
             try
             {
                 var logger = new Logger(log, "Doc API", Guid.NewGuid());
