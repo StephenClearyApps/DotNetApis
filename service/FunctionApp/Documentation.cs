@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
 using Common;
 using Logic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
+using Nuget;
 
 namespace FunctionApp
 {
@@ -31,7 +31,10 @@ namespace FunctionApp
                 if (jsonVersion < JsonFactory.Version)
                     return req.CreateResponse((HttpStatusCode) 422, "Application needs to update; refresh the page.");
 
-                return req.CreateResponse(HttpStatusCode.OK, "Hello " + packageId);
+                var handler = new DocRequestHandler(logger, new NugetRepository());
+                var result = handler.GetDoc(packageId, packageVersion);
+
+                return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
             }
             catch (ExpectedException ex)
             {
