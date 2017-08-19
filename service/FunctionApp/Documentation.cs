@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Common;
+using Logic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -25,7 +26,10 @@ namespace FunctionApp
                 var packageId = query.Required("packageId");
                 var packageVersion = query.Optional("packageVersion");
                 var targetFramework = query.Optional("targetFramework");
-                logger.Trace($"Received request for {jsonVersion}, {packageId}.");
+                logger.Trace($"Received request for {jsonVersion}, {packageId} {packageVersion} {targetFramework}.");
+
+                if (jsonVersion < JsonFactory.Version)
+                    return req.CreateResponse((HttpStatusCode) 422, "Application needs to update; refresh the page.");
 
                 return req.CreateResponse(HttpStatusCode.OK, "Hello " + packageId);
             }
