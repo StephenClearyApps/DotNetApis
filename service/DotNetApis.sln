@@ -9,6 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "src\Logic\Logic.cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionApp", "FunctionApp\FunctionApp.csproj", "{39A50E17-1470-4D62-85F7-EEBE7786A08E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{8E0CB303-2A58-4CF0-81E0-2532F05D4CB4}"
+	ProjectSection(SolutionItems) = preProject
+		..\doc\services.md = ..\doc\services.md
+		..\doc\settings.md = ..\doc\settings.md
+		..\doc\setup.md = ..\doc\setup.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
