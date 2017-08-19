@@ -27,7 +27,14 @@ namespace Common
         {
             _writer = writer;
             _service = service;
-            _channel = AblyService.Instance.LogChannel(operation);
+            try
+            {
+                _channel = AblyService.Instance.LogChannel(operation);
+            }
+            catch (Exception ex)
+            {
+                _writer?.Warning($"Could not initialize Ably: [{ex.GetType().Name}]: {ex.Message}");
+            }
         }
 
         public void Trace(string message) => Write("trace", message);
@@ -35,7 +42,7 @@ namespace Common
         private void Write(string type, string message)
         {
             _writer?.Info($"{_service}: {type}: {message}", _service);
-            _channel.LogMessage(_service, type, message);
+            _channel?.LogMessage(_service, type, message);
         }
     }
 }
