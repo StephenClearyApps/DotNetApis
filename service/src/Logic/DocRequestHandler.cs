@@ -13,21 +13,22 @@ namespace Logic
     {
         private readonly ILogger _logger;
         private readonly INugetRepository _nugetRepository;
+        private readonly PackageDownloader _packageDownloader;
 
-        public DocRequestHandler(ILogger logger, INugetRepository nugetRepository)
+        public DocRequestHandler(ILogger logger, INugetRepository nugetRepository, PackageDownloader packageDownloader)
         {
             _logger = logger;
             _nugetRepository = nugetRepository;
+            _packageDownloader = packageDownloader;
         }
 
-        public string GetDoc(string packageId, string packageVersion, string targetFramework)
+        public async Task<string> GetDocAsync(string packageId, string packageVersion, string targetFramework)
         {
             // Lookup the package version if unknown.
             var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
             _logger.Trace($"Getting documentation for `{idver}`");
 
-            // TODO: Determine the target framework if necessary.
-            var target = ParsePlatformTarget(targetFramework);
+            var target = targetFramework == null ? await GuessPackageTargetAsync(idver) : ParsePlatformTarget(targetFramework);
 
 
 
@@ -40,6 +41,15 @@ namespace Logic
             if (result == null)
                 throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package `{packageId}`");
             return result;
+        }
+
+        private async Task<PlatformTarget> GuessPackageTargetAsync(NugetPackageIdVersion idver)
+        {
+            var package = await _packageDownloader.GetPackageAsync(idver);
+
+            // TODO: Determine the target framework.
+
+            throw new ExpectedException(HttpStatusCode.InternalServerError, "NYI");
         }
 
         private static NugetVersion ParseVersion(string packageVersion)

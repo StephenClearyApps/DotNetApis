@@ -42,19 +42,16 @@ namespace Logic
             if (record != null)
             {
                 // Read it from local Azure storage.
-                _logger.Trace($"Package {idver} is in our own storage");
                 var package = await _packageStorage.LoadAsync(record.Value.Path).ConfigureAwait(false);
                 return new NugetFullPackage(package, new NugetPackageExternalMetadata(record.Value.Published));
             }
             else
             {
                 // Download it from NuGet.
-                _logger.Trace($"Downloading package {idver} from Nuget");
                 var package = _nugetRepository.DownloadPackage(idver);
                 var published = package.ExternalMetadata.Published;
 
                 // Save it in our own storage.
-                _logger.Trace($"Saving package {idver} locally");
                 var path = idver.ToString();
                 await _packageStorage.SaveAsync(path, package.Package).ConfigureAwait(false);
                 await _packageTable.SetRecordAsync(idver, new PackageTableRecord { Path = path, Published = published }).ConfigureAwait(false);

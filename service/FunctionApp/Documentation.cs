@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Common;
 using Logic;
 using Microsoft.Azure.WebJobs;
@@ -15,7 +16,7 @@ namespace FunctionApp
     public static class Documentation
     {
         [FunctionName("Documentation")]
-        public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
             Defaults.ApplyRequestHandlingDefaults(req);
             var inMemoryLogger = new InMemoryLogger();
@@ -40,7 +41,7 @@ namespace FunctionApp
                     }
 
                     var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
-                    var result = handler.GetDoc(packageId, packageVersion, targetFramework);
+                    var result = await handler.GetDocAsync(packageId, packageVersion, targetFramework);
 
                     logger.Trace($"Success!");
                     return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
