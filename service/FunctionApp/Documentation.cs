@@ -18,10 +18,12 @@ namespace FunctionApp
         public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
             Defaults.ApplyRequestHandlingDefaults(req);
-            var container = Defaults.GetContainer(log);
-            using (AsyncScopedLifestyle.BeginScope(container))
+            var inMemoryLogger = new InMemoryLogger();
+            AmbientContext.Initialize(Enumerables.Return<ILogger>(inMemoryLogger, new TraceWriterLogger(log)));
+
+            using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
-                var logger = container.GetInstance<Logger>();
+                var logger = GlobalConfig.Container.GetInstance<ILogger>();
                 try
                 {
                     var query = req.GetQueryNameValuePairs().ToList();
@@ -37,7 +39,7 @@ namespace FunctionApp
                         return req.CreateResponse((HttpStatusCode) 422, "Application needs to update; refresh the page.");
                     }
 
-                    var handler = container.GetInstance<DocRequestHandler>();
+                    var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
                     var result = handler.GetDoc(packageId, packageVersion, targetFramework);
 
                     logger.Trace($"Success!");
@@ -46,7 +48,7 @@ namespace FunctionApp
                 catch (ExpectedException ex)
                 {
                     logger.Trace($"Returning {(int) ex.HttpStatusCode}: {ex.Message}");
-                    return req.CreateErrorResponse(logger, ex);
+                    return req.CreateErrorResponse(inMemoryLogger, ex);
                 }
             }
         }

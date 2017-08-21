@@ -16,23 +16,17 @@ namespace Common
     }
 
     /// <summary>
-    /// A logger that writes messages to a <see cref="TextWriter"/> as well as keeping an in-memory copy.
+    /// A logger that writes messages to all loggers defined in the ambient context.
     /// </summary>
-    public sealed class Logger : ILogger
+    public sealed class AmbientCompositeLogger : ILogger
     {
-        private readonly TraceWriter _writer;
+        private readonly IEnumerable<ILogger> _loggers;
 
-        public Logger()
+        public AmbientCompositeLogger()
         {
-            _writer = AsyncContext.TraceWriter;
+            _loggers = AmbientContext.Loggers;
         }
 
-        public List<string> Messages { get; } = new List<string>();
-
-        public void Trace(string message)
-        {
-            Messages.Add(message);
-            _writer?.Info(message);
-        }
+        void ILogger.Trace(string message) => _loggers.Do(x => x.Trace(message));
     }
 }

@@ -1,28 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs.Host;
 
 namespace Common
 {
     /// <summary>
     /// Objects that have a lifetime outside of the DI container. Properties retrieve the current value for the current scope.
     /// </summary>
-    public static class AsyncContext
+    public static class AmbientContext
     {
-        private static readonly AsyncLocal<TraceWriter> _traceWriter = new AsyncLocal<TraceWriter>();
+        private static readonly AsyncLocal<IImmutableSet<ILogger>> _loggers = new AsyncLocal<IImmutableSet<ILogger>>();
 
-        public static TraceWriter TraceWriter => _traceWriter.Value;
+        public static IEnumerable<ILogger> Loggers => _loggers.Value;
 
         /// <summary>
         /// Sets the values for the current scope (and child scopes).
         /// </summary>
-        public static void Initialize(TraceWriter traceWriter)
+        public static void Initialize(IEnumerable<ILogger> loggers)
         {
-            _traceWriter.Value = traceWriter;
+            _loggers.Value = loggers.ToImmutableHashSet();
         }
     }
 }

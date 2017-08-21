@@ -23,11 +23,5 @@ namespace FunctionApp
             // Always include full error details.
             request.GetRequestContext().IncludeErrorDetail = true;
         }
-
-        public static Container GetContainer(TraceWriter traceWriter)
-        {
-            AsyncContext.Initialize(traceWriter);
-            return GlobalConfig.GetContainer();
-        }
     }
 }

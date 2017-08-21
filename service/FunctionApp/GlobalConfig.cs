@@ -20,22 +20,20 @@ namespace FunctionApp
         static GlobalConfig()
         {
             JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
+
+            Container = new Container();
+            Container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+            Container.Options.DefaultLifestyle = Lifestyle.Scoped;
+            Container.Register<ILogger, AmbientCompositeLogger>();
+            Container.Register<INugetRepository, NugetRepository>();
+            Container.Register<DocRequestHandler>();
+            Container.Verify();
         }
 
         public static void EnsureLoaded()
         {
         }
 
-        public static Container GetContainer()
-        {
-            var container = new Container();
-            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-            container.Options.DefaultLifestyle = Lifestyle.Scoped;
-            container.Register<ILogger, Logger>();
-            container.Register<INugetRepository, NugetRepository>();
-            container.Register<DocRequestHandler>();
-            container.Verify();
-            return container;
-        }
+        public static Container Container { get; }
     }
 }
