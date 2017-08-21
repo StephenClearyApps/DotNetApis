@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Internals;
@@ -15,7 +16,7 @@ namespace Common
     }
 
     /// <summary>
-    /// A logger that writes messages both to Ably (if possible) and the <see cref="TextWriter"/> 
+    /// A logger that writes messages both to Ably (if possible) and the <see cref="TextWriter"/>, as well as keeping an in-memory copy.
     /// </summary>
     public sealed class Logger : ILogger
     {
@@ -37,7 +38,13 @@ namespace Common
             }
         }
 
-        public void Trace(string message) => Write("trace", message);
+        public List<string> Messages { get; } = new List<string>();
+
+        public void Trace(string message)
+        {
+            Messages.Add(message);
+            Write("trace", message);
+        }
 
         private void Write(string type, string message)
         {

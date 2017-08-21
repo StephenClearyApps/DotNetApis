@@ -11,10 +11,10 @@ namespace Logic
 {
     public sealed class DocRequestHandler
     {
-        private readonly Logger _logger;
+        private readonly ILogger _logger;
         private readonly NugetRepository _nugetRepository;
 
-        public DocRequestHandler(Logger logger, NugetRepository nugetRepository)
+        public DocRequestHandler(ILogger logger, NugetRepository nugetRepository)
         {
             _logger = logger;
             _nugetRepository = nugetRepository;
@@ -24,7 +24,7 @@ namespace Logic
         {
             // Lookup the package version if unknown.
             var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
-            _logger.Trace($"Getting documentation for {idver}");
+            _logger.Trace($"Getting documentation for `{idver}`");
 
             // TODO: Determine the target framework if necessary.
             var target = ParsePlatformTarget(targetFramework);
@@ -50,11 +50,12 @@ namespace Logic
             return result;
         }
 
-        private static PlatformTarget ParsePlatformTarget(string targetFramework)
+        private PlatformTarget ParsePlatformTarget(string targetFramework)
         {
             var result = PlatformTarget.TryParse(targetFramework);
             if (result == null)
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target {targetFramework}");
+            _logger.Trace($"Normalized target framework {targetFramework} to {result} ({result.FrameworkName})");
             return result;
         }
     }
