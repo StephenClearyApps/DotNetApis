@@ -20,15 +20,18 @@ namespace Logic
             _nugetRepository = nugetRepository;
         }
 
-        public string GetDoc(string packageId, string packageVersion)
+        public string GetDoc(string packageId, string packageVersion, string targetFramework)
         {
             // Lookup the package version if unknown.
             var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
             _logger.Trace($"Getting documentation for {idver}");
 
+            // TODO: Determine the target framework if necessary.
+            var target = ParsePlatformTarget(targetFramework);
 
 
-            return idver.ToString();
+
+            return idver + " " + target;
         }
 
         private NugetPackageIdVersion LookupLatestPackageVersion(string packageId)
@@ -44,6 +47,14 @@ namespace Logic
             var result = NugetVersion.TryParse(packageVersion);
             if (result == null)
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version {packageVersion}");
+            return result;
+        }
+
+        private static PlatformTarget ParsePlatformTarget(string targetFramework)
+        {
+            var result = PlatformTarget.TryParse(targetFramework);
+            if (result == null)
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target {targetFramework}");
             return result;
         }
     }

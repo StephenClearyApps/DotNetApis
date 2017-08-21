@@ -31,7 +31,7 @@ namespace FunctionApp
                     return req.CreateResponse((HttpStatusCode) 422, "Application needs to update; refresh the page.");
 
                 var handler = new DocRequestHandler(logger, new NugetRepository());
-                var result = handler.GetDoc(packageId, packageVersion);
+                var result = handler.GetDoc(packageId, packageVersion, targetFramework);
 
                 return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
             }
