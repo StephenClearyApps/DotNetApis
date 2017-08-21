@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Nuget;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
+using Storage;
 
 namespace FunctionApp
 {
@@ -26,6 +27,7 @@ namespace FunctionApp
             Container.Options.DefaultLifestyle = Lifestyle.Scoped;
             Container.Register<ILogger, AmbientCompositeLogger>();
             Container.Register<INugetRepository, NugetRepository>();
+            Container.Register<IPackageStorage, AzurePackageStorage>();
             Container.Register<DocRequestHandler>();
             Container.Verify();
         }

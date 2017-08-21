@@ -9,6 +9,6 @@ namespace Common
 {
     public static class Config
     {
-        public static string GetSetting(string name) => Environment.GetEnvironmentVariable(name) ?? CloudConfigurationManager.GetSetting(name);
+        public static string GetSetting(string name) => Environment.GetEnvironmentVariable(name) ?? CloudConfigurationManager.GetSetting(name, outputResultsToTrace: false);
     }
 }

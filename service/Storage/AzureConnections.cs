@@ -13,7 +13,10 @@ namespace Storage
     {
         public AzureConnections()
         {
-            CloudStorageAccount = CloudStorageAccount.Parse(Config.GetSetting("StorageConnectionString"));
+            var connectionString = Config.GetSetting("StorageConnectionString");
+            if (connectionString == null)
+                throw new InvalidOperationException("No StorageConnectionString setting found; update your copy of local.settings.json to include this value.");
+            CloudStorageAccount = CloudStorageAccount.Parse(connectionString);
             CloudBlobClient = CloudStorageAccount.CreateCloudBlobClient();
         }
 

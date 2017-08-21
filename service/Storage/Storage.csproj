@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureConnections.cs" />
+    <Compile Include="AzurePackageStorage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,6 +71,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nuget\Nuget.csproj">
+      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
+      <Name>Nuget</Name>
+    </ProjectReference>
     <ProjectReference Include="..\src\Common\Common.csproj">
       <Project>{22a1e92a-8ae8-4b36-acb2-3f84a56886c5}</Project>
       <Name>Common</Name>
