@@ -73,7 +73,7 @@ namespace Nuget
             if (published == null)
                 throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
             var result = new NugetFullPackage(new NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
-            _logger.Trace($"Successfully downloaded package {idver} as {result} from Nuget");
+            _logger.Trace($"Successfully downloaded package {idver} as `{result}` from Nuget");
             return result;
         }
     }
