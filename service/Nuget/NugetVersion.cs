@@ -63,6 +63,11 @@ namespace Nuget
         public bool IsPrerelease => Prerelease != string.Empty || Major == 0;
 
         /// <summary>
+        /// Whether this package is a release version (i.e., not prerelease).
+        /// </summary>
+        public bool IsReleaseVersion => !IsPrerelease;
+
+        /// <summary>
         /// Formats the Nuget version. The major and minor version numbers are always included; other version numbers are only included if non-zero, and the prerelease string is only present if non-empty.
         /// </summary>
         public override string ToString() => _version.ToNormalizedString();
