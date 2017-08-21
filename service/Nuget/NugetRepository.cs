@@ -59,10 +59,6 @@ namespace Nuget
             return idver;
         }
 
-        /// <summary>
-        /// Downloads a specific package from Nuget.
-        /// </summary>
-        /// <param name="idver">The identity of the package.</param>
         public NugetFullPackage DownloadPackage(NugetPackageIdVersion idver)
         {
             _logger.Trace($"Downloading package {idver} from Nuget");
