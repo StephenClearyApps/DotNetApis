@@ -38,7 +38,7 @@ namespace Logic
         {
             var result = _nugetRepository.TryLookupLatestPackageVersion(packageId);
             if (result == null)
-                throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {packageId}");
+                throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package `{packageId}`");
             return result;
         }
 
@@ -46,7 +46,7 @@ namespace Logic
         {
             var result = NugetVersion.TryParse(packageVersion);
             if (result == null)
-                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version {packageVersion}");
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version `{packageVersion}`");
             return result;
         }
 
@@ -54,8 +54,8 @@ namespace Logic
         {
             var result = PlatformTarget.TryParse(targetFramework);
             if (result == null)
-                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target {targetFramework}");
-            _logger.Trace($"Normalized target framework {targetFramework} to {result} ({result.FrameworkName})");
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target `{targetFramework}`");
+            _logger.Trace($"Normalized target framework `{targetFramework}` to {result} ({result.FrameworkName})");
             return result;
         }
     }
