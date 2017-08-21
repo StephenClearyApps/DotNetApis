@@ -30,6 +30,10 @@ namespace FunctionApp
             Container.Register<IPackageStorage, AzurePackageStorage>();
             Container.Register<DocRequestHandler>();
             Container.Verify();
+
+            // Initialize all components.
+            Task.WhenAll(AzurePackageStorage.InitializeAsync())
+                .GetAwaiter().GetResult();
         }
 
         public static void EnsureLoaded()

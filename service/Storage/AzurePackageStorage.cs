@@ -34,8 +34,10 @@ namespace Storage
         public AzurePackageStorage(ILogger logger, AzureConnections connections)
         {
             _logger = logger;
-            _container = connections.CloudBlobClient.GetContainerReference("package");
+            _container = GetContainer(connections);
         }
+
+        private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("package");
 
         public async Task<NugetPackage> LoadAsync(string path)
         {
@@ -54,5 +56,7 @@ namespace Storage
             await _container.GetBlockBlobReference(path).UploadFromStreamAsync(package.Stream).ConfigureAwait(false);
             _logger.Trace($"Successfully saved nupkg `{package}` to blob `{path}`");
         }
+
+        public static Task InitializeAsync() => GetContainer(new AzureConnections()).CreateIfNotExistsAsync();
     }
 }
