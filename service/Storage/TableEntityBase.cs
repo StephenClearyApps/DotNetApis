@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Common;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Storage
@@ -60,13 +59,7 @@ namespace Storage
         /// </summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="defaultValue">The default value to return if the property is not found.</param>
-        protected string Get(string propertyName, string defaultValue)
-        {
-            EntityProperty result;
-            if (_entity.Properties.TryGetValue(propertyName, out result))
-                return result.StringValue;
-            return defaultValue;
-        }
+        protected string Get(string propertyName, string defaultValue) => _entity.Properties.TryGetValue(propertyName, out EntityProperty result) ? result.StringValue : defaultValue;
 
         /// <summary>
         /// Sets a string property for the entity.

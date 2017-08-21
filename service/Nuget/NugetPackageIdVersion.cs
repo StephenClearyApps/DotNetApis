@@ -19,12 +19,8 @@ namespace Nuget
         /// <param name="version">The version. This may not be <c>null</c>.</param>
         public NugetPackageIdVersion(string packageId, NugetVersion version)
         {
-            if (packageId == null)
-                throw new ArgumentNullException(nameof(packageId));
-            if (version == null)
-                throw new ArgumentNullException(nameof(version));
-            PackageId = packageId.ToLowerInvariant();
-            Version = version;
+            PackageId = packageId?.ToLowerInvariant() ?? throw new ArgumentNullException(nameof(packageId));
+            Version = version ?? throw new ArgumentNullException(nameof(version));
         }
 
         /// <summary>
