@@ -22,9 +22,7 @@ namespace Nuget
 
         internal NugetVersion(NuGetVersion version)
         {
-            if (version == null)
-                throw new InvalidOperationException("version cannot be null");
-            _version = version;
+            _version = version ?? throw new InvalidOperationException("version cannot be null");
         }
 
         internal NugetVersion(NuGet.SemanticVersion version)
@@ -76,13 +74,7 @@ namespace Nuget
         /// Attempts to parse a Nuget version. Returns <c>null</c> if the version number could not be parsed.
         /// </summary>
         /// <param name="version">The version, as a string.</param>
-        public static NugetVersion TryParse(string version)
-        {
-            NuGetVersion result;
-            if (!NuGetVersion.TryParse(version, out result))
-                return null;
-            return new NugetVersion(result);
-        }
+        public static NugetVersion TryParse(string version) => NuGetVersion.TryParse(version, out NuGetVersion result) ? new NugetVersion(result) : null;
 
         /// <summary>
         /// Method to construct a <see cref="SemanticVersion"/> from this Nuget version.
