@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Nuget\Nuget.csproj" />
     <ProjectReference Include="..\src\Common\Common.csproj" />
     <ProjectReference Include="..\src\Logic\Logic.csproj" />
+    <ProjectReference Include="..\Storage\Storage.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
