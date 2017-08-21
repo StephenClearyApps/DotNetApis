@@ -12,7 +12,16 @@ namespace Nuget
     /// <summary>
     /// Provides methods used to call the NuGet API.
     /// </summary>
-    public sealed class NugetRepository
+    public interface INugetRepository
+    {
+        /// <summary>
+        /// Attempts to find the latest package version, preferring released versions over unreleased. Only listed versions are considered.
+        /// </summary>
+        /// <param name="id">The package id.</param>
+        NugetPackageIdVersion TryLookupLatestPackageVersion(string id);
+    }
+
+    public sealed class NugetRepository : INugetRepository
     {
         private readonly ILogger _logger;
 
@@ -23,10 +32,6 @@ namespace Nuget
             _logger = logger;
         }
 
-        /// <summary>
-        /// Attempts to find the latest package version, preferring released versions over unreleased. Only listed versions are considered.
-        /// </summary>
-        /// <param name="id">The package id.</param>
         public NugetPackageIdVersion TryLookupLatestPackageVersion(string id)
         {
             _logger.Trace($"Looking up latest package version for `{id}`");

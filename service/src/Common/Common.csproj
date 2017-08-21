@@ -92,6 +92,7 @@
     <Compile Include="Internals\AblyService.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AsyncContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

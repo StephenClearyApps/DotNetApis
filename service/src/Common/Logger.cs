@@ -16,26 +16,15 @@ namespace Common
     }
 
     /// <summary>
-    /// A logger that writes messages both to Ably (if possible) and the <see cref="TextWriter"/>, as well as keeping an in-memory copy.
+    /// A logger that writes messages to a <see cref="TextWriter"/> as well as keeping an in-memory copy.
     /// </summary>
     public sealed class Logger : ILogger
     {
         private readonly TraceWriter _writer;
-        private readonly string _service;
-        private readonly AblyChannel _channel;
 
-        public Logger(TraceWriter writer, string service, Guid operation)
+        public Logger()
         {
-            _writer = writer;
-            _service = service;
-            try
-            {
-                _channel = AblyService.Instance.LogChannel(operation);
-            }
-            catch (Exception ex)
-            {
-                _writer?.Warning($"Could not initialize Ably: [{ex.GetType().Name}]: {ex.Message}");
-            }
+            _writer = AsyncContext.TraceWriter;
         }
 
         public List<string> Messages { get; } = new List<string>();
@@ -43,13 +32,7 @@ namespace Common
         public void Trace(string message)
         {
             Messages.Add(message);
-            Write("trace", message);
-        }
-
-        private void Write(string type, string message)
-        {
-            _writer?.Info($"{_service}: {type}: {message}", _service);
-            _channel?.LogMessage(_service, type, message);
+            _writer?.Info(message);
         }
     }
 }

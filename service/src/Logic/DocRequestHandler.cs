@@ -12,9 +12,9 @@ namespace Logic
     public sealed class DocRequestHandler
     {
         private readonly ILogger _logger;
-        private readonly NugetRepository _nugetRepository;
+        private readonly INugetRepository _nugetRepository;
 
-        public DocRequestHandler(ILogger logger, NugetRepository nugetRepository)
+        public DocRequestHandler(ILogger logger, INugetRepository nugetRepository)
         {
             _logger = logger;
             _nugetRepository = nugetRepository;

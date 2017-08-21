@@ -6,6 +6,8 @@ using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Microsoft.Azure.WebJobs.Host;
+using SimpleInjector;
 
 namespace FunctionApp
 {
@@ -20,6 +22,12 @@ namespace FunctionApp
 
             // Always include full error details.
             request.GetRequestContext().IncludeErrorDetail = true;
+        }
+
+        public static Container GetContainer(TraceWriter traceWriter)
+        {
+            AsyncContext.Initialize(traceWriter);
+            return GlobalConfig.GetContainer();
         }
     }
 }
