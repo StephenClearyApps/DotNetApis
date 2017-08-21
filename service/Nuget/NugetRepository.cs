@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Common;
 using NuGet;
 using ILogger = Common.ILogger;
 
@@ -19,6 +21,12 @@ namespace Nuget
         /// </summary>
         /// <param name="id">The package id.</param>
         NugetPackageIdVersion TryLookupLatestPackageVersion(string id);
+
+        /// <summary>
+        /// Downloads a specific package from Nuget. Throws <see cref="ExpectedException"/> (404) if not found.
+        /// </summary>
+        /// <param name="idver">The identity of the package.</param>
+        NugetFullPackage DownloadPackage(NugetPackageIdVersion idver);
     }
 
     public sealed class NugetRepository : INugetRepository
@@ -46,9 +54,23 @@ namespace Nuget
                 _logger.Trace($"No package version found for `{id}`");
                 return null;
             }
-            var result = new NugetPackageIdVersion(id, new NugetVersion(package.Version));
-            _logger.Trace($"Found version `{result}` for `{id}`");
-            return result;
+            var idver = new NugetPackageIdVersion(id, new NugetVersion(package.Version));
+            _logger.Trace($"Found version `{idver}` for `{id}`");
+            return idver;
+        }
+
+        /// <summary>
+        /// Downloads a specific package from Nuget.
+        /// </summary>
+        /// <param name="idver">The identity of the package.</param>
+        public NugetFullPackage DownloadPackage(NugetPackageIdVersion idver)
+        {
+            var package = _repository.FindPackage(idver.PackageId, idver.Version.ToSemanticVersion(), allowPrereleaseVersions: true, allowUnlisted: true);
+            if (package == null)
+                throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {idver}; this error can happen if NuGet is currently indexing this package; if this is a newly released version, try again in 5 minutes or so.");
+            if (package.Published == null)
+                throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
+            return new NugetFullPackage(new NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(package.Published.Value));
         }
     }
 }

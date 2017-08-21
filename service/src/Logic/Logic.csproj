@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="DocRequestHandler.cs" />
     <Compile Include="JsonFactory.cs" />
+    <Compile Include="PackageDownloader.cs" />
     <Compile Include="PlatformTarget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -62,6 +63,10 @@
     <ProjectReference Include="..\..\Nuget\Nuget.csproj">
       <Project>{A03471D1-8174-49F7-B537-205F2773606F}</Project>
       <Name>Nuget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Storage\Storage.csproj">
+      <Project>{2602dd40-48d0-4172-842c-114caf4cf922}</Project>
+      <Name>Storage</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{22A1E92A-8AE8-4B36-ACB2-3F84A56886C5}</Project>

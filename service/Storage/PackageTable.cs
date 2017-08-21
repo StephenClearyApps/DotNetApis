@@ -30,15 +30,15 @@ namespace Storage
         /// <summary>
         /// Looks up a package in the table, and returns the record for that package. Returns <c>null</c> if the package is not in the table.
         /// </summary>
-        /// <param name="idVer">The id and version of the package.</param>
-        Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idVer);
+        /// <param name="idver">The id and version of the package.</param>
+        Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idver);
 
         /// <summary>
         /// Writes an entry in the table, overwriting any existing entry for the package.
         /// </summary>
-        /// <param name="idVer">The id and version of the package.</param>
+        /// <param name="idver">The id and version of the package.</param>
         /// <param name="record">The record for the package. The blob referenced by <c>record.BlobPath</c> must already exist.</param>
-        Task SetRecordAsync(NugetPackageIdVersion idVer, PackageTableRecord record);
+        Task SetRecordAsync(NugetPackageIdVersion idver, PackageTableRecord record);
     }
 
     public sealed class AzurePackageTable : IPackageTable
@@ -61,24 +61,24 @@ namespace Storage
 
         public static Task InitializeAsync() => GetTable(new AzureConnections()).CreateIfNotExistsAsync();
 
-        public async Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idVer)
+        public async Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idver)
         {
-            var entity = await Entity.FindOrDefaultAsync(_table, idVer).ConfigureAwait(false);
+            var entity = await Entity.FindOrDefaultAsync(_table, idver).ConfigureAwait(false);
             if (entity == null)
                 return null;
             return new PackageTableRecord { Path = entity.Path, Published = entity.Published };
         }
 
-        public Task SetRecordAsync(NugetPackageIdVersion idVer, PackageTableRecord record)
+        public Task SetRecordAsync(NugetPackageIdVersion idver, PackageTableRecord record)
         {
-            var entity = new Entity(_table, idVer) { Path = record.Path, Published = record.Published };
+            var entity = new Entity(_table, idver) { Path = record.Path, Published = record.Published };
             return entity.InsertOrReplaceAsync();
         }
 
         private sealed class Entity : TableEntityBase
         {
-            public Entity(CloudTable table, NugetPackageIdVersion idVer)
-                : base(table, ToPartitionKey(idVer), ToRowKey(idVer))
+            public Entity(CloudTable table, NugetPackageIdVersion idver)
+                : base(table, ToPartitionKey(idver), ToRowKey(idver))
             {
             }
 
@@ -87,18 +87,18 @@ namespace Storage
             {
             }
 
-            private static string ToPartitionKey(NugetPackageIdVersion idVer) => idVer.PackageId;
+            private static string ToPartitionKey(NugetPackageIdVersion idver) => idver.PackageId;
 
-            private static string ToRowKey(NugetPackageIdVersion idVer) => idVer.Version.ToString();
+            private static string ToRowKey(NugetPackageIdVersion idver) => idver.Version.ToString();
 
             /// <summary>
             /// Performs a point search in the Azure table. Returns <c>null</c> if the entity is not found.
             /// </summary>
             /// <param name="table">The table to search.</param>
-            /// <param name="idVer">The id/version of the entity to retrieve.</param>
-            public static async Task<Entity> FindOrDefaultAsync(CloudTable table, NugetPackageIdVersion idVer)
+            /// <param name="idver">The id/version of the entity to retrieve.</param>
+            public static async Task<Entity> FindOrDefaultAsync(CloudTable table, NugetPackageIdVersion idver)
             {
-                var entity = await table.FindOrDefaultAsync(ToPartitionKey(idVer), ToRowKey(idVer)).ConfigureAwait(false);
+                var entity = await table.FindOrDefaultAsync(ToPartitionKey(idver), ToRowKey(idver)).ConfigureAwait(false);
                 if (entity == null)
                     return null;
                 return new Entity(table, entity);
