@@ -26,5 +26,10 @@ namespace Nuget
         /// The external metadata for the package.
         /// </summary>
         public NugetPackageExternalMetadata ExternalMetadata { get; }
+
+        /// <summary>
+        /// Returns an identifying string for this package, in the form "Id ver".
+        /// </summary>
+        public override string ToString() => Package.ToString();
     }
 }

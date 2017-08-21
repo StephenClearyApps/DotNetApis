@@ -65,12 +65,16 @@ namespace Nuget
         /// <param name="idver">The identity of the package.</param>
         public NugetFullPackage DownloadPackage(NugetPackageIdVersion idver)
         {
+            _logger.Trace($"Downloading package {idver} from Nuget");
             var package = _repository.FindPackage(idver.PackageId, idver.Version.ToSemanticVersion(), allowPrereleaseVersions: true, allowUnlisted: true);
             if (package == null)
                 throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {idver}; this error can happen if NuGet is currently indexing this package; if this is a newly released version, try again in 5 minutes or so.");
-            if (package.Published == null)
+            var published = package.Published;
+            if (published == null)
                 throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
-            return new NugetFullPackage(new NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(package.Published.Value));
+            var result = new NugetFullPackage(new NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
+            _logger.Trace($"Successfully downloaded package {idver} as {result} from Nuget");
+            return result;
         }
     }
 }
