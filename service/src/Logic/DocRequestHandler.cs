@@ -35,23 +35,15 @@ namespace Logic
         {
             var result = _nugetRepository.TryLookupLatestPackageVersion(packageId);
             if (result == null)
-            {
-                var message = $"Could not find package {packageId}";
-                _logger.Trace(message);
-                throw new ExpectedException(HttpStatusCode.NotFound, message);
-            }
+                throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {packageId}");
             return result;
         }
 
-        private NugetVersion ParseVersion(string packageVersion)
+        private static NugetVersion ParseVersion(string packageVersion)
         {
             var result = NugetVersion.TryParse(packageVersion);
             if (result == null)
-            {
-                var message = $"Could not parse version {packageVersion}";
-                _logger.Trace(message);
-                throw new ExpectedException(HttpStatusCode.BadRequest, message);
-            }
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version {packageVersion}");
             return result;
         }
     }

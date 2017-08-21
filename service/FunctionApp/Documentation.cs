@@ -17,16 +17,15 @@ namespace FunctionApp
         public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
             Defaults.ApplyRequestHandlingDefaults(req);
+            var logger = new Logger(log, "Doc API", Guid.NewGuid());
             try
             {
-                var logger = new Logger(log, "Doc API", Guid.NewGuid());
-
                 var query = req.GetQueryNameValuePairs().ToList();
                 var jsonVersion = query.Required("jsonVersion", int.Parse);
                 var packageId = query.Required("packageId");
                 var packageVersion = query.Optional("packageVersion");
                 var targetFramework = query.Optional("targetFramework");
-                logger.Trace($"Received request for {jsonVersion}, {packageId} {packageVersion} {targetFramework}.");
+                logger.Trace($"Received request for {packageId}.");
 
                 if (jsonVersion < JsonFactory.Version)
                     return req.CreateResponse((HttpStatusCode) 422, "Application needs to update; refresh the page.");
@@ -38,6 +37,7 @@ namespace FunctionApp
             }
             catch (ExpectedException ex)
             {
+                logger.Trace($"Returning {(int) ex.HttpStatusCode}: {ex.Message}");
                 return req.CreateErrorResponse(ex);
             }
         }
