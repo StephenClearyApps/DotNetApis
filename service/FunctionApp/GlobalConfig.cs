@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
-using Logic;
 using Newtonsoft.Json;
 using Nuget;
 using SimpleInjector;
@@ -29,7 +28,6 @@ namespace FunctionApp
             Container.Register<INugetRepository, NugetRepository>();
             Container.Register<IPackageStorage, AzurePackageStorage>();
             Container.Register<IPackageTable, AzurePackageTable>();
-            Container.Register<DocRequestHandler>();
             Container.Verify();
 
             // Initialize all components.
