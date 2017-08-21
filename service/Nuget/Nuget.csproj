@@ -157,7 +157,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NugetFullPackage.cs" />
     <Compile Include="NugetPackage.cs" />
+    <Compile Include="NugetPackageExternalMetadata.cs" />
     <Compile Include="NugetPackageIdVersion.cs" />
     <Compile Include="NugetRepository.cs" />
     <Compile Include="NugetUtility.cs" />
