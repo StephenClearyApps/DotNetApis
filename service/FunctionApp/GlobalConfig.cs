@@ -28,12 +28,13 @@ namespace FunctionApp
             Container.Register<ILogger, AmbientCompositeLogger>();
             Container.Register<INugetRepository, NugetRepository>();
             Container.Register<IPackageStorage, AzurePackageStorage>();
+            Container.Register<IPackageTable, AzurePackageTable>();
             Container.Register<DocRequestHandler>();
             Container.Verify();
 
             // Initialize all components.
-            Task.WhenAll(AzurePackageStorage.InitializeAsync())
-                .GetAwaiter().GetResult();
+            Task.WhenAll(AzurePackageStorage.InitializeAsync(),
+                AzurePackageTable.InitializeAsync()).GetAwaiter().GetResult();
         }
 
         public static void EnsureLoaded()
