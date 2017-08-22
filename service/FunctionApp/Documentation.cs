@@ -19,15 +19,15 @@ namespace FunctionApp
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
             Defaults.ApplyRequestHandlingDefaults(req);
-            GlobalConfig.EnsureInitilizationComplete();
-            var inMemoryLogger = new InMemoryLogger();
-            AmbientContext.Initialize(Enumerables.Return<ILogger>(inMemoryLogger, new TraceWriterLogger(log)));
+            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
 
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
                 var logger = GlobalConfig.Container.GetInstance<ILogger>();
                 try
                 {
+                    GlobalConfig.EnsureInitilizationComplete();
+
                     var query = req.GetQueryNameValuePairs().ToList();
                     var jsonVersion = query.Required("jsonVersion", int.Parse);
                     var packageId = query.Required("packageId");
@@ -50,7 +50,12 @@ namespace FunctionApp
                 catch (ExpectedException ex)
                 {
                     logger.Trace($"Returning {(int) ex.HttpStatusCode}: {ex.Message}");
-                    return req.CreateErrorResponse(inMemoryLogger, ex);
+                    return req.CreateErrorResponseWithLog(ex);
+                }
+                catch (Exception ex)
+                {
+                    logger.Trace($"Returning 500: {ex.Message}");
+                    return req.CreateErrorResponseWithLog(ex);
                 }
             }
         }
