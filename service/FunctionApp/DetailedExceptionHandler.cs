@@ -17,46 +17,29 @@ namespace FunctionApp
 {
     public sealed class DetailedExceptionHandler : ExceptionHandler
     {
-        private readonly ExceptionHandler _builtinExceptionHandler;
-
-        public DetailedExceptionHandler(ExceptionHandler builtinExceptionHandler)
-        {
-            _builtinExceptionHandler = builtinExceptionHandler;
-        }
-
-        public override async Task HandleAsync(ExceptionHandlerContext context, CancellationToken cancellationToken)
+        public override void Handle(ExceptionHandlerContext context)
         {
             var exception = context.Exception is FunctionInvocationException && context.Exception.InnerException != null ? context.Exception.InnerException : context.Exception;
+            var details = DetailExceptionsWithLog(context.Request, exception);
 
-            // Attempt to capture a log from the in-memory logger.
-            var details = new HttpError(exception, includeErrorDetail: true);
-            var logger = context.Request.Properties.TryGetValue("testtest", out object loggerObject) ? loggerObject as InMemoryLogger : null;
-            if (logger != null)
-                details.Add("log", logger.Messages);
-
-            // Attempt to extract the error object specified by the default exception handler.
-            if (_builtinExceptionHandler != null)
-                await _builtinExceptionHandler.HandleAsync(context, cancellationToken).ConfigureAwait(false);
-            var errorObject = await TryExtractObjectAsync(context);
-            if (errorObject != null)
-                details.Add("details", errorObject);
+            // Write a unique id to the log and include it in the response.
+            var traceId = Guid.NewGuid().ToString("N");
+            context.Request.TryGetTraceWriter().Error("traceId: " + traceId);
+            details.Add("traceId", traceId);
 
             context.Result = new ResponseMessageResult(context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, details));
         }
 
-        private static async Task<object> TryExtractObjectAsync(ExceptionHandlerContext context)
+        public static HttpError DetailExceptionsWithLog(HttpRequestMessage message, Exception exception)
         {
-            try
-            {
-                var responseMessageResult = context.Result as ResponseMessageResult;
-                if (responseMessageResult == null)
-                    return null;
-                return await responseMessageResult.Response.Content.ReadAsAsync<object>();
-            }
-            catch
-            {
-                return null;
-            }
+            var result = new HttpError(exception, includeErrorDetail: true);
+
+            // Attempt to capture a log from the in-memory logger.
+            var logger = message.TryGetInMemoryLogger();
+            if (logger != null)
+                result.Add("log", logger.Messages);
+
+            return result;
         }
     }
 }

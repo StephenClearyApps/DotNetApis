@@ -28,12 +28,15 @@ namespace FunctionApp
             request.GetRequestContext().IncludeErrorDetail = true;
 
             // Propagate error details in responses generated from exceptions.
-            config.Services.Replace(typeof(IExceptionHandler), new DetailedExceptionHandler(config.Services.GetService(typeof(IExceptionHandler)) as ExceptionHandler));
+            config.Services.Replace(typeof(IExceptionHandler), new DetailedExceptionHandler());
             request.Properties.Add(InMemoryLoggerKey, AmbientContext.Loggers.OfType<InMemoryLogger>().First());
             request.Properties.Add(TraceWriterKey, traceWriter);
         }
 
         public static InMemoryLogger TryGetInMemoryLogger(this HttpRequestMessage request) =>
             request.Properties.TryGetValue(InMemoryLoggerKey, out object value) ? value as InMemoryLogger : null;
+
+        public static TraceWriter TryGetTraceWriter(this HttpRequestMessage request) =>
+            request.Properties.TryGetValue(TraceWriterKey, out object value) ? value as TraceWriter : null;
     }
 }
