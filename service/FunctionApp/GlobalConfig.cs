@@ -50,7 +50,6 @@ namespace FunctionApp
                 Task.WhenAll(AzurePackageStorage.InitializeAsync(),
                     AzurePackageTable.InitializeAsync())
             );
-            var _ = _azureInitialization.Value;
         }
 
         public static void EnsureJsonSerializerSettings()
