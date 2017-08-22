@@ -17,13 +17,21 @@ namespace FunctionApp
     /// </summary>
     public static class GlobalConfig
     {
+        // All configuration is behind Lazy objects so we can control when exceptions get raised.
+        private static readonly Lazy<object> _jsonSerializerSettings;
         private static readonly Lazy<Container> _container;
+        private static readonly Lazy<Task> _azureInitialization;
 
         static GlobalConfig()
         {
-            JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
+            // Configure default JSON.NET serialization.
+            _jsonSerializerSettings = new Lazy<object>(() =>
+            {
+                JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
+                return null;
+            });
 
-            // Container setup is done behind a Lazy to prevent exceptions from taking down our process before error handling has been set up.
+            // Register DI implementations.
             _container = new Lazy<Container>(() =>
             {
                 var container = new Container();
@@ -38,12 +46,23 @@ namespace FunctionApp
             });
 
             // Initialize all components.
-            Task.WhenAll(AzurePackageStorage.InitializeAsync(),
-                AzurePackageTable.InitializeAsync()).GetAwaiter().GetResult();
+            _azureInitialization = new Lazy<Task>(() =>
+                Task.WhenAll(AzurePackageStorage.InitializeAsync(),
+                    AzurePackageTable.InitializeAsync())
+            );
+            var _ = _azureInitialization.Value;
         }
 
-        public static void EnsureLoaded()
+        public static void EnsureJsonSerializerSettings()
         {
+            var _ = _jsonSerializerSettings.Value;
+        }
+
+        public static void EnsureInitilizationComplete()
+        {
+            var _ = _jsonSerializerSettings.Value;
+            _azureInitialization.Value.GetAwaiter().GetResult();
+            var __ = _container.Value;
         }
 
         public static Container Container => _container.Value;

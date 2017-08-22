@@ -16,7 +16,7 @@ namespace FunctionApp
         public static void ApplyRequestHandlingDefaults(HttpRequestMessage request)
         {
             // Use our own JSON serializer settings everywhere.
-            GlobalConfig.EnsureLoaded();
+            GlobalConfig.EnsureJsonSerializerSettings();
             foreach (var formatter in request.GetConfiguration().Formatters.OfType<JsonMediaTypeFormatter>())
                 formatter.SerializerSettings = Constants.JsonSerializerSettings;
 

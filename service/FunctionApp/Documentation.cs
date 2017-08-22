@@ -19,6 +19,7 @@ namespace FunctionApp
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
             Defaults.ApplyRequestHandlingDefaults(req);
+            GlobalConfig.EnsureInitilizationComplete();
             var inMemoryLogger = new InMemoryLogger();
             AmbientContext.Initialize(Enumerables.Return<ILogger>(inMemoryLogger, new TraceWriterLogger(log)));
 
