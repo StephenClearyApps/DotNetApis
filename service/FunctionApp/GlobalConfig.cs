@@ -17,18 +17,25 @@ namespace FunctionApp
     /// </summary>
     public static class GlobalConfig
     {
+        private static readonly Lazy<Container> _container;
+
         static GlobalConfig()
         {
             JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
 
-            Container = new Container();
-            Container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-            Container.Options.DefaultLifestyle = Lifestyle.Scoped;
-            Container.Register<ILogger, AmbientCompositeLogger>();
-            Container.Register<INugetRepository, NugetRepository>();
-            Container.Register<IPackageStorage, AzurePackageStorage>();
-            Container.Register<IPackageTable, AzurePackageTable>();
-            Container.Verify();
+            // Container setup is done behind a Lazy to prevent exceptions from taking down our process before error handling has been set up.
+            _container = new Lazy<Container>(() =>
+            {
+                var container = new Container();
+                container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+                container.Options.DefaultLifestyle = Lifestyle.Scoped;
+                container.Register<ILogger, AmbientCompositeLogger>();
+                container.Register<INugetRepository, NugetRepository>();
+                container.Register<IPackageStorage, AzurePackageStorage>();
+                container.Register<IPackageTable, AzurePackageTable>();
+                container.Verify();
+                return container;
+            });
 
             // Initialize all components.
             Task.WhenAll(AzurePackageStorage.InitializeAsync(),
@@ -39,6 +46,6 @@ namespace FunctionApp
         {
         }
 
-        public static Container Container { get; }
+        public static Container Container => _container.Value;
     }
 }
