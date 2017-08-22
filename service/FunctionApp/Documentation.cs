@@ -18,48 +18,40 @@ namespace FunctionApp
         [FunctionName("Documentation")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
-            Defaults.ApplyRequestHandlingDefaults(req);
-            try
-            {
-                AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
+            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
+            Defaults.ApplyRequestHandlingDefaults(req, log);
 
-                using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
+            using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
+            {
+                var logger = GlobalConfig.Container.GetInstance<ILogger>();
+                try
                 {
-                    var logger = GlobalConfig.Container.GetInstance<ILogger>();
-                    try
+                    GlobalConfig.EnsureInitilizationComplete();
+
+                    var query = req.GetQueryNameValuePairs().ToList();
+                    var jsonVersion = query.Required("jsonVersion", int.Parse);
+                    var packageId = query.Required("packageId");
+                    var packageVersion = query.Optional("packageVersion");
+                    var targetFramework = query.Optional("targetFramework");
+                    logger.Trace($"Received request for jsonVersion={jsonVersion}, packageId=`{packageId}`, packageVersion=`{packageVersion}`, targetFramework=`{targetFramework}`");
+
+                    if (jsonVersion < JsonFactory.Version)
                     {
-                        GlobalConfig.EnsureInitilizationComplete();
-
-                        var query = req.GetQueryNameValuePairs().ToList();
-                        var jsonVersion = query.Required("jsonVersion", int.Parse);
-                        var packageId = query.Required("packageId");
-                        var packageVersion = query.Optional("packageVersion");
-                        var targetFramework = query.Optional("targetFramework");
-                        logger.Trace($"Received request for jsonVersion={jsonVersion}, packageId=`{packageId}`, packageVersion=`{packageVersion}`, targetFramework=`{targetFramework}`");
-
-                        if (jsonVersion < JsonFactory.Version)
-                        {
-                            logger.Trace($"Requested JSON version {jsonVersion} is old; current JSON version is {JsonFactory.Version}; returning 422");
-                            return req.CreateResponse((HttpStatusCode)422, "Application needs to update; refresh the page.");
-                        }
-
-                        var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
-                        var result = await handler.GetDocAsync(packageId, packageVersion, targetFramework);
-
-                        logger.Trace($"Success!");
-                        return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
+                        logger.Trace($"Requested JSON version {jsonVersion} is old; current JSON version is {JsonFactory.Version}; returning 422");
+                        return req.CreateResponse((HttpStatusCode)422, "Application needs to update; refresh the page.");
                     }
-                    catch (ExpectedException ex)
-                    {
-                        logger.Trace($"Returning {(int)ex.HttpStatusCode}: {ex.Message}");
-                        return req.CreateErrorResponseWithLog(ex);
-                    }
+
+                    var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
+                    var result = await handler.GetDocAsync(packageId, packageVersion, targetFramework);
+
+                    logger.Trace($"Success!");
+                    return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
                 }
-            }
-            catch (Exception ex)
-            {
-                log.Error($"Returning 500: {ex.Message}");
-                return req.CreateErrorResponseWithLog(ex);
+                catch (ExpectedException ex)
+                {
+                    logger.Trace($"Returning {(int)ex.HttpStatusCode}: {ex.Message}");
+                    return req.CreateErrorResponseWithLog(ex);
+                }
             }
         }
     }

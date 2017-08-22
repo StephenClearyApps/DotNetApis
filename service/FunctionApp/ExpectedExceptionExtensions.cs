@@ -22,7 +22,7 @@ namespace FunctionApp
         {
             // Attempt to capture a log from the in-memory logger.
             var details = new HttpError(exception, @this.ShouldIncludeErrorDetail());
-            var logger = AmbientContext.Loggers.OfType<InMemoryLogger>().FirstOrDefault();
+            var logger = AmbientContext.Loggers?.OfType<InMemoryLogger>()?.FirstOrDefault();
             if (logger != null)
                 details.Add("log", logger.Messages);
             return details;
