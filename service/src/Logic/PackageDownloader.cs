@@ -58,5 +58,21 @@ namespace Logic
                 return package;
             }
         }
+
+        /// <summary>
+        /// Searches Nuget for a match for the specified version range, and then reads that package from our package storage, along with its external metadata.
+        /// Returns <c>null</c> if there is no matching package found.
+        /// If the package is matched but not in our package store, then this method downloads the package from Nuget, saves it in our storage, and returns it.
+        /// If the package was just downloaded, the returned package is the instance retrieved from NuGet.
+        /// </summary>
+        /// <param name="id">The package id.</param>
+        /// <param name="versionRange">The version range the package must match.</param>
+        public async Task<NugetFullPackage> TryGetPackageAsync(string id, NugetVersionRange versionRange)
+        {
+            var idver = _nugetRepository.TryLookupPackage(id, versionRange);
+            if (idver == null)
+                return null;
+            return await GetPackageAsync(idver).ConfigureAwait(false);
+        }
     }
 }

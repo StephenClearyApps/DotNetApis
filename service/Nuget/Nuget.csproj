@@ -159,11 +159,13 @@
   <ItemGroup>
     <Compile Include="NugetFullPackage.cs" />
     <Compile Include="NugetPackage.cs" />
+    <Compile Include="NugetPackageDependency.cs" />
     <Compile Include="NugetPackageExternalMetadata.cs" />
     <Compile Include="NugetPackageIdVersion.cs" />
     <Compile Include="NugetRepository.cs" />
     <Compile Include="NugetUtility.cs" />
     <Compile Include="NugetVersion.cs" />
+    <Compile Include="NugetVersionRange.cs" />
     <Compile Include="PackageArchiveReaderWithRef.cs" />
     <Compile Include="PackageContentReaderWithRef.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -14,12 +14,14 @@ namespace Logic
         private readonly ILogger _logger;
         private readonly INugetRepository _nugetRepository;
         private readonly PackageDownloader _packageDownloader;
+        private readonly PlatformResolver _platformResolver;
 
-        public DocRequestHandler(ILogger logger, INugetRepository nugetRepository, PackageDownloader packageDownloader)
+        public DocRequestHandler(ILogger logger, INugetRepository nugetRepository, PackageDownloader packageDownloader, PlatformResolver platformResolver)
         {
             _logger = logger;
             _nugetRepository = nugetRepository;
             _packageDownloader = packageDownloader;
+            _platformResolver = platformResolver;
         }
 
         public async Task<string> GetDocAsync(string packageId, string packageVersion, string targetFramework)
@@ -45,11 +47,14 @@ namespace Logic
 
         private async Task<PlatformTarget> GuessPackageTargetAsync(NugetPackageIdVersion idver)
         {
-            var package = await _packageDownloader.GetPackageAsync(idver);
+            var package = await _packageDownloader.GetPackageAsync(idver).ConfigureAwait(false);
 
-            // TODO: Determine the target framework.
+            var platforms = await _platformResolver.AllSupportedPlatformsAsync(package.Package).ConfigureAwait(false);
+            var result = platforms.FirstOrDefault();
+            if (result == null)
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Package `{package}` has no supported frameworks; the package possibly contains only source files, or is a JavaScript or other front-end package; DotNetApis only works with .NET packages");
 
-            throw new ExpectedException(HttpStatusCode.InternalServerError, "NYI");
+            return result;
         }
 
         private static NugetVersion ParseVersion(string packageVersion)

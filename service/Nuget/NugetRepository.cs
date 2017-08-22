@@ -17,10 +17,18 @@ namespace Nuget
     public interface INugetRepository
     {
         /// <summary>
-        /// Attempts to find the latest package version, preferring released versions over unreleased. Only listed versions are considered.
+        /// Attempts to find the latest package version, preferring released versions over unreleased. Only listed versions are considered. Returns <c>null</c> if no package is found.
         /// </summary>
         /// <param name="id">The package id.</param>
         NugetPackageIdVersion TryLookupLatestPackageVersion(string id);
+
+        /// <summary>
+        /// Attempts to find a specified package version matching a version range. Returns <c>null</c> if no matching package version is found.
+        /// </summary>
+        /// <param name="id">The package id.</param>
+        /// <param name="versionRange">The version range the package must match.</param>
+        /// <returns></returns>
+        NugetPackageIdVersion TryLookupPackage(string id, NugetVersionRange versionRange);
 
         /// <summary>
         /// Downloads a specific package from Nuget. Throws <see cref="ExpectedException"/> (404) if not found.
@@ -56,6 +64,20 @@ namespace Nuget
             }
             var idver = new NugetPackageIdVersion(id, new NugetVersion(package.Version));
             _logger.Trace($"Found version `{idver}` for `{id}`");
+            return idver;
+        }
+
+        public NugetPackageIdVersion TryLookupPackage(string id, NugetVersionRange versionRange)
+        {
+            _logger.Trace($"Searching for package matching id {id} and version range {versionRange}");
+            var package = _repository.FindPackage(id, versionRange.ToVersionSpec(), allowPrereleaseVersions: true, allowUnlisted: true);
+            if (package == null)
+            {
+                _logger.Trace($"Package {id} matching version {versionRange} was not found");
+                return null;
+            }
+            var idver = new NugetPackageIdVersion(id, NugetVersion.FromSemanticVersion(package.Version));
+            _logger.Trace($"Package {id} matching version {versionRange} resolved to {idver}");
             return idver;
         }
 

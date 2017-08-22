@@ -123,6 +123,7 @@
     <Compile Include="Internals\AblyChannel.cs" />
     <Compile Include="Internals\AblyService.cs" />
     <Compile Include="InMemoryLogger.cs" />
+    <Compile Include="TraceDump.cs" />
     <Compile Include="TraceWriterLogger.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
