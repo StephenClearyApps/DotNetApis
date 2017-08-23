@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Results;
-using Common;
 using System.Net.Http;
-using System.Web.Http.Filters;
 using Microsoft.Azure.WebJobs.Host;
 
 namespace FunctionApp
@@ -20,14 +18,7 @@ namespace FunctionApp
         public override void Handle(ExceptionHandlerContext context)
         {
             var exception = context.Exception is FunctionInvocationException && context.Exception.InnerException != null ? context.Exception.InnerException : context.Exception;
-            var details = DetailExceptionsWithLog(context.Request, exception);
-
-            // Write a unique id to the log and include it in the response.
-            var traceId = Guid.NewGuid().ToString("N");
-            context.Request.TryGetTraceWriter().Error("traceId: " + traceId);
-            details.Add("traceId", traceId);
-
-            context.Result = new ResponseMessageResult(context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, details));
+            context.Result = new ResponseMessageResult(context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, DetailExceptionsWithLog(context.Request, exception)));
         }
 
         public static HttpError DetailExceptionsWithLog(HttpRequestMessage message, Exception exception)
@@ -38,6 +29,16 @@ namespace FunctionApp
             var logger = message.TryGetInMemoryLogger();
             if (logger != null)
                 result.Add("log", logger.Messages);
+
+            // Attempt to write the Application Insights operation id (Azure Functions invocation id).
+            var operationId = message.TryGetExecutionContext()?.InvocationId;
+            if (operationId != null)
+                result.Add("operationId", operationId.Value);
+
+            // Attempt to write the Azure Functions request id.
+            var requestId = message.TryGetRequestId();
+            if (requestId != null)
+                result.Add("requestId", requestId);
 
             return result;
         }

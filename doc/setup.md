@@ -6,6 +6,8 @@ The current SPA is set up to build into the `/docs` folder in GitHub. This is ho
 
 ## Azure Functions
 
+The Azure Functions resource should have detailed error logging (`Diagnostic logs` - `Detailed error messages`) turned on.
+
 ### Proxies
 
 There are two proxies defined in the Azure Functions project:
