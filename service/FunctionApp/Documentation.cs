@@ -8,7 +8,6 @@ using Logic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
-using Nuget;
 using SimpleInjector.Lifestyles;
 
 namespace FunctionApp
@@ -16,10 +15,10 @@ namespace FunctionApp
     public static class Documentation
     {
         [FunctionName("Documentation")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, ExecutionContext context, TraceWriter log)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
         {
             AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
-            req.ApplyRequestHandlingDefaults(log, context);
+            req.ApplyRequestHandlingDefaults(log, null);
 
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
