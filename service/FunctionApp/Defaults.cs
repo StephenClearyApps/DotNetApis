@@ -28,6 +28,7 @@ namespace FunctionApp
 
             // Always include full error details.
             request.GetRequestContext().IncludeErrorDetail = true;
+            request.GetRequestContext().IsLocal = true;
 
             // Propagate error details in responses generated from exceptions.
             config.Services.Replace(typeof(IExceptionHandler), new DetailedExceptionHandler());
