@@ -15,10 +15,10 @@ namespace FunctionApp
     public static class Documentation
     {
         [FunctionName("Documentation")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, ExecutionContext context)
         {
-            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
-            req.ApplyRequestHandlingDefaults(log, null);
+            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(null)));
+            req.ApplyRequestHandlingDefaults(null, null);
 
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
