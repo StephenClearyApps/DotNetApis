@@ -17,9 +17,9 @@ namespace FunctionApp
         [FunctionName("Documentation")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log, ExecutionContext context)
         {
-            await Task.Yield();
             AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
             req.ApplyRequestHandlingDefaults(log, context);
+            await Task.Yield();
             return await DoRun(req);
         }
 
