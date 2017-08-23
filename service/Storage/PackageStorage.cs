@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Nuget;
 
@@ -41,20 +42,20 @@ namespace Storage
 
         public async Task<NugetPackage> LoadAsync(string path)
         {
-            _logger.Trace($"Loading nupkg from blob `{path}`");
+            _logger.LogDebug("Loading nupkg from blob {path}", path);
             var stream = new MemoryStream();
             await _container.GetBlockBlobReference(path).DownloadToStreamAsync(stream).ConfigureAwait(false);
             stream.Position = 0;
             var result = new NugetPackage(stream);
-            _logger.Trace($"Successfully loaded nupkg from blob `{path}`");
+            _logger.LogDebug("Successfully loaded nupkg from blob {path}", path);
             return result;
         }
 
         public async Task SaveAsync(string path, NugetPackage package)
         {
-            _logger.Trace($"Saving nupkg `{package}` to blob `{path}`");
+            _logger.LogDebug("Saving nupkg {package} to blob {path}", package, path);
             await _container.GetBlockBlobReference(path).UploadFromStreamAsync(package.Stream).ConfigureAwait(false);
-            _logger.Trace($"Successfully saved nupkg `{package}` to blob `{path}`");
+            _logger.LogDebug("Successfully saved nupkg `{package}` to blob `{path}`", package, path);
         }
 
         public static Task InitializeAsync() => GetContainer(new AzureConnections()).CreateIfNotExistsAsync();

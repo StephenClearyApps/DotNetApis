@@ -8,6 +8,7 @@ using Logic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using SimpleInjector.Lifestyles;
 
 namespace FunctionApp
@@ -15,10 +16,10 @@ namespace FunctionApp
     public static class Documentation
     {
         [FunctionName("Documentation")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log)
+        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, ILogger log)
         {
-            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
-            req.ApplyRequestHandlingDefaults(log, null);
+            AmbientContext.Initialize(Enumerables.Return(new InMemoryLogger(), log));
+            req.ApplyRequestHandlingDefaults(null, null);
 
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
@@ -32,23 +33,24 @@ namespace FunctionApp
                     var packageId = query.Required("packageId");
                     var packageVersion = query.Optional("packageVersion");
                     var targetFramework = query.Optional("targetFramework");
-                    logger.Trace($"Received request for jsonVersion={jsonVersion}, packageId=`{packageId}`, packageVersion=`{packageVersion}`, targetFramework=`{targetFramework}`");
+                    logger.LogDebug("Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
+                        jsonVersion, packageId, packageVersion, targetFramework);
 
                     if (jsonVersion < JsonFactory.Version)
                     {
-                        logger.Trace($"Requested JSON version {jsonVersion} is old; current JSON version is {JsonFactory.Version}; returning 422");
-                        return req.CreateResponse((HttpStatusCode)422, "Application needs to update; refresh the page.");
+                        logger.LogError("Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}", jsonVersion, JsonFactory.Version);
+                        throw new ExpectedException((HttpStatusCode)422, "Application needs to update; refresh the page.");
                     }
 
                     var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
                     var result = await handler.GetDocAsync(packageId, packageVersion, targetFramework);
 
-                    logger.Trace($"Success!");
+                    logger.LogDebug("Success!");
                     return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
                 }
                 catch (ExpectedException ex)
                 {
-                    logger.Trace($"Returning {(int)ex.HttpStatusCode}: {ex.Message}");
+                    logger.LogInformation("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
                     return req.CreateErrorResponseWithLog(ex);
                 }
             }

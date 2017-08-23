@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Microsoft.Extensions.Logging;
 using Nuget;
 using Storage;
 
@@ -37,7 +38,7 @@ namespace Logic
         /// <param name="idver">The package to retrieve.</param>
         public async Task<NugetFullPackage> GetPackageAsync(NugetPackageIdVersion idver)
         {
-            _logger.Trace($"Retrieving package {idver}");
+            _logger.LogDebug("Retrieving package {idver}", idver);
             var record = await _packageTable.TryGetRecordAsync(idver).ConfigureAwait(false);
             if (record != null)
             {

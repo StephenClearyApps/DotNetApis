@@ -5,6 +5,7 @@ using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Nito.Comparers;
 using Nuget;
@@ -31,7 +32,7 @@ namespace Logic
         /// <param name="target">The target platform. May be <c>null</c>.</param>
         public Dictionary<string, NugetPackageDependency> GetCompatiblePackageDependencies(NugetPackage package, FrameworkName target)
         {
-            _logger.Trace($"Determining package dependencies for {package} targeting `{target}`");
+            _logger.LogDebug("Determining package dependencies for {package} targeting {target}", package, target);
 
             var result = new Dictionary<string, NugetPackageDependency>(StringComparer.InvariantCultureIgnoreCase);
             var dependencies = target == null ?
@@ -39,11 +40,11 @@ namespace Logic
                 NuGetFrameworkUtility.GetNearest(package.Metadata.NuspecReader.GetDependencyGroups(), NuGetFramework.ParseFrameworkName(target.FullName, DefaultFrameworkNameProvider.Instance))?.Packages;
             if (dependencies == null)
             {
-                _logger.Trace($"No dependencies found for {package} targeting `{target}`");
+                _logger.LogDebug("No dependencies found for {package} targeting {target}", package, target);
                 return result;
             }
             var dependencyList = dependencies.ToList();
-            _logger.Trace($"Full dependency list for {package} targeting `{target}` is {dependencyList.Dump()}");
+            _logger.LogDebug("Full dependency list for {package} targeting {target} is {dependencyList}", package, target, dependencyList.Dump());
             foreach (var dependency in dependencyList)
             {
                 var versionRange = new NugetVersionRange(dependency.VersionRange);
@@ -53,14 +54,15 @@ namespace Logic
                     if (merged != null)
                         result[dependency.Id] = new NugetPackageDependency(dependency.Id, merged);
                     else
-                        _logger.Trace("NuGet client returned multiple incompatible version ranges for " + dependency.Id + ": " + result[dependency.Id].VersionRange + " and " + versionRange);
+                        _logger.LogWarning("NuGet client returned multiple incompatible version ranges for {dependencyId}: {versionRange1} and {versionRange2}",
+                            dependency.Id, result[dependency.Id].VersionRange, versionRange);
                 }
                 else
                 {
                     result.Add(dependency.Id, new NugetPackageDependency(dependency.Id, versionRange));
                 }
             }
-            _logger.Trace($"Merged dependency list for {package} targeting `{target}` is {result.Dump()}");
+            _logger.LogDebug("Merged dependency list for {package} targeting {target} is {dependencyList}", package, target, result.Dump());
             return result;
         }
 
@@ -72,7 +74,7 @@ namespace Logic
         /// <param name="package">The package to examine.</param>
         public async Task<PlatformTarget[]> AllSupportedPlatformsAsync(NugetPackage package)
         {
-            _logger.Trace($"Determining supported platforms for {package}");
+            _logger.LogDebug("Determining supported platforms for {package}", package);
 
             // If the package declares its platforms, just take those.
             var declaredPlatformSupport = DeclaredPlatforms(package);
@@ -80,7 +82,7 @@ namespace Logic
                 return declaredPlatformSupport;
 
             // Check all the dependencies for any supported platforms and merge them.
-            _logger.Trace($"Found no declared platforms for {package}; checking dependencies for declared platforms");
+            _logger.LogDebug("Found no declared platforms for {package}; checking dependencies for declared platforms", package);
             var result = new List<PlatformTarget>();
             foreach (var dep in GetCompatiblePackageDependencies(package, null))
             {
@@ -106,13 +108,13 @@ namespace Logic
                 return result.OrderBy(x => PlatformUtility.NuGetFrameworkOrdering(x.ToString())).ThenByDescending(x => x.FrameworkName.Version).ToArray();
 
             // If the package has a dll in a plain "lib" directory, then just assume "net40".
-            _logger.Trace($"Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort");
+            _logger.LogDebug("Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package);
             var guess = PlatformTarget.TryParse("net40");
             if (package.GetCompatibleAssemblyReferences(guess.FrameworkName).Any())
                 return new[] { guess };
 
             // Well, this looks like it might not be a .NET package at all...
-            _logger.Trace($"Failed to find any supported platforms for package {package}");
+            _logger.LogWarning("Failed to find any supported platforms for package {package}", package);
             return new PlatformTarget[0];
         }
 
@@ -127,7 +129,7 @@ namespace Logic
                     {
                         var profileTarget = PlatformTarget.TryParse(profileTargetString);
                         if (profileTarget == null)
-                            _logger.Trace($"Ignoring {profileTargetString} in {target} since it failed to parse");
+                            _logger.LogWarning("Ignoring {profileTargetString} in {platformTarget} since it failed to parse", profileTargetString, target);
                         else
                             set.Add(profileTarget);
                     }
@@ -137,13 +139,13 @@ namespace Logic
                     set.Add(target);
                 }
             }
-            _logger.Trace($"Package {package} declares support for platforms {set.Dump()}");
+            _logger.LogDebug("Package {package} declares support for platforms {platforms}", package, set.Dump());
             var result = set
                 .Where(x => PlatformUtility.NuGetFrameworkOrdering(x.ToString()) != int.MaxValue)
                 .OrderBy(x => PlatformUtility.NuGetFrameworkOrdering(x.ToString()))
                 .ThenByDescending(x => x.FrameworkName.Version)
                 .ToArray();
-            _logger.Trace($"After filtering, package {package} declares support for platforms {result.Dump()}");
+            _logger.LogDebug("After filtering, package {package} declares support for platforms {platforms}", package, result.Dump());
             return result;
         }
     }

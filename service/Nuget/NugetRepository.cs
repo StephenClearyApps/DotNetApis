@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using NuGet;
-using ILogger = Common.ILogger;
+using Microsoft.Extensions.Logging;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Nuget
 {
@@ -48,50 +49,53 @@ namespace Nuget
             _logger = logger;
         }
 
-        public NugetPackageIdVersion TryLookupLatestPackageVersion(string id)
+        public NugetPackageIdVersion TryLookupLatestPackageVersion(string packageId)
         {
-            _logger.Trace($"Looking up latest package version for `{id}`");
-            var package = _repository.FindPackage(id, version: null, allowPrereleaseVersions: false, allowUnlisted: false);
+            _logger.LogDebug("Looking up latest package version for {packageId}", packageId);
+            var package = _repository.FindPackage(packageId, version: null, allowPrereleaseVersions: false, allowUnlisted: false);
             if (package == null)
             {
-                _logger.Trace($"No non-prerelease package version found for `{id}`; looking up latest prerelease package version");
-                package = _repository.FindPackage(id, version: null, allowPrereleaseVersions: true, allowUnlisted: false);
+                _logger.LogInformation("No non-prerelease package version found for {packageId}; looking up latest prerelease package version", packageId);
+                package = _repository.FindPackage(packageId, version: null, allowPrereleaseVersions: true, allowUnlisted: false);
             }
             if (package == null)
             {
-                _logger.Trace($"No package version found for `{id}`");
+                _logger.LogWarning("No package version found for {packageId}", packageId);
                 return null;
             }
-            var idver = new NugetPackageIdVersion(id, new NugetVersion(package.Version));
-            _logger.Trace($"Found version `{idver}` for `{id}`");
+            var idver = new NugetPackageIdVersion(packageId, new NugetVersion(package.Version));
+            _logger.LogInformation("Found version {idver} for {packageId}", idver, packageId);
             return idver;
         }
 
-        public NugetPackageIdVersion TryLookupPackage(string id, NugetVersionRange versionRange)
+        public NugetPackageIdVersion TryLookupPackage(string packageId, NugetVersionRange versionRange)
         {
-            _logger.Trace($"Searching for package matching id {id} and version range {versionRange}");
-            var package = _repository.FindPackage(id, versionRange.ToVersionSpec(), allowPrereleaseVersions: true, allowUnlisted: true);
+            _logger.LogDebug("Searching for package matching id {packageId} and version range {versionRange}", packageId, versionRange);
+            var package = _repository.FindPackage(packageId, versionRange.ToVersionSpec(), allowPrereleaseVersions: true, allowUnlisted: true);
             if (package == null)
             {
-                _logger.Trace($"Package {id} matching version {versionRange} was not found");
+                _logger.LogWarning("Package {packageId} matching version {versionRange} was not found", packageId, versionRange);
                 return null;
             }
-            var idver = new NugetPackageIdVersion(id, NugetVersion.FromSemanticVersion(package.Version));
-            _logger.Trace($"Package {id} matching version {versionRange} resolved to {idver}");
+            var idver = new NugetPackageIdVersion(packageId, NugetVersion.FromSemanticVersion(package.Version));
+            _logger.LogInformation("Package {packageId} matching version {versionRange} resolved to {idver}", packageId, versionRange, idver);
             return idver;
         }
 
         public NugetFullPackage DownloadPackage(NugetPackageIdVersion idver)
         {
-            _logger.Trace($"Downloading package {idver} from Nuget");
+            _logger.LogDebug("Downloading package {idver} from Nuget", idver);
             var package = _repository.FindPackage(idver.PackageId, idver.Version.ToSemanticVersion(), allowPrereleaseVersions: true, allowUnlisted: true);
             if (package == null)
-                throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {idver}; this error can happen if NuGet is currently indexing this package; if this is a newly released version, try again in 5 minutes or so.");
+            {
+                _logger.LogError("Could not find package {idver} on Nuget", idver);
+                throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {idver} on Nuget; this error can happen if NuGet is currently indexing this package; if this is a newly released version, try again in 5 minutes or so.");
+            }
             var published = package.Published;
             if (published == null)
                 throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
             var result = new NugetFullPackage(new NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
-            _logger.Trace($"Successfully downloaded package {idver} as `{result}` from Nuget");
+            _logger.LogDebug("Successfully downloaded package {idver} as {result} from Nuget", idver, result);
             return result;
         }
     }

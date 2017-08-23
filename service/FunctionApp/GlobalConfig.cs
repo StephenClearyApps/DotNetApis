@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Nuget;
 using SimpleInjector;
