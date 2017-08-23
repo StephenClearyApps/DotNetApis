@@ -31,9 +31,15 @@ namespace Logic
             var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
             _logger.LogDebug("Getting documentation for {idver}", idver);
 
+            // Guess the target framework if unknown.
             var target = targetFramework == null ? await GuessPackageTargetAsync(idver) : ParsePlatformTarget(targetFramework);
+            if (!target.IsSupported())
+            {
+                _logger.LogError("Target framework {targetFramework} is not supported", targetFramework);
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Target framework {targetFramework} is not supported");
+            }
 
-
+            
 
             return idver + " " + target;
         }

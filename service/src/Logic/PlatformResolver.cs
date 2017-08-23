@@ -92,8 +92,8 @@ namespace Logic
                 var depPlatforms = await AllSupportedPlatformsAsync(depPackage.Package).ConfigureAwait(false);
                 foreach (var depPlatform in depPlatforms)
                 {
-                    var prefix = PlatformUtility.Prefix(depPlatform.ToString());
-                    var existing = result.FindIndex(x => string.Equals(PlatformUtility.Prefix(x.ToString()), prefix, StringComparison.InvariantCultureIgnoreCase));
+                    var prefix = depPlatform.Prefix();
+                    var existing = result.FindIndex(x => string.Equals(x.Prefix(), prefix, StringComparison.InvariantCultureIgnoreCase));
                     if (existing == -1)
                     {
                         result.Add(depPlatform);
@@ -105,7 +105,7 @@ namespace Logic
                 }
             }
             if (result.Count != 0)
-                return result.OrderBy(x => PlatformUtility.NuGetFrameworkOrdering(x.ToString())).ThenByDescending(x => x.FrameworkName.Version).ToArray();
+                return result.OrderBy(x => x.NuGetFrameworkOrdering()).ThenByDescending(x => x.FrameworkName.Version).ToArray();
 
             // If the package has a dll in a plain "lib" directory, then just assume "net40".
             _logger.LogDebug("Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package);
@@ -141,8 +141,8 @@ namespace Logic
             }
             _logger.LogDebug("Package {package} declares support for platforms {platforms}", package, set.Dump());
             var result = set
-                .Where(x => PlatformUtility.NuGetFrameworkOrdering(x.ToString()) != int.MaxValue)
-                .OrderBy(x => PlatformUtility.NuGetFrameworkOrdering(x.ToString()))
+                .Where(x => x.IsSupported())
+                .OrderBy(x => x.NuGetFrameworkOrdering())
                 .ThenByDescending(x => x.FrameworkName.Version)
                 .ToArray();
             _logger.LogDebug("After filtering, package {package} declares support for platforms {platforms}", package, result.Dump());
