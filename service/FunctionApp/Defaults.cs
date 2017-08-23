@@ -26,12 +26,7 @@ namespace FunctionApp
             foreach (var formatter in config.Formatters.OfType<JsonMediaTypeFormatter>())
                 formatter.SerializerSettings = Constants.JsonSerializerSettings;
 
-            // Always include full error details.
-            request.GetRequestContext().IncludeErrorDetail = true;
-            request.GetRequestContext().IsLocal = true;
-
             // Propagate error details in responses generated from exceptions.
-            config.Services.Replace(typeof(IExceptionHandler), new DetailedExceptionHandler());
             request.Properties.Add(InMemoryLoggerKey, AmbientContext.Loggers.OfType<InMemoryLogger>().First());
             request.Properties.Add(TraceWriterKey, traceWriter);
             request.Properties.Add(ExecutionContextKey, context);
