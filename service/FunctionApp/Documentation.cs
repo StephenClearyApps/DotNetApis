@@ -15,11 +15,15 @@ namespace FunctionApp
     public static class Documentation
     {
         [FunctionName("Documentation")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, ExecutionContext context)
+        public static Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req, TraceWriter log, ExecutionContext context)
         {
-            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(null)));
-            req.ApplyRequestHandlingDefaults(null, null);
+            AmbientContext.Initialize(Enumerables.Return<ILogger>(new InMemoryLogger(), new TraceWriterLogger(log)));
+            req.ApplyRequestHandlingDefaults(log, context);
+            return DoRun(req);
+        }
 
+        private static async Task<HttpResponseMessage> DoRun(HttpRequestMessage req)
+        {
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
                 var logger = GlobalConfig.Container.GetInstance<ILogger>();
