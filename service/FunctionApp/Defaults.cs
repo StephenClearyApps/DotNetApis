@@ -15,10 +15,9 @@ namespace FunctionApp
     public static class Defaults
     {
         private static string InMemoryLoggerKey { get; } = Guid.NewGuid().ToString("N");
-        private static string TraceWriterKey { get; } = Guid.NewGuid().ToString("N");
         private static string ExecutionContextKey { get; } = Guid.NewGuid().ToString("N");
 
-        public static void ApplyRequestHandlingDefaults(this HttpRequestMessage request, TraceWriter traceWriter, ExecutionContext context)
+        public static void ApplyRequestHandlingDefaults(this HttpRequestMessage request, ExecutionContext context)
         {
             // Use our own JSON serializer settings everywhere.
             var config = request.GetConfiguration();
@@ -28,15 +27,11 @@ namespace FunctionApp
 
             // Propagate error details in responses generated from exceptions.
             request.Properties.Add(InMemoryLoggerKey, AmbientContext.Loggers.OfType<InMemoryLogger>().First());
-            request.Properties.Add(TraceWriterKey, traceWriter);
             request.Properties.Add(ExecutionContextKey, context);
         }
 
         public static InMemoryLogger TryGetInMemoryLogger(this HttpRequestMessage request) =>
             request.Properties.TryGetValue(InMemoryLoggerKey, out object value) ? value as InMemoryLogger : null;
-
-        public static TraceWriter TryGetTraceWriter(this HttpRequestMessage request) =>
-            request.Properties.TryGetValue(TraceWriterKey, out object value) ? value as TraceWriter : null;
 
         public static ExecutionContext TryGetExecutionContext(this HttpRequestMessage request) =>
             request.Properties.TryGetValue(ExecutionContextKey, out object value) ? value as ExecutionContext : null;
