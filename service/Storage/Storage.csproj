@@ -156,6 +156,7 @@
     <Compile Include="CloudTableExtensions.cs" />
     <Compile Include="JsonFactory.cs" />
     <Compile Include="PackageJsonTable.cs" />
+    <Compile Include="PackageJsonStorage.cs" />
     <Compile Include="PackageStorage.cs" />
     <Compile Include="PackageTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
