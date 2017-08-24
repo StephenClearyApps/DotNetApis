@@ -10,6 +10,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using SimpleInjector.Lifestyles;
+using Storage;
 
 namespace FunctionApp
 {
@@ -45,8 +46,7 @@ namespace FunctionApp
 
                     var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
                     var result = await handler.GetDocAsync(packageId, packageVersion, targetFramework);
-
-                    logger.LogDebug("Success!");
+                    
                     return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
                 }
                 catch (ExpectedException ex)

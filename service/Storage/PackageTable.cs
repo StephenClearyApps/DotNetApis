@@ -99,9 +99,7 @@ namespace Storage
             public static async Task<Entity> FindOrDefaultAsync(CloudTable table, NugetPackageIdVersion idver)
             {
                 var entity = await table.FindOrDefaultAsync(ToPartitionKey(idver), ToRowKey(idver)).ConfigureAwait(false);
-                if (entity == null)
-                    return null;
-                return new Entity(table, entity);
+                return entity == null ? null : new Entity(table, entity);
             }
 
             public string Path

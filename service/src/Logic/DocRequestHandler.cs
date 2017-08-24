@@ -39,7 +39,8 @@ namespace Logic
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Target framework {targetFramework} is not supported");
             }
 
-            
+            // Determine if the JSON is already constructed.
+
 
             return idver + " " + target;
         }

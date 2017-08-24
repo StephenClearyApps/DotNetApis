@@ -168,6 +168,8 @@
     <Compile Include="NugetVersionRange.cs" />
     <Compile Include="PackageArchiveReaderWithRef.cs" />
     <Compile Include="PackageContentReaderWithRef.cs" />
+    <Compile Include="PlatformTarget.cs" />
+    <Compile Include="PlatformUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

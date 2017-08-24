@@ -42,6 +42,7 @@ namespace FunctionApp
                 container.Register<INugetRepository, NugetRepository>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
                 container.Register<IPackageTable, AzurePackageTable>();
+                container.Register<IPackageJsonTable, AzurePackageJsonTable>();
                 container.Verify();
                 return container;
             });
@@ -49,7 +50,8 @@ namespace FunctionApp
             // Initialize all components.
             _azureInitialization = new Lazy<Task>(() =>
                 Task.WhenAll(AzurePackageStorage.InitializeAsync(),
-                    AzurePackageTable.InitializeAsync())
+                    AzurePackageTable.InitializeAsync(),
+                    AzurePackageJsonTable.InitializeAsync())
             );
         }
 
