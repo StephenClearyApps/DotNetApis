@@ -58,7 +58,7 @@ namespace FunctionApp
 
 
 
-                    return req.CreateResponse(HttpStatusCode.OK, "Hello " + idver + " " + target);
+                    return req.CreateResponse(HttpStatusCode.OK, "Hello test for AF/Kudu compilation/deployment");
                 }
                 catch (ExpectedException ex)
                 {
