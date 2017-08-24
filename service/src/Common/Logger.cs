@@ -21,7 +21,7 @@ namespace Common
 
         public AmbientCompositeLogger()
         {
-            _loggers = AmbientContext.Loggers;
+            _loggers = AmbientContext.Loggers.Where(x => x != null).ToList();
         }
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)

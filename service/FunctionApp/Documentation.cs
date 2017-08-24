@@ -19,7 +19,7 @@ namespace FunctionApp
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
-            AmbientContext.Initialize(Enumerables.Return(new InMemoryLogger(), log, new TraceWriterLogger(writer)));
+            AmbientContext.Initialize(Enumerables.Return(new InMemoryLogger(), log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
             req.ApplyRequestHandlingDefaults(context);
 
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
