@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Queue;
 using SimpleInjector.Lifestyles;
 using Storage;
 
@@ -17,7 +18,9 @@ namespace FunctionApp
     public static class Documentation
     {
         [FunctionName("Documentation")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")]HttpRequestMessage req,
+        public static async Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")] HttpRequestMessage req,
+            [Queue("process")] IAsyncCollector<CloudQueueMessage> processQueue,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
             AmbientContext.Initialize(Enumerables.Return(new InMemoryLogger(), log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
@@ -52,6 +55,8 @@ namespace FunctionApp
                         var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
                         return req.CreateRedirectResponse(uri).EnableCacheHeaders(cacheTime);
                     }
+
+
 
                     return req.CreateResponse(HttpStatusCode.OK, "Hello " + idver + " " + target);
                 }
