@@ -16,4 +16,6 @@ Most of the logic lives in an Azure Function (consumption plan).
 
 ## Azure Storage
 
-All of the persistent storage lives in Azure Blobs and Azure Queues.
+All of the persistent application data storage lives in Azure Blobs and Azure Tables.
+
+A second Azure Storage account is also used for Azure Functions to store data in Azure Queues.
