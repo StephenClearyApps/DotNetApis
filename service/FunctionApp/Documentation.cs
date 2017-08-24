@@ -45,9 +45,15 @@ namespace FunctionApp
                     }
 
                     var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
-                    var result = await handler.GetDocAsync(packageId, packageVersion, targetFramework);
-                    
-                    return req.CreateResponse(HttpStatusCode.OK, "Hello " + result);
+                    var (idver, target) = await handler.NormalizeRequestAsync(packageId, packageVersion, targetFramework).ConfigureAwait(false);
+                    var uri = await handler.TryGetExistingJsonUriAsync(idver, target).ConfigureAwait(false);
+                    if (uri != null)
+                    {
+                        var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
+                        return req.CreateRedirectResponse(uri).EnableCacheHeaders(cacheTime);
+                    }
+
+                    return req.CreateResponse(HttpStatusCode.OK, "Hello " + idver + " " + target);
                 }
                 catch (ExpectedException ex)
                 {

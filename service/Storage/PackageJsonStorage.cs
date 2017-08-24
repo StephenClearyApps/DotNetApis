@@ -16,12 +16,13 @@ namespace Storage
     public interface IPackageJsonStorage
     {
         /// <summary>
-        /// Writes a complete JSON string to storage and returns the direct-access URI for that JSON.
+        /// Writes JSON data to storage and returns the blob path.
         /// </summary>
         /// <param name="idver">The id and version of the package.</param>
         /// <param name="target">The target for the package.</param>
-        /// <param name="json">The JSON documentation for the specified package id, version, and target.</param>
-        Task<Uri> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json);
+        /// <param name="data">The gzipped JSON documentation for the specified package id, version, and target.</param>
+        /// <param name="dataLength">The length of <paramref name="data"/>.</param>
+        Task<string> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, byte[] data, int dataLength);
 
         /// <summary>
         /// Gets the direct-access URI for a package's JSON.
@@ -66,28 +67,18 @@ namespace Storage
 
         public Uri GetUri(NugetPackageIdVersion idver, PlatformTarget target) => _container.GetBlockBlobReference(GetBlobPath(idver, target)).Uri;
 
-        public async Task<Uri> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
+        public async Task<string> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, byte[] data, int dataLength)
         {
-            _logger.LogDebug("Saving json for {idver} target {target}: JSON is {length} characters", idver, target, json.Length);
-            var jsonData = Constants.Utf8.GetBytes(json);
-            _logger.LogDebug("Saving json for {idver} target {target}: JSON is {length} bytes", idver, target, jsonData.Length);
-            byte[] raw;
-            int rawLength;
-            using (var stream = new MemoryStream())
-            {
-                using (var gzip = new GZipStream(stream, CompressionMode.Compress, true))
-                    gzip.Write(jsonData, 0, jsonData.Length);
-                raw = stream.GetBuffer();
-                rawLength = (int)stream.Position;
-            }
-            _logger.LogDebug("Saving json for {idver} target {target}: JSON is {length} bytes compressed", idver, target, rawLength);
-            var blob = _container.GetBlockBlobReference(GetBlobPath(idver, target));
-            await blob.UploadFromByteArrayAsync(raw, 0, rawLength).ConfigureAwait(false);
+            _logger.LogDebug("Saving json for {idver} target {target}: JSON is {length} bytes compressed", idver, target, dataLength);
+            var blobPath = GetBlobPath(idver, target);
+            var blob = _container.GetBlockBlobReference(blobPath);
+            await blob.UploadFromByteArrayAsync(data, 0, dataLength).ConfigureAwait(false);
             blob.Properties.CacheControl = "public, max-age=31536000";
             blob.Properties.ContentType = "application/json; charset=utf-8";
             blob.Properties.ContentEncoding = "gzip";
             await blob.SetPropertiesAsync().ConfigureAwait(false);
-            return blob.Uri;
+            _logger.LogDebug("Saved json for {idver} target {target} at {uri}", idver, target, blob.Uri);
+            return blobPath;
         }
 
         private static string GetBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => idver.PackageId + "/" + idver.Version + "/" + target + ".json";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -46,6 +47,26 @@ namespace FunctionApp
             {
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not convert parameter {name} to {typeof(T).Name}.", ex);
             }
+        }
+
+        public static HttpResponseMessage EnableCacheHeaders(this HttpResponseMessage response, TimeSpan time)
+        {
+            response.Headers.CacheControl = new CacheControlHeaderValue
+            {
+                Public = true,
+                MaxAge = time,
+            };
+            if (response.Content == null)
+                response.Content = new StringContent(string.Empty);
+            response.Content.Headers.Expires = DateTimeOffset.UtcNow + time;
+            return response;
+        }
+
+        public static HttpResponseMessage CreateRedirectResponse(this HttpRequestMessage request, Uri location)
+        {
+            var response = request.CreateResponse(HttpStatusCode.TemporaryRedirect);
+            response.Headers.Location = location;
+            return response;
         }
     }
 }
