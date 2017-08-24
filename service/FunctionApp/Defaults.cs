@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Web.Http.ExceptionHandling;
 using Common;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 
 namespace FunctionApp
 {
@@ -28,6 +27,7 @@ namespace FunctionApp
             // Propagate error details in responses generated from exceptions.
             request.Properties.Add(InMemoryLoggerKey, AmbientContext.Loggers.OfType<InMemoryLogger>().First());
             request.Properties.Add(ExecutionContextKey, context);
+            request.GetConfiguration().Services.Replace(typeof(IExceptionHandler), new DetailedExceptionHandler());
         }
 
         public static InMemoryLogger TryGetInMemoryLogger(this HttpRequestMessage request) =>
