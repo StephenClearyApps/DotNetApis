@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.props" Condition="Exists('..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -81,7 +80,9 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Spatial, Version=5.8.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Spatial.5.8.2\lib\net40\System.Spatial.dll</HintPath>
     </Reference>
@@ -123,8 +124,5 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
-    <Error Condition="!Exists('..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.props'))" />
-    <Error Condition="!Exists('..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.targets'))" />
   </Target>
-  <Import Project="..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.targets" Condition="Exists('..\..\packages\NETStandard.Library.NETFramework.2.0.0-preview2-25405-01\build\net47\NETStandard.Library.NETFramework.targets')" />
 </Project>
