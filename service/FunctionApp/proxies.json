@@ -10,7 +10,7 @@
           "OPTIONS"
         ]
       },
-      "backendUri": "https://dotnetapisapp.stephencleary.com/"
+      "backendUri": "https://stephenclearyapps.github.io/DotNetApis/"
     },
     "api": {
       "matchCondition": {
