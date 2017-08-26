@@ -9,6 +9,7 @@ using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Results;
 using System.Net.Http;
+using Common;
 using Microsoft.Azure.WebJobs.Host;
 
 namespace FunctionApp
@@ -26,17 +27,17 @@ namespace FunctionApp
             var result = new HttpError(exception, includeErrorDetail: true);
 
             // Attempt to capture a log from the in-memory logger.
-            var logger = message.TryGetInMemoryLogger();
+            var logger = AmbientContext.InMemoryLogger;
             if (logger != null)
                 result.Add("log", logger.Messages);
 
             // Attempt to write the Application Insights operation id (Azure Functions invocation id).
-            var operationId = message.TryGetExecutionContext()?.InvocationId;
-            if (operationId != null)
-                result.Add("operationId", operationId.Value);
+            var operationId = AmbientContext.OperationId;
+            if (operationId != Guid.Empty)
+                result.Add("operationId", operationId);
 
             // Attempt to write the Azure Functions request id.
-            var requestId = message.TryGetRequestId();
+            var requestId = AmbientContext.RequestId;
             if (requestId != null)
                 result.Add("requestId", requestId);
 

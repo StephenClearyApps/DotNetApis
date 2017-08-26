@@ -62,9 +62,8 @@ namespace FunctionApp
             return response;
         }
 
-        public static HttpResponseMessage CreateRedirectResponse(this HttpRequestMessage request, Uri location)
+        public static HttpResponseMessage WithLocationHeader(this HttpResponseMessage response, Uri location)
         {
-            var response = request.CreateResponse(HttpStatusCode.TemporaryRedirect);
             response.Headers.Location = location;
             return response;
         }

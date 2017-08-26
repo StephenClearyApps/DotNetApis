@@ -4,12 +4,14 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Common;
+using FunctionApp.Messages;
 using Logic;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
+using Newtonsoft.Json;
 using SimpleInjector.Lifestyles;
 using Storage;
 
@@ -23,7 +25,7 @@ namespace FunctionApp
             [Queue("process")] IAsyncCollector<CloudQueueMessage> processQueue,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
-            AmbientContext.Initialize(Enumerables.Return(new InMemoryLogger(), log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
+            AmbientContext.Initialize(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
             req.ApplyRequestHandlingDefaults(context);
 
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
@@ -47,18 +49,35 @@ namespace FunctionApp
                         throw new ExpectedException((HttpStatusCode)422, "Application needs to update; refresh the page.");
                     }
 
+                    // Normalize the user request (determine version and target framework if not specified).
                     var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
                     var (idver, target) = await handler.NormalizeRequestAsync(packageId, packageVersion, targetFramework).ConfigureAwait(false);
+
+                    // If the JSON is already there, then redirect the user to it.
                     var uri = await handler.TryGetExistingJsonUriAsync(idver, target).ConfigureAwait(false);
                     if (uri != null)
                     {
+                        logger.LogDebug("Redirecting to {uri}", uri);
                         var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
-                        return req.CreateRedirectResponse(uri).EnableCacheHeaders(cacheTime);
+                        return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage()).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
                     }
 
+                    // Forward the request to the processing queue.
+                    var processRequestId = Guid.NewGuid();
+                    var message = JsonConvert.SerializeObject(new GenerateRequestMessage
+                    {
+                        Id = processRequestId,
+                        NormalizedPackageId = idver.PackageId,
+                        NormalizedPackageVersion = idver.Version.ToString(),
+                        NormalizedFrameworkTarget = target.ToString(),
+                    }, Constants.JsonSerializerSettings);
+                    await processQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
 
-
-                    return req.CreateResponse(HttpStatusCode.OK, "Hello test for AF/Kudu compilation/deployment");
+                    logger.LogDebug("Enqueued request {id} for {idver} {target}: {message}", processRequestId, idver, target, message);
+                    return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
+                    {
+                        QueuedMessageId = processRequestId,
+                    });
                 }
                 catch (ExpectedException ex)
                 {

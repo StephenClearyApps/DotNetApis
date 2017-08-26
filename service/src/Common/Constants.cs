@@ -25,6 +25,7 @@ namespace Common
                 ContractResolver = new CustomContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore,
+                Formatting = Formatting.None,
             };
             result.Converters.Add(new StringEnumConverter());
             return result;
