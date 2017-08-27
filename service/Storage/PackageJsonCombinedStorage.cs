@@ -32,19 +32,8 @@ namespace Storage
         /// <param name="json">The JSON documentation for the specified package id, version, and target.</param>
         public async Task<Uri> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
         {
-            _logger.LogDebug("Saving json for {idver} target {target}: JSON is {length} characters", idver, target, json.Length);
-            var jsonData = Constants.Utf8.GetBytes(json);
-            _logger.LogDebug("Saving json for {idver} target {target}: JSON is {length} bytes", idver, target, jsonData.Length);
-            byte[] raw;
-            int rawLength;
-            using (var stream = new MemoryStream())
-            {
-                using (var gzip = new GZipStream(stream, CompressionMode.Compress, true))
-                    gzip.Write(jsonData, 0, jsonData.Length);
-                raw = stream.GetBuffer();
-                rawLength = (int)stream.Position;
-            }
-            var blobPath = await _storage.WriteAsync(idver, target, raw, rawLength);
+            _logger.LogDebug("Saving json for {idver} target {target}", idver, target);
+            var blobPath = await _storage.WriteAsync(idver, target, json);
             await _table.SetBlobPathAsync(idver, target, blobPath);
             return _storage.GetUri(idver, target);
         }

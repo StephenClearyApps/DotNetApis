@@ -5,8 +5,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common;
 using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Nuget;
@@ -14,36 +14,34 @@ using Constants = Common.Constants;
 
 namespace Storage
 {
-    public interface IPackageJsonStorage
+    public interface ILogStorage
     {
         /// <summary>
-        /// Writes JSON data to storage and returns the blob path.
+        /// Writes log data to storage and returns the blob path.
         /// </summary>
         /// <param name="idver">The id and version of the package.</param>
         /// <param name="target">The target for the package.</param>
-        /// <param name="json">The JSON documentation for the specified package id, version, and target.</param>
-        Task<string> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json);
+        /// <param name="data">The gzipped log data.</param>
+        /// <param name="dataLength">The length of <paramref name="data"/>.</param>
+        Task<string> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, byte[] data, int dataLength);
 
         /// <summary>
-        /// Gets the direct-access URI for a package's JSON.
+        /// Gets the direct-access URI for a request's log data.
         /// </summary>
-        /// <param name="idver">The id and version of the package.</param>
-        /// <param name="target">The target for the package.</param>
-        Uri GetUri(NugetPackageIdVersion idver, PlatformTarget target);
+        /// <param name="blobPath">The path of the blob containing the log.</param>
+        Uri GetUri(string blobPath);
     }
 
-    public sealed class AzurePackageJsonStorage : IPackageJsonStorage
+    public sealed class LogStorage : ILogStorage
     {
-        private readonly ILogger _logger;
         private readonly CloudBlobContainer _container;
 
-        public AzurePackageJsonStorage(ILogger logger, AzureConnections connections)
+        public LogStorage(AzureConnections connections)
         {
-            _logger = logger;
             _container = GetContainer(connections);
         }
 
-        private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("packagejson" + JsonFactory.Version);
+        private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("generatelogs");
 
         public static async Task InitializeAsync()
         {
@@ -65,22 +63,20 @@ namespace Storage
             await GetContainer(connections).CreateIfNotExistsAsync().ConfigureAwait(false);
         }
 
-        public Uri GetUri(NugetPackageIdVersion idver, PlatformTarget target) => _container.GetBlockBlobReference(GetBlobPath(idver, target)).Uri;
+        public Uri GetUri(string blobPath) => _container.GetBlockBlobReference(blobPath).Uri;
 
-        public async Task<string> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
+        public async Task<string> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, byte[] data, int dataLength)
         {
-            var (data, dataLength) = Compression.GzipString(json, _logger);
             var blobPath = GetBlobPath(idver, target);
             var blob = _container.GetBlockBlobReference(blobPath);
-            await blob.UploadFromByteArrayAsync(data, 0, dataLength).ConfigureAwait(false);
+            await blob.UploadFromByteArrayAsync(data, 0, dataLength);
             blob.Properties.CacheControl = "public, max-age=31536000";
-            blob.Properties.ContentType = "application/json; charset=utf-8";
+            blob.Properties.ContentType = "text/plain; charset=utf-8";
             blob.Properties.ContentEncoding = "gzip";
             await blob.SetPropertiesAsync().ConfigureAwait(false);
-            _logger.LogDebug("Saved json for {idver} target {target} at {uri}", idver, target, blob.Uri);
             return blobPath;
         }
 
-        private static string GetBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => idver.PackageId + "/" + idver.Version + "/" + target + ".json";
+        private static string GetBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => idver.PackageId + "/" + idver.Version + "/" + target + "/" + DateTimeOffset.UtcNow.ToString("s") + ".txt";
     }
 }

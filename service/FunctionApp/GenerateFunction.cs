@@ -19,7 +19,6 @@ namespace FunctionApp
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
             AmbientContext.Initialize(log, writer, context.InvocationId);
-
             using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
             {
                 var logger = GlobalConfig.Container.GetInstance<ILogger>();
@@ -33,6 +32,8 @@ namespace FunctionApp
                 catch (Exception ex)
                 {
                     // TODO: Upload JSON error log to cloud in place of JSON documentation?
+                    // Or in blob storage: {id}/{ver}/{target}/{datetimestamp}.txt?
+                    // Also need some way to notify the UI. Table of backend requests: DateTimeStamp, operationId, requestId, id, ver, target, result, logblobpath
                     logger.LogCritical(0, ex, "Failed to process queue message {message}", queueMessage);
                     await generatePoisonQueue.AddAsync(new CloudQueueMessage(JsonConvert.SerializeObject(new GenerateFailedMessage
                     {
