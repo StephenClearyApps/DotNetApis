@@ -7,6 +7,11 @@ namespace FunctionApp.Messages
     /// </summary>
     public sealed class GenerateRequestMessage : MessageBase
     {
+        public GenerateRequestMessage()
+            : base(includeLog: false)
+        {
+        }
+
         /// <summary>
         /// The schema version of this message structure.
         /// </summary>

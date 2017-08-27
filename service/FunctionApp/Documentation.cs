@@ -22,7 +22,7 @@ namespace FunctionApp
         [FunctionName("Documentation")]
         public static async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")] HttpRequestMessage req,
-            [Queue("process")] IAsyncCollector<CloudQueueMessage> processQueue,
+            [Queue("generate")] IAsyncCollector<CloudQueueMessage> generateQueue,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
             AmbientContext.Initialize(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
@@ -71,7 +71,7 @@ namespace FunctionApp
                         NormalizedPackageVersion = idver.Version.ToString(),
                         NormalizedFrameworkTarget = target.ToString(),
                     }, Constants.JsonSerializerSettings);
-                    await processQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
+                    await generateQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
 
                     logger.LogDebug("Enqueued request {id} for {idver} {target}: {message}", processRequestId, idver, target, message);
                     return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
