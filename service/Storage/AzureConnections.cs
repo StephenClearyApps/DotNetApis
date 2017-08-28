@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage;
 using Common;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace Storage
@@ -25,5 +26,20 @@ namespace Storage
         public CloudStorageAccount CloudStorageAccount { get; }
         public CloudBlobClient CloudBlobClient { get; }
         public CloudTableClient CloudTableClient { get; }
+
+        public async Task InitializeAsync()
+        {
+            var properties = await CloudBlobClient.GetServicePropertiesAsync().ConfigureAwait(false);
+            properties.Cors = new CorsProperties();
+            properties.Cors.CorsRules.Add(new CorsRule
+            {
+                AllowedHeaders = { "*" },
+                AllowedMethods = CorsHttpMethods.Get,
+                AllowedOrigins = { "*" },
+                ExposedHeaders = { "*" },
+                MaxAgeInSeconds = 31536000,
+            });
+            await CloudBlobClient.SetServicePropertiesAsync(properties).ConfigureAwait(false);
+        }
     }
 }

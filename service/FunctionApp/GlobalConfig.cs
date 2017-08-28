@@ -38,6 +38,7 @@ namespace FunctionApp
                 var container = new Container();
                 container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
                 container.Options.DefaultLifestyle = Lifestyle.Scoped;
+                container.Register<AzureConnections>(Lifestyle.Singleton);
                 container.Register<ILogger, AmbientCompositeLogger>();
                 container.Register<INugetRepository, NugetRepository>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
@@ -49,24 +50,35 @@ namespace FunctionApp
             });
 
             // Initialize all components.
-            _azureInitialization = new Lazy<Task>(() =>
-                Task.WhenAll(AzurePackageStorage.InitializeAsync(),
-                    AzurePackageTable.InitializeAsync(),
-                    AzurePackageJsonTable.InitializeAsync(),
-                    AzurePackageJsonStorage.InitializeAsync())
-            );
+            _azureInitialization = new Lazy<Task>(async () =>
+            {
+                var connections = Container.GetInstance<AzureConnections>();
+                await connections.InitializeAsync().ConfigureAwait(false);
+                await Task.WhenAll(AzurePackageStorage.InitializeAsync(),
+                        AzurePackageTable.InitializeAsync(),
+                        AzurePackageJsonTable.InitializeAsync(),
+                        AzurePackageJsonStorage.InitializeAsync(connections),
+                        LogStorage.InitializeAsync(connections))
+                    .ConfigureAwait(false);
+            });
         }
 
+        /// <summary>
+        /// Ensures that the JSON.NET serializer settings have been set for this AppDomain.
+        /// </summary>
         public static void EnsureJsonSerializerSettings()
         {
             var _ = _jsonSerializerSettings.Value;
         }
 
-        public static void EnsureInitilizationComplete()
+        /// <summary>
+        /// Ensures that all initialization has completed for this AppDomain.
+        /// </summary>
+        public static async Task EnsureInitilizationCompleteAsync()
         {
             var _ = _jsonSerializerSettings.Value;
-            _azureInitialization.Value.GetAwaiter().GetResult();
             var __ = _container.Value;
+            await _azureInitialization.Value.ConfigureAwait(false);
         }
 
         public static Container Container => _container.Value;

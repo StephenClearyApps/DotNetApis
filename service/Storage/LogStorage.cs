@@ -43,25 +43,7 @@ namespace Storage
 
         private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("generatelogs");
 
-        public static async Task InitializeAsync()
-        {
-            var connections = new AzureConnections();
-
-            var client = connections.CloudBlobClient;
-            var properties = await client.GetServicePropertiesAsync().ConfigureAwait(false);
-            properties.Cors = new CorsProperties();
-            properties.Cors.CorsRules.Add(new CorsRule
-            {
-                AllowedHeaders = { "*" },
-                AllowedMethods = CorsHttpMethods.Get,
-                AllowedOrigins = { "*" },
-                ExposedHeaders = { "*" },
-                MaxAgeInSeconds = 31536000,
-            });
-            await client.SetServicePropertiesAsync(properties).ConfigureAwait(false);
-
-            await GetContainer(connections).CreateIfNotExistsAsync().ConfigureAwait(false);
-        }
+        public static Task InitializeAsync(AzureConnections connections) => GetContainer(connections).CreateIfNotExistsAsync();
 
         public Uri GetUri(string blobPath) => _container.GetBlockBlobReference(blobPath).Uri;
 
