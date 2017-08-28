@@ -72,7 +72,7 @@ namespace FunctionApp
         }
 
         /// <summary>
-        /// Ensures that all initialization has completed for this AppDomain.
+        /// Ensures that all initialization has completed for this AppDomain. This method must be called from within a container scope.
         /// </summary>
         public static async Task EnsureInitilizationCompleteAsync()
         {
