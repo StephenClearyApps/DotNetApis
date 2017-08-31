@@ -14,7 +14,7 @@
     },
     "app": {
       "matchCondition": {
-        "route": "/{*rest}",
+        "route": "{*rest}",
         "methods": [
           "GET",
           "HEAD",
