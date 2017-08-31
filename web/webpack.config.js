@@ -2,7 +2,7 @@ module.exports = {
     entry: "./src/index.tsx",
     output: {
         filename: "bundle.js",
-        path: __dirname + "/../docs"
+        path: __dirname + "/../docs/static"
     },
 
     resolve: {
