@@ -3,18 +3,18 @@
   "proxies": {
     "appResources": {
       "matchCondition": {
-        "route": "/static/{*rest}",
+        "route": "/static/{*url}",
         "methods": [
           "GET",
           "HEAD",
           "OPTIONS"
         ]
       },
-      "backendUri": "https://stephenclearyapps.github.io/DotNetApis/static/{rest}"
+      "backendUri": "https://stephenclearyapps.github.io/DotNetApis/static/{url}"
     },
     "app": {
       "matchCondition": {
-        "route": "{*rest}",
+        "route": "{*url}",
         "methods": [
           "GET",
           "HEAD",
@@ -25,14 +25,14 @@
     },
     "api": {
       "matchCondition": {
-        "route": "/api/{*rest}",
+        "route": "/api/{*url}",
         "methods": [
           "GET",
           "HEAD",
           "OPTIONS"
         ]
       },
-      "backendUri": "https://%WEBSITE_HOSTNAME%/api/{rest}"
+      "backendUri": "https://%WEBSITE_HOSTNAME%/api/{url}"
     }
   }
 }
