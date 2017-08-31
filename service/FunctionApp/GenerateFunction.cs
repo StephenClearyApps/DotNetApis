@@ -31,6 +31,9 @@ namespace FunctionApp
                 }
                 catch (Exception ex)
                 {
+                    // Blob: container=log-yyyy-mm-dd, {id}/{ver}/{target}/{operationId}.txt
+                    // Table: name=log-yyyy-mm-dd, PartitionKey=operationId, RowKey=operationId, requestId, id, ver, target, result, logblobpath
+
                     // TODO: Upload JSON error log to cloud in place of JSON documentation?
                     // Or in blob storage: {id}/{ver}/{target}/{datetimestamp}.txt?
                     // Also need some way to notify the UI. Table of backend requests: DateTimeStamp, operationId, requestId, id, ver, target, result, logblobpath
