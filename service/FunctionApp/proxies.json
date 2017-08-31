@@ -1,9 +1,20 @@
 {
   "$schema": "http://json.schemastore.org/proxies",
   "proxies": {
+    "appResources": {
+      "matchCondition": {
+        "route": "/static/{*rest}",
+        "methods": [
+          "GET",
+          "HEAD",
+          "OPTIONS"
+        ]
+      },
+      "backendUri": "https://stephenclearyapps.github.io/DotNetApis/static/{rest}"
+    },
     "app": {
       "matchCondition": {
-        "route": "{*url}",
+        "route": "/{*rest}",
         "methods": [
           "GET",
           "HEAD",
@@ -14,14 +25,14 @@
     },
     "api": {
       "matchCondition": {
-        "route": "/api/{*url}",
+        "route": "/api/{*rest}",
         "methods": [
           "GET",
           "HEAD",
           "OPTIONS"
         ]
       },
-      "backendUri": "https://%WEBSITE_HOSTNAME%/api/{url}"
+      "backendUri": "https://%WEBSITE_HOSTNAME%/api/{rest}"
     }
   }
 }
