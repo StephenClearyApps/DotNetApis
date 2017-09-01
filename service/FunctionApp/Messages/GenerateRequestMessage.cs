@@ -18,9 +18,9 @@ namespace FunctionApp.Messages
         public int Version { get; set; } = 0;
 
         /// <summary>
-        /// The unique identifier of this request.
+        /// The timestamp of this request.
         /// </summary>
-        public Guid Id { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
 
         /// <summary>
         /// The id of the package, lowercased.

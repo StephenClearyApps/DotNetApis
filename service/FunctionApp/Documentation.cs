@@ -63,20 +63,23 @@ namespace FunctionApp
                     }
 
                     // Forward the request to the processing queue.
-                    var processRequestId = Guid.NewGuid();
+                    var timestamp = DateTimeOffset.UtcNow;
                     var message = JsonConvert.SerializeObject(new GenerateRequestMessage
                     {
-                        Id = processRequestId,
+                        Timestamp = timestamp,
                         NormalizedPackageId = idver.PackageId,
                         NormalizedPackageVersion = idver.Version.ToString(),
                         NormalizedFrameworkTarget = target.ToString(),
                     }, Constants.JsonSerializerSettings);
                     await generateQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
 
-                    logger.LogDebug("Enqueued request {id} for {idver} {target}: {message}", processRequestId, idver, target, message);
+                    logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
                     return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
                     {
-                        QueuedMessageId = processRequestId,
+                        Timestamp = timestamp,
+                        NormalizedPackageId = idver.PackageId,
+                        NormalizedPackageVersion = idver.Version.ToString(),
+                        NormalizedFrameworkTarget = target.ToString(),
                     });
                 }
                 catch (ExpectedException ex)

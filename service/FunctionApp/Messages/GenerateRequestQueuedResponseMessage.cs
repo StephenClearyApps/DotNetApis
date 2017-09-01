@@ -13,8 +13,23 @@ namespace FunctionApp.Messages
         }
 
         /// <summary>
-        /// The <see cref="GenerateRequestMessage.Id"/>.
+        /// The timestamp of the request.
         /// </summary>
-        public Guid QueuedMessageId { get; set; }
+        public DateTimeOffset Timestamp { get; set; }
+
+        /// <summary>
+        /// The id of the package, lowercased.
+        /// </summary>
+        public string NormalizedPackageId { get; set; }
+
+        /// <summary>
+        /// The version of the package in a normalized form.
+        /// </summary>
+        public string NormalizedPackageVersion { get; set; }
+
+        /// <summary>
+        /// The standard NuGet short name for the target framework, lowercased.
+        /// </summary>
+        public string NormalizedFrameworkTarget { get; set; }
     }
 }
