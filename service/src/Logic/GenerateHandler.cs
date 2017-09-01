@@ -15,9 +15,9 @@ namespace Logic
     public sealed class GenerateHandler
     {
         private readonly ILogger _logger;
-        private readonly ILogCombinedStorage _logStorage;
+        private readonly LogCombinedStorage _logStorage;
 
-        public GenerateHandler(ILogger logger, ILogCombinedStorage logStorage)
+        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage)
         {
             _logger = logger;
             _logStorage = logStorage;
