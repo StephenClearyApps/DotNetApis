@@ -66,6 +66,7 @@ namespace FunctionApp
                     var timestamp = DateTimeOffset.UtcNow;
                     var message = JsonConvert.SerializeObject(new GenerateRequestMessage
                     {
+                        JsonVersion = jsonVersion,
                         Timestamp = timestamp,
                         NormalizedPackageId = idver.PackageId,
                         NormalizedPackageVersion = idver.Version.ToString(),

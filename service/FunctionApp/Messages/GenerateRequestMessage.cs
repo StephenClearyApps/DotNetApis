@@ -18,6 +18,11 @@ namespace FunctionApp.Messages
         public int Version { get; set; } = 0;
 
         /// <summary>
+        /// The JSON version of the request.
+        /// </summary>
+        public int JsonVersion { get; set; }
+
+        /// <summary>
         /// The timestamp of this request.
         /// </summary>
         public DateTimeOffset Timestamp { get; set; }
