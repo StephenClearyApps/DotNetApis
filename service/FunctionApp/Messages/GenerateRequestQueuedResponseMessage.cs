@@ -1,4 +1,5 @@
 ﻿using System;
+using Logic.Messages;
 
 namespace FunctionApp.Messages
 {

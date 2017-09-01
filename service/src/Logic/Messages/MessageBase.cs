@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Common;
 
-namespace FunctionApp.Messages
+namespace Logic.Messages
 {
     /// <summary>
     /// The base type for all messages.

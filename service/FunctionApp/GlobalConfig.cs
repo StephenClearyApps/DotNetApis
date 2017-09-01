@@ -45,6 +45,9 @@ namespace FunctionApp
                 container.Register<IPackageTable, AzurePackageTable>();
                 container.Register<IPackageJsonTable, AzurePackageJsonTable>();
                 container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
+                container.Register<ILogStorage, AzureLogStorage>();
+                container.Register<IStatusTable, AzureStatusTable>();
+                container.Register<ILogCombinedStorage, LogCombinedStorage>();
                 container.Verify();
                 return container;
             });
