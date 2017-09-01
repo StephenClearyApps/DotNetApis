@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StatusRequestHandler.cs" />
     <Compile Include="GenerateHandler.cs" />
     <Compile Include="DocRequestHandler.cs" />
     <Compile Include="Messages\GenerateRequestMessage.cs" />
