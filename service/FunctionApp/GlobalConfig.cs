@@ -57,8 +57,7 @@ namespace FunctionApp
                 await Task.WhenAll(AzurePackageStorage.InitializeAsync(),
                         AzurePackageTable.InitializeAsync(),
                         AzurePackageJsonTable.InitializeAsync(),
-                        AzurePackageJsonStorage.InitializeAsync(connections),
-                        LogStorage.InitializeAsync(connections))
+                        AzurePackageJsonStorage.InitializeAsync(connections))
                     .ConfigureAwait(false);
             });
         }

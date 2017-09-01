@@ -81,6 +81,7 @@
     <Compile Include="AzureConnections.cs" />
     <Compile Include="CloudTableExtensions.cs" />
     <Compile Include="JsonFactory.cs" />
+    <Compile Include="LogCombinedStorage.cs" />
     <Compile Include="PackageJsonCombinedStorage.cs" />
     <Compile Include="LogStorage.cs" />
     <Compile Include="PackageJsonTable.cs" />

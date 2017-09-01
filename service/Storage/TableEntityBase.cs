@@ -59,7 +59,7 @@ namespace Storage
         /// </summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="defaultValue">The default value to return if the property is not found.</param>
-        protected string Get(string propertyName, string defaultValue) => _entity.Properties.TryGetValue(propertyName, out EntityProperty result) ? result.StringValue : defaultValue;
+        protected string Get(string propertyName, string defaultValue) => _entity.Properties.TryGetValue(propertyName, out var result) ? result.StringValue ?? defaultValue : defaultValue;
 
         /// <summary>
         /// Sets a string property for the entity.
@@ -67,6 +67,20 @@ namespace Storage
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="value">The value to store in the property.</param>
         protected void Set(string propertyName, string value) => _entity.Properties[propertyName] = EntityProperty.GeneratePropertyForString(value);
+
+        /// <summary>
+        /// Gets an int property from the entity. Returns <paramref name="defaultValue"/> if the entity does not have that property.
+        /// </summary>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <param name="defaultValue">The default value to return if the property is not found.</param>
+        protected int Get(string propertyName, int defaultValue) => _entity.Properties.TryGetValue(propertyName, out var result) ? result.Int32Value ?? defaultValue : defaultValue;
+
+        /// <summary>
+        /// Sets an int property for the entity.
+        /// </summary>
+        /// <param name="propertyName">The name of the property.</param>
+        /// <param name="value">The value to store in the property.</param>
+        protected void Set(string propertyName, int value) => _entity.Properties[propertyName] = EntityProperty.GeneratePropertyForInt(value);
 
         /// <summary>
         /// Adds this entity to the table if it is not already there; otherwise, updates the table entity with this entity.
