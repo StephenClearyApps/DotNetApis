@@ -31,12 +31,19 @@ namespace Logic
                 throw new InvalidOperationException("Invalid generation request");
             try
             {
+                await HandleAsync(idver, target).ConfigureAwait(false);
+                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(0, ex, "Error handling message {message}", JsonConvert.SerializeObject(message, Constants.JsonSerializerSettings));
                 await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Failed, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
+        }
+
+        private Task HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        {
+            return Task.CompletedTask;
         }
     }
 }
