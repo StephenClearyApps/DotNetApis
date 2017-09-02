@@ -20,10 +20,10 @@
     <PackageReference Include="WindowsAzure.Storage" Version="7.2.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nuget\Nuget.csproj" />
-    <ProjectReference Include="..\src\Common\Common.csproj" />
-    <ProjectReference Include="..\src\Logic\Logic.csproj" />
-    <ProjectReference Include="..\Storage\Storage.csproj" />
+    <ProjectReference Include="..\Nuget\DotNetApis.Nuget.csproj" />
+    <ProjectReference Include="..\src\Common\DotNetApis.Common.csproj" />
+    <ProjectReference Include="..\src\Logic\DotNetApis.Logic.csproj" />
+    <ProjectReference Include="..\Storage\DotNetApis.Storage.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
