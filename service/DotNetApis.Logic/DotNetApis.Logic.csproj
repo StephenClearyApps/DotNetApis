@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A03471D1-8174-49F7-B537-205F2773606F}</ProjectGuid>
+    <ProjectGuid>{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotNetApis.Nuget</RootNamespace>
-    <AssemblyName>DotNetApis.Nuget</AssemblyName>
+    <RootNamespace>DotNetApis.Logic</RootNamespace>
+    <AssemblyName>DotNetApis.Logic</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -74,42 +74,41 @@
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
-    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NugetFullPackage.cs" />
-    <Compile Include="NugetPackage.cs" />
-    <Compile Include="NugetPackageDependency.cs" />
-    <Compile Include="NugetPackageExternalMetadata.cs" />
-    <Compile Include="NugetPackageIdVersion.cs" />
-    <Compile Include="NugetRepository.cs" />
-    <Compile Include="NugetUtility.cs" />
-    <Compile Include="NugetVersion.cs" />
-    <Compile Include="NugetVersionRange.cs" />
-    <Compile Include="PackageArchiveReaderWithRef.cs" />
-    <Compile Include="PackageContentReaderWithRef.cs" />
-    <Compile Include="PlatformTarget.cs" />
-    <Compile Include="PlatformUtility.cs" />
+    <Compile Include="StatusRequestHandler.cs" />
+    <Compile Include="GenerateHandler.cs" />
+    <Compile Include="DocRequestHandler.cs" />
+    <Compile Include="Messages\GenerateRequestMessage.cs" />
+    <Compile Include="Messages\MessageBase.cs" />
+    <Compile Include="PackageDownloader.cs" />
+    <Compile Include="PlatformResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Compile Include="NugetPackage.InternalMetadata.cs" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Common\DotNetApis.Common.csproj">
+    <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj">
       <Project>{22a1e92a-8ae8-4b36-acb2-3f84a56886c5}</Project>
       <Name>DotNetApis.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj">
+      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
+      <Name>DotNetApis.Nuget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj">
+      <Project>{2602dd40-48d0-4172-842c-114caf4cf922}</Project>
+      <Name>DotNetApis.Storage</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

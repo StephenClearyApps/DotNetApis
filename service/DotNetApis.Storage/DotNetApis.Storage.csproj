@@ -102,13 +102,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nuget\DotNetApis.Nuget.csproj">
-      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
-      <Name>DotNetApis.Nuget</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\src\Common\DotNetApis.Common.csproj">
+    <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj">
       <Project>{22a1e92a-8ae8-4b36-acb2-3f84a56886c5}</Project>
       <Name>DotNetApis.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj">
+      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
+      <Name>DotNetApis.Nuget</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
