@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -22,6 +23,7 @@ namespace Common
         {
             var result = new JsonSerializerSettings
             {
+                Culture = CultureInfo.InvariantCulture,
                 ContractResolver = new CustomContractResolver(),
                 NullValueHandling = NullValueHandling.Ignore,
                 DefaultValueHandling = DefaultValueHandling.Ignore,

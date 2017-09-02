@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace FunctionApp
         private static readonly Lazy<object> _jsonSerializerSettings;
         private static readonly Lazy<Container> _container;
         private static readonly Lazy<Task> _azureInitialization;
+        private static readonly Lazy<object> _useInvariantCulture;
 
         static GlobalConfig()
         {
@@ -62,6 +64,13 @@ namespace FunctionApp
                         AzurePackageJsonStorage.InitializeAsync(connections))
                     .ConfigureAwait(false);
             });
+
+            // Use invariant culture by default.
+            _useInvariantCulture = new Lazy<object>(() =>
+            {
+                CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+                return null;
+            });
         }
 
         /// <summary>
@@ -79,6 +88,8 @@ namespace FunctionApp
         {
             var _ = _jsonSerializerSettings.Value;
             var __ = _container.Value;
+            var ___ = _useInvariantCulture.Value;
+            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
             await _azureInitialization.Value.ConfigureAwait(false);
         }
 
