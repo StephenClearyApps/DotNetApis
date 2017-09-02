@@ -18,7 +18,7 @@ using Storage;
 
 namespace FunctionApp
 {
-    public static class Documentation
+    public static class DocumentationFunction
     {
         [FunctionName("Documentation")]
         public static async Task<HttpResponseMessage> Run(
