@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     partial class NugetPackage
     {

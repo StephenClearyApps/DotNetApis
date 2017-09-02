@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Runtime.Versioning;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     /// <summary>
     /// A normalized form of <see cref="FrameworkName"/>.

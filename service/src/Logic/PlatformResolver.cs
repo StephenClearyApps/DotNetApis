@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
+using DotNetApis.Common;
+using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Nito.Comparers;
-using Nuget;
 using NuGet.Frameworks;
-using NuGet.Packaging.Core;
 
-namespace Logic
+namespace DotNetApis.Logic
 {
     public sealed class PlatformResolver
     {

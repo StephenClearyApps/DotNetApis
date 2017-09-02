@@ -9,7 +9,7 @@ using System.Web.Http;
 using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Results;
 using System.Net.Http;
-using Common;
+using DotNetApis.Common;
 using Microsoft.Azure.WebJobs.Host;
 
 namespace FunctionApp

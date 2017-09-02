@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Internals;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Nito.Disposables;
 
-namespace Common
+namespace DotNetApis.Common
 {
     /// <summary>
     /// A logger that writes messages to all loggers defined in the ambient context.

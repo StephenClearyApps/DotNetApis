@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
+using DotNetApis.Common;
+using DotNetApis.Nuget;
+using DotNetApis.Storage;
 using Microsoft.Extensions.Logging;
-using Nuget;
-using Storage;
-using System.Net.Http;
 
-namespace Logic
+namespace DotNetApis.Logic
 {
     public sealed class StatusRequestHandler
     {

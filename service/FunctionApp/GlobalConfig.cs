@@ -4,13 +4,13 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Common;
+using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Nuget;
+using DotNetApis.Nuget;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
-using Storage;
+using DotNetApis.Storage;
 
 namespace FunctionApp
 {

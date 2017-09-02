@@ -1,5 +1,5 @@
 using System;
-using Common;
+using DotNetApis.Common;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
@@ -7,8 +7,8 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using SimpleInjector.Lifestyles;
 using System.Threading.Tasks;
 using FunctionApp.Messages;
-using Logic;
-using Logic.Messages;
+using DotNetApis.Logic;
+using DotNetApis.Logic.Messages;
 using Newtonsoft.Json;
 
 namespace FunctionApp

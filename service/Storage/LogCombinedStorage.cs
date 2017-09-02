@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Nuget;
+using DotNetApis.Nuget;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     public sealed class LogCombinedStorage
     {

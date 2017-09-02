@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
-using Nuget;
+using DotNetApis.Common;
+using DotNetApis.Nuget;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     public interface ILogStorage
     {

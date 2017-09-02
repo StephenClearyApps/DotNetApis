@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using Microsoft.WindowsAzure.Storage;
-using Common;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     public sealed class AzureConnections
     {

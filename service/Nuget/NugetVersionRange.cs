@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using DotNetApis.Common;
 using Nito.Comparers;
 using NuGet.Versioning;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     public sealed class NugetVersionRange : EquatableBaseWithOperators<NugetVersionRange>
     {

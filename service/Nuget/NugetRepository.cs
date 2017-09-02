@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
-using NuGet;
+using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
+using NuGet;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     /// <summary>
     /// Provides methods used to call the NuGet API.
@@ -94,7 +89,7 @@ namespace Nuget
             var published = package.Published;
             if (published == null)
                 throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
-            var result = new NugetFullPackage(new NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
+            var result = new NugetFullPackage(new DotNetApis.Nuget.NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
             _logger.LogDebug("Successfully downloaded package {idver} as {result} from Nuget", idver, result);
             return result;
         }

@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using System.Threading.Tasks;
+using DotNetApis.Nuget;
+using DotNetApis.Storage;
 using Microsoft.Extensions.Logging;
-using Nuget;
-using Storage;
 
-namespace Logic
+namespace DotNetApis.Logic
 {
     /// <summary>
     /// Downloads package from Nuget to our own package storage as necessary.

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Common;
+using DotNetApis.Common;
 
-namespace Logic.Messages
+namespace DotNetApis.Logic.Messages
 {
     /// <summary>
     /// The base type for all messages.

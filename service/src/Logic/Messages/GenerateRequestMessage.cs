@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Logic.Messages
+namespace DotNetApis.Logic.Messages
 {
     /// <summary>
     /// The message sent from the HTTP trigger function to the queue trigger function.

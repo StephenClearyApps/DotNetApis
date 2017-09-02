@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     public static class PlatformUtility
     {

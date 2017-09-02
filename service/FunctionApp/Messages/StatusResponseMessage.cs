@@ -1,6 +1,6 @@
 ﻿using System;
-using Logic.Messages;
-using Storage;
+using DotNetApis.Logic.Messages;
+using DotNetApis.Storage;
 
 namespace FunctionApp.Messages
 {

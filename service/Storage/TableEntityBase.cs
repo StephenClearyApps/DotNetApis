@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     /// <summary>
     /// Helper type for entities stored in Azure tables.

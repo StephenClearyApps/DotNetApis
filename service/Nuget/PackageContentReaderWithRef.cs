@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     /// <summary>
     /// A package content reader that also understands the /ref folder.

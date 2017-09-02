@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     /// <summary>
     /// An in-memory nupkg along with its external metadata.

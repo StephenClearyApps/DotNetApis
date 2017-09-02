@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using IO.Ably;
+using Config = DotNetApis.Common.Config;
 
-namespace Common.Internals
+namespace DotNetApis.Common.Internals
 {
     public sealed class AblyService
     {

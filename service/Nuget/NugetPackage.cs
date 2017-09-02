@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
 using NuGet.Frameworks;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     /// <summary>
     /// A nupkg that is loaded into memory.
@@ -24,14 +21,14 @@ namespace Nuget
         {
             Stream = stream;
             _package = new PackageArchiveReaderWithRef(stream, leaveStreamOpen: true);
-            Metadata = new InternalMetadata(_package);
+            Metadata = new global::DotNetApis.Nuget.NugetPackage.InternalMetadata(_package);
             Stream.Position = 0;
         }
 
         /// <summary>
         /// Metadata contained within the package itself.
         /// </summary>
-        public InternalMetadata Metadata { get; }
+        public global::DotNetApis.Nuget.NugetPackage.InternalMetadata Metadata { get; }
 
         /// <summary>
         /// Directly access the underlying stream.

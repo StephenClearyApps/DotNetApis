@@ -1,5 +1,5 @@
 ﻿using System;
-using Logic.Messages;
+using DotNetApis.Logic.Messages;
 
 namespace FunctionApp.Messages
 {

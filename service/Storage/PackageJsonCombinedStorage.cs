@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
+using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
-using Nuget;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     public sealed class PackageJsonCombinedStorage
     {

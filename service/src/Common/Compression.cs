@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Common
+namespace DotNetApis.Common
 {
     /// <summary>
     /// Helper methods for zipping data stored in blobs.

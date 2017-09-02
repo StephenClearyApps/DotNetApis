@@ -3,10 +3,10 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Common;
+using DotNetApis.Common;
 using FunctionApp.Messages;
-using Logic;
-using Logic.Messages;
+using DotNetApis.Logic;
+using DotNetApis.Logic.Messages;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using SimpleInjector.Lifestyles;
-using Storage;
+using DotNetApis.Storage;
 
 namespace FunctionApp
 {

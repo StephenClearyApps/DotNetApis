@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
+using DotNetApis.Common;
+using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob;
-using Microsoft.WindowsAzure.Storage.Shared.Protocol;
-using Nuget;
-using Constants = Common.Constants;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     public interface IPackageJsonStorage
     {

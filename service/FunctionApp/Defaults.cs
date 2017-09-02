@@ -6,7 +6,7 @@ using System.Net.Http.Formatting;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.ExceptionHandling;
-using Common;
+using DotNetApis.Common;
 using Microsoft.Azure.WebJobs;
 
 namespace FunctionApp

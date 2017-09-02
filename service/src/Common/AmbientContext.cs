@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 
-namespace Common
+namespace DotNetApis.Common
 {
     /// <summary>
     /// Objects that have a lifetime outside of the DI container. Properties retrieve the current value for the current scope.

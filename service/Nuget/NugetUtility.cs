@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Versioning;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Versioning;
 using NuGet.Frameworks;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     public static class NugetUtility
     {

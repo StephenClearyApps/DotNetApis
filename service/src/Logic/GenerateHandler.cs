@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Common;
-using Logic.Messages;
+using DotNetApis.Common;
+using DotNetApis.Logic.Messages;
+using DotNetApis.Nuget;
+using DotNetApis.Storage;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Nuget;
-using Storage;
 
-namespace Logic
+namespace DotNetApis.Logic
 {
     public sealed class GenerateHandler
     {

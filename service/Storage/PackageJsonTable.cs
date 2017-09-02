@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using DotNetApis.Nuget;
 using Microsoft.WindowsAzure.Storage.Table;
-using Nuget;
 
-namespace Storage
+namespace DotNetApis.Storage
 {
     /// <summary>
     /// Represents the "packagejson" table in Table storage.

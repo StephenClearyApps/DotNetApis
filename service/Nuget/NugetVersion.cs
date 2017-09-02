@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Nito.Comparers;
 using NuGet.Versioning;
 
-namespace Nuget
+namespace DotNetApis.Nuget
 {
     /// <summary>
     /// Represents the version of a Nuget package. This is an immutable type that is comparable with itself (including comparison operators).

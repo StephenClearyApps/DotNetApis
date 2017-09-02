@@ -1,4 +1,4 @@
-﻿namespace Storage
+﻿namespace DotNetApis.Storage
 {
     public static class JsonFactory
     {
