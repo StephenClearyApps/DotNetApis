@@ -7,8 +7,8 @@
     <ProjectGuid>{22A1E92A-8AE8-4B36-ACB2-3F84A56886C5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Common</RootNamespace>
-    <AssemblyName>Common</AssemblyName>
+    <RootNamespace>DotNetApis.Common</RootNamespace>
+    <AssemblyName>DotNetApis.Common</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
