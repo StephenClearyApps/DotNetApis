@@ -55,6 +55,7 @@
     <Compile Include="CecilExtensions.DnaId.cs" />
     <Compile Include="CecilExtensions.Types.cs" />
     <Compile Include="CecilExtensions.Xmldoc.cs" />
+    <Compile Include="CecilExtenstions.FriendlyName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

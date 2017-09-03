@@ -101,6 +101,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Enumerables.cs" />
     <Compile Include="ExpectedException.cs" />
+    <Compile Include="FriendlyName.cs" />
     <Compile Include="Internals\AblyChannel.cs" />
     <Compile Include="Internals\AblyService.cs" />
     <Compile Include="InMemoryLogger.cs" />
