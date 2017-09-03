@@ -22,7 +22,6 @@ namespace DotNetApis.StructuredFormatter
         Bold,
         Italic,
         Link, // h: href
-        // TODO: others
 
         // Uncommon Xmldoc entities.
         UnorderedList,

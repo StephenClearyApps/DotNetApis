@@ -36,7 +36,7 @@ namespace FunctionApp
                     var packageId = query.Required("packageId");
                     var packageVersion = query.Required("packageVersion");
                     var targetFramework = query.Required("targetFramework");
-                    var timestamp = query.Required("timestamp", DateTimeOffset.Parse); // TODO: force invariant culture everywhere
+                    var timestamp = query.Required("timestamp", DateTimeOffset.Parse);
                     logger.LogDebug("Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}, timestamp={timestamp}",
                         jsonVersion, packageId, packageVersion, targetFramework, timestamp);
 

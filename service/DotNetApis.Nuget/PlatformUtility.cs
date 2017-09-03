@@ -4,7 +4,6 @@ namespace DotNetApis.Nuget
 {
     public static class PlatformUtility
     {
-        // TODO: determine how to handle .NET core libraries and universal windows apps.
         private static readonly List<string> SupportedFrameworks = new List<string>
         {
             "netstandard",

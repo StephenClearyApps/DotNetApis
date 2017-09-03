@@ -178,11 +178,6 @@ namespace DotNetApis.Cecil
 
         private static string DnaEncode(this string name)
         {
-            // TODO: I'm still not pleased with the representation of explicitly-implemented members of generic interfaces.
-            //   Specifically, 
-            //     http://localhost:24226/doc/Nito.AsyncEx/3.0.1/net45/Nito.AsyncEx.PropertyProgress'1/System.IProgress(T).Report('0)
-            //   would be better as
-            //     http://localhost:24226/doc/Nito.AsyncEx/3.0.1/net45/Nito.AsyncEx.PropertyProgress'1/System.IProgress('0).Report('0)
             // First, swap the following pairs: (',`), (<,(), (>, )).
             var result = name;
             if (name.IndexOfAny(DotNetEncodingChars) != -1)
