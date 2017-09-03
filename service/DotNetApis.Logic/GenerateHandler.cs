@@ -14,11 +14,17 @@ namespace DotNetApis.Logic
     {
         private readonly ILogger _logger;
         private readonly LogCombinedStorage _logStorage;
+        private readonly PackageDownloader _packageDownloader;
 
-        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage)
+        private NugetPackageIdVersion _idver;
+        private PlatformTarget _target;
+        private NugetPackage _currentPackage;
+
+        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader)
         {
             _logger = logger;
             _logStorage = logStorage;
+            _packageDownloader = packageDownloader;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -29,7 +35,9 @@ namespace DotNetApis.Logic
                 throw new InvalidOperationException("Invalid generation request");
             try
             {
-                await HandleAsync(idver, target).ConfigureAwait(false);
+                _idver = idver;
+                _target = target;
+                await HandleAsync().ConfigureAwait(false);
                 await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -39,9 +47,13 @@ namespace DotNetApis.Logic
             }
         }
 
-        private Task HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        private async Task HandleAsync()
         {
-            return Task.CompletedTask;
+            // Load the package.
+            var publishedPackage = await _packageDownloader.GetPackageAsync(_idver).ConfigureAwait(false);
+            _currentPackage = publishedPackage.Package;
+
+            // TODO: Determine all supported targets for the package.
         }
     }
 }
