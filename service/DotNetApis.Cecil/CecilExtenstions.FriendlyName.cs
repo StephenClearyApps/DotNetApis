@@ -28,7 +28,7 @@ namespace DotNetApis.Cecil
             return CreateFromDeclaringType(member.Name, declaringType, ns);
         }
 
-        public static FriendlyName GetOverloadFriendlyName(MethodDefinition method)
+        public static FriendlyName GetOverloadFriendlyName(this MethodDefinition method)
         {
             var ns = method.DeclaringTypesInnerToOuter().Last().Namespace;
             var simpleName = method.Name.StripBacktickSuffix().Name; // Note: no generic parameters
