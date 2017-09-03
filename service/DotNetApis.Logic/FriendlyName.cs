@@ -58,7 +58,7 @@ namespace DotNetApis.Logic
 
         private static string GetSimpleName(TypeReference type) => string.Join(".", type.GenericDeclaringTypesAndThis().Select(GetSimpleName));
 
-        private static string GetSimpleName(CecilExtensions.GenericTypeReference type) => GetSimpleName(type.Name, type.GenericParameters);
+        private static string GetSimpleName(GenericTypeReference type) => GetSimpleName(type.Name, type.GenericParameters);
 
         private static string GetSimpleName(string nameWithoutBacktickSuffix, IEnumerable<GenericParameter> genericParameters)
         {

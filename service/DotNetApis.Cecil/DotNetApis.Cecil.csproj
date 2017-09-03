@@ -52,14 +52,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessibilityRestrictionLevel.cs" />
+    <Compile Include="AttributeConstructorArgument.cs" />
+    <Compile Include="CecilExtensions.Members.cs" />
+    <Compile Include="CecilExtensions.Methods.cs" />
+    <Compile Include="ConcreteTypeReference.cs" />
     <Compile Include="CecilExtensions.DnaId.cs" />
     <Compile Include="CecilExtensions.Types.cs" />
     <Compile Include="CecilExtensions.Xmldoc.cs" />
     <Compile Include="CecilExtenstions.FriendlyName.cs" />
+    <Compile Include="DynamicReplacement.cs" />
+    <Compile Include="GenericConstraint.cs" />
+    <Compile Include="GenericTypeReference.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CecilExtensions.IsExposed.cs" />
+    <Compile Include="CecilExtensions.Attributes.cs" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

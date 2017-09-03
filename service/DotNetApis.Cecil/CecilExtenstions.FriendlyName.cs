@@ -43,6 +43,11 @@ namespace DotNetApis.Cecil
 
         private static string GetSimpleName(GenericTypeReference type) => GetSimpleName(type.Name, type.GenericParameters);
 
+        /// <summary>
+        /// Formats a name with its generic parameters, e.g., "Task&lt;TResult&gt;". If there are no generic parameters, then there are no angle brackets in the output, e.g., "ArrayList".
+        /// </summary>
+        /// <param name="nameWithoutBacktickSuffix">The name, without the backtick suffix.</param>
+        /// <param name="genericParameters">The generic parameters, if any.</param>
         private static string GetSimpleName(string nameWithoutBacktickSuffix, IEnumerable<GenericParameter> genericParameters)
         {
             // This approach assumes that cref attributes can only refer to generic types (e.g., List<T>), not concrete generic types (e.g., List<string>).
