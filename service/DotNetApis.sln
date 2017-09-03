@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Storage", "DotNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Logic", "DotNetApis.Logic\DotNetApis.Logic.csproj", "{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Cecil", "DotNetApis.Cecil\DotNetApis.Cecil.csproj", "{F1F7F024-A30F-44DB-8A18-EB5B864D9280}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1F7F024-A30F-44DB-8A18-EB5B864D9280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1F7F024-A30F-44DB-8A18-EB5B864D9280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1F7F024-A30F-44DB-8A18-EB5B864D9280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1F7F024-A30F-44DB-8A18-EB5B864D9280}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
