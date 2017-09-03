@@ -1,7 +1,7 @@
 ﻿namespace DotNetApis.Common
 {
     /// <summary>
-    /// A friendly name for an entity.
+    /// A friendly name for an entity. Friendly names are human-readable, e.g., "Task&lt;TResult&gt;".
     /// </summary>
     public sealed class FriendlyName
     {

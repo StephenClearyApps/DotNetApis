@@ -7,6 +7,9 @@ namespace DotNetApis.Cecil
 {
     public static partial class CecilExtensions
     {
+        /// <summary>
+        /// Get a friendly name for the member.
+        /// </summary>
         public static FriendlyName GetFriendlyName(this IMemberDefinition member)
         {
             var ns = member.DeclaringType != null ? member.DeclaringTypesInnerToOuter().Last().Namespace : ((TypeDefinition)member).Namespace;
@@ -28,6 +31,9 @@ namespace DotNetApis.Cecil
             return CreateFromDeclaringType(member.Name, declaringType, ns);
         }
 
+        /// <summary>
+        /// Get a friendly name for the method overload group.
+        /// </summary>
         public static FriendlyName GetOverloadFriendlyName(this MethodDefinition method)
         {
             var ns = method.DeclaringTypesInnerToOuter().Last().Namespace;
@@ -41,6 +47,10 @@ namespace DotNetApis.Cecil
 
         private static string GetSimpleName(TypeReference type) => string.Join(".", type.GenericDeclaringTypesAndThis().Select(GetSimpleName));
 
+        /// <summary>
+        /// Formats a name with its generic parameters, e.g., "Task&lt;TResult&gt;". If there are no generic parameters, then there are no angle brackets in the output, e.g., "ArrayList".
+        /// </summary>
+        /// <param name="type">The type.</param>
         private static string GetSimpleName(GenericTypeReference type) => GetSimpleName(type.Name, type.GenericParameters);
 
         /// <summary>
