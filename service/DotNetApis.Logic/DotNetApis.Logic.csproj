@@ -96,6 +96,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assemblies\AssemblyBase.cs" />
+    <Compile Include="Assemblies\AssemblyIndexer.cs" />
+    <Compile Include="Assemblies\IAssembly.cs" />
     <Compile Include="Formatting\XmldocFormatter.cs" />
     <Compile Include="FriendlyName.cs" />
     <Compile Include="StatusRequestHandler.cs" />
@@ -127,6 +130,10 @@
     <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj">
       <Project>{2602dd40-48d0-4172-842c-114caf4cf922}</Project>
       <Name>DotNetApis.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj">
+      <Project>{dd42551c-ad74-4b2c-8d84-2643cbb6e22c}</Project>
+      <Name>DotNetApis.Structure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
