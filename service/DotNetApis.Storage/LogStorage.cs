@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Nuget;
-using DotNetApis.StructuredFormatter;
+using DotNetApis.Structure;
 
 namespace DotNetApis.Storage
 {

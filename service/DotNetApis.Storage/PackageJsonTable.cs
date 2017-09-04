@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using DotNetApis.Nuget;
-using DotNetApis.StructuredFormatter;
+using DotNetApis.Structure;
 using Microsoft.WindowsAzure.Storage.Table;
 
 namespace DotNetApis.Storage

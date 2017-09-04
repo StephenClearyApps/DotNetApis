@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DotNetApis.StructuredFormatter
+﻿namespace DotNetApis.Structure
 {
     /// <summary>
     /// This must be kept in sync with constants/entityGenericConstraintsKinds.js
