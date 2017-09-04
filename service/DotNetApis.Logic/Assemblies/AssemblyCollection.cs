@@ -18,10 +18,10 @@ namespace DotNetApis.Logic.Assemblies
     {
         private readonly ILogger _logger;
         private readonly NugetPackage _currentPackage;
+        private readonly ReaderParameters _readerParameters;
         private readonly List<CurrentPackageAssembly> _currentPackageAssemblies = new List<CurrentPackageAssembly>();
         private readonly List<DependencyPackageAssembly> _dependencyPackageAssemblies = new List<DependencyPackageAssembly>();
         private readonly List<ReferenceAssembly> _referenceAssemblies = new List<ReferenceAssembly>();
-        private readonly ReaderParameters _readerParameters;
 
         /// <summary>
         /// The combined xmldoc -> dnaid lookup.
@@ -67,7 +67,7 @@ namespace DotNetApis.Logic.Assemblies
         /// Looks up a dnaid in all assemblies and returns its location and friendly name. Returns <c>null</c> if it's not found, or if its assembly hasn't been loaded yet.
         /// </summary>
         /// <param name="dnaid">The dnaid</param>
-        public (ILocation, FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaid)
+        public (ILocation Location, FriendlyName FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaid)
         {
             if (_dnaidLookupCache.ContainsKey(dnaid))
                 return _dnaidLookupCache[dnaid];

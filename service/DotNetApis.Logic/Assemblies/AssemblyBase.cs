@@ -82,7 +82,7 @@ namespace DotNetApis.Logic.Assemblies
 
         public AssemblyDefinition AssemblyDefinition => _assemblyDefinition.Value;
 
-        public (ILocation, FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaId)
+        public (ILocation Location, FriendlyName FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaId)
         {
             // If the assembly has not been demand-loaded yet, return null.
             if (!_assemblyDefinition.IsValueCreated)

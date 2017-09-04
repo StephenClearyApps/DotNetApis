@@ -27,6 +27,6 @@ namespace DotNetApis.Logic.Assemblies
         /// Looks up a dnaid in this assembly and returns its location and friendly name. If the assembly has not been loaded yet, returns <c>null</c>.
         /// </summary>
         /// <param name="dnaid">The dnaid</param>
-        (ILocation, FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaid);
+        (ILocation Location, FriendlyName FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaid);
     }
 }
