@@ -50,6 +50,7 @@
     <Compile Include="EntityReferenceKind.cs" />
     <Compile Include="GenericConstraintKind.cs" />
     <Compile Include="GenericParameterModifiers.cs" />
+    <Compile Include="JsonFactory.cs" />
     <Compile Include="MethodParameterModifiers.cs" />
     <Compile Include="MethodStyles.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -80,7 +80,6 @@
   <ItemGroup>
     <Compile Include="AzureConnections.cs" />
     <Compile Include="CloudTableExtensions.cs" />
-    <Compile Include="JsonFactory.cs" />
     <Compile Include="LogCombinedStorage.cs" />
     <Compile Include="PackageJsonCombinedStorage.cs" />
     <Compile Include="LogStorage.cs" />
@@ -109,6 +108,10 @@
     <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj">
       <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
       <Name>DotNetApis.Nuget</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj">
+      <Project>{dd42551c-ad74-4b2c-8d84-2643cbb6e22c}</Project>
+      <Name>DotNetApis.Structure</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

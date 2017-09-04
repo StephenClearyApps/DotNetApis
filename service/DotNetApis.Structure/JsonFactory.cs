@@ -1,4 +1,4 @@
-﻿namespace DotNetApis.Storage
+﻿namespace DotNetApis.StructuredFormatter
 {
     public static class JsonFactory
     {

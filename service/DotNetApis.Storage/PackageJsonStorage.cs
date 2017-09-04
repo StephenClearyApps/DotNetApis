@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Nuget;
+using DotNetApis.StructuredFormatter;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob;
 

@@ -11,7 +11,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using SimpleInjector.Lifestyles;
-using DotNetApis.Storage;
+using DotNetApis.StructuredFormatter;
 
 namespace FunctionApp
 {
