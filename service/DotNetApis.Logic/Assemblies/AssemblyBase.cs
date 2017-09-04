@@ -10,11 +10,21 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetApis.Logic.Assemblies
 {
+    /// <summary>
+    /// A base type for assemblies, providing lazy loading for both the assembly and its dnaid lookups.
+    /// </summary>
     public abstract class AssemblyBase : IAssembly
     {
         private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
         private readonly Lazy<Dictionary<string, FriendlyName>> _dnaIdToFriendlyName;
 
+        /// <summary>
+        /// Initializes the base type.
+        /// </summary>
+        /// <param name="logger">The logger.</param>
+        /// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
+        /// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
+        /// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
         protected AssemblyBase(ILogger logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId)
         {
             Name = Path.GetFileNameWithoutExtension(path);
@@ -52,9 +62,16 @@ namespace DotNetApis.Logic.Assemblies
             });
         }
 
+        /// <summary>
+        /// Reads the assembly binary as a stream.
+        /// </summary>
         protected abstract Stream Read();
 
-        protected abstract ILocation Location(string dotNetApiIdentifier);
+        /// <summary>
+        /// Get a location structure for a given dnaid.
+        /// </summary>
+        /// <param name="dnaid">The dnaid to locate.</param>
+        protected abstract ILocation Location(string dnaid);
 
         public string Name { get; }
 
@@ -62,9 +79,15 @@ namespace DotNetApis.Logic.Assemblies
 
         public (ILocation, FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaId)
         {
-            if (!_assemblyDefinition.IsValueCreated || _dnaIdToFriendlyName.Value == null || !_dnaIdToFriendlyName.Value.ContainsKey(dnaId))
+            // If the assembly has not been demand-loaded yet, return null.
+            if (!_assemblyDefinition.IsValueCreated)
                 return null;
-            return (Location(dnaId), _dnaIdToFriendlyName.Value[dnaId]);
+
+            // If there was a problem loading the assembly, return null.
+            if (_dnaIdToFriendlyName.Value == null)
+                return null;
+
+            return _dnaIdToFriendlyName.Value.ContainsKey(dnaId) ? (Location(dnaId), _dnaIdToFriendlyName.Value[dnaId]) : ((ILocation, FriendlyName)?)null;
         }
     }
 }

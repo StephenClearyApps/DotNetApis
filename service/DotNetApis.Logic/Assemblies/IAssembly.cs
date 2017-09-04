@@ -24,7 +24,7 @@ namespace DotNetApis.Logic.Assemblies
         AssemblyDefinition AssemblyDefinition { get; }
 
         /// <summary>
-        /// Looks up a DnaId in this assembly and returns its location and friendly name.
+        /// Looks up a DnaId in this assembly and returns its location and friendly name. If the assembly has not been loaded yet, returns <c>null</c>.
         /// </summary>
         /// <param name="dnaId">The DnaId</param>
         /// <returns></returns>
