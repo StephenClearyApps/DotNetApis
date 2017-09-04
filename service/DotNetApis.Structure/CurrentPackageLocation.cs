@@ -9,7 +9,7 @@ namespace DotNetApis.Structure
     /// A location within the current package (though possibly in a different dll).
     /// </summary>
     [JsonConverter(typeof(CurrentPackageLocationJsonConverter))]
-    public sealed class CurrentPackageLocation
+    public sealed class CurrentPackageLocation : ILocation
     {
         /// <summary>
         /// The DNA ID of the location.

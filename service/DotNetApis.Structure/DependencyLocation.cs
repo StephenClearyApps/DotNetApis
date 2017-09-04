@@ -5,7 +5,7 @@ namespace DotNetApis.Structure
     /// <summary>
     /// A location in a package that is a dependency for the current package.
     /// </summary>
-    public sealed class DependencyLocation
+    public sealed class DependencyLocation : ILocation
     {
         /// <summary>
         /// The id of the dependency package containing this location. This should use regular casing, not lowercased.

@@ -5,7 +5,7 @@ namespace DotNetApis.Structure
     /// <summary>
     /// A location in a reference dll.
     /// </summary>
-    public sealed class ReferenceLocation
+    public sealed class ReferenceLocation : ILocation
     {
         /// <summary>
         /// The DNA ID of the location.
