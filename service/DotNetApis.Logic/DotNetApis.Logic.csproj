@@ -97,6 +97,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assemblies\AssemblyBase.cs" />
+    <Compile Include="Assemblies\AssemblyCollection.cs" />
+    <Compile Include="Assemblies\AssemblyCollectionAssemblyResolver.cs" />
     <Compile Include="Assemblies\AssemblyIndexer.cs" />
     <Compile Include="Assemblies\CurrentPackageAssembly.cs" />
     <Compile Include="Assemblies\DependentPackageAssembly.cs" />

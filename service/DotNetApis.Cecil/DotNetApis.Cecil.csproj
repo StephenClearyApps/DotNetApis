@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccessibilityRestrictionLevel.cs" />
+    <Compile Include="AssemblyResolverBase.cs" />
     <Compile Include="AttributeConstructorArgument.cs" />
     <Compile Include="CecilExtensions.Members.cs" />
     <Compile Include="CecilExtensions.Methods.cs" />
