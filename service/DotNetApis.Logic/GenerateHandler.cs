@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Logic.Assemblies;
@@ -69,6 +70,11 @@ namespace DotNetApis.Logic
                 foreach (var path in dependentPackage.GetCompatibleAssemblyReferences(target.FrameworkName))
                     assemblies.AddDependencyPackageAssembly(dependentPackage, path);
             }
+
+            // Sanity check: we'd better have something to generate documentation on.
+            if (assemblies.CurrentPackageAssemblies.Count == 0 && assemblies.DependencyPackageAssemblies.Count == 0)
+                throw new ExpectedException(HttpStatusCode.BadRequest, $"Neither package {idver} nor its dependencies have any assemblies for target {target}");
+
 
             throw new NotImplementedException();
         }
