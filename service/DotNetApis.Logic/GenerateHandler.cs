@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using DotNetApis.Common;
+using DotNetApis.Logic.Assemblies;
 using DotNetApis.Logic.Messages;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
@@ -15,16 +16,14 @@ namespace DotNetApis.Logic
         private readonly ILogger _logger;
         private readonly LogCombinedStorage _logStorage;
         private readonly PackageDownloader _packageDownloader;
+        private readonly PlatformResolver _platformResolver;
 
-        private NugetPackageIdVersion _idver;
-        private PlatformTarget _target;
-        private NugetPackage _currentPackage;
-
-        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader)
+        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver)
         {
             _logger = logger;
             _logStorage = logStorage;
             _packageDownloader = packageDownloader;
+            _platformResolver = platformResolver;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -35,9 +34,7 @@ namespace DotNetApis.Logic
                 throw new InvalidOperationException("Invalid generation request");
             try
             {
-                _idver = idver;
-                _target = target;
-                await HandleAsync().ConfigureAwait(false);
+                await HandleAsync(idver, target).ConfigureAwait(false);
                 await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -47,13 +44,23 @@ namespace DotNetApis.Logic
             }
         }
 
-        private async Task HandleAsync()
+        private async Task HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
             // Load the package.
-            var publishedPackage = await _packageDownloader.GetPackageAsync(_idver).ConfigureAwait(false);
-            _currentPackage = publishedPackage.Package;
+            var publishedPackage = await _packageDownloader.GetPackageAsync(idver).ConfigureAwait(false);
+            var currentPackage = publishedPackage.Package;
 
-            // TODO: Determine all supported targets for the package.
+            // Create the assembly collection for this request.
+            var assemblies = new AssemblyCollection(_logger, currentPackage);
+
+            // Determine all supported targets for the package.
+            var allTargets = await _platformResolver.AllSupportedPlatformsAsync(currentPackage).ConfigureAwait(false);
+
+            // Add assemblies for the current package to our context.
+            foreach (var path in publishedPackage.Package.GetCompatibleAssemblyReferences(target.FrameworkName))
+                assemblies.AddCurrentPackageAssembly(path);
+
+            throw new NotImplementedException();
         }
     }
 }
