@@ -107,7 +107,7 @@ namespace DotNetApis.Logic
                     {
                         var merged = NugetVersionRange.TryMerge(dependency.VersionRange, _next[packageId].VersionRange);
                         if (merged == null)
-                            _logger.LogWarning("Unable to resolve dependency version conflict for {packageId} between {versionRange1} and {versionRange2}; choosing {versionRange2} for no reason at all", packageId, dependency.VersionRange, _next[packageId].VersionRange, _next[packageId].VersionRange);
+                            _logger.LogWarning("Unable to resolve dependency version conflict for {packageId} between {versionRange1} and {versionRange2}; choosing {chosenVersionRange} for no reason at all", packageId, dependency.VersionRange, _next[packageId].VersionRange, _next[packageId].VersionRange);
                         else
                             _next[packageId] = new NugetPackageDependency(packageId, merged);
                     }
