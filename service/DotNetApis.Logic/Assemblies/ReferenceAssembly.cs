@@ -15,7 +15,6 @@ namespace DotNetApis.Logic.Assemblies
     /// </summary>
     public sealed class ReferenceAssembly : AssemblyBase
     {
-        private readonly string _path;
         private readonly Func<Stream> _read;
 
         /// <summary>
@@ -29,7 +28,6 @@ namespace DotNetApis.Logic.Assemblies
         public ReferenceAssembly(ILogger logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId, Func<Stream> read)
             : base(logger, path, readerParameters, xmldocIdToDnaId)
         {
-            _path = path;
             _read = read;
         }
 
