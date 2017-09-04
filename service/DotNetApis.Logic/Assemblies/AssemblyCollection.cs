@@ -87,7 +87,7 @@ namespace DotNetApis.Logic.Assemblies
         /// </summary>
         /// <param name="package">The dependent NuGet package.</param>
         /// <param name="path">The path in that NuGet package of the assembly.</param>
-        public void AddDependentPackageAssembly(NugetPackage package, string path) =>
+        public void AddDependencyPackageAssembly(NugetPackage package, string path) =>
             _dependencyPackageAssemblies.Add(new DependencyPackageAssembly(_logger, path, _readerParameters, _xmldocIdToDnaId, package));
 
         /// <summary>

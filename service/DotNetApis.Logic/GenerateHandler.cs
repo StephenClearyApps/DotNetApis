@@ -17,13 +17,15 @@ namespace DotNetApis.Logic
         private readonly LogCombinedStorage _logStorage;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
+        private readonly NugetPackageDependencyResolver _dependencyResolver;
 
-        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver)
+        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackageDependencyResolver dependencyResolver)
         {
             _logger = logger;
             _logStorage = logStorage;
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
+            _dependencyResolver = dependencyResolver;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -59,6 +61,14 @@ namespace DotNetApis.Logic
             // Add assemblies for the current package to our context.
             foreach (var path in publishedPackage.Package.GetCompatibleAssemblyReferences(target.FrameworkName))
                 assemblies.AddCurrentPackageAssembly(path);
+
+            // Add assemblies for all dependent packages to our context.
+            var dependentPackages = await _dependencyResolver.ResolveAsync(publishedPackage.Package, target.FrameworkName);
+            foreach (var dependentPackage in dependentPackages)
+            {
+                foreach (var path in dependentPackage.GetCompatibleAssemblyReferences(target.FrameworkName))
+                    assemblies.AddDependencyPackageAssembly(dependentPackage, path);
+            }
 
             throw new NotImplementedException();
         }
