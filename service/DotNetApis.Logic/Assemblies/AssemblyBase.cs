@@ -33,10 +33,15 @@ namespace DotNetApis.Logic.Assemblies
                 try
                 {
                     // Cecil requires a seekable stream to read the file correctly.
-                    var stream = new MemoryStream();
-                    Read().CopyTo(stream);
-                    stream.Position = 0;
-                    return AssemblyDefinition.ReadAssembly(stream, readerParameters);
+                    var source = Read();
+                    if (!source.CanSeek)
+                    {
+                        var stream = new MemoryStream();
+                        source.CopyTo(stream);
+                        stream.Position = 0;
+                        source = stream;
+                    }
+                    return AssemblyDefinition.ReadAssembly(source, readerParameters);
                 }
                 catch (Exception ex)
                 {

@@ -98,8 +98,11 @@
   <ItemGroup>
     <Compile Include="Assemblies\AssemblyBase.cs" />
     <Compile Include="Assemblies\AssemblyIndexer.cs" />
+    <Compile Include="Assemblies\CurrentPackageAssembly.cs" />
+    <Compile Include="Assemblies\DependentPackageAssembly.cs" />
     <Compile Include="Assemblies\IAssembly.cs" />
     <Compile Include="Assemblies\PackageAssemblyBase.cs" />
+    <Compile Include="Assemblies\ReferenceAssembly.cs" />
     <Compile Include="Formatting\XmldocFormatter.cs" />
     <Compile Include="FriendlyName.cs" />
     <Compile Include="StatusRequestHandler.cs" />
