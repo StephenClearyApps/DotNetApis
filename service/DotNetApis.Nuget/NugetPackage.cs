@@ -21,14 +21,14 @@ namespace DotNetApis.Nuget
         {
             Stream = stream;
             _package = new PackageArchiveReaderWithRef(stream, leaveStreamOpen: true);
-            Metadata = new global::DotNetApis.Nuget.NugetPackage.InternalMetadata(_package);
+            Metadata = new InternalMetadata(_package);
             Stream.Position = 0;
         }
 
         /// <summary>
         /// Metadata contained within the package itself.
         /// </summary>
-        public global::DotNetApis.Nuget.NugetPackage.InternalMetadata Metadata { get; }
+        public InternalMetadata Metadata { get; }
 
         /// <summary>
         /// Directly access the underlying stream.
