@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Logic", "DotNetA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Cecil", "DotNetApis.Cecil\DotNetApis.Cecil.csproj", "{F1F7F024-A30F-44DB-8A18-EB5B864D9280}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.StructuredFormatter", "DotNetApis.StructuredFormatter\DotNetApis.StructuredFormatter.csproj", "{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Structure", "DotNetApis.Structure\DotNetApis.Structure.csproj", "{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
