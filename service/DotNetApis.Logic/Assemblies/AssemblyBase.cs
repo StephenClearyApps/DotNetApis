@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 namespace DotNetApis.Logic.Assemblies
 {
     /// <summary>
-    /// A base type for assemblies, providing lazy loading for both the assembly and its dnaid lookups.
+    /// A base type for assemblies that can be read by streams, providing lazy loading for both the assembly and its dnaid lookups.
     /// </summary>
     public abstract class AssemblyBase : IAssembly
     {
