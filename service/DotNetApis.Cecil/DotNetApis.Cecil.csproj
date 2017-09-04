@@ -65,6 +65,7 @@
     <Compile Include="DynamicReplacement.cs" />
     <Compile Include="GenericConstraint.cs" />
     <Compile Include="GenericTypeReference.cs" />
+    <Compile Include="NullAssemblyResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
