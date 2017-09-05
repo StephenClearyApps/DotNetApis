@@ -10,5 +10,7 @@
 
         public string PackageId { get; }
         public NugetVersionRange VersionRange { get; }
+
+        public override string ToString() => $"{PackageId} {VersionRange}";
     }
 }

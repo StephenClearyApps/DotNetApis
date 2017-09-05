@@ -59,10 +59,9 @@ namespace DotNetApis.Logic
                     result.Add(dependency.Id, new NugetPackageDependency(dependency.Id, versionRange));
                 }
             }
-            _logger.LogDebug("Merged dependency list for {package} targeting {target} is {dependencyList}", package, target, result.Dump());
+            _logger.LogDebug("Merged dependency list for {package} targeting {target} is {dependencyList}", package, target, result.Values.Dump());
             return result;
         }
-
 
         /// <summary>
         /// Determines all platforms supported both by the specified package and by DotNetApis.
