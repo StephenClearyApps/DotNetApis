@@ -10,7 +10,7 @@
           "OPTIONS"
         ]
       },
-      "backendUri": "https://stephenclearyapps.github.io/DotNetApis/static/{url}"
+      "backendUri": "https://%SPA_APP%/static/{url}"
     },
     "app": {
       "matchCondition": {
@@ -21,7 +21,7 @@
           "OPTIONS"
         ]
       },
-      "backendUri": "https://stephenclearyapps.github.io/DotNetApis/"
+      "backendUri": "https://%SPA_APP%/"
     },
     "api": {
       "matchCondition": {
