@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using DotNetApis.Common;
@@ -62,19 +63,24 @@ namespace DotNetApis.Logic
             // Add assemblies for the current package to our context.
             foreach (var path in publishedPackage.Package.GetCompatibleAssemblyReferences(target))
                 assemblies.AddCurrentPackageAssembly(path);
+            _logger.LogDebug("Documentation will be generated for {assemblies}", assemblies.CurrentPackageAssemblies.Dump());
 
-            // Add assemblies for all dependent packages to our context.
-            var dependentPackages = await _dependencyResolver.ResolveAsync(publishedPackage.Package, target);
-            foreach (var dependentPackage in dependentPackages)
+            // Add assemblies for all dependency packages to our context.
+            var dependencyPackages = await _dependencyResolver.ResolveAsync(publishedPackage.Package, target).ConfigureAwait(false);
+            var dependencyAssemblyCount = 0;
+            foreach (var dependentPackage in dependencyPackages)
             {
                 foreach (var path in dependentPackage.GetCompatibleAssemblyReferences(target))
+                {
+                    ++dependencyAssemblyCount;
                     assemblies.AddDependencyPackageAssembly(dependentPackage, path);
+                }
             }
+            _logger.LogDebug("Added {assemblyCount} assemblies from {packageCount} dependency packages", dependencyAssemblyCount, dependencyPackages.Count);
 
             // Sanity check: we'd better have something to generate documentation on.
             if (assemblies.CurrentPackageAssemblies.Count == 0 && assemblies.DependencyPackageAssemblies.Count == 0)
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Neither package {idver} nor its dependencies have any assemblies for target {target}");
-
 
             throw new NotImplementedException();
         }

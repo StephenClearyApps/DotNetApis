@@ -15,6 +15,7 @@ namespace DotNetApis.Logic.Assemblies
     /// </summary>
     public abstract class AssemblyBase : IAssembly
     {
+        private readonly string _path;
         private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
         private readonly Lazy<Dictionary<string, FriendlyName>> _dnaIdToFriendlyName;
 
@@ -27,6 +28,7 @@ namespace DotNetApis.Logic.Assemblies
         /// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
         protected AssemblyBase(ILogger logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId)
         {
+            _path = path;
             Name = Path.GetFileNameWithoutExtension(path);
             _assemblyDefinition = new Lazy<AssemblyDefinition>(() =>
             {
@@ -94,5 +96,7 @@ namespace DotNetApis.Logic.Assemblies
 
             return _dnaIdToFriendlyName.Value.ContainsKey(dnaId) ? (Location(dnaId), _dnaIdToFriendlyName.Value[dnaId]) : ((ILocation, FriendlyName)?)null;
         }
+
+        public override string ToString() => _path;
     }
 }
