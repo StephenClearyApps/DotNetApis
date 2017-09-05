@@ -58,5 +58,18 @@ namespace DotNetApis.Nuget
                 return null;
             }
         }
+
+        /// <summary>
+        /// Tests whether the "platform" framework is sufficiently compatible for a given "library" framework.
+        /// E.g., IsCompatible(net45, net40) -> true, IsCompatible(net40, net45) -> false
+        /// </summary>
+        /// <param name="platformFramework">The "platform" framework.</param>
+        /// <param name="libraryFramework">The "library" framework.</param>
+        public static bool IsCompatible(FrameworkName platformFramework, FrameworkName libraryFramework)
+        {
+            var platform = NuGetFramework.ParseFrameworkName(platformFramework.FullName, DefaultFrameworkNameProvider.Instance);
+            var library = NuGetFramework.ParseFrameworkName(libraryFramework.FullName, DefaultFrameworkNameProvider.Instance);
+            return DefaultCompatibilityProvider.Instance.IsCompatible(platform, library);
+        }
     }
 }
