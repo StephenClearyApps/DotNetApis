@@ -41,6 +41,7 @@ namespace FunctionApp
                 container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
                 container.Options.DefaultLifestyle = Lifestyle.Scoped;
                 container.Register<AzureConnections>(Lifestyle.Singleton);
+                container.RegisterSingleton<IReferenceStorage, AzureReferenceStorage>();
                 container.Register<ILogger, AmbientCompositeLogger>();
                 container.Register<INugetRepository, NugetRepository>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
