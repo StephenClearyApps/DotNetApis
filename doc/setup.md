@@ -1,20 +1,14 @@
 # Deploying DotNetApis
 
-## SPA Hosting
-
-The current SPA is set up to build into the `/docs` folder in GitHub. This is hosted via GitHub Pages on a custom domain (`dotnetapisapp.stephencleary.com`) through CloudFlare.
-
-## Azure Functions
-
-The Azure Functions resource should have detailed error logging (`Diagnostic logs` - `Detailed error messages`) turned on.
-
-### Proxies
-
-There are two proxies defined in the Azure Functions project:
-
-- `api/{*rest}` is forwarded to `https://%WEBSITE_HOSTNAME%/api/{rest}`. All routes starting with `/api` are just passed through to the Azure Function handlers.
-- `{*rest}` is forwarded to `https://dotnetapisapp.stephencleary.com`. All other requests will load the SPA.
-
-### Functions
-
-The actual Azure Function definitions handle all API requests.
+- Clone the project in GitHub.
+- Enable GitHub Pages (`/docs` folder on master branch). It should host at `https://username.github.io/DotNetApis/`
+- Create an Azure Function app and an Azure Storage account.
+- Set the required [application settings](./settings.md) for the app:
+  - `StorageConnectionString` should be the connection string for the Azure Storage account you just created.
+  - `SPA_APP` should be your GitHub Pages address, minus the `https://` prefix and without a trailing slash. E.g., `username.github.io/DotNetApis`
+  - Turn on `Diagnostic logs` - `Detailed error messages`.
+- Set up your source control to autodeploy to the Azure Function app.
+- Upload reference assemblies and their xmldoc files to a `reference` container in the Azure Storage account.
+  - Each set of reference assemblies should be in a NuGet short name folder, e.g., `sl5/`, `wp8/`, `wpa81/`, `win81/`, `net47/`.
+  - Only the highest current version of reference assemblies is necessary; if you have `net47`, then you don't need to upload `net461`.
+  - Tip: AzCopy works great, e.g., `azcopy /Source:C:\refdlls /Dest:https://dotnetapisstorage.blob.core.windows.net/reference /DestKey:{key} /S`
