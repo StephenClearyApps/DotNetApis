@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
@@ -20,28 +21,19 @@ namespace FunctionApp
     public static class GlobalConfig
     {
         // All configuration is behind Lazy objects so we can control when exceptions get raised.
-        private static readonly Lazy<object> _jsonSerializerSettings;
+        // These lazy instances use PublicationOnly to prevent caching of exceptions.
         private static readonly Lazy<Container> _container;
-        private static readonly Lazy<Task> _azureInitialization;
-        private static readonly Lazy<object> _useInvariantCulture;
+        private static readonly Lazy<object> _initialize;
 
         static GlobalConfig()
         {
-            // Configure default JSON.NET serialization.
-            _jsonSerializerSettings = new Lazy<object>(() =>
-            {
-                JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
-                return null;
-            });
-
-            // Register DI implementations.
             _container = new Lazy<Container>(() =>
             {
                 var container = new Container();
                 container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-                container.Options.DefaultLifestyle = Lifestyle.Scoped;
-                container.Register<AzureConnections>(Lifestyle.Singleton);
-                container.RegisterSingleton<IReferenceStorage, AzureReferenceStorage>();
+                container.Options.DefaultLifestyle = Lifestyle.Scoped; 
+                container.Register<AzureConnections>();
+                container.Register<IReferenceStorage, AzureReferenceStorage>();
                 container.Register<ILogger, AmbientCompositeLogger>();
                 container.Register<INugetRepository, NugetRepository>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
@@ -52,48 +44,45 @@ namespace FunctionApp
                 container.Register<IStatusTable, AzureStatusTable>();
                 container.Verify();
                 return container;
-            });
+            }, LazyThreadSafetyMode.PublicationOnly);
 
-            // Initialize all components.
-            _azureInitialization = new Lazy<Task>(async () =>
+            _initialize = new Lazy<object>(() =>
             {
-                var connections = Container.GetInstance<AzureConnections>();
-                await connections.InitializeAsync().ConfigureAwait(false);
-                await Task.WhenAll(AzurePackageStorage.InitializeAsync(),
-                        AzurePackageTable.InitializeAsync(),
-                        AzurePackageJsonTable.InitializeAsync(),
-                        AzurePackageJsonStorage.InitializeAsync(connections))
-                    .ConfigureAwait(false);
-            });
+                // Configure default JSON.NET serialization.
+                JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
 
-            // Use invariant culture by default.
-            _useInvariantCulture = new Lazy<object>(() =>
-            {
+                // Use invariant culture by default.
                 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
+                // Initialize all Azure resources.
+                InitializeAzureResourcesAsync().GetAwaiter().GetResult();
+
                 return null;
-            });
+            }, LazyThreadSafetyMode.PublicationOnly);
         }
 
-        /// <summary>
-        /// Ensures that the JSON.NET serializer settings have been set for this AppDomain.
-        /// </summary>
-        public static void EnsureJsonSerializerSettings()
-        {
-            var _ = _jsonSerializerSettings.Value;
-        }
+        public static Container Container => _container.Value;
 
         /// <summary>
         /// Ensures that all initialization has completed for this AppDomain. This method must be called from within a container scope.
         /// </summary>
-        public static async Task EnsureInitilizationCompleteAsync()
+        public static void Initialize()
         {
-            var _ = _jsonSerializerSettings.Value;
-            var __ = _container.Value;
-            var ___ = _useInvariantCulture.Value;
+            // Ensure our current thread is using invariant culture.
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
-            await _azureInitialization.Value.ConfigureAwait(false);
+            var _ = _initialize.Value;
         }
 
-        public static Container Container => _container.Value;
+        private static async Task InitializeAzureResourcesAsync()
+        {
+            var connections = Container.GetInstance<AzureConnections>();
+            await connections.InitializeAsync().ConfigureAwait(false);
+            await Task.WhenAll(AzurePackageStorage.InitializeAsync(connections),
+                    AzurePackageTable.InitializeAsync(connections),
+                    AzurePackageJsonTable.InitializeAsync(connections),
+                    AzurePackageJsonStorage.InitializeAsync(connections),
+                    AzureReferenceStorage.InitializeAsync(connections))
+                .ConfigureAwait(false);
+        }
     }
 }

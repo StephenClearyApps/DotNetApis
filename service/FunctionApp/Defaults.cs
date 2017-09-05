@@ -17,7 +17,6 @@ namespace FunctionApp
         {
             // Use our own JSON serializer settings everywhere.
             var config = request.GetConfiguration();
-            GlobalConfig.EnsureJsonSerializerSettings();
             foreach (var formatter in config.Formatters.OfType<JsonMediaTypeFormatter>())
                 formatter.SerializerSettings = Constants.JsonSerializerSettings;
 

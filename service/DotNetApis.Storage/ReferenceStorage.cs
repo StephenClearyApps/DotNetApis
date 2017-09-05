@@ -49,6 +49,6 @@ namespace DotNetApis.Storage
             return result;
         }
 
-        public static Task InitializeAsync() => GetContainer(new AzureConnections()).CreateIfNotExistsAsync();
+        public static Task InitializeAsync(AzureConnections connections) => GetContainer(connections).CreateIfNotExistsAsync();
     }
 }

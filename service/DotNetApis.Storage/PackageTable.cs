@@ -56,7 +56,7 @@ namespace DotNetApis.Storage
             return connections.CloudTableClient.GetTableReference("package" + Version);
         }
 
-        public static Task InitializeAsync() => GetTable(new AzureConnections()).CreateIfNotExistsAsync();
+        public static Task InitializeAsync(AzureConnections connections) => GetTable(connections).CreateIfNotExistsAsync();
 
         public async Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idver)
         {

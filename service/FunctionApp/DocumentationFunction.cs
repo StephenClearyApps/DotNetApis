@@ -34,7 +34,7 @@ namespace FunctionApp
                 var logger = GlobalConfig.Container.GetInstance<ILogger>();
                 try
                 {
-                    await GlobalConfig.EnsureInitilizationCompleteAsync().ConfigureAwait(false);
+                    GlobalConfig.Initialize();
 
                     var query = req.GetQueryNameValuePairs().ToList();
                     var jsonVersion = query.Required("jsonVersion", int.Parse);

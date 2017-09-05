@@ -53,6 +53,6 @@ namespace DotNetApis.Storage
             _logger.LogDebug("Successfully saved nupkg `{package}` to blob `{path}`", package, path);
         }
 
-        public static Task InitializeAsync() => GetContainer(new AzureConnections()).CreateIfNotExistsAsync();
+        public static Task InitializeAsync(AzureConnections connections) => GetContainer(connections).CreateIfNotExistsAsync();
     }
 }
