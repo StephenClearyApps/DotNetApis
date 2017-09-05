@@ -9,7 +9,6 @@ namespace DotNetApis.Storage
     public abstract class TableEntityBase
     {
         private readonly CloudTable _table;
-        private readonly DynamicTableEntity _entity;
 
         /// <summary>
         /// Creates a new entity that is not yet in the table.
@@ -20,7 +19,7 @@ namespace DotNetApis.Storage
         protected TableEntityBase(CloudTable table, string partitionKey, string rowKey)
         {
             _table = table;
-            _entity = new DynamicTableEntity();
+            Entity = new DynamicTableEntity();
             PartitionKey = partitionKey;
             RowKey = rowKey;
         }
@@ -33,19 +32,21 @@ namespace DotNetApis.Storage
         protected TableEntityBase(CloudTable table, DynamicTableEntity entity)
         {
             _table = table;
-            _entity = entity;
+            Entity = entity;
         }
+
+        protected DynamicTableEntity Entity { get; }
 
         protected string PartitionKey
         {
-            get => _entity.PartitionKey;
-            set => _entity.PartitionKey = value;
+            get => Entity.PartitionKey;
+            set => Entity.PartitionKey = value;
         }
 
         protected string RowKey
         {
-            get => _entity.RowKey;
-            set => _entity.RowKey = value;
+            get => Entity.RowKey;
+            set => Entity.RowKey = value;
         }
 
         /// <summary>
@@ -53,32 +54,32 @@ namespace DotNetApis.Storage
         /// </summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="defaultValue">The default value to return if the property is not found.</param>
-        protected string Get(string propertyName, string defaultValue) => _entity.Properties.TryGetValue(propertyName, out var result) ? result.StringValue ?? defaultValue : defaultValue;
+        protected string Get(string propertyName, string defaultValue) => Entity.Properties.TryGetValue(propertyName, out var result) ? result.StringValue ?? defaultValue : defaultValue;
 
         /// <summary>
         /// Sets a string property for the entity.
         /// </summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="value">The value to store in the property.</param>
-        protected void Set(string propertyName, string value) => _entity.Properties[propertyName] = EntityProperty.GeneratePropertyForString(value);
+        protected void Set(string propertyName, string value) => Entity.Properties[propertyName] = EntityProperty.GeneratePropertyForString(value);
 
         /// <summary>
         /// Gets an int property from the entity. Returns <paramref name="defaultValue"/> if the entity does not have that property.
         /// </summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="defaultValue">The default value to return if the property is not found.</param>
-        protected int Get(string propertyName, int defaultValue) => _entity.Properties.TryGetValue(propertyName, out var result) ? result.Int32Value ?? defaultValue : defaultValue;
+        protected int Get(string propertyName, int defaultValue) => Entity.Properties.TryGetValue(propertyName, out var result) ? result.Int32Value ?? defaultValue : defaultValue;
 
         /// <summary>
         /// Sets an int property for the entity.
         /// </summary>
         /// <param name="propertyName">The name of the property.</param>
         /// <param name="value">The value to store in the property.</param>
-        protected void Set(string propertyName, int value) => _entity.Properties[propertyName] = EntityProperty.GeneratePropertyForInt(value);
+        protected void Set(string propertyName, int value) => Entity.Properties[propertyName] = EntityProperty.GeneratePropertyForInt(value);
 
         /// <summary>
         /// Adds this entity to the table if it is not already there; otherwise, updates the table entity with this entity.
         /// </summary>
-        public Task InsertOrReplaceAsync() => _table.ExecuteAsync(TableOperation.InsertOrReplace(_entity));
+        public Task InsertOrReplaceAsync() => _table.ExecuteAsync(TableOperation.InsertOrReplace(Entity));
     }
 }

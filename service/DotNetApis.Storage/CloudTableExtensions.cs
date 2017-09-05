@@ -20,7 +20,7 @@ namespace DotNetApis.Storage
         /// <param name="this">The azure table.</param>
         /// <param name="partitionKey">The partition key.</param>
         /// <param name="rowKey">The row key.</param>
-        public static DynamicTableEntity FindOrDefault(CloudTable @this, string partitionKey, string rowKey) => FindOrDefaultCore(@this, partitionKey, rowKey, sync: true).GetAwaiter().GetResult();
+        public static DynamicTableEntity FindOrDefault(this CloudTable @this, string partitionKey, string rowKey) => FindOrDefaultCore(@this, partitionKey, rowKey, sync: true).GetAwaiter().GetResult();
 
         private static async Task<DynamicTableEntity> FindOrDefaultCore(CloudTable @this, string partitionKey, string rowKey, bool sync)
         {

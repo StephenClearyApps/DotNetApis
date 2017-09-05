@@ -85,6 +85,7 @@
     <Compile Include="LogStorage.cs" />
     <Compile Include="PackageJsonTable.cs" />
     <Compile Include="PackageJsonStorage.cs" />
+    <Compile Include="ReferenceXmldocTable.cs" />
     <Compile Include="ReferenceStorage.cs" />
     <Compile Include="PackageStorage.cs" />
     <Compile Include="StatusTable.cs" />
