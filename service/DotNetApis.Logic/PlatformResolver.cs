@@ -27,14 +27,14 @@ namespace DotNetApis.Logic
         /// </summary>
         /// <param name="package">The package to examine.</param>
         /// <param name="target">The target platform. May be <c>null</c>.</param>
-        public Dictionary<string, NugetPackageDependency> GetCompatiblePackageDependencies(NugetPackage package, FrameworkName target)
+        public Dictionary<string, NugetPackageDependency> GetCompatiblePackageDependencies(NugetPackage package, PlatformTarget target)
         {
             _logger.LogDebug("Determining package dependencies for {package} targeting {target}", package, target);
 
             var result = new Dictionary<string, NugetPackageDependency>(StringComparer.InvariantCultureIgnoreCase);
             var dependencies = target == null ?
                 package.Metadata.NuspecReader.GetDependencyGroups().SelectMany(x => x.Packages) :
-                NuGetFrameworkUtility.GetNearest(package.Metadata.NuspecReader.GetDependencyGroups(), NuGetFramework.ParseFrameworkName(target.FullName, DefaultFrameworkNameProvider.Instance))?.Packages;
+                NuGetFrameworkUtility.GetNearest(package.Metadata.NuspecReader.GetDependencyGroups(), NuGetFramework.ParseFrameworkName(target.FrameworkName.FullName, DefaultFrameworkNameProvider.Instance))?.Packages;
             if (dependencies == null)
             {
                 _logger.LogDebug("No dependencies found for {package} targeting {target}", package, target);
@@ -106,7 +106,7 @@ namespace DotNetApis.Logic
             // If the package has a dll in a plain "lib" directory, then just assume "net40".
             _logger.LogDebug("Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package);
             var guess = PlatformTarget.TryParse("net40");
-            if (package.GetCompatibleAssemblyReferences(guess.FrameworkName).Any())
+            if (package.GetCompatibleAssemblyReferences(guess).Any())
                 return new[] { guess };
 
             // Well, this looks like it might not be a .NET package at all...
@@ -117,7 +117,7 @@ namespace DotNetApis.Logic
         private PlatformTarget[] DeclaredPlatforms(NugetPackage package)
         {
             var set = new HashSet<PlatformTarget>(EqualityComparerBuilder.For<PlatformTarget>().EquateBy(x => x.ToString()));
-            foreach (var target in package.GetSupportedFrameworks().Select(x => new PlatformTarget(x)))
+            foreach (var target in package.GetSupportedFrameworks())
             {
                 if (target.FrameworkName.IsFrameworkPortable())
                 {

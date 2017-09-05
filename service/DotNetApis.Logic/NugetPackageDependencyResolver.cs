@@ -27,7 +27,7 @@ namespace DotNetApis.Logic
         /// </summary>
         /// <param name="rootPackage">The root package.</param>
         /// <param name="target">The target framework.</param>
-        public Task<IReadOnlyCollection<NugetPackage>> ResolveAsync(NugetPackage rootPackage, FrameworkName target)
+        public Task<IReadOnlyCollection<NugetPackage>> ResolveAsync(NugetPackage rootPackage, PlatformTarget target)
         {
             var resolver = new NugetPackageDependencyResolverState(_logger, _packageDownloader, _platformResolver, rootPackage, target);
             return resolver.ProcessAsync();
@@ -42,12 +42,12 @@ namespace DotNetApis.Logic
         private readonly ILogger _logger;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
-        private readonly FrameworkName _target;
+        private readonly PlatformTarget _target;
         private readonly Dictionary<string, NugetPackage> _resolved;
         private readonly Dictionary<string, NugetPackage> _current;
         private readonly Dictionary<string, NugetPackageDependency> _next;
 
-        public NugetPackageDependencyResolverState(ILogger logger, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackage rootPackage, FrameworkName target)
+        public NugetPackageDependencyResolverState(ILogger logger, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackage rootPackage, PlatformTarget target)
         {
             _logger = logger;
             _packageDownloader = packageDownloader;

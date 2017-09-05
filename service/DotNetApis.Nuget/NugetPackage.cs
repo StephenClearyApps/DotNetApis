@@ -50,10 +50,10 @@ namespace DotNetApis.Nuget
         /// <summary>
         /// Gets a list of files for a specific target framework, preferring /ref files over /lib files. Returns an empty enumerable if none are found.
         /// </summary>
-        /// <param name="target">The name of the target framework.</param>
-        public IEnumerable<string> GetCompatibleAssemblyReferences(FrameworkName target)
+        /// <param name="target">The target framework.</param>
+        public IEnumerable<string> GetCompatibleAssemblyReferences(PlatformTarget target)
         {
-            var framework = NuGetFramework.ParseFrameworkName(target.FullName, DefaultFrameworkNameProvider.Instance);
+            var framework = NuGetFramework.ParseFrameworkName(target.FrameworkName.FullName, DefaultFrameworkNameProvider.Instance);
             var result = NuGetFrameworkUtility.GetNearest(_package.GetRefItems(), framework);
             if (result != null)
             {
@@ -68,8 +68,8 @@ namespace DotNetApis.Nuget
         /// <summary>
         /// Gets all supported frameworks.
         /// </summary>
-        public IEnumerable<FrameworkName> GetSupportedFrameworks() =>
-            _package.GetSupportedFrameworksWithRef().Select(x => new FrameworkName(x.GetDotNetFrameworkName(DefaultFrameworkNameProvider.Instance)));
+        public IEnumerable<PlatformTarget> GetSupportedFrameworks() =>
+            _package.GetSupportedFrameworksWithRef().Select(x => new PlatformTarget(new FrameworkName(x.GetDotNetFrameworkName(DefaultFrameworkNameProvider.Instance))));
 
         /// <summary>
         /// Returns an identifying string for this package, in the form "Id ver".

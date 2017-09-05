@@ -60,14 +60,14 @@ namespace DotNetApis.Logic
             var allTargets = await _platformResolver.AllSupportedPlatformsAsync(currentPackage).ConfigureAwait(false);
 
             // Add assemblies for the current package to our context.
-            foreach (var path in publishedPackage.Package.GetCompatibleAssemblyReferences(target.FrameworkName))
+            foreach (var path in publishedPackage.Package.GetCompatibleAssemblyReferences(target))
                 assemblies.AddCurrentPackageAssembly(path);
 
             // Add assemblies for all dependent packages to our context.
-            var dependentPackages = await _dependencyResolver.ResolveAsync(publishedPackage.Package, target.FrameworkName);
+            var dependentPackages = await _dependencyResolver.ResolveAsync(publishedPackage.Package, target);
             foreach (var dependentPackage in dependentPackages)
             {
-                foreach (var path in dependentPackage.GetCompatibleAssemblyReferences(target.FrameworkName))
+                foreach (var path in dependentPackage.GetCompatibleAssemblyReferences(target))
                     assemblies.AddDependencyPackageAssembly(dependentPackage, path);
             }
 

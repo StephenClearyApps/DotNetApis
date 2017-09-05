@@ -65,15 +65,15 @@ namespace DotNetApis.Nuget
 
         public NugetPackageIdVersion TryLookupPackage(string packageId, NugetVersionRange versionRange)
         {
-            _logger.LogDebug("Searching for package matching id {packageId} and version range {versionRange}", packageId, versionRange);
+            _logger.LogDebug("Searching for package {packageId} {versionRange}", packageId, versionRange);
             var package = _repository.FindPackage(packageId, versionRange.ToVersionSpec(), allowPrereleaseVersions: true, allowUnlisted: true);
             if (package == null)
             {
-                _logger.LogWarning("Package {packageId} matching version {versionRange} was not found", packageId, versionRange);
+                _logger.LogWarning("Package {packageId} {versionRange} was not found", packageId, versionRange);
                 return null;
             }
             var idver = new NugetPackageIdVersion(packageId, NugetVersion.FromSemanticVersion(package.Version));
-            _logger.LogInformation("Package {packageId} matching version {versionRange} resolved to {idver}", packageId, versionRange, idver);
+            _logger.LogInformation("Package {packageId} {versionRange} resolved to {idver}", packageId, versionRange, idver);
             return idver;
         }
 
