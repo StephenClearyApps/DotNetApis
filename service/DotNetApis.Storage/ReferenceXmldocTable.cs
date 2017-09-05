@@ -28,17 +28,17 @@ namespace DotNetApis.Storage
         /// <summary>
         /// Looks up xmldoc in the table, and returns the record for that xmldoc. Returns <c>null</c> if the xmldoc is not in the table.
         /// </summary>
-        Task<ReferenceXmldocTableRecord?> TryGetRecordAsync(PlatformTarget framework, string xmldoc);
-
-        /// <summary>
-        /// Looks up xmldoc in the table, and returns the record for that xmldoc. Returns <c>null</c> if the xmldoc is not in the table.
-        /// </summary>
         ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc);
 
         /// <summary>
-        /// Writes an entry in the table, overwriting any existing entry for the xmldoc.
+        /// Creates a new batch of operations for the table.
         /// </summary>
-        Task SetRecordAsync(PlatformTarget framework, string xmldoc, ReferenceXmldocTableRecord record);
+        IBatch CreateBatch();
+
+        /// <summary>
+        /// Creates an entry to write to the table. When executed, this will overwrite any existing entry for the xmldoc.
+        /// </summary>
+        IBatchAction CreateSetRecordAction(PlatformTarget framework, string xmldoc, ReferenceXmldocTableRecord record);
     }
 
     public sealed class AzureReferenceXmldocTable : IReferenceXmldocTable
@@ -58,9 +58,9 @@ namespace DotNetApis.Storage
 
         public static Task InitializeAsync(AzureConnections connections) => GetTable(connections).CreateIfNotExistsAsync();
 
-        private async Task<ReferenceXmldocTableRecord?> TryGetRecordAsync(PlatformTarget framework, string xmldoc, bool sync)
+        public ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc)
         {
-            var entity = await Entity.FindOrDefaultAsync(_table, framework, xmldoc, sync).ConfigureAwait(false);
+            var entity = Entity.FindOrDefaultAsync(_table, framework, xmldoc, sync: true).GetAwaiter().GetResult();
             if (entity == null)
                 return null;
             return new ReferenceXmldocTableRecord
@@ -70,11 +70,9 @@ namespace DotNetApis.Storage
             };
         }
 
-        public Task<ReferenceXmldocTableRecord?> TryGetRecordAsync(PlatformTarget framework, string xmldoc) => TryGetRecordAsync(framework, xmldoc, sync: false);
+        public IBatch CreateBatch() => new AzureTableBatch(_table);
 
-        public ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc) => TryGetRecordAsync(framework, xmldoc, sync: true).GetAwaiter().GetResult();
-        
-        public Task SetRecordAsync(PlatformTarget framework, string xmldoc, ReferenceXmldocTableRecord record)
+        public IBatchAction CreateSetRecordAction(PlatformTarget framework, string xmldoc, ReferenceXmldocTableRecord record)
         {
             var entity = new Entity(_table, framework, xmldoc)
             {
@@ -83,7 +81,7 @@ namespace DotNetApis.Storage
                 QualifiedName = record.FriendlyName.QualifiedName,
                 FullyQualifiedName = record.FriendlyName.FullyQualifiedName,
             };
-            return entity.InsertOrReplaceAsync();
+            return entity.InsertOrReplaceAction();
         }
 
         private sealed class Entity : TableEntityBase
@@ -136,8 +134,6 @@ namespace DotNetApis.Storage
                 get => Get("f", null);
                 set => Set("f", value);
             }
-
-            public DynamicTableEntity UnderlyingEntity => Entity;
         }
     }
 }
