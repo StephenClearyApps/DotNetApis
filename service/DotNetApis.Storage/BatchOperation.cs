@@ -25,7 +25,7 @@ namespace DotNetApis.Storage
         int Count { get; }
 
         /// <summary>
-        /// Adds an action to this batch.
+        /// Adds an action to this batch. Throws an exception if the type of the batch action is not compatible with the type of the batch.
         /// </summary>
         /// <param name="action">The action to add.</param>
         void Add(IBatchAction action);
