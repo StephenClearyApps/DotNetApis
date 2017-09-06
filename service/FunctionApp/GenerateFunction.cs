@@ -22,7 +22,7 @@ namespace FunctionApp
         {
             try
             {
-                AmbientContext.Initialize(log, writer, context.InvocationId);
+                AmbientContext.InitializeForQueueProcessing(log, writer, context.InvocationId);
                 using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
                 {
                     var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage);

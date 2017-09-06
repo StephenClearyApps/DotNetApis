@@ -29,9 +29,9 @@ namespace DotNetApis.Common
         public static string RequestId => _requestId.Value;
 
         /// <summary>
-        /// Sets the values for the Documentation HTTP-triggered function.
+        /// Sets the values for HTTP-triggered API functions.
         /// </summary>
-        public static void Initialize(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
+        public static void InitializeForHttpApi(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
         {
             var inMemoryLogger = new InMemoryLogger();
             _loggers.Value = Enumerables.Return(inMemoryLogger, log, requestIsLocal ? new TraceWriterLogger(writer) : null).ToImmutableHashSet();
@@ -41,14 +41,24 @@ namespace DotNetApis.Common
         }
 
         /// <summary>
-        /// Sets the values for the Generate queue-triggered function.
+        /// Sets the values for backend queue-triggered functions.
         /// </summary>
-        public static void Initialize(ILogger log, TraceWriter writer, Guid operationId)
+        public static void InitializeForQueueProcessing(ILogger log, TraceWriter writer, Guid operationId)
         {
             var inMemoryLogger = new InMemoryLogger();
             _loggers.Value = Enumerables.Return(inMemoryLogger, log, new TraceWriterLogger(writer)).ToImmutableHashSet(); // TODO: Ably
             _inMemoryLogger.Value = inMemoryLogger;
             _operationId.Value = operationId;
+        }
+
+        /// <summary>
+        /// Sets the values for manual HTTP-triggered functions.
+        /// </summary>
+        public static void InitializeForManualHttpTrigger(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
+        {
+            _loggers.Value = Enumerables.Return(log, requestIsLocal ? new TraceWriterLogger(writer) : null).ToImmutableHashSet();
+            _operationId.Value = operationId;
+            _requestId.Value = requestId;
         }
     }
 }
