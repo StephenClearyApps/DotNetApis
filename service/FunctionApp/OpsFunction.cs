@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using DotNetApis.Common;
+using DotNetApis.Logic;
 using FunctionApp.Messages;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -30,6 +31,14 @@ namespace FunctionApp
                 var command = await req.Content.ReadAsAsync<OpsMessage>().ConfigureAwait(false);
                 logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command));
 
+                switch (command.Type)
+                {
+                    case OpsMessageType.ProcessReferenceXmldoc:
+                        await GlobalConfig.Container.GetInstance<ProcessReferenceXmldocHandler>().HandleAsync().ConfigureAwait(false);
+                        break;
+                    default:
+                        throw new ExpectedException(HttpStatusCode.BadRequest, $"Unknown type {command.Type}");
+                }
 
                 return req.CreateResponse(HttpStatusCode.OK);
             }
