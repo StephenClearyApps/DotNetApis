@@ -42,6 +42,7 @@ namespace FunctionApp
                 container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
                 container.Register<ILogStorage, AzureLogStorage>();
                 container.Register<IStatusTable, AzureStatusTable>();
+                container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
                 container.Verify();
                 return container;
             }, LazyThreadSafetyMode.PublicationOnly);
@@ -81,7 +82,8 @@ namespace FunctionApp
                     AzurePackageTable.InitializeAsync(connections),
                     AzurePackageJsonTable.InitializeAsync(connections),
                     AzurePackageJsonStorage.InitializeAsync(connections),
-                    AzureReferenceStorage.InitializeAsync(connections))
+                    AzureReferenceStorage.InitializeAsync(connections),
+                    AzureReferenceXmldocTable.InitializeAsync(connections))
                 .ConfigureAwait(false);
         }
     }
