@@ -109,6 +109,7 @@
     <Compile Include="FriendlyName.cs" />
     <Compile Include="NugetPackageDependencyResolver.cs" />
     <Compile Include="ProcessReferenceXmldocHandler.cs" />
+    <Compile Include="ReferenceAssemblies.cs" />
     <Compile Include="StatusRequestHandler.cs" />
     <Compile Include="GenerateHandler.cs" />
     <Compile Include="DocRequestHandler.cs" />

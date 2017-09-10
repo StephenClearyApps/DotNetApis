@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DotNetApis.Common;
+using DotNetApis.Logic;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using DotNetApis.Nuget;
@@ -85,6 +86,12 @@ namespace FunctionApp
                     AzureReferenceStorage.InitializeAsync(connections),
                     AzureReferenceXmldocTable.InitializeAsync(connections))
                 .ConfigureAwait(false);
+        }
+
+        private static async Task InitializeReferenceAssembliesAsync(AzureConnections connections)
+        {
+            await AzureReferenceStorage.InitializeAsync(connections);
+            await ReferenceAssemblies.CreateAsync(Container.GetInstance<ILogger>(), Container.GetInstance<IReferenceStorage>());
         }
     }
 }
