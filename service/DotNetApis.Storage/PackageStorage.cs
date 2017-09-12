@@ -27,13 +27,13 @@ namespace DotNetApis.Storage
         private readonly ILogger _logger;
         private readonly CloudBlobContainer _container;
 
-        public AzurePackageStorage(ILogger logger, AzureConnections connections)
+        public static string ContainerName { get; } = "package";
+
+        public AzurePackageStorage(ILogger logger, CloudBlobContainer container)
         {
             _logger = logger;
-            _container = GetContainer(connections);
+            _container = container;
         }
-
-        private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("package");
 
         public async Task<NugetPackage> LoadAsync(string path)
         {
@@ -52,7 +52,5 @@ namespace DotNetApis.Storage
             await _container.GetBlockBlobReference(path).UploadFromStreamAsync(package.Stream).ConfigureAwait(false);
             _logger.LogDebug("Successfully saved nupkg `{package}` to blob `{path}`", package, path);
         }
-
-        public static Task InitializeAsync(AzureConnections connections) => GetContainer(connections).CreateIfNotExistsAsync();
     }
 }

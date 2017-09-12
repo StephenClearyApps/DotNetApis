@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using SimpleInjector.Lifestyles;
 using DotNetApis.Structure;
 
+#if NO
 namespace FunctionApp
 {
     public static class StatusFunction
@@ -69,3 +70,4 @@ namespace FunctionApp
         }
     }
 }
+#endif

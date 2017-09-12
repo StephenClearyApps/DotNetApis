@@ -25,12 +25,12 @@ namespace DotNetApis.Storage
     {
         private readonly CloudBlobContainer _container;
 
-        public AzureReferenceStorage(AzureConnections connections)
-        {
-            _container = GetContainer(connections);
-        }
+        public static string ContainerName { get; } = "reference";
 
-        private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("reference");
+        public AzureReferenceStorage(CloudBlobContainer container)
+        {
+            _container = container;
+        }
 
         public Task<List<string>> GetFoldersAsync() => ListAsync(null, results => results.OfType<CloudBlobDirectory>().Select(x => x.Prefix.TrimEnd('/')));
 
@@ -48,7 +48,5 @@ namespace DotNetApis.Storage
             } while (continuation != null);
             return result;
         }
-
-        public static Task InitializeAsync(AzureConnections connections) => GetContainer(connections).CreateIfNotExistsAsync();
     }
 }

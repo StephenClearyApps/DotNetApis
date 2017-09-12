@@ -46,17 +46,12 @@ namespace DotNetApis.Storage
         private const int Version = 0;
         private readonly CloudTable _table;
 
-        public AzurePackageTable(AzureConnections connections)
-        {
-            _table = GetTable(connections);
-        }
+        public static string TableName { get; } = "package" + Version;
 
-        private static CloudTable GetTable(AzureConnections connections)
+        public AzurePackageTable(CloudTable table)
         {
-            return connections.CloudTableClient.GetTableReference("package" + Version);
+            _table = table;
         }
-
-        public static Task InitializeAsync(AzureConnections connections) => GetTable(connections).CreateIfNotExistsAsync();
 
         public async Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idver)
         {

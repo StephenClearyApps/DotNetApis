@@ -48,15 +48,13 @@ namespace DotNetApis.Storage
         /// </summary>
         private const int Version = 0;
         private readonly CloudTable _table;
-        
-        public AzureReferenceXmldocTable(AzureConnections connections)
+
+        public static string TableName { get; } = "referencexmldoc" + Version;
+
+        public AzureReferenceXmldocTable(CloudTable table)
         {
-            _table = GetTable(connections);
+            _table = table;
         }
-
-        private static CloudTable GetTable(AzureConnections connections) => connections.CloudTableClient.GetTableReference("referencexmldoc" + Version);
-
-        public static Task InitializeAsync(AzureConnections connections) => GetTable(connections).CreateIfNotExistsAsync();
 
         public ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc)
         {

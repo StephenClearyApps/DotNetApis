@@ -11,6 +11,7 @@ using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
 using Newtonsoft.Json;
 
+#if NO
 namespace FunctionApp
 {
     public static class GenerateFunction
@@ -44,3 +45,4 @@ namespace FunctionApp
         }
     }
 }
+#endif

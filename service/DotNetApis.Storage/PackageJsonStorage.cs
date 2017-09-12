@@ -31,15 +31,13 @@ namespace DotNetApis.Storage
         private readonly ILogger _logger;
         private readonly CloudBlobContainer _container;
 
-        public AzurePackageJsonStorage(ILogger logger, AzureConnections connections)
+        public static string ContainerName { get; } = "packagejson" + JsonFactory.Version;
+
+        public AzurePackageJsonStorage(ILogger logger, CloudBlobContainer container)
         {
             _logger = logger;
-            _container = GetContainer(connections);
+            _container = container;
         }
-
-        private static CloudBlobContainer GetContainer(AzureConnections connections) => connections.CloudBlobClient.GetContainerReference("packagejson" + JsonFactory.Version);
-
-        public static Task InitializeAsync(AzureConnections connections) => GetContainer(connections).CreateIfNotExistsAsync();
 
         public Uri GetUri(NugetPackageIdVersion idver, PlatformTarget target) => _container.GetBlockBlobReference(GetBlobPath(idver, target)).Uri;
 

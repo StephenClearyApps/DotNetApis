@@ -34,14 +34,12 @@ namespace DotNetApis.Storage
         private const int Version = 0;
         private readonly CloudTable _table;
 
-        public AzurePackageJsonTable(AzureConnections connections)
+        public static string TableName { get; } = "packagejson" + Version + "x" + JsonFactory.Version;
+
+        public AzurePackageJsonTable(CloudTable table)
         {
-            _table = GetTable(connections);
+            _table = table;
         }
-
-        private static CloudTable GetTable(AzureConnections connections) => connections.CloudTableClient.GetTableReference("packagejson" + Version + "x" + JsonFactory.Version);
-
-        public static Task InitializeAsync(AzureConnections connections) => GetTable(connections).CreateIfNotExistsAsync();
 
         public async Task<string> TryGetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target)
         {

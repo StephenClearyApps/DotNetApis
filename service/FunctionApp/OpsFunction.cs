@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SimpleInjector.Lifestyles;
 
+#if NO
 namespace FunctionApp
 {
     public static class OpsFunction
@@ -45,3 +46,4 @@ namespace FunctionApp
         }
     }
 }
+#endif
