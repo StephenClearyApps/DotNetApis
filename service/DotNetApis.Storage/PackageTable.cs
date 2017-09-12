@@ -49,9 +49,9 @@ namespace DotNetApis.Storage
 
         public static string TableName { get; } = "package" + Version;
 
-        public AzurePackageTable(InstanceOf<CloudTable>.For<AzurePackageTable> table)
+        public AzurePackageTable(CloudTable table)
         {
-            _table = table.Value;
+            _table = table;
         }
 
         public async Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idver)

@@ -39,6 +39,7 @@ namespace FunctionApp
                 var container = new Container();
                 container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
                 container.Options.DefaultLifestyle = Lifestyle.Scoped;
+                container.UseAutomaticInstanceOf();
                 container.RegisterSingleton<IReferenceStorage>(referenceStorage);
                 container.RegisterSingleton(referenceAssemblies);
                 container.RegisterSingleton(packageStorageCloudBlobContainer);
@@ -67,7 +68,7 @@ namespace FunctionApp
         }
 
         private static readonly AsyncLazy<ReferenceAssemblies> ReferenceAssembliesInstance = CreateAsync(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
-        private static readonly AsyncLazy<AzureReferenceStorage> ReferenceStorageInstance = CreateAsync(async () => new AzureReferenceStorage(await ReferenceStorageCloudBlobContainer));
+        private static readonly AsyncLazy<AzureReferenceStorage> ReferenceStorageInstance = CreateAsync(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value));
 
         private static readonly AsyncLazy<InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage>> ReferenceStorageCloudBlobContainer = CreateContainerAsync<AzureReferenceStorage>(AzureReferenceStorage.ContainerName);
         private static readonly AsyncLazy<InstanceOf<CloudTable>.For<AzureReferenceXmldocTable>> ReferenceXmldocTableCloudTable = CreateTableAsync<AzureReferenceXmldocTable>(AzureReferenceXmldocTable.TableName);

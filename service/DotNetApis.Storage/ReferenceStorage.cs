@@ -28,9 +28,9 @@ namespace DotNetApis.Storage
 
         public static string ContainerName { get; } = "reference";
 
-        public AzureReferenceStorage(InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage> container)
+        public AzureReferenceStorage(CloudBlobContainer container)
         {
-            _container = container.Value;
+            _container = container;
         }
 
         public Task<List<string>> GetFoldersAsync() => ListAsync(null, results => results.OfType<CloudBlobDirectory>().Select(x => x.Prefix.TrimEnd('/')));

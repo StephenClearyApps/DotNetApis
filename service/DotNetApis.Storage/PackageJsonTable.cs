@@ -37,9 +37,9 @@ namespace DotNetApis.Storage
 
         public static string TableName { get; } = "packagejson" + Version + "x" + JsonFactory.Version;
 
-        public AzurePackageJsonTable(InstanceOf<CloudTable>.For<AzurePackageJsonTable> table)
+        public AzurePackageJsonTable(CloudTable table)
         {
-            _table = table.Value;
+            _table = table;
         }
 
         public async Task<string> TryGetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target)

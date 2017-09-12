@@ -30,10 +30,10 @@ namespace DotNetApis.Storage
 
         public static string ContainerName { get; } = "package";
 
-        public AzurePackageStorage(ILogger logger, InstanceOf<CloudBlobContainer>.For<AzurePackageStorage> container)
+        public AzurePackageStorage(ILogger logger, CloudBlobContainer container)
         {
             _logger = logger;
-            _container = container.Value;
+            _container = container;
         }
 
         public async Task<NugetPackage> LoadAsync(string path)
