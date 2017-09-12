@@ -113,6 +113,7 @@
     <Compile Include="AmbientContext.cs" />
     <Compile Include="TraceWriterLogger.cs" />
     <Compile Include="Compression.cs" />
+    <Compile Include="AsyncTupleHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
