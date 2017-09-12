@@ -1,4 +1,5 @@
 ﻿using System;
+using DotNetApis.Common;
 using DotNetApis.Logic.Messages;
 
 namespace FunctionApp.Messages
@@ -8,8 +9,8 @@ namespace FunctionApp.Messages
     /// </summary>
     public sealed class GenerateRequestQueuedResponseMessage : MessageBase
     {
-        public GenerateRequestQueuedResponseMessage()
-            : base(includeLog: true)
+        public GenerateRequestQueuedResponseMessage(InMemoryLogger inMemoryLogger)
+            : base(inMemoryLogger)
         {
         }
 

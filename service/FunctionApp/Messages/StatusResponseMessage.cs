@@ -1,4 +1,5 @@
 ﻿using System;
+using DotNetApis.Common;
 using DotNetApis.Logic.Messages;
 using DotNetApis.Storage;
 
@@ -9,8 +10,8 @@ namespace FunctionApp.Messages
     /// </summary>
     public sealed class StatusResponseMessage : MessageBase
     {
-        public StatusResponseMessage()
-            : base(includeLog: true)
+        public StatusResponseMessage(InMemoryLogger inMemoryLogger)
+            : base(inMemoryLogger)
         {
         }
 

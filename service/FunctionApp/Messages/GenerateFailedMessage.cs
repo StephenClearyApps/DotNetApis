@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Logic.Messages;
 
 namespace FunctionApp.Messages
 {
     public sealed class GenerateFailedMessage : MessageBase
     {
-        public GenerateFailedMessage()
-            : base(includeLog: true)
+        public GenerateFailedMessage(InMemoryLogger inMemoryLogger)
+            : base(inMemoryLogger)
         {
         }
 

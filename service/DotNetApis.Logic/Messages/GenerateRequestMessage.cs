@@ -8,7 +8,7 @@ namespace DotNetApis.Logic.Messages
     public sealed class GenerateRequestMessage : MessageBase
     {
         public GenerateRequestMessage()
-            : base(includeLog: false)
+            : base(null)
         {
         }
 

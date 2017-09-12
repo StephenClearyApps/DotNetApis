@@ -22,9 +22,8 @@ namespace FunctionApp
 {
     public static class CompositionRoot
     {
-        public static async Task<Container> GetContainerForDocumentationFunctionAsync(ILogger log, TraceWriter writer, bool requestIsLocal)
+        public static async Task<Container> GetContainerForDocumentationFunctionAsync(ILogger log, TraceWriter writer, bool requestIsLocal, InMemoryLogger inMemoryLogger)
         {
-            var inMemoryLogger = new InMemoryLogger();
             var logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, requestIsLocal ? new TraceWriterLogger(writer) : null));
             try
             {

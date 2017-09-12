@@ -12,14 +12,10 @@ namespace DotNetApis.Common
     /// </summary>
     public static class AmbientContext
     {
-        private static readonly AsyncLocal<InMemoryLogger> _inMemoryLogger = new AsyncLocal<InMemoryLogger>();
-        private static readonly AsyncLocal<IImmutableSet<ILogger>> _loggers = new AsyncLocal<IImmutableSet<ILogger>>();
         private static readonly AsyncLocal<Guid> _operationId = new AsyncLocal<Guid>();
         private static readonly AsyncLocal<Guid> _parentOperationId = new AsyncLocal<Guid>();
         private static readonly AsyncLocal<string> _requestId = new AsyncLocal<string>();
 
-        public static IEnumerable<ILogger> Loggers => _loggers.Value;
-        public static InMemoryLogger InMemoryLogger => _inMemoryLogger.Value;
         public static Guid OperationId => _operationId.Value;
         public static Guid ParentOperationId
         {
@@ -33,9 +29,6 @@ namespace DotNetApis.Common
         /// </summary>
         public static void InitializeForHttpApi(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
         {
-            var inMemoryLogger = new InMemoryLogger();
-            _loggers.Value = Enumerables.Return(inMemoryLogger, log, requestIsLocal ? new TraceWriterLogger(writer) : null).ToImmutableHashSet();
-            _inMemoryLogger.Value = inMemoryLogger;
             _operationId.Value = operationId;
             _requestId.Value = requestId;
         }
@@ -43,22 +36,22 @@ namespace DotNetApis.Common
         /// <summary>
         /// Sets the values for backend queue-triggered functions.
         /// </summary>
-        public static void InitializeForQueueProcessing(ILogger log, TraceWriter writer, Guid operationId)
-        {
-            var inMemoryLogger = new InMemoryLogger();
-            _loggers.Value = Enumerables.Return(inMemoryLogger, log, new TraceWriterLogger(writer)).ToImmutableHashSet(); // TODO: Ably
-            _inMemoryLogger.Value = inMemoryLogger;
-            _operationId.Value = operationId;
-        }
+        //public static void InitializeForQueueProcessing(ILogger log, TraceWriter writer, Guid operationId)
+        //{
+        //    var inMemoryLogger = new InMemoryLogger();
+        //    _loggers.Value = Enumerables.Return(inMemoryLogger, log, new TraceWriterLogger(writer)).ToImmutableHashSet(); // TODO: Ably
+        //    _inMemoryLogger.Value = inMemoryLogger;
+        //    _operationId.Value = operationId;
+        //}
 
         /// <summary>
         /// Sets the values for manual HTTP-triggered functions.
         /// </summary>
-        public static void InitializeForManualHttpTrigger(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
-        {
-            _loggers.Value = Enumerables.Return(log, requestIsLocal ? new TraceWriterLogger(writer) : null).ToImmutableHashSet();
-            _operationId.Value = operationId;
-            _requestId.Value = requestId;
-        }
+        //public static void InitializeForManualHttpTrigger(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
+        //{
+        //    _loggers.Value = Enumerables.Return(log, requestIsLocal ? new TraceWriterLogger(writer) : null).ToImmutableHashSet();
+        //    _operationId.Value = operationId;
+        //    _requestId.Value = requestId;
+        //}
     }
 }

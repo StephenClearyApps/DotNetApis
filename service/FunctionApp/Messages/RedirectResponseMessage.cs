@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Logic.Messages;
 
 namespace FunctionApp.Messages
@@ -12,8 +13,8 @@ namespace FunctionApp.Messages
     /// </summary>
     public sealed class RedirectResponseMessage : MessageBase
     {
-        public RedirectResponseMessage()
-            : base(includeLog: true)
+        public RedirectResponseMessage(InMemoryLogger inMemoryLogger)
+            : base(inMemoryLogger)
         {
         }
     }

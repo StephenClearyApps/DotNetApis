@@ -9,10 +9,9 @@ namespace DotNetApis.Logic.Messages
     /// </summary>
     public abstract class MessageBase
     {
-        protected MessageBase(bool includeLog)
+        protected MessageBase(InMemoryLogger inMemoryLogger)
         {
-            if (includeLog)
-                Log = AmbientContext.InMemoryLogger?.Messages;
+            Log = inMemoryLogger?.Messages;
         }
 
         /// <summary>

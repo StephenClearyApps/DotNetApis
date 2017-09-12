@@ -26,10 +26,11 @@ namespace FunctionApp
             [Queue("generate")] IAsyncCollector<CloudQueueMessage> generateQueue,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
+            var inMemoryLogger = new InMemoryLogger();
             AmbientContext.InitializeForHttpApi(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
-            req.ApplyRequestHandlingDefaults(context);
+            req.ApplyRequestHandlingDefaults(context, inMemoryLogger);
 
-            var container = await CompositionRoot.GetContainerForDocumentationFunctionAsync(log, writer, req.IsLocal()).ConfigureAwait(false);
+            var container = await CompositionRoot.GetContainerForDocumentationFunctionAsync(log, writer, req.IsLocal(), inMemoryLogger).ConfigureAwait(false);
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 var logger = container.GetInstance<ILogger>();
@@ -61,7 +62,7 @@ namespace FunctionApp
                     {
                         logger.LogDebug("Redirecting to {uri}", uri);
                         var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
-                        return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage()).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
+                        return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage(inMemoryLogger)).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
                     }
 
                     // Forward the request to the processing queue.
@@ -77,7 +78,7 @@ namespace FunctionApp
                     await generateQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
 
                     logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
-                    return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
+                    return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage(inMemoryLogger)
                     {
                         Timestamp = timestamp,
                         NormalizedPackageId = idver.PackageId,
@@ -88,7 +89,7 @@ namespace FunctionApp
                 catch (ExpectedException ex)
                 {
                     logger.LogInformation("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
-                    return req.CreateErrorResponseWithLog(ex);
+                    return req.CreateErrorResponseWithLog(ex, inMemoryLogger);
                 }
             }
         }
