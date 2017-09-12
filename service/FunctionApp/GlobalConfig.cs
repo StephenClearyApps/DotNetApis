@@ -56,9 +56,6 @@ namespace FunctionApp
                 // Use invariant culture by default.
                 CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
-                // Initialize all Azure resources.
-                InitializeAzureResourcesAsync().GetAwaiter().GetResult();
-
                 return null;
             }, LazyThreadSafetyMode.PublicationOnly);
         }
@@ -86,12 +83,6 @@ namespace FunctionApp
                     AzureReferenceStorage.InitializeAsync(connections),
                     AzureReferenceXmldocTable.InitializeAsync(connections))
                 .ConfigureAwait(false);
-        }
-
-        private static async Task InitializeReferenceAssembliesAsync(AzureConnections connections)
-        {
-            await AzureReferenceStorage.InitializeAsync(connections);
-            await ReferenceAssemblies.CreateAsync(Container.GetInstance<ILogger>(), Container.GetInstance<IReferenceStorage>());
         }
     }
 }

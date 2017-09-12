@@ -29,9 +29,10 @@ namespace FunctionApp
             AmbientContext.InitializeForHttpApi(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
             req.ApplyRequestHandlingDefaults(context);
 
-            using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
+            var container = await CompositionRoot.GetContainerForDocumentationFunctionAsync(log, writer, req.IsLocal()).ConfigureAwait(false);
+            using (AsyncScopedLifestyle.BeginScope(container))
             {
-                var logger = GlobalConfig.Container.GetInstance<ILogger>();
+                var logger = container.GetInstance<ILogger>();
                 try
                 {
                     GlobalConfig.Initialize();
@@ -51,7 +52,7 @@ namespace FunctionApp
                     }
 
                     // Normalize the user request (determine version and target framework if not specified).
-                    var handler = GlobalConfig.Container.GetInstance<DocRequestHandler>();
+                    var handler = container.GetInstance<DocRequestHandler>();
                     var (idver, target) = await handler.NormalizeRequestAsync(packageId, packageVersion, targetFramework).ConfigureAwait(false);
 
                     // If the JSON is already there, then redirect the user to it.

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DotNetApis.Nuget;
@@ -21,13 +22,13 @@ namespace DotNetApis.Logic
         /// </summary>
         public IReadOnlyList<ReferenceTarget> ReferenceTargets { get; private set; }
 
-        public static async Task<ReferenceAssemblies> CreateAsync(ILogger logger, IReferenceStorage referenceStorage)
+        public static async Task<ReferenceAssemblies> CreateAsync(IReferenceStorage referenceStorage)
         {
             var folders = await referenceStorage.GetFoldersAsync().ConfigureAwait(false);
-            var targets = await Task.WhenAll(folders.Select(x => ReferenceTarget.TryCreateAsync(x, logger, referenceStorage))).ConfigureAwait(false);
+            var targets = await Task.WhenAll(folders.Select(x => ReferenceTarget.CreateAsync(x, referenceStorage))).ConfigureAwait(false);
             return new ReferenceAssemblies
             {
-                ReferenceTargets = targets.Where(x => x != null).ToList(),
+                ReferenceTargets = targets.ToList(),
             };
         }
 
@@ -46,14 +47,11 @@ namespace DotNetApis.Logic
             /// </summary>
             public IReadOnlyList<string> Paths { get; private set; }
 
-            public static async Task<ReferenceTarget> TryCreateAsync(string path, ILogger logger, IReferenceStorage referenceStorage)
+            public static async Task<ReferenceTarget> CreateAsync(string path, IReferenceStorage referenceStorage)
             {
                 var target = PlatformTarget.TryParse(path.TrimEnd('/'));
                 if (target == null)
-                {
-                    logger.LogWarning("Unrecognized reference target framework {path}", path);
-                    return null;
-                }
+                    throw new InvalidOperationException($"Unrecognized reference target framework {path}");
 
                 return new ReferenceTarget
                 {
