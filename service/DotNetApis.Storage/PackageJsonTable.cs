@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -36,9 +37,9 @@ namespace DotNetApis.Storage
 
         public static string TableName { get; } = "packagejson" + Version + "x" + JsonFactory.Version;
 
-        public AzurePackageJsonTable(CloudTable table)
+        public AzurePackageJsonTable(InstanceOf<CloudTable>.For<AzurePackageJsonTable> table)
         {
-            _table = table;
+            _table = table.Value;
         }
 
         public async Task<string> TryGetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target)

@@ -33,10 +33,10 @@ namespace DotNetApis.Storage
 
         public static string ContainerName { get; } = "packagejson" + JsonFactory.Version;
 
-        public AzurePackageJsonStorage(ILogger logger, CloudBlobContainer container)
+        public AzurePackageJsonStorage(ILogger logger, InstanceOf<CloudBlobContainer>.For<AzurePackageJsonStorage> container)
         {
             _logger = logger;
-            _container = container;
+            _container = container.Value;
         }
 
         public Uri GetUri(NugetPackageIdVersion idver, PlatformTarget target) => _container.GetBlockBlobReference(GetBlobPath(idver, target)).Uri;

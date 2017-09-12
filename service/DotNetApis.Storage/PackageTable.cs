@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using Microsoft.WindowsAzure.Storage.Table;
 
@@ -48,9 +49,9 @@ namespace DotNetApis.Storage
 
         public static string TableName { get; } = "package" + Version;
 
-        public AzurePackageTable(CloudTable table)
+        public AzurePackageTable(InstanceOf<CloudTable>.For<AzurePackageTable> table)
         {
-            _table = table;
+            _table = table.Value;
         }
 
         public async Task<PackageTableRecord?> TryGetRecordAsync(NugetPackageIdVersion idver)

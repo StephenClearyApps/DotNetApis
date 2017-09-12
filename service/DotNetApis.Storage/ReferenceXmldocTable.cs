@@ -51,9 +51,9 @@ namespace DotNetApis.Storage
 
         public static string TableName { get; } = "referencexmldoc" + Version;
 
-        public AzureReferenceXmldocTable(CloudTable table)
+        public AzureReferenceXmldocTable(InstanceOf<CloudTable>.For<AzureReferenceXmldocTable> table)
         {
-            _table = table;
+            _table = table.Value;
         }
 
         public ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc)

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob;
@@ -29,10 +30,10 @@ namespace DotNetApis.Storage
 
         public static string ContainerName { get; } = "package";
 
-        public AzurePackageStorage(ILogger logger, CloudBlobContainer container)
+        public AzurePackageStorage(ILogger logger, InstanceOf<CloudBlobContainer>.For<AzurePackageStorage> container)
         {
             _logger = logger;
-            _container = container;
+            _container = container.Value;
         }
 
         public async Task<NugetPackage> LoadAsync(string path)

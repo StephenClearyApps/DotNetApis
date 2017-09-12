@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace DotNetApis.Storage
@@ -27,9 +28,9 @@ namespace DotNetApis.Storage
 
         public static string ContainerName { get; } = "reference";
 
-        public AzureReferenceStorage(CloudBlobContainer container)
+        public AzureReferenceStorage(InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage> container)
         {
-            _container = container;
+            _container = container.Value;
         }
 
         public Task<List<string>> GetFoldersAsync() => ListAsync(null, results => results.OfType<CloudBlobDirectory>().Select(x => x.Prefix.TrimEnd('/')));
