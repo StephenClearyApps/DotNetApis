@@ -29,7 +29,7 @@ namespace FunctionApp
             _handler = handler;
         }
 
-        public async Task<HttpResponseMessage> RunAsync(InMemoryLogger inMemoryLogger, HttpRequestMessage req, IAsyncCollector<CloudQueueMessage> generateQueue)
+        public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req, IAsyncCollector<CloudQueueMessage> generateQueue)
         {
             try
             {
@@ -58,7 +58,7 @@ namespace FunctionApp
                 {
                     _logger.LogDebug("Redirecting to {uri}", uri);
                     var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
-                    return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage(inMemoryLogger)).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
+                    return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage()).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
                 }
 
                 // Forward the request to the processing queue.
@@ -74,7 +74,7 @@ namespace FunctionApp
                 await generateQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
 
                 _logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
-                return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage(inMemoryLogger)
+                return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
                 {
                     Timestamp = timestamp,
                     NormalizedPackageId = idver.PackageId,
@@ -85,7 +85,7 @@ namespace FunctionApp
             catch (ExpectedException ex)
             {
                 _logger.LogInformation("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
-                return req.CreateErrorResponseWithLog(ex, inMemoryLogger);
+                return req.CreateErrorResponseWithLog(ex);
             }
         }
 
@@ -95,15 +95,16 @@ namespace FunctionApp
             [Queue("generate")] IAsyncCollector<CloudQueueMessage> generateQueue,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
-            var inMemoryLogger = new InMemoryLogger();
-            AmbientContext.InitializeForHttpApi(req.TryGetRequestId(), context.InvocationId);
-            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
-            req.ApplyRequestHandlingDefaults(context, inMemoryLogger);
+            AmbientContext.InMemoryLogger = new InMemoryLogger();
+            AmbientContext.OperationId = context.InvocationId;
+            AmbientContext.RequestId = req.TryGetRequestId();
+            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
+            req.ApplyRequestHandlingDefaults(context);
 
             var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
             using (AsyncScopedLifestyle.BeginScope(container))
             {
-                return await container.GetInstance<DocumentationFunction>().RunAsync(inMemoryLogger, req, generateQueue);
+                return await container.GetInstance<DocumentationFunction>().RunAsync(req, generateQueue);
             }
         }
     }

@@ -7,11 +7,6 @@ namespace DotNetApis.Logic.Messages
     /// </summary>
     public sealed class GenerateRequestMessage : MessageBase
     {
-        public GenerateRequestMessage()
-            : base(null)
-        {
-        }
-
         /// <summary>
         /// The schema version of this message structure.
         /// </summary>

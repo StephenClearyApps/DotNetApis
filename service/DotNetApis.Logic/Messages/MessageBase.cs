@@ -9,11 +9,6 @@ namespace DotNetApis.Logic.Messages
     /// </summary>
     public abstract class MessageBase
     {
-        protected MessageBase(InMemoryLogger inMemoryLogger)
-        {
-            Log = inMemoryLogger?.Messages;
-        }
-
         /// <summary>
         /// The AppInsights operation id.
         /// </summary>
@@ -28,10 +23,5 @@ namespace DotNetApis.Logic.Messages
         /// The HTTP request id.
         /// </summary>
         public string RequestId { get; set; } = AmbientContext.RequestId;
-
-        /// <summary>
-        /// The trace log for this request.
-        /// </summary>
-        public IReadOnlyList<string> Log { get; }
     }
 }

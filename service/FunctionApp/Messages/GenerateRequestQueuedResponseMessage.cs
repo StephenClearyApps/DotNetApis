@@ -1,5 +1,4 @@
 ﻿using System;
-using DotNetApis.Common;
 using DotNetApis.Logic.Messages;
 
 namespace FunctionApp.Messages
@@ -7,13 +6,8 @@ namespace FunctionApp.Messages
     /// <summary>
     /// The message returned from the HTTP trigger function if it has queued a <see cref="GenerateRequestMessage"/>.
     /// </summary>
-    public sealed class GenerateRequestQueuedResponseMessage : MessageBase
+    public sealed class GenerateRequestQueuedResponseMessage : MessageBaseWithLog
     {
-        public GenerateRequestQueuedResponseMessage(InMemoryLogger inMemoryLogger)
-            : base(inMemoryLogger)
-        {
-        }
-
         /// <summary>
         /// The timestamp of the request.
         /// </summary>

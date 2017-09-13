@@ -107,6 +107,7 @@
     <Compile Include="Assemblies\ReferenceAssembly.cs" />
     <Compile Include="Formatting\XmldocFormatter.cs" />
     <Compile Include="FriendlyName.cs" />
+    <Compile Include="Messages\MessageBaseWithLog.cs" />
     <Compile Include="NugetPackageDependencyResolver.cs" />
     <Compile Include="ProcessReferenceXmldocHandler.cs" />
     <Compile Include="ReferenceAssemblies.cs" />

@@ -11,7 +11,7 @@ namespace FunctionApp
 {
     public static class ExpectedExceptionExtensions
     {
-        public static HttpResponseMessage CreateErrorResponseWithLog(this HttpRequestMessage @this, ExpectedException exception, InMemoryLogger inMemoryLogger) =>
-            @this.CreateErrorResponse(exception.HttpStatusCode, DetailedExceptionHandler.DetailExceptionsWithLog(@this, exception, inMemoryLogger));
+        public static HttpResponseMessage CreateErrorResponseWithLog(this HttpRequestMessage @this, ExpectedException exception) =>
+            @this.CreateErrorResponse(exception.HttpStatusCode, DetailedExceptionHandler.DetailExceptionsWithLog(@this, exception));
     }
 }

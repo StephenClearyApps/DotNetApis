@@ -1,5 +1,4 @@
 ﻿using System;
-using DotNetApis.Common;
 using DotNetApis.Logic.Messages;
 using DotNetApis.Storage;
 
@@ -8,13 +7,8 @@ namespace FunctionApp.Messages
     /// <summary>
     /// The message returned from the HTTP trigger function to .
     /// </summary>
-    public sealed class StatusResponseMessage : MessageBase
+    public sealed class StatusResponseMessage : MessageBaseWithLog
     {
-        public StatusResponseMessage(InMemoryLogger inMemoryLogger)
-            : base(inMemoryLogger)
-        {
-        }
-
         public Status Status { get; set; }
 
         public Uri LogUri { get; set; }

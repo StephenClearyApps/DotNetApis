@@ -12,25 +12,47 @@ namespace DotNetApis.Common
     /// </summary>
     public static class AmbientContext
     {
-        private static readonly AsyncLocal<Guid> _operationId = new AsyncLocal<Guid>();
-        private static readonly AsyncLocal<Guid> _parentOperationId = new AsyncLocal<Guid>();
-        private static readonly AsyncLocal<string> _requestId = new AsyncLocal<string>();
+        private static readonly AsyncLocal<Guid> ImplicitOperationId = new AsyncLocal<Guid>();
+        private static readonly AsyncLocal<Guid> ImplicitParentOperationId = new AsyncLocal<Guid>();
+        private static readonly AsyncLocal<string> ImplicitRequestId = new AsyncLocal<string>();
+        private static readonly AsyncLocal<InMemoryLogger> ImplicitInMemoryLogger = new AsyncLocal<InMemoryLogger>();
 
-        public static Guid OperationId => _operationId.Value;
+        public static Guid OperationId
+        {
+            get => ImplicitOperationId.Value;
+            set => ImplicitOperationId.Value = value;
+        }
         public static Guid ParentOperationId
         {
-            get => _parentOperationId.Value;
-            set => _parentOperationId.Value = value;
+            get => ImplicitParentOperationId.Value;
+            set => ImplicitParentOperationId.Value = value;
         }
-        public static string RequestId => _requestId.Value;
+
+        /// <summary>
+        /// May return <c>null</c>.
+        /// </summary>
+        public static string RequestId
+        {
+            get => ImplicitRequestId.Value;
+            set => ImplicitRequestId.Value = value;
+        }
+
+        /// <summary>
+        /// May return <c>null</c>.
+        /// </summary>
+        public static InMemoryLogger InMemoryLogger
+        {
+            get => ImplicitInMemoryLogger.Value;
+            set => ImplicitInMemoryLogger.Value = value;
+        }
 
         /// <summary>
         /// Sets the values for HTTP-triggered API functions.
         /// </summary>
         public static void InitializeForHttpApi(string requestId, Guid operationId)
         {
-            _operationId.Value = operationId;
-            _requestId.Value = requestId;
+            ImplicitOperationId.Value = operationId;
+            ImplicitRequestId.Value = requestId;
         }
 
         /// <summary>

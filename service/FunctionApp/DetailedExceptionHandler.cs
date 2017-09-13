@@ -16,26 +16,19 @@ namespace FunctionApp
 {
     public sealed class DetailedExceptionHandler : ExceptionHandler
     {
-        private readonly InMemoryLogger _inMemoryLogger;
-
-        public DetailedExceptionHandler(InMemoryLogger inMemoryLogger)
-        {
-            _inMemoryLogger = inMemoryLogger;
-        }
-
         public override void Handle(ExceptionHandlerContext context)
         {
             var exception = context.Exception is FunctionInvocationException && context.Exception.InnerException != null ? context.Exception.InnerException : context.Exception;
-            context.Result = new ResponseMessageResult(context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, DetailExceptionsWithLog(context.Request, exception, _inMemoryLogger)));
+            context.Result = new ResponseMessageResult(context.Request.CreateErrorResponse(HttpStatusCode.InternalServerError, DetailExceptionsWithLog(context.Request, exception)));
         }
 
-        public static HttpError DetailExceptionsWithLog(HttpRequestMessage message, Exception exception, InMemoryLogger inMemoryLogger)
+        public static HttpError DetailExceptionsWithLog(HttpRequestMessage message, Exception exception)
         {
             var result = new HttpError(exception, includeErrorDetail: true);
 
             // Attempt to capture a log from the in-memory logger.
-            if (inMemoryLogger != null)
-                result.Add("log", inMemoryLogger.Messages);
+            if (AmbientContext.InMemoryLogger != null)
+                result.Add("log", AmbientContext.InMemoryLogger.Messages);
 
             // Attempt to write the Application Insights operation id (Azure Functions invocation id).
             var operationId = AmbientContext.OperationId;
