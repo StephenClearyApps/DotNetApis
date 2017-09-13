@@ -9,13 +9,11 @@ using DotNetApis.Logic;
 using DotNetApis.Nuget;
 using DotNetApis.SimpleInjector;
 using DotNetApis.Storage;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage.Table;
-using Nito.AsyncEx;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
@@ -36,10 +34,10 @@ namespace FunctionApp
             }
         }
 
-        private static readonly AsyncLazy<Container> Container = CreateAsync(async () =>
+        private static readonly IAsyncSingleton<Container> Container = Singleton.Create(async () =>
         {
-            var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Task, ReferenceAssembliesInstance.Task, PackageStorageCloudBlobContainer.Task,
-                PackageTableCloudTable.Task, PackageJsonTableCloudTable.Task, PackageJsonStorageCloudBlobContainer.Task, ReferenceXmldocTableCloudTable.Task);
+            var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Value, ReferenceAssembliesInstance.Value, PackageStorageCloudBlobContainer.Value,
+                PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value);
 
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
@@ -60,34 +58,34 @@ namespace FunctionApp
             return container;
         });
 
-        private static readonly AsyncLazy<ReferenceAssemblies> ReferenceAssembliesInstance = CreateAsync(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
-        private static readonly AsyncLazy<IReferenceStorage> ReferenceStorageInstance = CreateAsync(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value) as IReferenceStorage);
+        private static readonly IAsyncSingleton<ReferenceAssemblies> ReferenceAssembliesInstance = Singleton.Create(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
+        private static readonly IAsyncSingleton<IReferenceStorage> ReferenceStorageInstance = Singleton.Create(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value) as IReferenceStorage);
 
-        private static readonly AsyncLazy<InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage>> ReferenceStorageCloudBlobContainer = CreateContainerAsync<AzureReferenceStorage>(AzureReferenceStorage.ContainerName);
-        private static readonly AsyncLazy<InstanceOf<CloudTable>.For<AzureReferenceXmldocTable>> ReferenceXmldocTableCloudTable = CreateTableAsync<AzureReferenceXmldocTable>(AzureReferenceXmldocTable.TableName);
-        private static readonly AsyncLazy<InstanceOf<CloudBlobContainer>.For<AzurePackageJsonStorage>> PackageJsonStorageCloudBlobContainer = CreateContainerAsync<AzurePackageJsonStorage>(AzurePackageJsonStorage.ContainerName);
-        private static readonly AsyncLazy<InstanceOf<CloudTable>.For<AzurePackageJsonTable>> PackageJsonTableCloudTable = CreateTableAsync<AzurePackageJsonTable>(AzurePackageJsonTable.TableName);
-        private static readonly AsyncLazy<InstanceOf<CloudTable>.For<AzurePackageTable>> PackageTableCloudTable = CreateTableAsync<AzurePackageTable>(AzurePackageTable.TableName);
-        private static readonly AsyncLazy<InstanceOf<CloudBlobContainer>.For<AzurePackageStorage>> PackageStorageCloudBlobContainer = CreateContainerAsync<AzurePackageStorage>(AzurePackageStorage.ContainerName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage>> ReferenceStorageCloudBlobContainer = CreateContainerAsync<AzureReferenceStorage>(AzureReferenceStorage.ContainerName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudTable>.For<AzureReferenceXmldocTable>> ReferenceXmldocTableCloudTable = CreateTableAsync<AzureReferenceXmldocTable>(AzureReferenceXmldocTable.TableName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzurePackageJsonStorage>> PackageJsonStorageCloudBlobContainer = CreateContainerAsync<AzurePackageJsonStorage>(AzurePackageJsonStorage.ContainerName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudTable>.For<AzurePackageJsonTable>> PackageJsonTableCloudTable = CreateTableAsync<AzurePackageJsonTable>(AzurePackageJsonTable.TableName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudTable>.For<AzurePackageTable>> PackageTableCloudTable = CreateTableAsync<AzurePackageTable>(AzurePackageTable.TableName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzurePackageStorage>> PackageStorageCloudBlobContainer = CreateContainerAsync<AzurePackageStorage>(AzurePackageStorage.ContainerName);
 
         // Special-purpose factory methods to reduce code duplication.
-        private static AsyncLazy<InstanceOf<CloudBlobContainer>.For<T>> CreateContainerAsync<T>(string name) => CreateAsync(async () =>
+        private static IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<T>> CreateContainerAsync<T>(string name) => Singleton.Create(async () =>
         {
             var client = await CloudBlobClientInstance;
             var result = client.GetContainerReference(name);
             await result.CreateIfNotExistsAsync();
             return new InstanceOf<CloudBlobContainer>.For<T>(result);
         });
-        private static AsyncLazy<InstanceOf<CloudTable>.For<T>> CreateTableAsync<T>(string name) => CreateAsync(async () =>
+        private static IAsyncSingleton<InstanceOf<CloudTable>.For<T>> CreateTableAsync<T>(string name) => Singleton.Create(async () =>
         {
             var result = CloudTableClientInstance.Value.GetTableReference(name);
             await result.CreateIfNotExistsAsync();
             return new InstanceOf<CloudTable>.For<T>(result);
         });
 
-        private static readonly Lazy<CloudTableClient> CloudTableClientInstance = Create(() => CloudStorageAccountInstance.Value.CreateCloudTableClient());
+        private static readonly ISingleton<CloudTableClient> CloudTableClientInstance = Singleton.Create(() => CloudStorageAccountInstance.Value.CreateCloudTableClient());
 
-        private static readonly AsyncLazy<CloudBlobClient> CloudBlobClientInstance = CreateAsync(async () =>
+        private static readonly IAsyncSingleton<CloudBlobClient> CloudBlobClientInstance = Singleton.Create(async () =>
         {
             var result = CloudStorageAccountInstance.Value.CreateCloudBlobClient();
             var properties = await result.GetServicePropertiesAsync();
@@ -104,16 +102,12 @@ namespace FunctionApp
             return result;
         });
 
-        private static readonly Lazy<CloudStorageAccount> CloudStorageAccountInstance = Create(() =>
+        private static readonly ISingleton<CloudStorageAccount> CloudStorageAccountInstance = Singleton.Create(() =>
         {
             var connectionString = Config.GetSetting("StorageConnectionString");
             if (connectionString == null)
                 throw new InvalidOperationException("No StorageConnectionString setting found; update your copy of local.settings.json to include this value.");
             return CloudStorageAccount.Parse(connectionString);
         });
-
-        // Factory methods with retries after failures.
-        private static AsyncLazy<T> CreateAsync<T>(Func<Task<T>> factory) => new AsyncLazy<T>(factory, AsyncLazyFlags.ExecuteOnCallingThread | AsyncLazyFlags.RetryOnFailure);
-        private static Lazy<T> Create<T>(Func<T> factory) => new Lazy<T>(factory, LazyThreadSafetyMode.PublicationOnly);
     }
 }
