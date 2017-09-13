@@ -23,6 +23,7 @@
     <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj" />
     <ProjectReference Include="..\DotNetApis.Logic\DotNetApis.Logic.csproj" />
     <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj" />
+    <ProjectReference Include="..\DotNetApis.SimpleInjector\DotNetApis.SimpleInjector.csproj" />
     <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj" />
   </ItemGroup>
   <ItemGroup>

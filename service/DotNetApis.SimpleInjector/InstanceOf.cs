@@ -1,4 +1,4 @@
-﻿namespace DotNetApis.Common
+﻿namespace DotNetApis.SimpleInjector
 {
     public static class InstanceOf<TValue>
     {

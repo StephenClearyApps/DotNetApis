@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Cecil", "DotNetA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Structure", "DotNetApis.Structure\DotNetApis.Structure.csproj", "{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.SimpleInjector", "DotNetApis.SimpleInjector\DotNetApis.SimpleInjector.csproj", "{32B3781A-0F8C-4736-B896-BCD59FBF6F56}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,6 +66,10 @@ Global
 		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32B3781A-0F8C-4736-B896-BCD59FBF6F56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32B3781A-0F8C-4736-B896-BCD59FBF6F56}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32B3781A-0F8C-4736-B896-BCD59FBF6F56}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32B3781A-0F8C-4736-B896-BCD59FBF6F56}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

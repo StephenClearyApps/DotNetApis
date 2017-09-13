@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Logic;
 using DotNetApis.Nuget;
+using DotNetApis.SimpleInjector;
 using DotNetApis.Storage;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;

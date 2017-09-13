@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using DotNetApis.Common;
 using SimpleInjector;
 using SimpleInjector.Advanced;
 
-namespace FunctionApp
+namespace DotNetApis.SimpleInjector
 {
     public sealed class AutomaticInstanceOf : IDependencyInjectionBehavior
     {
