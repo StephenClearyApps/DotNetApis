@@ -57,6 +57,7 @@ namespace FunctionApp
                 container.Register<IPackageJsonTable, AzurePackageJsonTable>();
                 container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
                 container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
+                container.Register<DocRequestHandler>();
                 container.Verify();
                 return container;
             }
