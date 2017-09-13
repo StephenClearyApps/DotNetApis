@@ -39,9 +39,6 @@ namespace FunctionApp
 
         private InstanceProducer TryGetRegistration(InjectionConsumerInfo consumer)
         {
-            if (consumer.ImplementationType.Name == "AzurePackageJsonTable")
-                Debugger.Break();
-
             var instanceOfType = typeof(InstanceOf<>.For<>).MakeGenericType(consumer.Target.TargetType, consumer.Target.Member.DeclaringType);
             return _container.GetCurrentRegistrations().FirstOrDefault(r => r.ServiceType == instanceOfType);
         }
