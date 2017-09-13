@@ -28,9 +28,10 @@ namespace FunctionApp
         {
             var inMemoryLogger = new InMemoryLogger();
             AmbientContext.InitializeForHttpApi(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
+            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
             req.ApplyRequestHandlingDefaults(context, inMemoryLogger);
 
-            var container = await CompositionRoot.GetContainerForDocumentationFunctionAsync(log, writer, req.IsLocal(), inMemoryLogger).ConfigureAwait(false);
+            var container = await CompositionRoot.GetContainerForDocumentationFunctionAsync().ConfigureAwait(false);
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 var logger = container.GetInstance<ILogger>();

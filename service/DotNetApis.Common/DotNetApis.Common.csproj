@@ -96,6 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncLocalCompositeLogger.cs" />
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />

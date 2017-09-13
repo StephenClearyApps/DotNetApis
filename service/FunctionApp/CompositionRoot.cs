@@ -23,9 +23,8 @@ namespace FunctionApp
 {
     public static class CompositionRoot
     {
-        public static async Task<Container> GetContainerForDocumentationFunctionAsync(ILogger log, TraceWriter writer, bool requestIsLocal, InMemoryLogger inMemoryLogger)
+        public static async Task<Container> GetContainerForDocumentationFunctionAsync()
         {
-            var logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, requestIsLocal ? new TraceWriterLogger(writer) : null));
             try
             {
                 var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Task, ReferenceAssembliesInstance.Task, PackageStorageCloudBlobContainer.Task,
@@ -36,8 +35,7 @@ namespace FunctionApp
                 container.Options.DefaultLifestyle = Lifestyle.Scoped;
                 container.UseAutomaticInstanceOf();
                 container.RegisterSingletons(singletons);
-                container.Register(() => inMemoryLogger);
-                container.Register<ILogger>(() => logger);
+                container.Register<ILogger, AsyncLocalLogger>();
                 container.Register<INugetRepository, NugetRepository>();
                 container.Register<ILogStorage, AzureLogStorage>();
                 container.Register<IStatusTable, AzureStatusTable>();
@@ -52,7 +50,7 @@ namespace FunctionApp
             }
             catch (Exception ex)
             {
-                logger.LogCritical(0, ex, "Failed to create container composition root");
+                AsyncLocalLogger.Logger.LogCritical(0, ex, "Failed to create container composition root");
                 throw;
             }
         }
