@@ -27,7 +27,7 @@ namespace FunctionApp
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
             var inMemoryLogger = new InMemoryLogger();
-            AmbientContext.InitializeForHttpApi(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
+            AmbientContext.InitializeForHttpApi(req.TryGetRequestId(), context.InvocationId);
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
             req.ApplyRequestHandlingDefaults(context, inMemoryLogger);
 

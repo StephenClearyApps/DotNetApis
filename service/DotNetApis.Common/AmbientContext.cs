@@ -27,7 +27,7 @@ namespace DotNetApis.Common
         /// <summary>
         /// Sets the values for HTTP-triggered API functions.
         /// </summary>
-        public static void InitializeForHttpApi(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
+        public static void InitializeForHttpApi(string requestId, Guid operationId)
         {
             _operationId.Value = operationId;
             _requestId.Value = requestId;
