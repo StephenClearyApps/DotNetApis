@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutomaticInstanceOf.cs" />
+    <Compile Include="ContainerExtensions.cs" />
     <Compile Include="InstanceOf.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -28,26 +28,14 @@ namespace FunctionApp
             var logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, requestIsLocal ? new TraceWriterLogger(writer) : null));
             try
             {
-                // Singletons
-                var referenceStorage = await ReferenceStorageInstance;
-                var referenceAssemblies = await ReferenceAssembliesInstance;
-                var packageStorageCloudBlobContainer = await PackageStorageCloudBlobContainer;
-                var packageTableCloudTable = await PackageTableCloudTable;
-                var packageJsonTableCouldTable = await PackageJsonTableCloudTable;
-                var packageJsonStorageCloudBlobContainer = await PackageJsonStorageCloudBlobContainer;
-                var referenceXmldocTableCloudTable = await ReferenceXmldocTableCloudTable;
+                var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Task, ReferenceAssembliesInstance.Task, PackageStorageCloudBlobContainer.Task,
+                    PackageTableCloudTable.Task, PackageJsonTableCloudTable.Task, PackageJsonStorageCloudBlobContainer.Task, ReferenceXmldocTableCloudTable.Task);
 
                 var container = new Container();
                 container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
                 container.Options.DefaultLifestyle = Lifestyle.Scoped;
                 container.UseAutomaticInstanceOf();
-                container.RegisterSingleton<IReferenceStorage>(referenceStorage);
-                container.RegisterSingleton(referenceAssemblies);
-                container.RegisterSingleton(packageStorageCloudBlobContainer);
-                container.RegisterSingleton(packageTableCloudTable);
-                container.RegisterSingleton(packageJsonTableCouldTable);
-                container.RegisterSingleton(packageJsonStorageCloudBlobContainer);
-                container.RegisterSingleton(referenceXmldocTableCloudTable);
+                container.RegisterSingletons(singletons);
                 container.Register(() => inMemoryLogger);
                 container.Register<ILogger>(() => logger);
                 container.Register<INugetRepository, NugetRepository>();
@@ -70,7 +58,7 @@ namespace FunctionApp
         }
 
         private static readonly AsyncLazy<ReferenceAssemblies> ReferenceAssembliesInstance = CreateAsync(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
-        private static readonly AsyncLazy<AzureReferenceStorage> ReferenceStorageInstance = CreateAsync(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value));
+        private static readonly AsyncLazy<IReferenceStorage> ReferenceStorageInstance = CreateAsync(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value) as IReferenceStorage);
 
         private static readonly AsyncLazy<InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage>> ReferenceStorageCloudBlobContainer = CreateContainerAsync<AzureReferenceStorage>(AzureReferenceStorage.ContainerName);
         private static readonly AsyncLazy<InstanceOf<CloudTable>.For<AzureReferenceXmldocTable>> ReferenceXmldocTableCloudTable = CreateTableAsync<AzureReferenceXmldocTable>(AzureReferenceXmldocTable.TableName);
