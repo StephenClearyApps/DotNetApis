@@ -31,7 +31,7 @@ namespace FunctionApp
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(inMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
             req.ApplyRequestHandlingDefaults(context, inMemoryLogger);
 
-            var container = await CompositionRoot.GetContainerForDocumentationFunctionAsync().ConfigureAwait(false);
+            var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 var logger = container.GetInstance<ILogger>();

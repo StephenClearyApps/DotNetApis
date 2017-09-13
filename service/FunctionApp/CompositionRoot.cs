@@ -23,30 +23,11 @@ namespace FunctionApp
 {
     public static class CompositionRoot
     {
-        public static async Task<Container> GetContainerForDocumentationFunctionAsync()
+        public static async Task<Container> GetContainerAsync()
         {
             try
             {
-                var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Task, ReferenceAssembliesInstance.Task, PackageStorageCloudBlobContainer.Task,
-                    PackageTableCloudTable.Task, PackageJsonTableCloudTable.Task, PackageJsonStorageCloudBlobContainer.Task, ReferenceXmldocTableCloudTable.Task);
-
-                var container = new Container();
-                container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-                container.Options.DefaultLifestyle = Lifestyle.Scoped;
-                container.UseAutomaticInstanceOf();
-                container.RegisterSingletons(singletons);
-                container.Register<ILogger, AsyncLocalLogger>();
-                container.Register<INugetRepository, NugetRepository>();
-                container.Register<ILogStorage, AzureLogStorage>();
-                container.Register<IStatusTable, AzureStatusTable>();
-                container.Register<IPackageStorage, AzurePackageStorage>();
-                container.Register<IPackageTable, AzurePackageTable>();
-                container.Register<IPackageJsonTable, AzurePackageJsonTable>();
-                container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
-                container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
-                container.Register<DocRequestHandler>();
-                container.Verify();
-                return container;
+                return await Container;
             }
             catch (Exception ex)
             {
@@ -54,6 +35,30 @@ namespace FunctionApp
                 throw;
             }
         }
+
+        private static readonly AsyncLazy<Container> Container = CreateAsync(async () =>
+        {
+            var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Task, ReferenceAssembliesInstance.Task, PackageStorageCloudBlobContainer.Task,
+                PackageTableCloudTable.Task, PackageJsonTableCloudTable.Task, PackageJsonStorageCloudBlobContainer.Task, ReferenceXmldocTableCloudTable.Task);
+
+            var container = new Container();
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+            container.Options.DefaultLifestyle = Lifestyle.Scoped;
+            container.UseAutomaticInstanceOf();
+            container.RegisterSingletons(singletons);
+            container.Register<ILogger, AsyncLocalLogger>();
+            container.Register<INugetRepository, NugetRepository>();
+            container.Register<ILogStorage, AzureLogStorage>();
+            container.Register<IStatusTable, AzureStatusTable>();
+            container.Register<IPackageStorage, AzurePackageStorage>();
+            container.Register<IPackageTable, AzurePackageTable>();
+            container.Register<IPackageJsonTable, AzurePackageJsonTable>();
+            container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
+            container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
+            container.Register<DocRequestHandler>();
+            container.Verify();
+            return container;
+        });
 
         private static readonly AsyncLazy<ReferenceAssemblies> ReferenceAssembliesInstance = CreateAsync(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
         private static readonly AsyncLazy<IReferenceStorage> ReferenceStorageInstance = CreateAsync(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value) as IReferenceStorage);
