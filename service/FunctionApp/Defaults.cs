@@ -26,6 +26,6 @@ namespace FunctionApp
 
         // Key is hardcoded just to avoid dependency on the whole Microsoft.Azure.WebJobs.Script package and all its dependencies.
         public static string TryGetRequestId(this HttpRequestMessage request) =>
-            request.Properties.TryGetValue("MS_AzureFunctionsRequestID", out object value) ? value as string : null;
+            request.Properties.TryGetValue("MS_AzureFunctionsRequestID", out var value) ? value as string : null;
     }
 }
