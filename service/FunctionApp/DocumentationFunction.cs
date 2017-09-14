@@ -33,8 +33,6 @@ namespace FunctionApp
         {
             try
             {
-                GlobalConfig.Initialize();
-
                 var query = req.GetQueryNameValuePairs().ToList();
                 var jsonVersion = query.Required("jsonVersion", int.Parse);
                 var packageId = query.Required("packageId");
@@ -95,11 +93,12 @@ namespace FunctionApp
             [Queue("generate")] IAsyncCollector<CloudQueueMessage> generateQueue,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
+            GlobalConfig.Initialize();
+            req.ApplyRequestHandlingDefaults(context);
             AmbientContext.InMemoryLogger = new InMemoryLogger();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
-            req.ApplyRequestHandlingDefaults(context);
 
             var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
             using (AsyncScopedLifestyle.BeginScope(container))

@@ -11,11 +11,25 @@ using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
 using Newtonsoft.Json;
 
-#if NO
 namespace FunctionApp
 {
-    public static class GenerateFunction
+    public sealed class GenerateFunction
     {
+        private readonly GenerateHandler _handler;
+
+        public GenerateFunction(GenerateHandler handler)
+        {
+            _handler = handler;
+        }
+
+        public async Task RunAsync(string queueMessage)
+        {
+            var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage);
+            AmbientContext.ParentOperationId = message.OperationId;
+
+            await _handler.HandleAsync(message);
+        }
+
         [FunctionName("GenerateFunction")]
         public static async Task Run([QueueTrigger("generate")]string queueMessage,
             [Queue("generate-poison")] IAsyncCollector<CloudQueueMessage> generatePoisonQueue,
@@ -23,13 +37,15 @@ namespace FunctionApp
         {
             try
             {
-                AmbientContext.InitializeForQueueProcessing(log, writer, context.InvocationId);
-                using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
-                {
-                    var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage);
-                    AmbientContext.ParentOperationId = message.OperationId;
+                GlobalConfig.Initialize();
+                AmbientContext.InMemoryLogger = new InMemoryLogger();
+                AmbientContext.OperationId = context.InvocationId;
+                AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, new TraceWriterLogger(writer))); // TODO: Ably
 
-                    await GlobalConfig.Container.GetInstance<GenerateHandler>().HandleAsync(message).ConfigureAwait(false);
+                var container = await CompositionRoot.GetContainerAsync();
+                using (AsyncScopedLifestyle.BeginScope(container))
+                {
+                    await container.GetInstance<GenerateFunction>().RunAsync(queueMessage);
                 }
             }
             catch (Exception ex)
@@ -45,4 +61,3 @@ namespace FunctionApp
         }
     }
 }
-#endif

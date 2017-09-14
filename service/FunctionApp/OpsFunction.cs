@@ -12,38 +12,51 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SimpleInjector.Lifestyles;
 
-#if NO
 namespace FunctionApp
 {
-    public static class OpsFunction
+    public sealed class OpsFunction
     {
+        private readonly ILogger _logger;
+        private readonly ProcessReferenceXmldocHandler _processReferenceXmldocHandler;
+
+        public OpsFunction(ILogger logger, ProcessReferenceXmldocHandler processReferenceXmldocHandler)
+        {
+            _logger = logger;
+            _processReferenceXmldocHandler = processReferenceXmldocHandler;
+        }
+
+        public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
+        {
+            var command = await req.Content.ReadAsAsync<OpsMessage>().ConfigureAwait(false);
+            _logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command));
+
+            switch (command.Type)
+            {
+                case OpsMessageType.ProcessReferenceXmldoc:
+                    await _processReferenceXmldocHandler.HandleAsync().ConfigureAwait(false);
+                    break;
+                default:
+                    throw new ExpectedException(HttpStatusCode.BadRequest, $"Unknown type {command.Type}");
+            }
+
+            return req.CreateResponse(HttpStatusCode.OK);
+        }
+
         [FunctionName("OpsFunction")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "ops")]HttpRequestMessage req,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
-            AmbientContext.InitializeForManualHttpTrigger(log, writer, req.IsLocal(), req.TryGetRequestId(), context.InvocationId);
+            GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
+            AmbientContext.OperationId = context.InvocationId;
+            AmbientContext.RequestId = req.TryGetRequestId();
+            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            using (AsyncScopedLifestyle.BeginScope(GlobalConfig.Container))
+            var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
+            using (AsyncScopedLifestyle.BeginScope(container))
             {
-                GlobalConfig.Initialize();
-                var logger = GlobalConfig.Container.GetInstance<ILogger>();
-
-                var command = await req.Content.ReadAsAsync<OpsMessage>().ConfigureAwait(false);
-                logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command));
-
-                switch (command.Type)
-                {
-                    case OpsMessageType.ProcessReferenceXmldoc:
-                        await GlobalConfig.Container.GetInstance<ProcessReferenceXmldocHandler>().HandleAsync().ConfigureAwait(false);
-                        break;
-                    default:
-                        throw new ExpectedException(HttpStatusCode.BadRequest, $"Unknown type {command.Type}");
-                }
-
-                return req.CreateResponse(HttpStatusCode.OK);
+                return await container.GetInstance<OpsFunction>().RunAsync(req);
             }
         }
     }
 }
-#endif

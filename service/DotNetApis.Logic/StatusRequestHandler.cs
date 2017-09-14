@@ -24,7 +24,6 @@ namespace DotNetApis.Logic
             var idver = new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
             _logger.LogInformation("Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver);
 
-            // Guess the target framework if unknown.
             var target = ParsePlatformTarget(targetFramework);
             if (!target.IsSupported())
             {

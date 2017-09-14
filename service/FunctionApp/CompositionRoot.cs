@@ -53,7 +53,13 @@ namespace FunctionApp
             container.Register<IPackageJsonTable, AzurePackageJsonTable>();
             container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
             container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
+
+            // Best practice: register all root elements explicitly, so missing registrations are found immediately.
             container.Register<DocumentationFunction>();
+            container.Register<GenerateFunction>();
+            container.Register<StatusFunction>();
+            container.Register<OpsFunction>();
+
             container.Verify();
             return container;
         });

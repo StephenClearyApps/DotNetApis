@@ -54,26 +54,5 @@ namespace DotNetApis.Common
             ImplicitOperationId.Value = operationId;
             ImplicitRequestId.Value = requestId;
         }
-
-        /// <summary>
-        /// Sets the values for backend queue-triggered functions.
-        /// </summary>
-        //public static void InitializeForQueueProcessing(ILogger log, TraceWriter writer, Guid operationId)
-        //{
-        //    var inMemoryLogger = new InMemoryLogger();
-        //    _loggers.Value = Enumerables.Return(inMemoryLogger, log, new TraceWriterLogger(writer)).ToImmutableHashSet(); // TODO: Ably
-        //    _inMemoryLogger.Value = inMemoryLogger;
-        //    _operationId.Value = operationId;
-        //}
-
-        /// <summary>
-        /// Sets the values for manual HTTP-triggered functions.
-        /// </summary>
-        //public static void InitializeForManualHttpTrigger(ILogger log, TraceWriter writer, bool requestIsLocal, string requestId, Guid operationId)
-        //{
-        //    _loggers.Value = Enumerables.Return(log, requestIsLocal ? new TraceWriterLogger(writer) : null).ToImmutableHashSet();
-        //    _operationId.Value = operationId;
-        //    _requestId.Value = requestId;
-        //}
     }
 }
