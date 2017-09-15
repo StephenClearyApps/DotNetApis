@@ -48,7 +48,7 @@ namespace FunctionApp
                 // Parse and normalize the user request.
                 var (idver, target) = _handler.NormalizeRequest(packageId, packageVersion, targetFramework);
 
-                var result = await _handler.TryGetStatusAsync(idver, target, timestamp).ConfigureAwait(false);
+                var result = await _handler.TryGetStatusAsync(idver, target, timestamp);
                 if (result == null)
                     throw new ExpectedException(HttpStatusCode.NotFound, "Request status not found.");
 
@@ -76,7 +76,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
+            var container = await CompositionRoot.GetContainerAsync();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<StatusFunction>().RunAsync(req);

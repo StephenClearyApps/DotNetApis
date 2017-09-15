@@ -48,10 +48,10 @@ namespace FunctionApp
                 }
 
                 // Normalize the user request (determine version and target framework if not specified).
-                var (idver, target) = await _handler.NormalizeRequestAsync(packageId, packageVersion, targetFramework).ConfigureAwait(false);
+                var (idver, target) = await _handler.NormalizeRequestAsync(packageId, packageVersion, targetFramework);
 
                 // If the JSON is already there, then redirect the user to it.
-                var uri = await _handler.TryGetExistingJsonUriAsync(idver, target).ConfigureAwait(false);
+                var uri = await _handler.TryGetExistingJsonUriAsync(idver, target);
                 if (uri != null)
                 {
                     _logger.LogDebug("Redirecting to {uri}", uri);
@@ -69,7 +69,7 @@ namespace FunctionApp
                     NormalizedPackageVersion = idver.Version.ToString(),
                     NormalizedFrameworkTarget = target.ToString(),
                 }, Constants.JsonSerializerSettings);
-                await generateQueue.AddAsync(new CloudQueueMessage(message)).ConfigureAwait(false);
+                await generateQueue.AddAsync(new CloudQueueMessage(message));
 
                 _logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
                 return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
@@ -100,7 +100,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
+            var container = await CompositionRoot.GetContainerAsync();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<DocumentationFunction>().RunAsync(req, generateQueue);

@@ -27,13 +27,13 @@ namespace FunctionApp
 
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
         {
-            var command = await req.Content.ReadAsAsync<OpsMessage>().ConfigureAwait(false);
+            var command = await req.Content.ReadAsAsync<OpsMessage>();
             _logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command));
 
             switch (command.Type)
             {
                 case OpsMessageType.ProcessReferenceXmldoc:
-                    await _processReferenceXmldocHandler.HandleAsync().ConfigureAwait(false);
+                    await _processReferenceXmldocHandler.HandleAsync();
                     break;
                 default:
                     throw new ExpectedException(HttpStatusCode.BadRequest, $"Unknown type {command.Type}");
@@ -52,7 +52,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = await CompositionRoot.GetContainerAsync().ConfigureAwait(false);
+            var container = await CompositionRoot.GetContainerAsync();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<OpsFunction>().RunAsync(req);
