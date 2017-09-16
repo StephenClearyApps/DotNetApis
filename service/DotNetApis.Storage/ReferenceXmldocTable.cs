@@ -28,7 +28,7 @@ namespace DotNetApis.Storage
         /// <summary>
         /// Looks up xmldoc in the table, and returns the record for that xmldoc. Returns <c>null</c> if the xmldoc is not in the table.
         /// </summary>
-        ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc);
+        ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldocId);
 
         /// <summary>
         /// Creates a new batch of operations for the table.
@@ -38,7 +38,7 @@ namespace DotNetApis.Storage
         /// <summary>
         /// Creates an entry to write to the table. When executed, this will overwrite any existing entry for the xmldoc.
         /// </summary>
-        IBatchAction CreateSetRecordAction(PlatformTarget framework, string xmldoc, ReferenceXmldocTableRecord record);
+        IBatchAction CreateSetRecordAction(PlatformTarget framework, string xmldocId, ReferenceXmldocTableRecord record);
     }
 
     public sealed class AzureReferenceXmldocTable : IReferenceXmldocTable
@@ -56,9 +56,9 @@ namespace DotNetApis.Storage
             _table = table;
         }
 
-        public ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldoc)
+        public ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldocId)
         {
-            var entity = Entity.FindOrDefaultAsync(_table, framework, xmldoc, sync: true).GetAwaiter().GetResult();
+            var entity = Entity.FindOrDefaultAsync(_table, framework, xmldocId, sync: true).GetAwaiter().GetResult();
             if (entity == null)
                 return null;
             return new ReferenceXmldocTableRecord
@@ -70,9 +70,9 @@ namespace DotNetApis.Storage
 
         public IBatch CreateBatch() => new AzureTableBatch(_table);
 
-        public IBatchAction CreateSetRecordAction(PlatformTarget framework, string xmldoc, ReferenceXmldocTableRecord record)
+        public IBatchAction CreateSetRecordAction(PlatformTarget framework, string xmldocId, ReferenceXmldocTableRecord record)
         {
-            var entity = new Entity(_table, framework, xmldoc)
+            var entity = new Entity(_table, framework, xmldocId)
             {
                 DnaId = record.DnaId,
                 SimpleName = record.FriendlyName.SimpleName,
@@ -84,8 +84,8 @@ namespace DotNetApis.Storage
 
         private sealed class Entity : TableEntityBase
         {
-            public Entity(CloudTable table, PlatformTarget framework, string xmldoc)
-                : base(table, ToPartitionKey(framework), ToRowKey(xmldoc))
+            public Entity(CloudTable table, PlatformTarget framework, string xmldocId)
+                : base(table, ToPartitionKey(framework), ToRowKey(xmldocId))
             {
             }
 
@@ -96,15 +96,15 @@ namespace DotNetApis.Storage
 
             private static string ToPartitionKey(PlatformTarget framework) => framework.ToString();
 
-            private static string ToRowKey(string xmldoc) => StorageUtility.HashString(xmldoc);
+            private static string ToRowKey(string xmldocId) => StorageUtility.HashString(xmldocId);
 
             /// <summary>
             /// Performs a point search in the Azure table. Returns <c>null</c> if the entity is not found.
             /// </summary>
-            public static async Task<Entity> FindOrDefaultAsync(CloudTable table, PlatformTarget framework, string xmldoc, bool sync)
+            public static async Task<Entity> FindOrDefaultAsync(CloudTable table, PlatformTarget framework, string xmldocId, bool sync)
             {
                 var partitionKey = ToPartitionKey(framework);
-                var rowKey = ToRowKey(xmldoc);
+                var rowKey = ToRowKey(xmldocId);
                 var entity = sync ? table.FindOrDefault(partitionKey, rowKey) : await table.FindOrDefaultAsync(partitionKey, rowKey).ConfigureAwait(false);
                 return entity == null ? null : new Entity(table, entity);
             }

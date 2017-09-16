@@ -16,10 +16,16 @@ namespace DotNetApis.Storage
         Task<List<string>> GetFoldersAsync();
 
         /// <summary>
-        /// Returns the paths of files within a specific folder.
+        /// Returns the paths of files within a specific folder. This includes .xml as well as .dll files.
         /// </summary>
         /// <param name="path">The path of the folder to search.</param>
         Task<List<string>> GetFilesAsync(string path);
+
+        /// <summary>
+        /// Retrieves an assembly file from reference storage.
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
+        Task<MemoryStream> DownloadAsync(string path);
     }
 
     public sealed class AzureReferenceStorage : IReferenceStorage
@@ -47,6 +53,14 @@ namespace DotNetApis.Storage
                 continuation = segment.ContinuationToken;
                 result.AddRange(handler(segment.Results));
             } while (continuation != null);
+            return result;
+        }
+
+        public async Task<MemoryStream> DownloadAsync(string path)
+        {
+            var result = new MemoryStream();
+            await _container.GetBlockBlobReference(path).DownloadToStreamAsync(result).ConfigureAwait(false);
+            result.Position = 0;
             return result;
         }
     }

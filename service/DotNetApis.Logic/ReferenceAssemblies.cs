@@ -59,6 +59,8 @@ namespace DotNetApis.Logic
                     Paths = await referenceStorage.GetFilesAsync(path).ConfigureAwait(false),
                 };
             }
+
+            public override string ToString() => Target.ToString();
         }
     }
 }

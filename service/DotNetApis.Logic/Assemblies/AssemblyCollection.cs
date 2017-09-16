@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
 using Microsoft.Extensions.Logging;

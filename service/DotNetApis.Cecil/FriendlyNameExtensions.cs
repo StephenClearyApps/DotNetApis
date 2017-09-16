@@ -1,28 +1,16 @@
-﻿using System;
+﻿using DotNetApis.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DotNetApis.Cecil;
-using DotNetApis.Common;
 using Mono.Cecil;
 
-namespace DotNetApis.Logic
+namespace DotNetApis.Cecil
 {
-    public sealed class FriendlyName
+    public static class FriendlyNameExtensions
     {
-        public FriendlyName(string simpleName, string qualifiedName, string fullyQualifiedName)
-        {
-            SimpleName = simpleName;
-            QualifiedName = qualifiedName;
-            FullyQualifiedName = fullyQualifiedName;
-        }
-
-        public string SimpleName { get; }
-        public string QualifiedName { get; }
-        public string FullyQualifiedName { get; }
-
-        public static FriendlyName Create(IMemberDefinition member)
+        public static FriendlyName CreateFriendlyName(this IMemberDefinition member)
         {
             var ns = member.DeclaringType != null ? member.DeclaringTypesInnerToOuter().Last().Namespace : ((TypeDefinition)member).Namespace;
 
@@ -43,7 +31,7 @@ namespace DotNetApis.Logic
             return CreateFromDeclaringType(member.Name, declaringType, ns);
         }
 
-        public static FriendlyName CreateOverload(MethodDefinition method)
+        public static FriendlyName CreateOverloadFriendlyName(this MethodDefinition method)
         {
             var ns = method.DeclaringTypesInnerToOuter().Last().Namespace;
             var simpleName = method.Name.StripBacktickSuffix().Name; // Note: no generic parameters

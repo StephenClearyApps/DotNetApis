@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Cecil;
+using DotNetApis.Common;
 using Mono.Cecil;
 
 namespace DotNetApis.Logic.Assemblies
@@ -29,7 +30,7 @@ namespace DotNetApis.Logic.Assemblies
         public void Add(IMemberDefinition member)
         {
             var dnaId = member.MemberDnaId();
-            _dnaidToFriendlyName[dnaId] = FriendlyName.Create(member);
+            _dnaidToFriendlyName[dnaId] = member.CreateFriendlyName();
             _xmldocIdToDnaId[member.MemberXmldocIdentifier()] = dnaId;
         }
 
@@ -40,7 +41,7 @@ namespace DotNetApis.Logic.Assemblies
         public void AddOverload(MethodDefinition method)
         {
             var dnaId = method.OverloadDnaId();
-            _dnaidToFriendlyName[dnaId] = FriendlyName.CreateOverload(method);
+            _dnaidToFriendlyName[dnaId] = method.CreateOverloadFriendlyName();
             _xmldocIdToDnaId[method.OverloadXmldocIdentifier()] = dnaId;
         }
 

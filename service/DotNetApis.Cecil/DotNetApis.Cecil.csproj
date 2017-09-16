@@ -63,6 +63,7 @@
     <Compile Include="CecilExtensions.Xmldoc.cs" />
     <Compile Include="CecilExtenstions.FriendlyName.cs" />
     <Compile Include="DynamicReplacement.cs" />
+    <Compile Include="FriendlyNameExtensions.cs" />
     <Compile Include="GenericConstraint.cs" />
     <Compile Include="GenericTypeReference.cs" />
     <Compile Include="NullAssemblyResolver.cs" />
