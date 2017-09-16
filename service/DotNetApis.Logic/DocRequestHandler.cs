@@ -16,25 +16,27 @@ namespace DotNetApis.Logic
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
+        private readonly Parser _parser;
 
         public DocRequestHandler(ILogger logger, INugetRepository nugetRepository, PackageDownloader packageDownloader, PlatformResolver platformResolver,
-            PackageJsonCombinedStorage packageJsonCombinedStorage)
+            PackageJsonCombinedStorage packageJsonCombinedStorage, Parser parser)
         {
             _logger = logger;
             _nugetRepository = nugetRepository;
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
             _packageJsonCombinedStorage = packageJsonCombinedStorage;
+            _parser = parser;
         }
 
         public async Task<(NugetPackageIdVersion, PlatformTarget)> NormalizeRequestAsync(string packageId, string packageVersion, string targetFramework)
         {
             // Lookup the package version if unknown.
-            var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
+            var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, _parser.ParseVersion(packageVersion));
             _logger.LogInformation("Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver);
 
             // Guess the target framework if unknown.
-            var target = targetFramework == null ? await GuessPackageTargetAsync(idver).ConfigureAwait(false) : ParsePlatformTarget(targetFramework);
+            var target = targetFramework == null ? await GuessPackageTargetAsync(idver).ConfigureAwait(false) : _parser.ParsePlatformTarget(targetFramework);
             if (!target.IsSupported())
             {
                 _logger.LogError("Target framework {targetFramework} is not supported", targetFramework);
@@ -70,28 +72,6 @@ namespace DotNetApis.Logic
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Package `{package}` has no supported frameworks; the package possibly contains only source files, or is a JavaScript or other front-end package; DotNetApis only works with .NET packages");
             }
 
-            return result;
-        }
-
-        private NugetVersion ParseVersion(string packageVersion)
-        {
-            var result = NugetVersion.TryParse(packageVersion);
-            if (result == null)
-            {
-                _logger.LogError("Could not parse version {packageVersion}", packageVersion);
-                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version `{packageVersion}`");
-            }
-            return result;
-        }
-
-        private PlatformTarget ParsePlatformTarget(string targetFramework)
-        {
-            var result = PlatformTarget.TryParse(targetFramework);
-            if (result == null)
-            {
-                _logger.LogError("Could not parse target framework {targetFramework}", targetFramework);
-                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target framework `{targetFramework}`");
-            }
             return result;
         }
     }

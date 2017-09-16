@@ -12,19 +12,21 @@ namespace DotNetApis.Logic
     {
         private readonly ILogger _logger;
         private readonly IStatusTable _statusTable;
+        private readonly Parser _parser;
 
-        public StatusRequestHandler(ILogger logger, IStatusTable statusTable)
+        public StatusRequestHandler(ILogger logger, IStatusTable statusTable, Parser parser)
         {
             _logger = logger;
             _statusTable = statusTable;
+            _parser = parser;
         }
 
         public (NugetPackageIdVersion idver, PlatformTarget target) NormalizeRequest(string packageId, string packageVersion, string targetFramework)
         {
-            var idver = new NugetPackageIdVersion(packageId, ParseVersion(packageVersion));
+            var idver = new NugetPackageIdVersion(packageId, _parser.ParseVersion(packageVersion));
             _logger.LogInformation("Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver);
 
-            var target = ParsePlatformTarget(targetFramework);
+            var target = _parser.ParsePlatformTarget(targetFramework);
             if (!target.IsSupported())
             {
                 _logger.LogError("Target framework {targetFramework} is not supported", targetFramework);
@@ -45,28 +47,6 @@ namespace DotNetApis.Logic
             }
             var (status, logUri) = result.Value;
             _logger.LogDebug("Status for {idver} target {target} on {timestamp} is {status}, {logUri}", idver, target, timestamp, status, logUri);
-            return result;
-        }
-
-        private NugetVersion ParseVersion(string packageVersion) // TODO: Refactor to helper class
-        {
-            var result = NugetVersion.TryParse(packageVersion);
-            if (result == null)
-            {
-                _logger.LogError("Could not parse version {packageVersion}", packageVersion);
-                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version `{packageVersion}`");
-            }
-            return result;
-        }
-
-        private PlatformTarget ParsePlatformTarget(string targetFramework)
-        {
-            var result = PlatformTarget.TryParse(targetFramework);
-            if (result == null)
-            {
-                _logger.LogError("Could not parse target framework {targetFramework}", targetFramework);
-                throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target framework `{targetFramework}`");
-            }
             return result;
         }
     }
