@@ -6,7 +6,7 @@ namespace FunctionApp.Messages
 {
     public enum OpsMessageType
     {
-        ProcessReferenceXmldoc,
+        ProcessReferenceXmldoc = 1,
     }
 
     public class OpsMessage
