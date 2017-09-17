@@ -41,7 +41,7 @@ namespace DotNetApis.Storage
 
         public Task<List<string>> GetFoldersAsync() => ListAsync(null, results => results.OfType<CloudBlobDirectory>().Select(x => x.Prefix.TrimEnd('/')));
 
-        public Task<List<string>> GetFilesAsync(string path) => ListAsync(path, results => results.OfType<CloudBlockBlob>().Select(x => x.Name));
+        public Task<List<string>> GetFilesAsync(string path) => ListAsync(path + "/", results => results.OfType<CloudBlockBlob>().Select(x => x.Name));
 
         private async Task<List<string>> ListAsync(string path, Func<IEnumerable<IListBlobItem>, IEnumerable<string>> handler)
         {
