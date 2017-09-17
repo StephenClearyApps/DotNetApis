@@ -68,7 +68,7 @@ namespace DotNetApis.Logic
                         _logger.LogCritical(0, ex, "Unable to save to reference xmldoc table");
                         throw;
                     }
-                }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 100 });
+                }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 32 });
             }
 
             public async Task ProcessAsync(ReferenceAssemblies.ReferenceTarget referenceTarget)
@@ -106,10 +106,14 @@ namespace DotNetApis.Logic
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogInformation(0, ex, "Unable to load assembly {path}", path);
+                            _logger.LogWarning(0, ex, "Unable to load assembly {path}", path);
                         }
 
                         _logger.LogInformation("Processed {count} types in assembly {path}", count, path);
+
+                        // If any processing errors yet, fail-fast.
+                        if (_block.Completion.IsFaulted)
+                            await _block.Completion.ConfigureAwait(false);
                     }
                 }
             }
