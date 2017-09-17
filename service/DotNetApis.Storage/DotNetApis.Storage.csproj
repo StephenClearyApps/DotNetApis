@@ -92,6 +92,7 @@
     <Compile Include="StatusTable.cs" />
     <Compile Include="PackageTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StorageBackend.cs" />
     <Compile Include="StorageUtility.cs" />
     <Compile Include="TableEntityBase.cs" />
   </ItemGroup>

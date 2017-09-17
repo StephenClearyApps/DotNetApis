@@ -19,6 +19,7 @@ namespace DotNetApis.Logic
         private readonly ReferenceAssemblies _referenceAssemblies;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly IReferenceStorage _referenceStorage;
+        private readonly IStorageBackend _storageBackend;
 
         private const int BatchSize = 20;
         private static readonly ReaderParameters ReaderParameters = new ReaderParameters
@@ -27,36 +28,43 @@ namespace DotNetApis.Logic
             AssemblyResolver = new NullAssemblyResolver(),
         };
 
-        public ProcessReferenceXmldocHandler(ILogger logger, ReferenceAssemblies referenceAssemblies, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage)
+        public ProcessReferenceXmldocHandler(ILogger logger, ReferenceAssemblies referenceAssemblies, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend)
         {
             _logger = logger;
             _referenceAssemblies = referenceAssemblies;
             _referenceXmldocTable = referenceXmldocTable;
             _referenceStorage = referenceStorage;
+            _storageBackend = storageBackend;
         }
 
         public async Task HandleAsync()
         {
-            var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage);
-            foreach (var referenceTarget in _referenceAssemblies.ReferenceTargets)
+            var maxDegreeOfParallelism = _storageBackend.SupportsConcurrency ? 64 : 1;
+            using (ThreadPoolTurbo.Engage(maxDegreeOfParallelism))
             {
-                await processor.ProcessAsync(referenceTarget).ConfigureAwait(false);
+                var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage, _storageBackend);
+                foreach (var referenceTarget in _referenceAssemblies.ReferenceTargets)
+                {
+                    await processor.ProcessAsync(referenceTarget).ConfigureAwait(false);
+                }
+                await processor.FlushAsync().ConfigureAwait(false);
             }
-            await processor.FlushAsync().ConfigureAwait(false);
         }
 
         private sealed class ReferenceAssembliesProcessor
         {
             private readonly ILogger _logger;
-            private readonly ActionBlock<IBatch> _block;
             private readonly IReferenceXmldocTable _referenceXmldocTable;
             private readonly IReferenceStorage _referenceStorage;
+            private readonly ActionBlock<IBatch> _block;
+            private readonly int _maxDegreeOfParallelism;
 
-            public ReferenceAssembliesProcessor(ILogger logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage)
+            public ReferenceAssembliesProcessor(ILogger logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend)
             {
                 _logger = logger;
                 _referenceXmldocTable = referenceXmldocTable;
                 _referenceStorage = referenceStorage;
+                _maxDegreeOfParallelism = storageBackend.SupportsConcurrency ? 64 : 1;
                 _block = new ActionBlock<IBatch>(async batch =>
                 {
                     try
@@ -68,7 +76,7 @@ namespace DotNetApis.Logic
                         _logger.LogCritical(0, ex, "Unable to save to reference xmldoc table");
                         throw;
                     }
-                }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = 32 });
+                }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism });
             }
 
             public async Task ProcessAsync(ReferenceAssemblies.ReferenceTarget referenceTarget)

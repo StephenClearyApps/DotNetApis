@@ -43,9 +43,11 @@ namespace FunctionApp
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
             container.Options.DefaultLifestyle = Lifestyle.Scoped;
             container.UseAutomaticInstanceOf();
+            container.RegisterSingleton(CloudStorageAccountInstance.Value);
             container.RegisterSingletons(singletons);
             container.Register<ILogger, AsyncLocalLogger>();
             container.Register<INugetRepository, NugetRepository>();
+            container.Register<IStorageBackend, AzureStorageBackend>();
             container.Register<ILogStorage, AzureLogStorage>();
             container.Register<IStatusTable, AzureStatusTable>();
             container.Register<IPackageStorage, AzurePackageStorage>();
