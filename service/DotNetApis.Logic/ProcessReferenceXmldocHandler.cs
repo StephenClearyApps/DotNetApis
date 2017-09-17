@@ -40,6 +40,7 @@ namespace DotNetApis.Logic
         public async Task HandleAsync()
         {
             var maxDegreeOfParallelism = _storageBackend.SupportsConcurrency ? 64 : 1;
+            _logger.LogInformation("Using {threadCount} threads", maxDegreeOfParallelism);
             using (ThreadPoolTurbo.Engage(maxDegreeOfParallelism))
             {
                 var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage, _storageBackend);
