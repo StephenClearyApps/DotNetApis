@@ -82,6 +82,7 @@ namespace DotNetApis.Logic
                     {
                         // Download the dll into memory
                         var stream = await _referenceStorage.DownloadAsync(path).ConfigureAwait(false);
+                        var count = 0;
 
                         try
                         {
@@ -94,6 +95,7 @@ namespace DotNetApis.Logic
                                 try
                                 {
                                     processor.Process(type);
+                                    ++count;
                                 }
                                 catch (Exception ex)
                                 {
@@ -106,6 +108,8 @@ namespace DotNetApis.Logic
                         {
                             _logger.LogInformation(0, ex, "Unable to load assembly {path}", path);
                         }
+
+                        _logger.LogInformation("Processed {count} types in assembly {path}", count, path);
                     }
                 }
             }
