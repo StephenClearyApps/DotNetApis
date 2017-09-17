@@ -78,7 +78,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AzureConnections.cs" />
     <Compile Include="BatchOperation.cs" />
     <Compile Include="CloudTableExtensions.cs" />
     <Compile Include="LogCombinedStorage.cs" />

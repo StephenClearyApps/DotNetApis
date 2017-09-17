@@ -37,13 +37,14 @@ namespace FunctionApp
         private static readonly IAsyncSingleton<Container> Container = Singleton.Create(async () =>
         {
             var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Value, ReferenceAssembliesInstance.Value, PackageStorageCloudBlobContainer.Value,
-                PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value);
+                PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value,
+                CloudBlobClientInstance.Value);
 
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
             container.Options.DefaultLifestyle = Lifestyle.Scoped;
             container.UseAutomaticInstanceOf();
-            container.RegisterSingleton(CloudStorageAccountInstance.Value);
+            container.RegisterSingletons((CloudStorageAccountInstance.Value, CloudTableClientInstance.Value));
             container.RegisterSingletons(singletons);
             container.Register<ILogger, AsyncLocalLogger>();
             container.Register<INugetRepository, NugetRepository>();

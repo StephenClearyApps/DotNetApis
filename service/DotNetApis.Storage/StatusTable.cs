@@ -59,21 +59,21 @@ namespace DotNetApis.Storage
         /// </summary>
         private const int Version = 0;
 
-        private readonly AzureConnections _connections;
+        private readonly CloudTableClient _cloudTableClient;
 
-        public AzureStatusTable(AzureConnections connections)
+        public AzureStatusTable(CloudTableClient cloudTableClient)
         {
-            _connections = connections;
+            _cloudTableClient = cloudTableClient;
         }
 
-        private static CloudTable GetTable(AzureConnections connections, DateTimeOffset timestamp)
+        private CloudTable GetTable(DateTimeOffset timestamp)
         {
-            return connections.CloudTableClient.GetTableReference("status" + Version + "-" + timestamp.ToString("yyyy-MM-dd"));
+            return _cloudTableClient.GetTableReference("status" + Version + "-" + timestamp.ToString("yyyy-MM-dd"));
         }
 
         public async Task<(Status status, Uri logUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
         {
-            var table = GetTable(_connections, timestamp);
+            var table = GetTable(timestamp);
             if (!await table.ExistsAsync().ConfigureAwait(false))
                 return null;
             var entity = await Entity.FindOrDefaultAsync(table, idver, target).ConfigureAwait(false);
@@ -82,7 +82,7 @@ namespace DotNetApis.Storage
 
         public async Task WriteStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, Uri logUri)
         {
-            var table = GetTable(_connections, timestamp);
+            var table = GetTable(timestamp);
             await table.CreateIfNotExistsAsync().ConfigureAwait(false);
             var entity = new Entity(table, idver, target)
             {

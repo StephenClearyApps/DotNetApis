@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace DotNetApis.Storage
 {
@@ -20,17 +21,17 @@ namespace DotNetApis.Storage
 
     public sealed class AzureLogStorage : ILogStorage
     {
-        private readonly AzureConnections _connections;
+        private readonly CloudBlobClient _cloudBlobClient;
 
-        public AzureLogStorage(AzureConnections connections)
+        public AzureLogStorage(CloudBlobClient cloudBlobClient)
         {
-            _connections = connections;
+            _cloudBlobClient = cloudBlobClient;
         }
 
         public async Task<Uri> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, string log)
         {
             // Create container if necessary.
-            var container = _connections.CloudBlobClient.GetContainerReference("log" + JsonFactory.Version + "-" + timestamp.ToString("yyyy-MM-dd"));
+            var container = _cloudBlobClient.GetContainerReference("log" + JsonFactory.Version + "-" + timestamp.ToString("yyyy-MM-dd"));
             await container.CreateIfNotExistsAsync().ConfigureAwait(false);
 
             // Upload to blob.
