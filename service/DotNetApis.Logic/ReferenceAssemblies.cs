@@ -49,7 +49,7 @@ namespace DotNetApis.Logic
 
             public static async Task<ReferenceTarget> CreateAsync(string path, IReferenceStorage referenceStorage)
             {
-                var target = PlatformTarget.TryParse(path.TrimEnd('/'));
+                var target = PlatformTarget.TryParse(path);
                 if (target == null)
                     throw new InvalidOperationException($"Unrecognized reference target framework {path}");
 
