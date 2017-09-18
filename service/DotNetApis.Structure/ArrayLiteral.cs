@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace DotNetApis.Structure
 {
-    public sealed class ArrayLiteral : LiteralBase
+    public sealed class ArrayLiteral : ILiteral
     {
-        public override EntityLiteralKind Kind => EntityLiteralKind.Array;
+        public EntityLiteralKind Kind => EntityLiteralKind.Array;
 
         // TODO: TypeReference
 
-        public IReadOnlyList<LiteralBase> Values { get; set; }
+        public IReadOnlyList<ILiteral> Values { get; set; }
     }
 }

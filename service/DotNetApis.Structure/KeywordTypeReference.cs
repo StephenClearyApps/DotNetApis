@@ -10,9 +10,9 @@ namespace DotNetApis.Structure
     /// <summary>
     /// A type reference associated with a C# keyword.
     /// </summary>
-    public sealed class KeywordTypeReference : TypeReferenceBase
+    public sealed class KeywordTypeReference : ITypeReference
     {
-        public override EntityReferenceKind Kind => EntityReferenceKind.Keyword;
+        public EntityReferenceKind Kind => EntityReferenceKind.Keyword;
 
         /// <summary>
         /// The name of the keyword, e.g., "int".

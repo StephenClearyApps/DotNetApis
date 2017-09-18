@@ -10,12 +10,12 @@ namespace DotNetApis.Structure
     /// <summary>
     /// A literal (constant) value.
     /// </summary>
-    public abstract class LiteralBase
+    public interface ILiteral
     {
         /// <summary>
         /// The kind of literal this is.
         /// </summary>
         [JsonProperty("k")]
-        public abstract EntityLiteralKind Kind { get; }
+        EntityLiteralKind Kind { get; }
     }
 }

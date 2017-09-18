@@ -9,8 +9,8 @@ namespace DotNetApis.Structure
     /// <summary>
     /// A dynamic reference; that is, an <c>object</c> that is treated by the compiler as <c>dynamic</c>.
     /// </summary>
-    public sealed class DynamicTypeReference : TypeReferenceBase
+    public sealed class DynamicTypeReference : ITypeReference
     {
-        public override EntityReferenceKind Kind => EntityReferenceKind.Dynamic;
+        public EntityReferenceKind Kind => EntityReferenceKind.Dynamic;
     }
 }

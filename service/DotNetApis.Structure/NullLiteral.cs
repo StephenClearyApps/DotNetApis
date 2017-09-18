@@ -9,8 +9,8 @@ namespace DotNetApis.Structure
     /// <summary>
     /// The literal value <c>null</c>.
     /// </summary>
-    public sealed class NullLiteral : LiteralBase
+    public sealed class NullLiteral : ILiteral
     {
-        public override EntityLiteralKind Kind => EntityLiteralKind.Null;
+        public EntityLiteralKind Kind => EntityLiteralKind.Null;
     }
 }

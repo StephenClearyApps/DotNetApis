@@ -10,9 +10,9 @@ namespace DotNetApis.Structure
     /// <summary>
     /// Structured documentation for a reqmod wrapper around an inner type reference.
     /// </summary>
-    public sealed class ReqmodTypeReference : TypeReferenceBase
+    public sealed class ReqmodTypeReference : ITypeReference
     {
-        public override EntityReferenceKind Kind => EntityReferenceKind.Reqmod;
+        public EntityReferenceKind Kind => EntityReferenceKind.Reqmod;
 
         /// <summary>
         /// The location of the reqmod type.
@@ -24,6 +24,6 @@ namespace DotNetApis.Structure
         /// The inner type reference that is wrapped by this reqmod type.
         /// </summary>
         [JsonProperty("t")]
-        public TypeReferenceBase ElementType { get; set; }
+        public ITypeReference ElementType { get; set; }
     }
 }

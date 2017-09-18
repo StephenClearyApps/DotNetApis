@@ -10,14 +10,14 @@ namespace DotNetApis.Structure
     /// <summary>
     /// Structured documentation for a pointer type.
     /// </summary>
-    public sealed class PointerTypeReference : TypeReferenceBase
+    public sealed class PointerTypeReference : ITypeReference
     {
-        public override EntityReferenceKind Kind => EntityReferenceKind.Pointer;
+        public EntityReferenceKind Kind => EntityReferenceKind.Pointer;
 
         /// <summary>
         /// The type that this is a pointer to.
         /// </summary>
         [JsonProperty("t")]
-        public TypeReferenceBase ElementType { get; set; }
+        public ITypeReference ElementType { get; set; }
     }
 }

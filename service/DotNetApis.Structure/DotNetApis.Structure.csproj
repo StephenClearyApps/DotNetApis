@@ -60,7 +60,7 @@
     <Compile Include="ILocation.cs" />
     <Compile Include="JsonFactory.cs" />
     <Compile Include="KeywordTypeReference.cs" />
-    <Compile Include="LiteralBase.cs" />
+    <Compile Include="ILiteral.cs" />
     <Compile Include="MethodParameterModifiers.cs" />
     <Compile Include="MethodStyles.cs" />
     <Compile Include="NullLiteral.cs" />
