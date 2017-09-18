@@ -8,6 +8,7 @@ using DotNetApis.Logic.Assemblies;
 using DotNetApis.Logic.Messages;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
+using DotNetApis.Structure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
@@ -21,14 +22,18 @@ namespace DotNetApis.Logic
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly NugetPackageDependencyResolver _dependencyResolver;
+        private readonly ReferenceAssemblies _referenceAssemblies;
+        private readonly IReferenceStorage _referenceStorage;
 
-        public GenerateHandler(ILogger logger, InMemoryLogger inMemoryLogger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackageDependencyResolver dependencyResolver)
+        public GenerateHandler(ILogger logger, InMemoryLogger inMemoryLogger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage)
         {
             _logger = logger;
             _logStorage = logStorage;
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
             _dependencyResolver = dependencyResolver;
+            _referenceAssemblies = referenceAssemblies;
+            _referenceStorage = referenceStorage;
             _inMemoryLogger = inMemoryLogger;
         }
         
@@ -83,6 +88,34 @@ namespace DotNetApis.Logic
             // Sanity check: we'd better have something to generate documentation on.
             if (assemblies.CurrentPackageAssemblies.Count == 0 && assemblies.DependencyPackageAssemblies.Count == 0)
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Neither package {idver} nor its dependencies have any assemblies for target {target}");
+
+            // Add all target framework reference dlls to our context.
+            var referenceTarget = _referenceAssemblies.ReferenceTargets.FirstOrDefault(x => NugetUtility.IsCompatible(x.Target.FrameworkName, target.FrameworkName));
+            if (referenceTarget != null)
+            {
+                foreach (var path in referenceTarget.Paths.Where(x => x.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)))
+                    assemblies.AddReferenceAssembly(path, () => _referenceStorage.Download(path));
+            }
+
+            // Produce JSON structure for all package dependencies.
+            var immediateDependencies = _platformResolver.GetCompatiblePackageDependencies(publishedPackage.Package, target);
+            var dependencies = dependencyPackages.Select(x =>
+            {
+                immediateDependencies.TryGetValue(x.Metadata.PackageId, out var immediateDependency);
+                return new PackageDependencyJson
+                {
+                    Title = x.Metadata.Title,
+                    PackageId = x.Metadata.PackageId,
+                    VersionRange = immediateDependency?.VersionRange?.ToString(),
+                    Version = x.Metadata.Version.ToString(),
+                    Summary = x.Metadata.Summary,
+                    Authors = x.Metadata.Authors,
+                    IconUrl = x.Metadata.IconUrl,
+                    ProjectUrl = x.Metadata.ProjectUrl,
+                };
+            }).OrderBy(x => x.VersionRange == null).ThenBy(x => x.PackageId, StringComparer.InvariantCultureIgnoreCase).ToArray();
+
+            // Produce JSON structure for the primary package.
 
             throw new NotImplementedException();
         }

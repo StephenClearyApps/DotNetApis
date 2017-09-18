@@ -43,7 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayLiteral.cs" />
+    <Compile Include="AssemblyJson.cs" />
+    <Compile Include="AttributeArgumentJson.cs" />
+    <Compile Include="AttributeJson.cs" />
     <Compile Include="CurrentPackageLocation.cs" />
+    <Compile Include="DynamicTypeReference.cs" />
     <Compile Include="EntityAccessibility.cs" />
     <Compile Include="EntityKind.cs" />
     <Compile Include="EntityLiteralKind.cs" />
@@ -53,12 +58,18 @@
     <Compile Include="GenericParameterModifiers.cs" />
     <Compile Include="ILocation.cs" />
     <Compile Include="JsonFactory.cs" />
+    <Compile Include="KeywordTypeReference.cs" />
+    <Compile Include="LiteralBase.cs" />
     <Compile Include="MethodParameterModifiers.cs" />
     <Compile Include="MethodStyles.cs" />
+    <Compile Include="NullLiteral.cs" />
+    <Compile Include="PackageJson.cs" />
+    <Compile Include="PackageDependencyJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DependencyLocation.cs" />
     <Compile Include="ReferenceLocation.cs" />
     <Compile Include="StructuredXmldoc.cs" />
+    <Compile Include="TypeReferenceBase.cs" />
     <Compile Include="XmldocEntityKind.cs" />
   </ItemGroup>
   <ItemGroup>

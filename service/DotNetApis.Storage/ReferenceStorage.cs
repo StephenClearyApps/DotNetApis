@@ -26,6 +26,12 @@ namespace DotNetApis.Storage
         /// </summary>
         /// <param name="path">The path of the file.</param>
         Task<MemoryStream> DownloadAsync(string path);
+
+        /// <summary>
+        /// Retrieves an assembly file from reference storage.
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
+        MemoryStream Download(string path);
     }
 
     public sealed class AzureReferenceStorage : IReferenceStorage
@@ -56,10 +62,17 @@ namespace DotNetApis.Storage
             return result;
         }
 
-        public async Task<MemoryStream> DownloadAsync(string path)
+        public MemoryStream Download(string path) => DownloadAsync(path, sync: true).GetAwaiter().GetResult();
+        public Task<MemoryStream> DownloadAsync(string path) => DownloadAsync(path, sync: false);
+
+        private async Task<MemoryStream> DownloadAsync(string path, bool sync)
         {
             var result = new MemoryStream();
-            await _container.GetBlockBlobReference(path).DownloadToStreamAsync(result).ConfigureAwait(false);
+            var blob = _container.GetBlockBlobReference(path);
+            if (sync)
+                blob.DownloadToStream(result);
+            else
+                await blob.DownloadToStreamAsync(result).ConfigureAwait(false);
             result.Position = 0;
             return result;
         }
