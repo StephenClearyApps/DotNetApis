@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Structure
 {
+    /// <summary>
+    /// Structured documentation for a package dependency.
+    /// </summary>
     public sealed class PackageDependencyJson
     {
         /// <summary>

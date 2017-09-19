@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenericConcreteType.cs" />
+    <Compile Include="GenericInstanceTypeReference.cs" />
+    <Compile Include="ArrayDimension.cs" />
     <Compile Include="ArrayLiteral.cs" />
+    <Compile Include="ArrayTypeReference.cs" />
     <Compile Include="AssemblyJson.cs" />
     <Compile Include="AttributeArgumentJson.cs" />
     <Compile Include="AttributeJson.cs" />
@@ -73,10 +77,14 @@
     <Compile Include="ReqmodTypeReference.cs" />
     <Compile Include="StructuredXmldoc.cs" />
     <Compile Include="TypeReferenceBase.cs" />
+    <Compile Include="TypeTypeReference.cs" />
     <Compile Include="XmldocEntityKind.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Util\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
