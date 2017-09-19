@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\FieldEntity.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Literals\EnumLiteral.cs" />
     <Compile Include="TypeReferences\GenericConcreteType.cs" />
@@ -78,7 +79,7 @@
     <Compile Include="Locations\DependencyLocation.cs" />
     <Compile Include="Locations\ReferenceLocation.cs" />
     <Compile Include="TypeReferences\ReqmodTypeReference.cs" />
-    <Compile Include="StructuredXmldoc.cs" />
+    <Compile Include="StructuredXmldocNode.cs" />
     <Compile Include="Literals\TypeofLiteral.cs" />
     <Compile Include="TypeReferences\ITypeReference.cs" />
     <Compile Include="TypeReferences\TypeTypeReference.cs" />

@@ -5,9 +5,9 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Structure
 {
-    public sealed class StructuredXmldoc
+    public sealed class StructuredXmldocNode
     {
-        public StructuredXmldoc(XmldocEntityKind kind, object attributes, IEnumerable<StructuredXmldoc> children)
+        public StructuredXmldocNode(XmldocEntityKind kind, object attributes, IEnumerable<StructuredXmldocNode> children)
         {
             Kind = kind;
             Attributes = attributes;
@@ -30,6 +30,6 @@ namespace DotNetApis.Structure
         /// The children of this node. Never <c>null</c>.
         /// </summary>
         [JsonProperty("c")]
-        public IReadOnlyList<StructuredXmldoc> Children { get; }
+        public IReadOnlyList<StructuredXmldocNode> Children { get; }
     }
 }
