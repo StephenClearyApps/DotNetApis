@@ -1,7 +1,7 @@
 ﻿using DotNetApis.Structure.Util;
 using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Entities
 {
     /// <summary>
     /// The kind of entity this structured entry represents.

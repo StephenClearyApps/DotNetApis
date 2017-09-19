@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
+using DotNetApis.Structure.Locations;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 

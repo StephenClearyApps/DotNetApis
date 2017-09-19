@@ -1,4 +1,4 @@
-﻿namespace DotNetApis.Structure
+﻿namespace DotNetApis.Structure.Locations
 {
     /// <summary>
     /// The location of an entity.

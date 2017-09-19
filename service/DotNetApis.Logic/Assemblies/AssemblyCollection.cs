@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
+using DotNetApis.Structure.Locations;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 

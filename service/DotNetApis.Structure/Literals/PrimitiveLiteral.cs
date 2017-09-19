@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DotNetApis.Structure.Util;
+﻿using DotNetApis.Structure.Util;
 using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Literals
 {
     /// <summary>
     /// A primitive literal value.

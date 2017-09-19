@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Structure;
+using DotNetApis.Structure.Locations;
 using Microsoft.Extensions.Logging;
 
 namespace DotNetApis.Logic.Assemblies

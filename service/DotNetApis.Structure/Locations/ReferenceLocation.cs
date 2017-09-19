@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Locations
 {
     /// <summary>
     /// A location in a reference dll.

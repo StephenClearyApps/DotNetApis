@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Locations
 {
     /// <summary>
     /// A location within the current package (though possibly in a different dll).

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.TypeReferences
 {
     /// <summary>
     /// Structured documentation for an array type reference.
