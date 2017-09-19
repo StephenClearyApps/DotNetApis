@@ -44,8 +44,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\FieldEntity.cs" />
+    <Compile Include="Entities\GenericParameter.cs" />
     <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="GenericConstraints\IGenericConstraint.cs" />
+    <Compile Include="Entities\MethodEntity.cs" />
+    <Compile Include="Entities\MethodParameter.cs" />
+    <Compile Include="GenericConstraints\NewGenericConstraint.cs" />
+    <Compile Include="GenericConstraints\ClassGenericConstraint.cs" />
+    <Compile Include="GenericConstraints\StructGenericConstraint.cs" />
+    <Compile Include="GenericConstraints\TypeGenericConstraint.cs" />
     <Compile Include="Literals\EnumLiteral.cs" />
+    <Compile Include="StructuredXmldoc.cs" />
     <Compile Include="TypeReferences\GenericConcreteType.cs" />
     <Compile Include="TypeReferences\GenericInstanceTypeReference.cs" />
     <Compile Include="TypeReferences\ArrayDimension.cs" />
@@ -61,7 +70,7 @@
     <Compile Include="Literals\LiteralKind.cs" />
     <Compile Include="EntityModifiers.cs" />
     <Compile Include="TypeReferences\TypeReferenceKind.cs" />
-    <Compile Include="GenericConstraintKind.cs" />
+    <Compile Include="GenericConstraints\GenericConstraintKind.cs" />
     <Compile Include="GenericParameterModifiers.cs" />
     <Compile Include="TypeReferences\GenericParameterTypeReference.cs" />
     <Compile Include="Locations\ILocation.cs" />

@@ -23,5 +23,23 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("i")]
         string DnaId { get; set; }
+
+        /// <summary>
+        /// The simple name of the entity.
+        /// </summary>
+        [JsonProperty("n")]
+        string Name { get; set; }
+
+        /// <summary>
+        /// Attributes on this entity.
+        /// </summary>
+        [JsonProperty("b")]
+        IReadOnlyList<AttributeJson> Attributes { get; set; }
+
+        /// <summary>
+        /// The xml documentation for the entity.
+        /// </summary>
+        [JsonProperty("x")]
+        StructuredXmldoc Xmldoc { get; set; }
     }
 }
