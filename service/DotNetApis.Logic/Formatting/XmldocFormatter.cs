@@ -60,8 +60,6 @@ namespace DotNetApis.Logic.Formatting
                 result.Examples = examplesDoc.Select(XmldocNode).ToList();
 
             // <seealso> tags can be used either at the top-level or inline.
-            // TODO: Order these and ensure uniqueness.
-            // TODO: Determine what to do with links to namespaces.
             var seealsoDoc = doc.Descendants("seealso");
             if (seealsoDoc.Any())
                 result.SeeAlso = seealsoDoc.Select(XmldocNode).ToList();
@@ -142,7 +140,6 @@ namespace DotNetApis.Logic.Formatting
                 if (langword != null)
                     return hasContents ? XmldocNode(source, XmlXmldocNodeKind.InlineCode) : XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(langword));
 
-                // TODO: handle promoting to method overloads
                 var cref = source.Attribute("cref")?.Value;
                 if (cref == null)
                 {
