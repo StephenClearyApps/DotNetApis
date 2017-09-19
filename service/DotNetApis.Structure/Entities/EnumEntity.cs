@@ -8,21 +8,15 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
 {
-    public sealed class EnumEntity: IEntity
+    public sealed class EnumEntity: IEntity, IHaveNamespace
     {
         public EntityKind Kind => EntityKind.Enum;
         public string DnaId { get; set; }
         public string Name { get; set; }
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
-        public StructuredXmldoc Xmldoc { get; set; }
-
-        /// <summary>
-        /// Accessibility of the entity.
-        /// </summary>
-        [JsonProperty("a")]
         public EntityAccessibility Accessibility { get; set; }
-
-        [JsonProperty("s")]
+        EntityModifiers IEntity.Modifiers { get; set; } // Not used by enums.
+        public StructuredXmldoc Xmldoc { get; set; }
         public string Namespace { get; set; }
         
         /// <summary>

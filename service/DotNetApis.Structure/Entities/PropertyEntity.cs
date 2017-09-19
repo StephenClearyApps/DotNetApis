@@ -11,25 +11,16 @@ namespace DotNetApis.Structure.Entities
     /// <summary>
     /// Structured documentation for a property.
     /// </summary>
-    public sealed class PropertyEntity : IEntity
+    public sealed class PropertyEntity : IEntity, IHaveExplicitInterface
     {
         public EntityKind Kind => EntityKind.Property;
         public string DnaId { get; set; }
         public string Name { get; set; }
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
-        public StructuredXmldoc Xmldoc { get; set; }
-
-        /// <summary>
-        /// Accessibility of the entity.
-        /// </summary>
-        [JsonProperty("a")]
         public EntityAccessibility Accessibility { get; set; }
-
-        /// <summary>
-        /// Modifiers of the entity.
-        /// </summary>
-        [JsonProperty("m")]
         public EntityModifiers Modifiers { get; set; }
+        public StructuredXmldoc Xmldoc { get; set; }
+        public ITypeReference ExplicitInterfaceDeclaringType { get; set; }
 
         /// <summary>
         /// Type of the property.
@@ -42,12 +33,6 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("p")]
         public IReadOnlyList<MethodParameter> Parameters { get; set; }
-
-        /// <summary>
-        /// If the property is an explicit interface definition, then this is the interface.
-        /// </summary>
-        [JsonProperty("d")]
-        public ITypeReference ExplicitInterfaceDeclaringType { get; set; }
 
         /// <summary>
         /// Structured documentation of the property's get accessor.

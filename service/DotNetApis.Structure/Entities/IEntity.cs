@@ -37,6 +37,18 @@ namespace DotNetApis.Structure.Entities
         IReadOnlyList<AttributeJson> Attributes { get; set; }
 
         /// <summary>
+        /// Accessibility of the entity.
+        /// </summary>
+        [JsonProperty("a")]
+        EntityAccessibility Accessibility { get; set; }
+
+        /// <summary>
+        /// Modifiers of the entity.
+        /// </summary>
+        [JsonProperty("m")]
+        EntityModifiers Modifiers { get; set; }
+
+        /// <summary>
         /// The xml documentation for the entity.
         /// </summary>
         [JsonProperty("x")]

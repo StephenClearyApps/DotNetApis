@@ -11,27 +11,28 @@ namespace DotNetApis.Structure.Entities
     /// <summary>
     /// Structured documentation for a class, struct, or interface.
     /// </summary>
-    public sealed class ObjectEntity : IEntity
+    public sealed class TypeEntity : IEntity, IHaveNamespace, IHaveGenericParameters
     {
         public EntityKind Kind { get; set; }
         public string DnaId { get; set; }
         public string Name { get; set; }
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
-        public StructuredXmldoc Xmldoc { get; set; }
-
         public EntityAccessibility Accessibility { get; set; }
-
         public EntityModifiers Modifiers { get; set; }
-
+        public StructuredXmldoc Xmldoc { get; set; }
         public string Namespace { get; set; }
-
-        [JsonProperty("g")]
         public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
 
-        public IReadOnlyList<ITypeReference> BaseTypesAndInterfaces { get; set; }
+        /// <summary>
+        /// The base type (if any) and interfaces inherited by this type.
+        /// </summary>
+        [JsonProperty("t")]
+        public IReadOnlyList<ITypeReference> BaseTypeAndInterfaces { get; set; }
 
-
-
-        // TODO
+        /// <summary>
+        /// The members of this entity, already grouped and sorted.
+        /// </summary>
+        [JsonProperty("e")]
+        public TypeEntityMemberGrouping Members { get; set; }
     }
 }

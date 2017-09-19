@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Structure.Entities;
 using Newtonsoft.Json;
 
 namespace DotNetApis.Structure
@@ -36,6 +37,10 @@ namespace DotNetApis.Structure
         [JsonProperty("b")]
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
 
-        // TODO: Types!
+        /// <summary>
+        /// Types defined by this assembly.
+        /// </summary>
+        [JsonProperty("t")]
+        public IReadOnlyList<IEntity> Types { get; set; }
     }
 }

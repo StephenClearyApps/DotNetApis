@@ -17,20 +17,10 @@ namespace DotNetApis.Structure.Entities
         public EntityKind Kind => EntityKind.Field;
         public string DnaId { get; set; }
         public string Name { get; set; }
+        public EntityModifiers Modifiers { get; set; }
         public StructuredXmldoc Xmldoc { get; set; }
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
-
-        /// <summary>
-        /// The field accessibility.
-        /// </summary>
-        [JsonProperty("a")]
         public EntityAccessibility Accessibility { get; set; }
-
-        /// <summary>
-        /// The field modifiers.
-        /// </summary>
-        [JsonProperty("m")]
-        public EntityModifiers Modifiers { get; set; }
 
         /// <summary>
         /// The type of the field.

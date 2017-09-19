@@ -11,37 +11,22 @@ namespace DotNetApis.Structure.Entities
     /// <summary>
     /// Structured documentation for an event.
     /// </summary>
-    public sealed class EventEntity : IEntity
+    public sealed class EventEntity : IEntity, IHaveExplicitInterface
     {
         public EntityKind Kind => EntityKind.Event;
         public string DnaId { get; set; }
         public string Name { get; set; }
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
-        public StructuredXmldoc Xmldoc { get; set; }
-
-        /// <summary>
-        /// Accessibility of the entity.
-        /// </summary>
-        [JsonProperty("a")]
         public EntityAccessibility Accessibility { get; set; }
-
-        /// <summary>
-        /// Modifiers of the entity.
-        /// </summary>
-        [JsonProperty("m")]
         public EntityModifiers Modifiers { get; set; }
+        public StructuredXmldoc Xmldoc { get; set; }
+        public ITypeReference ExplicitInterfaceDeclaringType { get; set; }
 
         /// <summary>
         /// Type of the event.
         /// </summary>
         [JsonProperty("t")]
         public ITypeReference Type { get; set; }
-
-        /// <summary>
-        /// If the event is an explicit interface definition, then this is the interface.
-        /// </summary>
-        [JsonProperty("d")]
-        public ITypeReference ExplicitInterfaceDeclaringType { get; set; }
 
         /// <summary>
         /// Attributes on the add method.

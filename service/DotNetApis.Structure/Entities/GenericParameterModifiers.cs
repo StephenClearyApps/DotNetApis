@@ -1,7 +1,7 @@
 ﻿using DotNetApis.Structure.Util;
 using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Entities
 {
     /// <summary>
     /// This must be kept in sync with constants/entityGenericParameterModifiers.js

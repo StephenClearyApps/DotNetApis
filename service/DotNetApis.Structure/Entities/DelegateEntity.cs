@@ -8,22 +8,17 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
 {
-    public sealed class DelegateEntity : IEntity
+    public sealed class DelegateEntity : IEntity, IHaveNamespace, IHaveGenericParameters
     {
         public EntityKind Kind => EntityKind.Delegate;
         public string DnaId { get; set; }
         public string Name { get; set; }
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
-        public StructuredXmldoc Xmldoc { get; set; }
-
-        /// <summary>
-        /// Accessibility of the entity.
-        /// </summary>
-        [JsonProperty("a")]
         public EntityAccessibility Accessibility { get; set; }
-
-        [JsonProperty("s")]
+        EntityModifiers IEntity.Modifiers { get; set; } // not used by delegates
+        public StructuredXmldoc Xmldoc { get; set; }
         public string Namespace { get; set; }
+        public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
 
         /// <summary>
         /// Return type of the delegate.
@@ -36,11 +31,5 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("p")]
         public IReadOnlyList<MethodParameter> Parameters { get; set; }
-
-        /// <summary>
-        /// Generic parameters of the delegate.
-        /// </summary>
-        [JsonProperty("g")]
-        public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
     }
 }
