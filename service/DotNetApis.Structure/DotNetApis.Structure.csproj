@@ -78,13 +78,12 @@
     <Compile Include="StructuredXmldoc.cs" />
     <Compile Include="TypeReferenceBase.cs" />
     <Compile Include="TypeTypeReference.cs" />
+    <Compile Include="Util\IntEnumConverter.cs" />
     <Compile Include="XmldocEntityKind.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

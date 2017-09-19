@@ -1,4 +1,6 @@
 ﻿using System;
+using DotNetApis.Structure.Util;
+using Newtonsoft.Json;
 
 namespace DotNetApis.Structure
 {
@@ -6,6 +8,7 @@ namespace DotNetApis.Structure
     /// Modifiers on entities.
     /// Must be kept in sync with constants/entityModifiers.js
     /// </summary>
+    [JsonConverter(typeof(IntEnumConverter))]
     [Flags]
     public enum EntityModifiers
     {
