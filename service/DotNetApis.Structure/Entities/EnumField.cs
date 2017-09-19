@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Structure.Xmldoc;
 using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
@@ -28,6 +29,6 @@ namespace DotNetApis.Structure.Entities
         /// XML documentation.
         /// </summary>
         [JsonProperty("x")]
-        public StructuredXmldoc Xmldoc { get; set; }
+        public Xmldoc.Xmldoc Xmldoc { get; set; }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Xmldoc
 {
-    public sealed class StructuredXmldocNode
+    public sealed class XmlXmldocNode : IXmldocNode
     {
-        public StructuredXmldocNode(XmldocEntityKind kind, object attributes, IEnumerable<StructuredXmldocNode> children)
+        public XmlXmldocNode(XmlXmldocNodeKind kind, object attributes, IEnumerable<IXmldocNode> children)
         {
             Kind = kind;
             Attributes = attributes;
@@ -18,7 +17,7 @@ namespace DotNetApis.Structure
         /// The kind of node represented by this object.
         /// </summary>
         [JsonProperty("k")]
-        public XmldocEntityKind Kind { get; set; }
+        public XmlXmldocNodeKind Kind { get; set; }
 
         /// <summary>
         /// The additional attributes for this node. May be <c>null</c>.
@@ -30,6 +29,6 @@ namespace DotNetApis.Structure
         /// The children of this node. Never <c>null</c>.
         /// </summary>
         [JsonProperty("c")]
-        public IReadOnlyList<StructuredXmldocNode> Children { get; }
+        public IReadOnlyList<IXmldocNode> Children { get; }
     }
 }

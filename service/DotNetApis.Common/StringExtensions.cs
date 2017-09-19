@@ -42,5 +42,17 @@ namespace DotNetApis.Common
                 return (s, 0);
             return (s.Substring(0, backtickIndex), int.Parse(s.Substring(s.LastIndexOf('`') + 1), CultureInfo.InvariantCulture));
         }
+
+        /// <summary>
+        /// Trims whitespace at the beginning and end of a string, but keeps a single space at the beginning and end if they previously had whitespace.
+        /// </summary>
+        public static string MinimizeWhitespace(this string source)
+        {
+            if (source == string.Empty)
+                return source;
+            var begin = char.IsWhiteSpace(source[0]) ? " " : string.Empty;
+            var end = char.IsWhiteSpace(source[source.Length - 1]) ? " " : string.Empty;
+            return begin + source.Trim() + end;
+        }
     }
 }

@@ -65,7 +65,9 @@
     <Compile Include="GenericConstraints\StructGenericConstraint.cs" />
     <Compile Include="GenericConstraints\TypeGenericConstraint.cs" />
     <Compile Include="Literals\EnumLiteral.cs" />
-    <Compile Include="StructuredXmldoc.cs" />
+    <Compile Include="Xmldoc\StringXmldocNode.cs" />
+    <Compile Include="Xmldoc\IXmldocNode.cs" />
+    <Compile Include="Xmldoc\Xmldoc.cs" />
     <Compile Include="TypeReferences\GenericConcreteType.cs" />
     <Compile Include="TypeReferences\GenericInstanceTypeReference.cs" />
     <Compile Include="TypeReferences\ArrayDimension.cs" />
@@ -99,13 +101,13 @@
     <Compile Include="Locations\DependencyLocation.cs" />
     <Compile Include="Locations\ReferenceLocation.cs" />
     <Compile Include="TypeReferences\ReqmodTypeReference.cs" />
-    <Compile Include="StructuredXmldocNode.cs" />
+    <Compile Include="Xmldoc\XmlXmldocNode.cs" />
     <Compile Include="Literals\TypeofLiteral.cs" />
     <Compile Include="TypeReferences\ITypeReference.cs" />
     <Compile Include="TypeReferences\TypeTypeReference.cs" />
     <Compile Include="Util\IntBooleanConverter.cs" />
     <Compile Include="Util\IntEnumConverter.cs" />
-    <Compile Include="XmldocEntityKind.cs" />
+    <Compile Include="Xmldoc\XmlXmldocNodeKind.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

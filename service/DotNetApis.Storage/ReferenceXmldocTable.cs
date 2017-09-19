@@ -28,7 +28,7 @@ namespace DotNetApis.Storage
         /// <summary>
         /// Looks up xmldoc in the table, and returns the record for that xmldoc. Returns <c>null</c> if the xmldoc is not in the table.
         /// </summary>
-        ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldocId);
+        ReferenceXmldocTableRecord? TryGetRecord(PlatformTarget framework, string xmldocId); // TODO: consider making this async
 
         /// <summary>
         /// Creates a new batch of operations for the table.

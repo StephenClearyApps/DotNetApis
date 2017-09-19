@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Structure.Literals;
 using DotNetApis.Structure.TypeReferences;
+using DotNetApis.Structure.Xmldoc;
 using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
@@ -48,6 +49,6 @@ namespace DotNetApis.Structure.Entities
         /// Xml documentation for the parameter.
         /// </summary>
         [JsonProperty("x")]
-        public StructuredXmldoc Xmldoc { get; set; }
+        public Xmldoc.Xmldoc Xmldoc { get; set; }
     }
 }

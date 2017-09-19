@@ -66,16 +66,27 @@ namespace DotNetApis.Logic.Assemblies
         public IEnumerable<IAssembly> AllAssemblies => CurrentPackageAssemblies.Cast<IAssembly>().Concat(DependencyPackageAssemblies).Concat(ReferenceAssemblies);
 
         /// <summary>
-        /// Looks up a dnaid in all assemblies and returns its location and friendly name. Returns <c>null</c> if it's not found, or if its assembly hasn't been loaded yet.
+        /// Looks up a dnaid in all loaded assemblies and returns its location and friendly name. Returns <c>null</c> if it's not found, or if its assembly hasn't been loaded yet.
         /// </summary>
         /// <param name="dnaid">The dnaid</param>
-        public (ILocation Location, FriendlyName FriendlyName)? TryGetDnaIdLocationAndFriendlyName(string dnaid)
+        public (ILocation Location, FriendlyName FriendlyName)? TryGetLocationAndFriendlyNameFromDnaId(string dnaid)
         {
             if (_dnaidLookupCache.ContainsKey(dnaid))
                 return _dnaidLookupCache[dnaid];
             var result = AllAssemblies.Select(x => x.TryGetDnaIdLocationAndFriendlyName(dnaid)).FirstOrDefault(x => x != null);
             _dnaidLookupCache[dnaid] = result;
             return result;
+        }
+
+        /// <summary>
+        /// Looks up a xmldocid in all loaded assemblies and returns its location and friendly name. Returns <c>null</c> if it's not found, or if its assembly hasn't been loaded yet.
+        /// </summary>
+        /// <param name="xmldocid">The xmldocid</param>
+        public (ILocation Location, FriendlyName FriendlyName)? TryGetLocationAndFriendlyNameFromXmldocId(string xmldocid)
+        {
+            if (!_xmldocIdToDnaId.TryGetValue(xmldocid, out var dnaid))
+                return null;
+            return TryGetLocationAndFriendlyNameFromDnaId(dnaid);
         }
 
         /// <summary>

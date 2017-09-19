@@ -1,13 +1,13 @@
 ﻿using DotNetApis.Structure.Util;
 using Newtonsoft.Json;
 
-namespace DotNetApis.Structure
+namespace DotNetApis.Structure.Xmldoc
 {
     /// <summary>
     /// This must be kept in sync with util/entities/xmldoc.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
-    public enum XmldocEntityKind
+    public enum XmlXmldocNodeKind
     {
         // Common Xmldoc entities.
         Div = 0,

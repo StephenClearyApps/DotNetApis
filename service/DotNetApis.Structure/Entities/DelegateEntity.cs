@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Structure.TypeReferences;
+using DotNetApis.Structure.Xmldoc;
 using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
@@ -16,7 +17,7 @@ namespace DotNetApis.Structure.Entities
         public IReadOnlyList<AttributeJson> Attributes { get; set; }
         public EntityAccessibility Accessibility { get; set; }
         EntityModifiers IEntity.Modifiers { get; set; } // not used by delegates
-        public StructuredXmldoc Xmldoc { get; set; }
+        public Xmldoc.Xmldoc Xmldoc { get; set; }
         public string Namespace { get; set; }
         public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
 
