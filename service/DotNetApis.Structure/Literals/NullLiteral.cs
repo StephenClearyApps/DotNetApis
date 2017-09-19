@@ -5,6 +5,6 @@
     /// </summary>
     public sealed class NullLiteral : ILiteral
     {
-        public EntityLiteralKind Kind => EntityLiteralKind.Null;
+        public LiteralKind Kind => LiteralKind.Null;
     }
 }

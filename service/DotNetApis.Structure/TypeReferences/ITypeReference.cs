@@ -11,6 +11,6 @@ namespace DotNetApis.Structure.TypeReferences
         /// The kind of type reference this is.
         /// </summary>
         [JsonProperty("k")]
-        EntityReferenceKind Kind { get; }
+        TypeReferenceKind Kind { get; }
     }
 }

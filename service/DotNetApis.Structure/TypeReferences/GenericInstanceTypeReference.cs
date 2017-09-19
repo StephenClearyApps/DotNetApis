@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class GenericInstanceTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.GenericInstance;
+        public TypeReferenceKind Kind => TypeReferenceKind.GenericInstance;
 
         /// <summary>
         /// All declaring types and this type, as generic concrete types.

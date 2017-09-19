@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class TypeTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.Type;
+        public TypeReferenceKind Kind => TypeReferenceKind.Type;
 
         /// <summary>
         /// The name of the type, without a backtick suffix.

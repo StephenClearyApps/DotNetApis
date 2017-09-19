@@ -7,7 +7,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class GenericParameterTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.GenericParameter;
+        public TypeReferenceKind Kind => TypeReferenceKind.GenericParameter;
 
         /// <summary>
         /// The name of the generic parameter.

@@ -10,7 +10,7 @@ namespace DotNetApis.Structure.Literals
     /// </summary>
     public sealed class EnumLiteral : ILiteral
     {
-        public EntityLiteralKind Kind => EntityLiteralKind.Enum;
+        public LiteralKind Kind => LiteralKind.Enum;
 
         /// <summary>
         /// The numeric value of the enumeration value. This may be a byte, sbyte, short, ushort, int, uint, long, or ulong.

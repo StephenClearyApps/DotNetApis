@@ -7,7 +7,7 @@ namespace DotNetApis.Structure.Literals
     /// This must be kept in sync with constants\entityLiteralKinds.js
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
-    public enum EntityLiteralKind
+    public enum LiteralKind
     {
         Null = 0,
         Primitive,

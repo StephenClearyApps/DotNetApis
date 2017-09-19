@@ -11,6 +11,6 @@ namespace DotNetApis.Structure.Literals
         /// The kind of literal this is.
         /// </summary>
         [JsonProperty("k")]
-        EntityLiteralKind Kind { get; }
+        LiteralKind Kind { get; }
     }
 }

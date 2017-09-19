@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.Literals
     /// </summary>
     public sealed class TypeofLiteral : ILiteral
     {
-        public EntityLiteralKind Kind => EntityLiteralKind.Typeof;
+        public LiteralKind Kind => LiteralKind.Typeof;
 
         /// <summary>
         /// The type being referred to.

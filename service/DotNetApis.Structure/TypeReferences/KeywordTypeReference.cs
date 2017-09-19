@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class KeywordTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.Keyword;
+        public TypeReferenceKind Kind => TypeReferenceKind.Keyword;
 
         /// <summary>
         /// The name of the keyword, e.g., "int".

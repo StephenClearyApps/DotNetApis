@@ -9,7 +9,7 @@ namespace DotNetApis.Structure.Literals
     /// </summary>
     public sealed class ArrayLiteral : ILiteral
     {
-        public EntityLiteralKind Kind => EntityLiteralKind.Array;
+        public LiteralKind Kind => LiteralKind.Array;
 
         /// <summary>
         /// The type of the array elements.

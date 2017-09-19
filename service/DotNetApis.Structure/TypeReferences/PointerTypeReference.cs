@@ -7,7 +7,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class PointerTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.Pointer;
+        public TypeReferenceKind Kind => TypeReferenceKind.Pointer;
 
         /// <summary>
         /// The type that this is a pointer to.

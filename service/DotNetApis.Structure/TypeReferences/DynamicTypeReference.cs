@@ -5,6 +5,6 @@
     /// </summary>
     public sealed class DynamicTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.Dynamic;
+        public TypeReferenceKind Kind => TypeReferenceKind.Dynamic;
     }
 }

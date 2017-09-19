@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.Literals
     /// </summary>
     public sealed class PrimitiveLiteral : ILiteral
     {
-        public EntityLiteralKind Kind => EntityLiteralKind.Primitive;
+        public LiteralKind Kind => LiteralKind.Primitive;
 
         /// <summary>
         /// The value; may be a string, boolean, char, byte, sbyte, short, ushort, int, uint, long, ulong, single, double, or decimal.

@@ -57,9 +57,9 @@
     <Compile Include="TypeReferences\DynamicTypeReference.cs" />
     <Compile Include="EntityAccessibility.cs" />
     <Compile Include="Entities\EntityKind.cs" />
-    <Compile Include="Literals\EntityLiteralKind.cs" />
+    <Compile Include="Literals\LiteralKind.cs" />
     <Compile Include="EntityModifiers.cs" />
-    <Compile Include="TypeReferences\EntityReferenceKind.cs" />
+    <Compile Include="TypeReferences\TypeReferenceKind.cs" />
     <Compile Include="GenericConstraintKind.cs" />
     <Compile Include="GenericParameterModifiers.cs" />
     <Compile Include="TypeReferences\GenericParameterTypeReference.cs" />

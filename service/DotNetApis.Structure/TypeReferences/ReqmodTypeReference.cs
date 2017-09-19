@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class ReqmodTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.Reqmod;
+        public TypeReferenceKind Kind => TypeReferenceKind.Reqmod;
 
         /// <summary>
         /// The location of the reqmod type.

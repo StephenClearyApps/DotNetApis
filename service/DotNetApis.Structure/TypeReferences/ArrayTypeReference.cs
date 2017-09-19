@@ -8,7 +8,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// </summary>
     public sealed class ArrayTypeReference : ITypeReference
     {
-        public EntityReferenceKind Kind => EntityReferenceKind.Array;
+        public TypeReferenceKind Kind => TypeReferenceKind.Array;
 
         /// <summary>
         /// The type of the elements of the array.

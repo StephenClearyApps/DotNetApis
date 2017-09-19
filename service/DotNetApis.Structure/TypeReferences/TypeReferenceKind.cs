@@ -7,7 +7,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// This must be kept in sync with constants/entityReferenceKinds.js
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
-    public enum EntityReferenceKind
+    public enum TypeReferenceKind
     {
         Type = 0,
         Keyword,
