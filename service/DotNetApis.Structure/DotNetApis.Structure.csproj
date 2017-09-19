@@ -43,9 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\DelegateEntity.cs" />
+    <Compile Include="Entities\EnumEntity.cs" />
+    <Compile Include="Entities\EnumField.cs" />
+    <Compile Include="Entities\EventEntity.cs" />
     <Compile Include="Entities\FieldEntity.cs" />
     <Compile Include="Entities\GenericParameter.cs" />
     <Compile Include="Entities\IEntity.cs" />
+    <Compile Include="Entities\ObjectEntity.cs" />
+    <Compile Include="Entities\ObjectMembers.cs" />
+    <Compile Include="Entities\PropertyEntity.cs" />
+    <Compile Include="Entities\PropertyMethod.cs" />
     <Compile Include="GenericConstraints\IGenericConstraint.cs" />
     <Compile Include="Entities\MethodEntity.cs" />
     <Compile Include="Entities\MethodParameter.cs" />
