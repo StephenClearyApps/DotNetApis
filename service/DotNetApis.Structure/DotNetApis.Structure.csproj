@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumLiteral.cs" />
     <Compile Include="GenericConcreteType.cs" />
     <Compile Include="GenericInstanceTypeReference.cs" />
     <Compile Include="ArrayDimension.cs" />
@@ -71,13 +72,16 @@
     <Compile Include="PackageJson.cs" />
     <Compile Include="PackageDependencyJson.cs" />
     <Compile Include="PointerTypeReference.cs" />
+    <Compile Include="PrimitiveLiteral.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DependencyLocation.cs" />
     <Compile Include="ReferenceLocation.cs" />
     <Compile Include="ReqmodTypeReference.cs" />
     <Compile Include="StructuredXmldoc.cs" />
+    <Compile Include="TypeofLiteral.cs" />
     <Compile Include="TypeReferenceBase.cs" />
     <Compile Include="TypeTypeReference.cs" />
+    <Compile Include="Util\IntBooleanConverter.cs" />
     <Compile Include="Util\IntEnumConverter.cs" />
     <Compile Include="XmldocEntityKind.cs" />
   </ItemGroup>
