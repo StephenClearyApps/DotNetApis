@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DotNetApis.Structure
 {
@@ -11,9 +12,30 @@ namespace DotNetApis.Structure
     /// </summary>
     public sealed class AssemblyJson
     {
+        /// <summary>
+        /// The full name of the assembly.
+        /// </summary>
+        [JsonProperty("n")]
         public string FullName { get; set; }
+
+        /// <summary>
+        /// The path (within the NuGet package) of the assembly.
+        /// </summary>
+        [JsonProperty("n")]
         public string Path { get; set; }
+
+        /// <summary>
+        /// The size of the assembly, in bytes.
+        /// </summary>
+        [JsonProperty("s")]
         public long FileLength { get; set; }
-        // TODO
+
+        /// <summary>
+        /// Assembly-level attributes.
+        /// </summary>
+        [JsonProperty("b")]
+        public IReadOnlyList<AttributeJson> Attributes { get; set; }
+
+        // TODO: Types!
     }
 }

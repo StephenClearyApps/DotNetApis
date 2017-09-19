@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace DotNetApis.Structure
 {
@@ -16,11 +17,13 @@ namespace DotNetApis.Structure
         /// <summary>
         /// The type of the array elements.
         /// </summary>
+        [JsonProperty("t")]
         public ITypeReference ElementType { get; set; }
 
         /// <summary>
         /// The array element values.
         /// </summary>
+        [JsonProperty("v")]
         public IReadOnlyList<ILiteral> Values { get; set; }
     }
 }

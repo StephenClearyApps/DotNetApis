@@ -17,16 +17,8 @@ namespace DotNetApis.Structure
         /// <summary>
         /// The kind of node represented by this object.
         /// </summary>
-        [JsonIgnore]
-        public XmldocEntityKind Kind { get; set; }
-
         [JsonProperty("k")]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public int KindJson
-        {
-            get => (int) Kind;
-            set => Kind = (XmldocEntityKind) value;
-        }
+        public XmldocEntityKind Kind { get; set; }
 
         /// <summary>
         /// The additional attributes for this node. May be <c>null</c>.
