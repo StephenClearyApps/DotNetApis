@@ -39,12 +39,12 @@ namespace DotNetApis.Logic.Assemblies
         /// <summary>
         /// The path within the package of the assembly.
         /// </summary>
-        protected string Path { get; }
+        public string Path { get; }
 
         /// <summary>
         /// The length of the assembly, in bytes.
         /// </summary>
-        protected long FileLength { get; }
+        public long FileLength { get; }
 
         protected override Stream Read() => Package.ReadFile(Path);
     }

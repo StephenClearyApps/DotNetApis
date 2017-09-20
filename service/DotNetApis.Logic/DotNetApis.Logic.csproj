@@ -109,6 +109,7 @@
     <Compile Include="Assemblies\IAssembly.cs" />
     <Compile Include="Assemblies\PackageAssemblyBase.cs" />
     <Compile Include="Assemblies\ReferenceAssembly.cs" />
+    <Compile Include="AssemblyScope.cs" />
     <Compile Include="Formatting\AccessibilityFormatter.cs" />
     <Compile Include="Formatting\AttributeFormatter.cs" />
     <Compile Include="Formatting\MemberDefinitionFormatter.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Formatting\TypeLocator.cs" />
     <Compile Include="Formatting\TypeReferenceFormatter.cs" />
     <Compile Include="Formatting\XmldocFormatter.cs" />
+    <Compile Include="GenerationScope.cs" />
     <Compile Include="Messages\MessageBaseWithLog.cs" />
     <Compile Include="NugetPackageDependencyResolver.cs" />
     <Compile Include="Parsing.cs" />

@@ -96,7 +96,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ScopeBase.cs" />
     <Compile Include="AsyncLocalLogger.cs" />
+    <Compile Include="AsyncLocalStack.cs" />
     <Compile Include="CollectionExtensions.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />

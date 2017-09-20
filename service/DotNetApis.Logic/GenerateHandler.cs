@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using DotNetApis.Cecil;
 using DotNetApis.Common;
 using DotNetApis.Logic.Assemblies;
+using DotNetApis.Logic.Formatting;
 using DotNetApis.Logic.Messages;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
@@ -24,8 +27,12 @@ namespace DotNetApis.Logic
         private readonly NugetPackageDependencyResolver _dependencyResolver;
         private readonly ReferenceAssemblies _referenceAssemblies;
         private readonly IReferenceStorage _referenceStorage;
+        private readonly MemberDefinitionFormatter _memberDefinitionFormatter;
+        private readonly AttributeFormatter _attributeFormatter;
 
-        public GenerateHandler(ILogger logger, InMemoryLogger inMemoryLogger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage)
+        public GenerateHandler(ILogger logger, InMemoryLogger inMemoryLogger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
+            NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage, MemberDefinitionFormatter memberDefinitionFormatter,
+            AttributeFormatter attributeFormatter)
         {
             _logger = logger;
             _logStorage = logStorage;
@@ -34,6 +41,8 @@ namespace DotNetApis.Logic
             _dependencyResolver = dependencyResolver;
             _referenceAssemblies = referenceAssemblies;
             _referenceStorage = referenceStorage;
+            _memberDefinitionFormatter = memberDefinitionFormatter;
+            _attributeFormatter = attributeFormatter;
             _inMemoryLogger = inMemoryLogger;
         }
         
@@ -45,7 +54,8 @@ namespace DotNetApis.Logic
                 throw new InvalidOperationException("Invalid generation request");
             try
             {
-                await HandleAsync(idver, target).ConfigureAwait(false);
+                var json = await HandleAsync(idver, target).ConfigureAwait(false); // TODO: handle result
+                Debugger.Break();
                 await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", _inMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -55,7 +65,7 @@ namespace DotNetApis.Logic
             }
         }
 
-        private async Task HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        private async Task<PackageJson> HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
             // Load the package.
             var publishedPackage = await _packageDownloader.GetPackageAsync(idver).ConfigureAwait(false);
@@ -97,27 +107,58 @@ namespace DotNetApis.Logic
                     assemblies.AddReferenceAssembly(path, () => _referenceStorage.Download(path));
             }
 
-            // Produce JSON structure for all package dependencies.
-            var immediateDependencies = _platformResolver.GetCompatiblePackageDependencies(publishedPackage.Package, target);
-            var dependencies = dependencyPackages.Select(x =>
+            using (GenerationScope.Create(target, assemblies))
             {
-                immediateDependencies.TryGetValue(x.Metadata.PackageId, out var immediateDependency);
-                return new PackageDependencyJson
+                // Produce JSON structure for all package dependencies.
+                var immediateDependencies = _platformResolver.GetCompatiblePackageDependencies(publishedPackage.Package, target);
+                var dependencies = dependencyPackages.Select(x =>
                 {
-                    Title = x.Metadata.Title,
-                    PackageId = x.Metadata.PackageId,
-                    VersionRange = immediateDependency?.VersionRange?.ToString(),
-                    Version = x.Metadata.Version.ToString(),
-                    Summary = x.Metadata.Summary,
-                    Authors = x.Metadata.Authors,
-                    IconUrl = x.Metadata.IconUrl,
-                    ProjectUrl = x.Metadata.ProjectUrl,
+                    immediateDependencies.TryGetValue(x.Metadata.PackageId, out var immediateDependency);
+                    return new PackageDependencyJson
+                    {
+                        Title = x.Metadata.Title,
+                        PackageId = x.Metadata.PackageId,
+                        VersionRange = immediateDependency?.VersionRange?.ToString(),
+                        Version = x.Metadata.Version.ToString(),
+                        Summary = x.Metadata.Summary,
+                        Authors = x.Metadata.Authors,
+                        IconUrl = x.Metadata.IconUrl,
+                        ProjectUrl = x.Metadata.ProjectUrl,
+                    };
+                }).OrderBy(x => x.VersionRange == null).ThenBy(x => x.PackageId, StringComparer.InvariantCultureIgnoreCase).ToList();
+
+                // Produce JSON structure for the primary package.
+                return new PackageJson
+                {
+                    PackageId = publishedPackage.Package.Metadata.PackageId,
+                    Version = publishedPackage.Package.Metadata.Version.ToString(),
+                    Target = target.ToString(),
+                    Description = publishedPackage.Package.Metadata.Description,
+                    Authors = publishedPackage.Package.Metadata.Authors,
+                    IconUrl = publishedPackage.Package.Metadata.IconUrl,
+                    ProjectUrl = publishedPackage.Package.Metadata.ProjectUrl,
+                    SupportedTargets = allTargets.Select(x => x.ToString()).ToList(),
+                    Dependencies = dependencies,
+                    Published = publishedPackage.ExternalMetadata.Published,
+                    IsReleaseVersion = publishedPackage.Package.Metadata.Version.IsReleaseVersion,
+                    Assemblies = assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null).Select(GenerateJsonForAssembly).ToList(),
                 };
-            }).OrderBy(x => x.VersionRange == null).ThenBy(x => x.PackageId, StringComparer.InvariantCultureIgnoreCase).ToArray();
+            }
+        }
 
-            // Produce JSON structure for the primary package.
-
-            throw new NotImplementedException();
+        private AssemblyJson GenerateJsonForAssembly(CurrentPackageAssembly assembly)
+        {
+            using (AssemblyScope.Create(assembly.Xmldoc))
+            {
+                return new AssemblyJson
+                {
+                    FullName = assembly.AssemblyDefinition.FullName,
+                    Path = assembly.Path,
+                    FileLength = assembly.FileLength,
+                    Attributes = _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList(),
+                    Types = assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()).Select(x => _memberDefinitionFormatter.MemberDefinition(x, assembly.Xmldoc)).ToList(),
+                };
+            }
         }
     }
 }

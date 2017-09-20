@@ -16,12 +16,12 @@ namespace DotNetApis.Logic.Formatting
     public sealed class TypeLocator
     {
         private readonly ILogger _logger;
-        private readonly AssemblyCollection _assemblies;
+        private readonly GenerationScope.Accessor _generationScope;
 
-        public TypeLocator(ILogger logger, AssemblyCollection assemblies)
+        public TypeLocator(ILogger logger, GenerationScope.Accessor generationScope)
         {
             _logger = logger;
-            _assemblies = assemblies;
+            _generationScope = generationScope;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="dnaid">The dnaid of the entity being referenced.</param>
         public (ILocation Location, FriendlyName FriendlyName)? TryGetLocationAndFriendlyNameFromDnaId(string dnaid)
         {
-            var result = _assemblies.TryGetLocationAndFriendlyNameFromDnaId(dnaid);
+            var result = _generationScope.Current.Asssemblies.TryGetLocationAndFriendlyNameFromDnaId(dnaid);
             if (result == null)
                 _logger.LogWarning("Unable to find entity {dnaid}", dnaid);
             return result;
@@ -48,7 +48,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="xmldocid">The xmldocid of the entity being referenced.</param>
         public (ILocation Location, FriendlyName FriendlyName)? TryGetLocationAndFriendlyNameFromXmldocId(string xmldocid)
         {
-            var result = _assemblies.TryGetLocationAndFriendlyNameFromXmldocId(xmldocid);
+            var result = _generationScope.Current.Asssemblies.TryGetLocationAndFriendlyNameFromXmldocId(xmldocid);
             if (result == null)
                 _logger.LogWarning("Unable to find xmldoc entity {xmldocid}", xmldocid);
             return result;

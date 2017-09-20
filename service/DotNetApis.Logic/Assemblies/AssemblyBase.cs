@@ -36,6 +36,9 @@ namespace DotNetApis.Logic.Assemblies
             {
                 try
                 {
+                    if (_path.EndsWith(".xml", StringComparison.InvariantCultureIgnoreCase))
+                        return null;
+
                     // Cecil requires a seekable stream to read the file correctly.
                     var source = Read();
                     if (!source.CanSeek)
@@ -49,7 +52,7 @@ namespace DotNetApis.Logic.Assemblies
                 }
                 catch (Exception ex)
                 {
-                    logger.LogWarning(0, ex, "Unable to load assembly {type} from {path}", GetType().Name, path);
+                    logger.LogWarning(0, ex, "Unable to load {type} assembly from {path}", GetType().Name, path);
                     return null;
                 }
             });

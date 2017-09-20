@@ -24,14 +24,14 @@ namespace DotNetApis.Logic.Formatting
         private readonly ILogger _logger;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly TypeLocator _typeLocator;
-        private readonly PlatformTarget _target;
+        private readonly ScopeBase<GenerationScope>.Accessor _generationScope;
 
-        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, PlatformTarget target)
+        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, GenerationScope.Accessor generationScope)
         {
             _logger = logger;
             _referenceXmldocTable = referenceXmldocTable;
             _typeLocator = typeLocator;
-            _target = target;
+            _generationScope = generationScope;
         }
 
         /// <summary>
@@ -303,7 +303,7 @@ namespace DotNetApis.Logic.Formatting
                 return result.Value;
 
             // Not found in any loaded dll. This is likely an xmldoc error, but we'll (quickly) check across all platform assembly references for our target just in case.
-            var record = _referenceXmldocTable.TryGetRecord(_target, xmldocid);
+            var record = _referenceXmldocTable.TryGetRecord(_generationScope.Current.PlatformTarget, xmldocid);
             if (record != null)
                 return (new ReferenceLocation { DnaId = record.Value.DnaId }, record.Value.FriendlyName);
 
