@@ -40,33 +40,30 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
         public FieldEntity Field(FieldDefinition field, XContainer xmldoc)
         {
-            var decimalConstantAttribute = field.TryGetDecimalConstantAttribute();
-
-            var modifiers = field.IsStatic ? EntityModifiers.Static : EntityModifiers.None;
-            ILiteral value = null;
-
-            if (field.HasConstant)
-            {
-                modifiers |= EntityModifiers.Const;
-                value = _literalFormatter.Literal(field.FieldType, field.Constant);
-            }
-            else if (decimalConstantAttribute != null)
-            {
-                modifiers |= EntityModifiers.Const;
-                value = _literalFormatter.Literal(field.FieldType, decimalConstantAttribute.GetDecimalValue());
-            }
-
-            return new FieldEntity
+            var result = new FieldEntity
             {
                 DnaId = field.DnaId(),
                 Attributes = _attributeFormatter.Attributes(field).ToList(),
                 Accessibility = _accessibilityFormatter.FieldAccessibility(field),
+                Modifiers = field.IsStatic ? EntityModifiers.Static : EntityModifiers.None,
                 Name = _nameFormatter.EscapeIdentifier(field.Name),
-                Modifiers = modifiers,
                 Type = _typeReferenceFormatter.TypeReference(field.FieldType, field.GetDynamicReplacement()),
-                Value = value,
                 Xmldoc = _xmldocFormatter.Xmldoc(field, xmldoc),
             };
+
+            var decimalConstantAttribute = field.TryGetDecimalConstantAttribute();
+            if (field.HasConstant)
+            {
+                result.Modifiers |= EntityModifiers.Const;
+                result.Value = _literalFormatter.Literal(field.FieldType, field.Constant);
+            }
+            else if (decimalConstantAttribute != null)
+            {
+                result.Modifiers |= EntityModifiers.Const;
+                result.Value = _literalFormatter.Literal(field.FieldType, decimalConstantAttribute.GetDecimalValue());
+            }
+
+            return result;
         }
     }
 }

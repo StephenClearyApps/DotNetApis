@@ -59,7 +59,7 @@ namespace DotNetApis.Logic.Formatting
         /// Formats the accessibility modifier for a property.
         /// </summary>
         /// <param name="property">The property.</param>
-        public (AccessibilityRestrictionLevel, EntityAccessibility) PropertyAccessibility(PropertyDefinition property)
+        public (AccessibilityRestrictionLevel AccessibilityRestrictionLevel, EntityAccessibility EntityAccessibility) PropertyAccessibility(PropertyDefinition property)
         {
             if (Either(property.GetMethod, property.SetMethod, x => x.IsPublic))
                 return (AccessibilityRestrictionLevel.Public, EntityAccessibility.Public);

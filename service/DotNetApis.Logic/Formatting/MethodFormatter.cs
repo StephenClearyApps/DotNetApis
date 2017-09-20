@@ -5,28 +5,131 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Cecil;
+using DotNetApis.Common;
 using DotNetApis.Structure.Entities;
-using DotNetApis.Structure.Literals;
 using Mono.Cecil;
 
 namespace DotNetApis.Logic.Formatting
 {
     public sealed class MethodFormatter
     {
+        /// <summary>
+        /// All C# operators that can be overridden. This does not include implicit or explicit conversions, or CLI operator special names not supported by C#.
+        /// </summary>
+        private static readonly Dictionary<string, string> KnownCsharpOverridableOperatorNames = new Dictionary<string, string>
+        {
+            { "op_UnaryPlus", "+" },
+            { "op_UnaryNegation", "-" },
+            { "op_LogicalNot", "!" },
+            { "op_OnesComplement", "~" },
+            { "op_Increment", "++" },
+            { "op_Decrement", "--" },
+            { "op_True", "true" },
+            { "op_False", "false" },
+            { "op_Addition", "+" },
+            { "op_Subtraction", "+" },
+            { "op_Multiply", "*" },
+            { "op_Division", "/" },
+            { "op_Modulus", "%" },
+            { "op_BitwiseAnd", "&" },
+            { "op_BitwiseOr", "|" },
+            { "op_ExclusiveOr", "^" },
+            { "op_LeftShift", "<<" },
+            { "op_RightShift", ">>" },
+            { "op_Equality", "==" },
+            { "op_Inequality", "!=" },
+            { "op_LessThan", "<" },
+            { "op_GreaterThan", ">" },
+            { "op_LessThanOrEqual", "<=" },
+            { "op_GreaterThanOrEqual", ">=" },
+        };
+
         private readonly AttributeFormatter _attributeFormatter;
         private readonly TypeReferenceFormatter _typeReferenceFormatter;
         private readonly NameFormatter _nameFormatter;
         private readonly LiteralFormatter _literalFormatter;
         private readonly XmldocFormatter _xmldocFormatter;
+        private readonly AccessibilityFormatter _accessibilityFormatter;
+        private readonly ModifiersFormatter _modifiersFormatter;
+        private readonly GenericsFormatter _genericsFormatter;
 
         public MethodFormatter(AttributeFormatter attributeFormatter, TypeReferenceFormatter typeReferenceFormatter, NameFormatter nameFormatter, LiteralFormatter literalFormatter,
-            XmldocFormatter xmldocFormatter)
+            XmldocFormatter xmldocFormatter, AccessibilityFormatter accessibilityFormatter, ModifiersFormatter modifiersFormatter, GenericsFormatter genericsFormatter)
         {
             _attributeFormatter = attributeFormatter;
             _typeReferenceFormatter = typeReferenceFormatter;
             _nameFormatter = nameFormatter;
             _literalFormatter = literalFormatter;
             _xmldocFormatter = xmldocFormatter;
+            _accessibilityFormatter = accessibilityFormatter;
+            _modifiersFormatter = modifiersFormatter;
+            _genericsFormatter = genericsFormatter;
+        }
+
+        // TODO: Check for ToArray(); check for "Structured" in method names.
+
+        /// <summary>
+        /// Formats a method declaration, which may be a method, operator, constructor, destructor, or type constructor.
+        /// </summary>
+        /// <param name="method">The method to format.</param>
+        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
+        public MethodEntity Method(MethodDefinition method, XContainer xmldoc)
+        {
+            var result = new MethodEntity
+            {
+                DnaId = method.DnaId(),
+                Attributes = _attributeFormatter.Attributes(method).Concat(_attributeFormatter.Attributes(method.MethodReturnType, "return")).ToList(),
+                Parameters = Parameters(method, method.Parameters, xmldoc).ToList(),
+                Accessibility = EntityAccessibility.Hidden,
+                Xmldoc = _xmldocFormatter.Xmldoc(method, xmldoc),
+            };
+
+            var methodName = method.Name.StripBacktickSuffix().Name;
+            var isStaticConstructor = methodName == ".cctor";
+            var isFinalizer = methodName == "Finalize";
+            var explicitInterfaceMethod = method.GetExplicitlyImplementedInterfaceMethod();
+            var hasModifiers = !isFinalizer && !method.DeclaringType.IsInterface && explicitInterfaceMethod == null;
+
+            if (hasModifiers && !isStaticConstructor)
+                result.Accessibility = _accessibilityFormatter.MethodAccessibility(method);
+            if (hasModifiers)
+                result.Modifiers = _modifiersFormatter.MethodModifiers(method);
+
+            if (methodName == "op_Implicit" || methodName == "op_Explicit")
+            {
+                result.ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement());
+                result.Styles = methodName == "op_Implicit" ? MethodStyles.Implicit : MethodStyles.Explicit;
+                return result;
+            }
+
+            var isOperator = false;
+            if (methodName == ".ctor" || isStaticConstructor)
+                methodName = method.DeclaringType.Name.StripBacktickSuffix().Name;
+            else if (isFinalizer)
+                methodName = "~" + method.DeclaringType.Name.StripBacktickSuffix().Name;
+            else if (KnownCsharpOverridableOperatorNames.ContainsKey(methodName))
+            {
+                isOperator = true;
+                result.ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement());
+                methodName = KnownCsharpOverridableOperatorNames[methodName];
+            }
+            else
+            {
+                result.ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement());
+            }
+
+            if (explicitInterfaceMethod != null)
+            {
+                result.ExplicitInterfaceDeclaringType = _typeReferenceFormatter.TypeReference(explicitInterfaceMethod.DeclaringType);
+                methodName = explicitInterfaceMethod.Name.StripBacktickSuffix().Name;
+            }
+
+            result.Name = _nameFormatter.EscapeIdentifier(methodName);
+            result.Styles = isOperator ? MethodStyles.Operator :
+                method.IsExtensionMethod() ? MethodStyles.Extension :
+                MethodStyles.None;
+            result.GenericParameters = _genericsFormatter.GenericParameters(method, method.GenericParameters, xmldoc).ToList();
+            return result;
         }
 
         /// <summary>

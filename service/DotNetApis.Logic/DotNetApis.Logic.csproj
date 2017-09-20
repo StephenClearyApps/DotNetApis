@@ -111,14 +111,18 @@
     <Compile Include="Assemblies\ReferenceAssembly.cs" />
     <Compile Include="Formatting\AccessibilityFormatter.cs" />
     <Compile Include="Formatting\AttributeFormatter.cs" />
+    <Compile Include="Formatting\MemberDefinitionFormatter.cs" />
     <Compile Include="Formatting\DelegateFormatter.cs" />
     <Compile Include="Formatting\EnumFormatter.cs" />
+    <Compile Include="Formatting\EventFormatter.cs" />
     <Compile Include="Formatting\FieldFormatter.cs" />
     <Compile Include="Formatting\GenericsFormatter.cs" />
     <Compile Include="Formatting\LiteralFormatter.cs" />
     <Compile Include="Formatting\MethodFormatter.cs" />
+    <Compile Include="Formatting\ModifiersFormatter.cs" />
     <Compile Include="Formatting\NameFormatter.cs" />
-    <Compile Include="Formatting\StructuredFormatter.cs" />
+    <Compile Include="Formatting\PropertyFormatter.cs" />
+    <Compile Include="Formatting\TypeFormatter.cs" />
     <Compile Include="Formatting\TypeLocator.cs" />
     <Compile Include="Formatting\TypeReferenceFormatter.cs" />
     <Compile Include="Formatting\XmldocFormatter.cs" />
@@ -127,6 +131,7 @@
     <Compile Include="Parsing.cs" />
     <Compile Include="ProcessReferenceXmldocHandler.cs" />
     <Compile Include="ReferenceAssemblies.cs" />
+    <Compile Include="SemanticOrdering.cs" />
     <Compile Include="StatusRequestHandler.cs" />
     <Compile Include="GenerateHandler.cs" />
     <Compile Include="DocRequestHandler.cs" />
