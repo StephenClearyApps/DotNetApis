@@ -19,7 +19,7 @@ namespace DotNetApis.Structure.Entities
         EntityModifiers IEntity.Modifiers { get; set; } // not used by delegates
         public Xmldoc.Xmldoc Xmldoc { get; set; }
         public string Namespace { get; set; }
-        public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
+        public IReadOnlyList<GenericParameterJson> GenericParameters { get; set; }
 
         /// <summary>
         /// Return type of the delegate.

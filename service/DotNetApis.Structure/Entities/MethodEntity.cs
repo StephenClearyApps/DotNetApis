@@ -21,7 +21,7 @@ namespace DotNetApis.Structure.Entities
         public EntityAccessibility Accessibility { get; set; }
         public EntityModifiers Modifiers { get; set; }
         public Xmldoc.Xmldoc Xmldoc { get; set; }
-        public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
+        public IReadOnlyList<GenericParameterJson> GenericParameters { get; set; }
         public ITypeReference ExplicitInterfaceDeclaringType { get; set; }
 
         /// <summary>

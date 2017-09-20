@@ -22,7 +22,7 @@ namespace DotNetApis.Structure.Entities
         public EntityModifiers Modifiers { get; set; }
         public Xmldoc.Xmldoc Xmldoc { get; set; }
         public string Namespace { get; set; }
-        public IReadOnlyList<GenericParameter> GenericParameters { get; set; }
+        public IReadOnlyList<GenericParameterJson> GenericParameters { get; set; }
 
         /// <summary>
         /// The base type (if any) and interfaces inherited by this type.

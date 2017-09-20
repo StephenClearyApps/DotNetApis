@@ -48,7 +48,7 @@
     <Compile Include="Entities\EnumField.cs" />
     <Compile Include="Entities\EventEntity.cs" />
     <Compile Include="Entities\FieldEntity.cs" />
-    <Compile Include="Entities\GenericParameter.cs" />
+    <Compile Include="Entities\GenericParameterJson.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\IHaveExplicitInterface.cs" />
     <Compile Include="Entities\IHaveGenericParameters.cs" />

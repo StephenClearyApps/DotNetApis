@@ -12,7 +12,7 @@ namespace DotNetApis.Structure.Entities
     /// <summary>
     /// Structured documentation for a generic parameter of a type or method.
     /// </summary>
-    public sealed class GenericParameter
+    public sealed class GenericParameterJson
     {
         /// <summary>
         /// Modifiers for this parameter.
@@ -36,6 +36,6 @@ namespace DotNetApis.Structure.Entities
         /// The xmldocs for this generic parameter.
         /// </summary>
         [JsonProperty("x")]
-        public Xmldoc.Xmldoc Xmldoc { get; set; }
+        public IXmldocNode XmldocNode { get; set; }
     }
 }

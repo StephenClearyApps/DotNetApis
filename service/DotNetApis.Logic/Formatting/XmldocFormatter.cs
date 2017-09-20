@@ -86,6 +86,25 @@ namespace DotNetApis.Logic.Formatting
             return result;
         }
 
+        public IXmldocNode XmldocNode(IMemberDefinition member, GenericParameter parameter, XContainer xmldoc)
+        {
+            if (xmldoc == null)
+                return null;
+            var memberXmldocId = member.MemberXmldocIdentifier();
+            var doc = xmldoc.Descendants("member").FirstOrDefault(x => x.Attribute("name")?.Value == memberXmldocId);
+            if (doc == null)
+                return null;
+
+            var parameterName = parameter.Name;
+            var typeparamDoc = doc.Elements("typeparam").FirstOrDefault(y => y.Attribute("name")?.Value == parameterName);
+            if (typeparamDoc == null)
+            {
+                _logger.LogWarning("Unable to find xmldoc <typeparam> tag with attribute @name matching {name} for member {xmldocid}", parameterName, memberXmldocId);
+                return null;
+            }
+            return XmldocNode(typeparamDoc);
+        }
+
         /// <summary>
         /// Gets the "representative method" for this member (if any), which holds the XML documentation for the return value and parameters. Returns <c>null</c> if there is no representative method.
         /// </summary>

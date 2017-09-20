@@ -16,6 +16,6 @@ namespace DotNetApis.Structure.Entities
         /// Generic parameters of the entity.
         /// </summary>
         [JsonProperty("g")]
-        IReadOnlyList<GenericParameter> GenericParameters { get; set; }
+        IReadOnlyList<GenericParameterJson> GenericParameters { get; set; }
     }
 }
