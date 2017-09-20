@@ -30,12 +30,21 @@ namespace DotNetApis.Logic.Formatting
         }
 
         /// <summary>
+        /// Formats method parameters.
+        /// </summary>
+        /// <param name="member">The member whose parameters these are.</param>
+        /// <param name="parameters">The parameters to format.</param>
+        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
+        public IEnumerable<MethodParameter> Parameters(IMemberDefinition member, IEnumerable<ParameterDefinition> parameters, XContainer xmldoc) =>
+            parameters.Select(p => Parameter(member, p, xmldoc));
+
+        /// <summary>
         /// Formats a method parameter.
         /// </summary>
         /// <param name="member">The member whose parameter this is.</param>
         /// <param name="parameter">The parameter to format.</param>
         /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public MethodParameter Parameter(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
+        private MethodParameter Parameter(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
         {
             var parameterType = parameter.ParameterType;
             var byRefParameterType = parameterType as ByReferenceType;
@@ -43,29 +52,22 @@ namespace DotNetApis.Logic.Formatting
                 parameterType = ((ByReferenceType)parameterType).ElementType;
             var decimalConstantAttribute = parameter.TryGetDecimalConstantAttribute();
 
-            var attributes = _attributeFormatter.Attributes(parameter);
-            var isOut = byRefParameterType != null && parameter.IsOut;
-            var isRef = byRefParameterType != null && !parameter.IsOut;
-            var isParams = parameter.CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
-            var type = _typeReferenceFormatter.TypeReference(parameterType, parameter.GetDynamicReplacement());
-            var name = _nameFormatter.EscapeIdentifier(parameter.Name);
-            ILiteral value = null;
+            var modifiers = byRefParameterType != null && parameter.IsOut ? MethodParameterModifiers.Out :
+                byRefParameterType != null && !parameter.IsOut ? MethodParameterModifiers.Ref :
+                parameter.CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute") ? MethodParameterModifiers.Params :
+                MethodParameterModifiers.None;
+            var value = parameter.HasConstant ? _literalFormatter.Literal(parameter.ParameterType, parameter.Constant) :
+                decimalConstantAttribute != null ? _literalFormatter.Literal(parameter.ParameterType, decimalConstantAttribute.GetDecimalValue()) :
+                null;
 
-            if (parameter.HasConstant)
-                value = _literalFormatter.Literal(parameter.ParameterType, parameter.Constant);
-            else if (decimalConstantAttribute != null)
-                value = _literalFormatter.Literal(parameter.ParameterType, decimalConstantAttribute.GetDecimalValue());
             return new MethodParameter
             {
-                Attributes = attributes,
-                Modifiers = isOut ? MethodParameterModifiers.Out :
-                        isRef ? MethodParameterModifiers.Ref :
-                        isParams ? MethodParameterModifiers.Params :
-                        MethodParameterModifiers.None,
-                Type = type,
-                Name = name,
+                Attributes = _attributeFormatter.Attributes(parameter).ToList(),
+                Modifiers = modifiers,
+                Type = _typeReferenceFormatter.TypeReference(parameterType, parameter.GetDynamicReplacement()),
+                Name = _nameFormatter.EscapeIdentifier(parameter.Name),
                 Value = value,
-                Xmldoc = _xmldocFormatter.XmldocNode(member, parameter, xmldoc),
+                XmldocNode = _xmldocFormatter.XmldocNodeForParameter(member, parameter, xmldoc),
             };
         }
     }

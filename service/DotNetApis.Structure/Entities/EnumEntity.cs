@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
 {
+    /// <summary>
+    /// Structured documentation for an enumeration.
+    /// </summary>
     public sealed class EnumEntity: IEntity, IHaveNamespace
     {
         public EntityKind Kind => EntityKind.Enum;
@@ -32,6 +35,9 @@ namespace DotNetApis.Structure.Entities
         [JsonProperty("h"), JsonConverter(typeof(IntBooleanConverter))]
         public bool PreferHex { get; set; }
 
+        /// <summary>
+        /// The fields (defined values of) the enumeration.
+        /// </summary>
         [JsonProperty("f")]
         public IReadOnlyList<EnumField> Fields { get; set; }
     }

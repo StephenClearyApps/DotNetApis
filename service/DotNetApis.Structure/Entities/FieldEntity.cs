@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.Entities
 {
     /// <summary>
-    /// A field (or constant value).
+    /// Structured documentation for a field (or constant value).
     /// </summary>
     public sealed class FieldEntity : IEntity
     {

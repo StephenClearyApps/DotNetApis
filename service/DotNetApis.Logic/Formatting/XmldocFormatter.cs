@@ -92,7 +92,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="member">The member with the generic parameter.</param>
         /// <param name="parameter">The generic parameter.</param>
         /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IXmldocNode XmldocNode(IMemberDefinition member, GenericParameter parameter, XContainer xmldoc)
+        public IXmldocNode XmldocNodeForGenericParameter(IMemberDefinition member, GenericParameter parameter, XContainer xmldoc)
         {
             if (xmldoc == null)
                 return null;
@@ -117,7 +117,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="member">The member with the generic parameter.</param>
         /// <param name="parameter">The parameter.</param>
         /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IXmldocNode XmldocNode(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
+        public IXmldocNode XmldocNodeForParameter(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
         {
             if (xmldoc == null)
                 return null;

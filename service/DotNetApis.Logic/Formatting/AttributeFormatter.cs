@@ -47,7 +47,7 @@ namespace DotNetApis.Logic.Formatting
         /// </summary>
         /// <param name="type">The type whose custom attributes will be appended.</param>
         /// <param name="target">The target for the custom attributes. This may be <c>null</c> to indicate the default target.</param>
-        public IReadOnlyList<AttributeJson> Attributes(ICustomAttributeProvider type, string target = null) => FilterAttributes(type).Select(x => Attribute(x, target)).ToList();
+        public IEnumerable<AttributeJson> Attributes(ICustomAttributeProvider type, string target = null) => FilterAttributes(type).Select(x => Attribute(x, target));
 
         /// <summary>
         /// Sorts and then filters out custom attributes that we prefer not to display. Removes all <see cref="IgnoredAttributes"/> as well as [Dynamic] (unless applied to a type).

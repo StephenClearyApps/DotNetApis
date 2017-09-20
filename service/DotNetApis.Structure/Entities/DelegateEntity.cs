@@ -9,6 +9,9 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Structure.Entities
 {
+    /// <summary>
+    /// Structured documentation for a delegate.
+    /// </summary>
     public sealed class DelegateEntity : IEntity, IHaveNamespace, IHaveGenericParameters
     {
         public EntityKind Kind => EntityKind.Delegate;

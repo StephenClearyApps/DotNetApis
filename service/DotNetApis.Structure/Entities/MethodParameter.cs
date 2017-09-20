@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.Entities
 {
     /// <summary>
-    /// A parameter of a method.
+    /// Structured documentation for a parameter of a method.
     /// </summary>
     public sealed class MethodParameter
     {
@@ -49,6 +49,6 @@ namespace DotNetApis.Structure.Entities
         /// Xml documentation for the parameter.
         /// </summary>
         [JsonProperty("x")]
-        public IXmldocNode Xmldoc { get; set; }
+        public IXmldocNode XmldocNode { get; set; }
     }
 }
