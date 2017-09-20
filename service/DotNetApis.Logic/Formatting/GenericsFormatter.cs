@@ -28,7 +28,7 @@ namespace DotNetApis.Logic.Formatting
         }
 
         /// <summary>
-        /// Formats a list of generic parameters.
+        /// Formats generic parameters.
         /// </summary>
         /// <param name="member">The member defining this generic parameter.</param>
         /// <param name="parameters">The generic parameters to format.</param>
@@ -37,7 +37,7 @@ namespace DotNetApis.Logic.Formatting
             parameters.Select(x => GenericParameter(member, x, xmldoc));
 
         /// <summary>
-        /// Formats a single generic parameter.
+        /// Formats a generic parameter.
         /// </summary>
         /// <param name="member">The member defining this generic parameter.</param>
         /// <param name="parameter">The generic parameter to format.</param>

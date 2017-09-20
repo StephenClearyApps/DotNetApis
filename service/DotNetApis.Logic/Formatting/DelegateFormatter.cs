@@ -32,6 +32,11 @@ namespace DotNetApis.Logic.Formatting
             _xmldocFormatter = xmldocFormatter;
         }
 
+        /// <summary>
+        /// Formats a delegate.
+        /// </summary>
+        /// <param name="type">The delegate to format.</param>
+        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
         public DelegateEntity Delegate(TypeDefinition type, XContainer xmldoc)
         {
             var method = type.Methods.First(x => x.Name == "Invoke");

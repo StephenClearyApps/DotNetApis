@@ -112,6 +112,8 @@
     <Compile Include="Formatting\AccessibilityFormatter.cs" />
     <Compile Include="Formatting\AttributeFormatter.cs" />
     <Compile Include="Formatting\DelegateFormatter.cs" />
+    <Compile Include="Formatting\EnumFormatter.cs" />
+    <Compile Include="Formatting\FieldFormatter.cs" />
     <Compile Include="Formatting\GenericsFormatter.cs" />
     <Compile Include="Formatting\LiteralFormatter.cs" />
     <Compile Include="Formatting\MethodFormatter.cs" />
