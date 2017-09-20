@@ -111,6 +111,7 @@
     <Compile Include="Assemblies\ReferenceAssembly.cs" />
     <Compile Include="AssemblyScope.cs" />
     <Compile Include="Formatting\AccessibilityFormatter.cs" />
+    <Compile Include="Formatting\AssemblyFormatter.cs" />
     <Compile Include="Formatting\AttributeFormatter.cs" />
     <Compile Include="Formatting\MemberDefinitionFormatter.cs" />
     <Compile Include="Formatting\DelegateFormatter.cs" />

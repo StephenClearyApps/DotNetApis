@@ -27,12 +27,10 @@ namespace DotNetApis.Logic
         private readonly NugetPackageDependencyResolver _dependencyResolver;
         private readonly ReferenceAssemblies _referenceAssemblies;
         private readonly IReferenceStorage _referenceStorage;
-        private readonly MemberDefinitionFormatter _memberDefinitionFormatter;
-        private readonly AttributeFormatter _attributeFormatter;
+        private readonly AssemblyFormatter _assemblyFormatter;
 
         public GenerateHandler(ILogger logger, InMemoryLogger inMemoryLogger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
-            NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage, MemberDefinitionFormatter memberDefinitionFormatter,
-            AttributeFormatter attributeFormatter)
+            NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter)
         {
             _logger = logger;
             _logStorage = logStorage;
@@ -41,8 +39,7 @@ namespace DotNetApis.Logic
             _dependencyResolver = dependencyResolver;
             _referenceAssemblies = referenceAssemblies;
             _referenceStorage = referenceStorage;
-            _memberDefinitionFormatter = memberDefinitionFormatter;
-            _attributeFormatter = attributeFormatter;
+            _assemblyFormatter = assemblyFormatter;
             _inMemoryLogger = inMemoryLogger;
         }
         
@@ -141,22 +138,7 @@ namespace DotNetApis.Logic
                     Dependencies = dependencies,
                     Published = publishedPackage.ExternalMetadata.Published,
                     IsReleaseVersion = publishedPackage.Package.Metadata.Version.IsReleaseVersion,
-                    Assemblies = assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null).Select(GenerateJsonForAssembly).ToList(),
-                };
-            }
-        }
-
-        private AssemblyJson GenerateJsonForAssembly(CurrentPackageAssembly assembly)
-        {
-            using (AssemblyScope.Create(assembly.Xmldoc))
-            {
-                return new AssemblyJson
-                {
-                    FullName = assembly.AssemblyDefinition.FullName,
-                    Path = assembly.Path,
-                    FileLength = assembly.FileLength,
-                    Attributes = _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList(),
-                    Types = assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()).Select(x => _memberDefinitionFormatter.MemberDefinition(x, assembly.Xmldoc)).ToList(),
+                    Assemblies = assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null).Select(_assemblyFormatter.Assembly).ToList(),
                 };
             }
         }
