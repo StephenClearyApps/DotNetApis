@@ -38,7 +38,7 @@ namespace DotNetApis.Logic.Formatting
         /// Formats the XML documentation for a member.
         /// </summary>
         /// <param name="member">The member to describe.</param>
-        /// <param name="xmldoc">The XML documentation.</param>
+        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
         public Xmldoc Xmldoc(IMemberDefinition member, XContainer xmldoc)
         {
             if (xmldoc == null)
@@ -86,6 +86,12 @@ namespace DotNetApis.Logic.Formatting
             return result;
         }
 
+        /// <summary>
+        /// Formats the XML documentation for a generic parameter of a member (<c>typeparam</c> documentation).
+        /// </summary>
+        /// <param name="member">The member with the generic parameter.</param>
+        /// <param name="parameter">The generic parameter.</param>
+        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
         public IXmldocNode XmldocNode(IMemberDefinition member, GenericParameter parameter, XContainer xmldoc)
         {
             if (xmldoc == null)
@@ -103,6 +109,31 @@ namespace DotNetApis.Logic.Formatting
                 return null;
             }
             return XmldocNode(typeparamDoc);
+        }
+
+        /// <summary>
+        /// Formats the XML documentation for a parameter of a member (<c>param</c> documentation).
+        /// </summary>
+        /// <param name="member">The member with the generic parameter.</param>
+        /// <param name="parameter">The parameter.</param>
+        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
+        public IXmldocNode XmldocNode(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
+        {
+            if (xmldoc == null)
+                return null;
+            var memberXmldocId = member.MemberXmldocIdentifier();
+            var doc = xmldoc.Descendants("member").FirstOrDefault(x => x.Attribute("name")?.Value == memberXmldocId);
+            if (doc == null)
+                return null;
+
+            var parameterName = parameter.Name;
+            var paramDoc = doc.Elements("param").FirstOrDefault(y => y.Attribute("name")?.Value == parameterName);
+            if (paramDoc == null)
+            {
+                _logger.LogWarning("Unable to find xmldoc <param> tag with attribute @name matching {name} for member {xmldocid}", parameterName, memberXmldocId);
+                return null;
+            }
+            return XmldocNode(paramDoc);
         }
 
         /// <summary>

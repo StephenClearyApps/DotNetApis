@@ -49,6 +49,6 @@ namespace DotNetApis.Structure.Entities
         /// Xml documentation for the parameter.
         /// </summary>
         [JsonProperty("x")]
-        public Xmldoc.Xmldoc Xmldoc { get; set; }
+        public IXmldocNode Xmldoc { get; set; }
     }
 }

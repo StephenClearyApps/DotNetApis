@@ -31,7 +31,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="type">The type of the value.</param>
         /// <param name="value">The value. This must be <c>null</c>, an integral value, a fractional value, a type reference, a boolean, an enumeration, or an array of one of these types.</param>
         /// <param name="preferHex">Whether to prefer hexadecimal formatting if the value is integral.</param>
-        public ILiteral StructuredLiteral(TypeReference type, object value, bool preferHex = false)
+        public ILiteral Literal(TypeReference type, object value, bool preferHex = false)
         {
             while (value is CustomAttributeArgument)
             {
@@ -48,7 +48,7 @@ namespace DotNetApis.Logic.Formatting
                 return new ArrayLiteral
                 {
                     ElementType = _typeReferenceFormatter.TypeReference(arrayType.ElementType),
-                    Values = array.Cast<object>().Select(x => StructuredLiteral(arrayType.ElementType, x, preferHex)).ToList(),
+                    Values = array.Cast<object>().Select(x => Literal(arrayType.ElementType, x, preferHex)).ToList(),
                 };
             }
 

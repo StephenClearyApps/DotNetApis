@@ -28,7 +28,7 @@ namespace DotNetApis.Logic.Formatting
         /// <summary>
         /// Prefixes an identifier with an "@" if necessary.
         /// </summary>
-        /// <param name="identifier">The identifier to escape.</param>
+        /// <param name="identifier">The identifier to escape. May be <c>null</c>.</param>
         public string EscapeIdentifier(string identifier) => KnownCsharpKeywords.Contains(identifier) ? "@" + identifier : identifier;
     }
 }
