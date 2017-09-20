@@ -25,6 +25,6 @@ namespace DotNetApis.Structure.TypeReferences
         /// The generic type arguments.
         /// </summary>
         [JsonProperty("a")]
-        public IReadOnlyList<ITypeReference> Arguments { get; set; }
+        public IReadOnlyList<ITypeReference> GenericArguments { get; set; }
     }
 }

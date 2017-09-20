@@ -70,7 +70,7 @@
     <Compile Include="Xmldoc\Xmldoc.cs" />
     <Compile Include="TypeReferences\GenericConcreteType.cs" />
     <Compile Include="TypeReferences\GenericInstanceTypeReference.cs" />
-    <Compile Include="TypeReferences\ArrayDimension.cs" />
+    <Compile Include="TypeReferences\ArrayDimensionJson.cs" />
     <Compile Include="Literals\ArrayLiteral.cs" />
     <Compile Include="TypeReferences\ArrayTypeReference.cs" />
     <Compile Include="AssemblyJson.cs" />

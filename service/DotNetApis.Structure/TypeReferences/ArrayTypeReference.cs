@@ -20,6 +20,6 @@ namespace DotNetApis.Structure.TypeReferences
         /// The dimensions of the array.
         /// </summary>
         [JsonProperty("d")]
-        public IReadOnlyList<ArrayDimension> Dimensions { get; set; }
+        public IReadOnlyList<ArrayDimensionJson> Dimensions { get; set; }
     }
 }

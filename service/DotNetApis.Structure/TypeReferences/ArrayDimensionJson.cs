@@ -5,7 +5,7 @@ namespace DotNetApis.Structure.TypeReferences
     /// <summary>
     /// A dimension of an array.
     /// </summary>
-    public sealed class ArrayDimension
+    public sealed class ArrayDimensionJson
     {
         /// <summary>
         /// The upper bound, if any.
