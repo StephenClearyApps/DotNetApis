@@ -16,6 +16,9 @@ using static DotNetApis.Common.Enumerables;
 
 namespace DotNetApis.Logic.Formatting
 {
+    /// <summary>
+    /// Formats XML documentation.
+    /// </summary>
     public sealed class XmldocFormatter
     {
         private readonly ILogger _logger;
@@ -31,6 +34,11 @@ namespace DotNetApis.Logic.Formatting
             _target = target;
         }
 
+        /// <summary>
+        /// Formats the XML documentation for a member.
+        /// </summary>
+        /// <param name="member">The member to describe.</param>
+        /// <param name="xmldoc">The XML documentation.</param>
         public Xmldoc Xmldoc(IMemberDefinition member, XContainer xmldoc)
         {
             if (xmldoc == null)
@@ -94,7 +102,7 @@ namespace DotNetApis.Logic.Formatting
         }
 
         /// <summary>
-        /// Translates the xmldoc element to structured xmldoc. May return <c>null</c> if there is no structured representation for this xmldoc element.
+        /// Formats the xmldoc element to structured xmldoc. May return <c>null</c> if there is no structured representation for this xmldoc element.
         /// </summary>
         private IXmldocNode XmldocNode(XElement source)
         {
@@ -204,17 +212,17 @@ namespace DotNetApis.Logic.Formatting
         }
 
         /// <summary>
-        /// Translates the xmldoc element to a structured xmldoc object of the specified kind with the specified attributes. The xmldoc element's children are processed as the contents of the structured xmldoc object.
+        /// Formats the xmldoc element to a structured xmldoc object of the specified kind with the specified attributes. The xmldoc element's children are processed as the contents of the structured xmldoc object.
         /// </summary>
         private IXmldocNode XmldocNode(XElement element, XmlXmldocNodeKind kind, object attributes = null) => new XmlXmldocNode(kind, attributes, element.Nodes().Select(XmldocNode));
 
         /// <summary>
-        /// Returns a structured xmldoc object of the specified kind with the specified attributes and child structured xmldoc objects.
+        /// Formats a structured xmldoc object of the specified kind with the specified attributes and child structured xmldoc objects.
         /// </summary>
         private static IXmldocNode XmldocNode(XmlXmldocNodeKind kind, object attributes, params IXmldocNode[] children) => XmldocNode(kind, attributes, children.AsEnumerable());
 
         /// <summary>
-        /// Returns a structured xmldoc object of the specified kind with the specified attributes and child structured xmldoc objects.
+        /// Formats a structured xmldoc object of the specified kind with the specified attributes and child structured xmldoc objects.
         /// </summary>
         private static IXmldocNode XmldocNode(XmlXmldocNodeKind kind, object attributes, IEnumerable<IXmldocNode> children) => new XmlXmldocNode(kind, attributes, children);
 
@@ -229,7 +237,7 @@ namespace DotNetApis.Logic.Formatting
         }
 
         /// <summary>
-        /// Translates the xmldoc node to structured xmldoc. May return <c>null</c> if there is no structured representation for this xmldoc node.
+        /// Formats the xmldoc node to structured xmldoc. May return <c>null</c> if there is no structured representation for this xmldoc node.
         /// </summary>
         private IXmldocNode XmldocNode(XNode source)
         {

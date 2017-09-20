@@ -110,6 +110,7 @@
     <Compile Include="Assemblies\PackageAssemblyBase.cs" />
     <Compile Include="Assemblies\ReferenceAssembly.cs" />
     <Compile Include="Formatting\AccessibilityFormatter.cs" />
+    <Compile Include="Formatting\GenericsFormatter.cs" />
     <Compile Include="Formatting\NameFormatter.cs" />
     <Compile Include="Formatting\StructuredFormatter.cs" />
     <Compile Include="Formatting\TypeLocator.cs" />

@@ -5,6 +5,9 @@ using Mono.Cecil;
 
 namespace DotNetApis.Logic.Formatting
 {
+    /// <summary>
+    /// Formats entity accessibility flags.
+    /// </summary>
     public sealed class AccessibilityFormatter
     {
         /// <summary>

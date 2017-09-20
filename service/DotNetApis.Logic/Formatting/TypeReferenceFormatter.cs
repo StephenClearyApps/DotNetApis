@@ -11,6 +11,9 @@ using Mono.Cecil;
 
 namespace DotNetApis.Logic.Formatting
 {
+    /// <summary>
+    /// Formats type references.
+    /// </summary>
     public sealed class TypeReferenceFormatter
     {
         private readonly ILogger _logger;

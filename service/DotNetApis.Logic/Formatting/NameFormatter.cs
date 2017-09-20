@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace DotNetApis.Logic.Formatting
 {
+    /// <summary>
+    /// Formats simple names.
+    /// </summary>
     public sealed class NameFormatter
     {
         /// <summary>

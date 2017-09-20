@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetApis.Logic.Formatting
 {
+    /// <summary>
+    /// Finds locations (and friendly names) of types.
+    /// </summary>
     public sealed class TypeLocator
     {
         private readonly ILogger _logger;
