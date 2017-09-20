@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Cecil;
 using DotNetApis.Common;
-using DotNetApis.Logic.Assemblies;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
 using DotNetApis.Structure.Locations;
@@ -21,14 +20,14 @@ namespace DotNetApis.Logic.Formatting
     {
         private readonly ILogger _logger;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
-        private readonly AssemblyCollection _assemblies;
+        private readonly TypeLocator _typeLocator;
         private readonly PlatformTarget _target;
 
-        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, AssemblyCollection assemblies, PlatformTarget target)
+        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, PlatformTarget target)
         {
             _logger = logger;
             _referenceXmldocTable = referenceXmldocTable;
-            _assemblies = assemblies;
+            _typeLocator = typeLocator;
             _target = target;
         }
 
@@ -241,7 +240,7 @@ namespace DotNetApis.Logic.Formatting
 
         private (ILocation Location, FriendlyName FriendlyName) TryResolveXmldocIdentifier(string xmldocid)
         {
-            var result = _assemblies.TryGetLocationAndFriendlyNameFromXmldocId(xmldocid);
+            var result = _typeLocator.TryGetLocationAndFriendlyNameFromXmldocId(xmldocid);
             if (result != null)
                 return result.Value;
 
