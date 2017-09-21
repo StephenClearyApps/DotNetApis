@@ -20,7 +20,6 @@ namespace DotNetApis.Logic
     public sealed class GenerateHandler
     {
         private readonly ILogger _logger;
-        private readonly InMemoryLogger _inMemoryLogger;
         private readonly LogCombinedStorage _logStorage;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
@@ -29,7 +28,7 @@ namespace DotNetApis.Logic
         private readonly IReferenceStorage _referenceStorage;
         private readonly AssemblyFormatter _assemblyFormatter;
 
-        public GenerateHandler(ILogger logger, InMemoryLogger inMemoryLogger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
+        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
             NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter)
         {
             _logger = logger;
@@ -40,7 +39,6 @@ namespace DotNetApis.Logic
             _referenceAssemblies = referenceAssemblies;
             _referenceStorage = referenceStorage;
             _assemblyFormatter = assemblyFormatter;
-            _inMemoryLogger = inMemoryLogger;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -53,12 +51,12 @@ namespace DotNetApis.Logic
             {
                 var json = await HandleAsync(idver, target).ConfigureAwait(false); // TODO: handle result
                 Debugger.Break();
-                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", _inMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
+                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.LogCritical(0, ex, "Error handling message {message}", JsonConvert.SerializeObject(message, Constants.JsonSerializerSettings));
-                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Failed, string.Join("\n", _inMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
+                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Failed, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
         }
 
