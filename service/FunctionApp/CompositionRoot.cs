@@ -14,6 +14,7 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage.Table;
+using Nito.AsyncEx;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 
@@ -36,9 +37,8 @@ namespace FunctionApp
 
         private static readonly IAsyncSingleton<Container> Container = Singleton.Create(async () =>
         {
-            var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Value, ReferenceAssembliesInstance.Value, PackageStorageCloudBlobContainer.Value,
-                PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value,
-                CloudBlobClientInstance.Value);
+            var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Value, CloudBlobClientInstance.Value, PackageStorageCloudBlobContainer.Value,
+                PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value);
 
             var container = new Container();
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
@@ -46,6 +46,7 @@ namespace FunctionApp
             container.UseAutomaticInstanceOf();
             container.RegisterSingletons((CloudStorageAccountInstance.Value, CloudTableClientInstance.Value));
             container.RegisterSingletons(singletons);
+            container.Register(() => new Lazy<Task<ReferenceAssemblies>>(async () => await ReferenceAssembliesInstance));
             container.Register<ILogger, AsyncLocalLogger>();
             container.Register<INugetRepository, NugetRepository>();
             container.Register<IStorageBackend, AzureStorageBackend>();

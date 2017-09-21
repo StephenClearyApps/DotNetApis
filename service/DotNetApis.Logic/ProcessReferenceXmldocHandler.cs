@@ -16,7 +16,7 @@ namespace DotNetApis.Logic
     public sealed class ProcessReferenceXmldocHandler
     {
         private readonly ILogger _logger;
-        private readonly ReferenceAssemblies _referenceAssemblies;
+        private readonly Lazy<Task<ReferenceAssemblies>> _referenceAssemblies;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly IReferenceStorage _referenceStorage;
         private readonly IStorageBackend _storageBackend;
@@ -28,7 +28,8 @@ namespace DotNetApis.Logic
             AssemblyResolver = new NullAssemblyResolver(),
         };
 
-        public ProcessReferenceXmldocHandler(ILogger logger, ReferenceAssemblies referenceAssemblies, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend)
+        public ProcessReferenceXmldocHandler(ILogger logger, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceXmldocTable referenceXmldocTable,
+            IReferenceStorage referenceStorage, IStorageBackend storageBackend)
         {
             _logger = logger;
             _referenceAssemblies = referenceAssemblies;
@@ -39,12 +40,13 @@ namespace DotNetApis.Logic
 
         public async Task HandleAsync()
         {
+            var referenceAssemblies = await _referenceAssemblies.Value.ConfigureAwait(false);
             var maxDegreeOfParallelism = _storageBackend.SupportsConcurrency ? 64 : 1;
             _logger.LogInformation("Using {threadCount} threads", maxDegreeOfParallelism);
             using (ThreadPoolTurbo.Engage(maxDegreeOfParallelism))
             {
                 var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage, _storageBackend);
-                foreach (var referenceTarget in _referenceAssemblies.ReferenceTargets)
+                foreach (var referenceTarget in referenceAssemblies.ReferenceTargets)
                 {
                     await processor.ProcessAsync(referenceTarget).ConfigureAwait(false);
                 }

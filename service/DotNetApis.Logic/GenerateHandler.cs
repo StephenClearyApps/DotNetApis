@@ -14,6 +14,8 @@ using DotNetApis.Storage;
 using DotNetApis.Structure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NuGet.Common;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace DotNetApis.Logic
 {
@@ -24,12 +26,12 @@ namespace DotNetApis.Logic
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly NugetPackageDependencyResolver _dependencyResolver;
-        private readonly ReferenceAssemblies _referenceAssemblies;
+        private readonly Lazy<Task<ReferenceAssemblies>> _referenceAssemblies;
         private readonly IReferenceStorage _referenceStorage;
         private readonly AssemblyFormatter _assemblyFormatter;
 
         public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
-            NugetPackageDependencyResolver dependencyResolver, ReferenceAssemblies referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter)
+            NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter)
         {
             _logger = logger;
             _logStorage = logStorage;
@@ -62,6 +64,8 @@ namespace DotNetApis.Logic
 
         private async Task<PackageJson> HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
+            var referenceAssembliesTask = _referenceAssemblies.Value;
+
             // Load the package.
             var publishedPackage = await _packageDownloader.GetPackageAsync(idver).ConfigureAwait(false);
             var currentPackage = publishedPackage.Package;
@@ -95,7 +99,8 @@ namespace DotNetApis.Logic
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Neither package {idver} nor its dependencies have any assemblies for target {target}");
 
             // Add all target framework reference dlls to our context.
-            var referenceTarget = _referenceAssemblies.ReferenceTargets.FirstOrDefault(x => NugetUtility.IsCompatible(x.Target.FrameworkName, target.FrameworkName));
+            var referenceAssemblies = await referenceAssembliesTask.ConfigureAwait(false);
+            var referenceTarget = referenceAssemblies.ReferenceTargets.FirstOrDefault(x => NugetUtility.IsCompatible(x.Target.FrameworkName, target.FrameworkName));
             if (referenceTarget != null)
             {
                 foreach (var path in referenceTarget.Paths.Where(x => x.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)))
