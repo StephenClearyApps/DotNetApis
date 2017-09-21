@@ -68,7 +68,7 @@ namespace DotNetApis.Storage
 
         private CloudTable GetTable(DateTimeOffset timestamp)
         {
-            return _cloudTableClient.GetTableReference("status" + Version + "-" + timestamp.ToString("yyyy-MM-dd"));
+            return _cloudTableClient.GetTableReference("status" + Version + "x" + timestamp.ToString("yyyyMMdd"));
         }
 
         public async Task<(Status status, Uri logUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
