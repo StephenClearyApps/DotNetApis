@@ -22,7 +22,7 @@ namespace DotNetApis.Structure
         /// <summary>
         /// The path (within the NuGet package) of the assembly.
         /// </summary>
-        [JsonProperty("n")]
+        [JsonProperty("p")]
         public string Path { get; set; }
 
         /// <summary>
