@@ -38,9 +38,8 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a type declaration (enums, delegates, classes, structs, and interfaces).
         /// </summary>
         /// <param name="type">The type to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
         /// <param name="formatMemberDefinition">The formatter for members.</param>
-        public TypeEntity Type(TypeDefinition type, XContainer xmldoc, Func<IMemberDefinition, XContainer, IEntity> formatMemberDefinition)
+        public TypeEntity Type(TypeDefinition type, Func<IMemberDefinition, IEntity> formatMemberDefinition)
         {
             EntityKind kind;
             IReadOnlyList<AttributeJson> attributes = _attributeFormatter.Attributes(type).ToList();
@@ -77,20 +76,20 @@ namespace DotNetApis.Logic.Formatting
                 Name = _nameFormatter.EscapeIdentifier(typeWithGenericParameters.Name),
                 Modifiers = modifiers,
                 Namespace = ns,
-                GenericParameters = _genericsFormatter.GenericParameters(type, typeWithGenericParameters.GenericParameters, xmldoc).ToList(),
+                GenericParameters = _genericsFormatter.GenericParameters(type, typeWithGenericParameters.GenericParameters).ToList(),
                 BaseTypeAndInterfaces = baseTypesAndInterfaces,
                 Members = new TypeEntityMemberGrouping
                 {
                     Lifetime = members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 0)
-                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(x => formatMemberDefinition(x, xmldoc)).ToList(),
+                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(formatMemberDefinition).ToList(),
                     Static = members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 1)
-                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(x => formatMemberDefinition(x, xmldoc)).ToList(),
+                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(formatMemberDefinition).ToList(),
                     Instance = members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 2)
-                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(x => formatMemberDefinition(x, xmldoc)).ToList(),
+                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(formatMemberDefinition).ToList(),
                     Types = members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 10)
-                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(x => formatMemberDefinition(x, xmldoc)).ToList(),
+                        .OrderBy(x => x, SemanticOrdering.MemberComparer).Select(formatMemberDefinition).ToList(),
                 },
-                Xmldoc = _xmldocFormatter.Xmldoc(type, xmldoc),
+                Xmldoc = _xmldocFormatter.Xmldoc(type),
             };
         }
     }

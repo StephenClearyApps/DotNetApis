@@ -72,16 +72,15 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a method declaration, which may be a method, operator, constructor, destructor, or type constructor.
         /// </summary>
         /// <param name="method">The method to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public MethodEntity Method(MethodDefinition method, XContainer xmldoc)
+        public MethodEntity Method(MethodDefinition method)
         {
             var result = new MethodEntity
             {
                 DnaId = method.DnaId(),
                 Attributes = _attributeFormatter.Attributes(method).Concat(_attributeFormatter.Attributes(method.MethodReturnType, "return")).ToList(),
-                Parameters = Parameters(method, method.Parameters, xmldoc).ToList(),
+                Parameters = Parameters(method, method.Parameters).ToList(),
                 Accessibility = EntityAccessibility.Hidden,
-                Xmldoc = _xmldocFormatter.Xmldoc(method, xmldoc),
+                Xmldoc = _xmldocFormatter.Xmldoc(method),
             };
 
             var methodName = method.Name.StripBacktickSuffix().Name;
@@ -128,7 +127,7 @@ namespace DotNetApis.Logic.Formatting
             result.Styles = isOperator ? MethodStyles.Operator :
                 method.IsExtensionMethod() ? MethodStyles.Extension :
                 MethodStyles.None;
-            result.GenericParameters = _genericsFormatter.GenericParameters(method, method.GenericParameters, xmldoc).ToList();
+            result.GenericParameters = _genericsFormatter.GenericParameters(method, method.GenericParameters).ToList();
             return result;
         }
 
@@ -137,17 +136,15 @@ namespace DotNetApis.Logic.Formatting
         /// </summary>
         /// <param name="member">The member whose parameters these are.</param>
         /// <param name="parameters">The parameters to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IEnumerable<MethodParameter> Parameters(IMemberDefinition member, IEnumerable<ParameterDefinition> parameters, XContainer xmldoc) =>
-            parameters.Select(p => Parameter(member, p, xmldoc));
+        public IEnumerable<MethodParameter> Parameters(IMemberDefinition member, IEnumerable<ParameterDefinition> parameters) =>
+            parameters.Select(p => Parameter(member, p));
 
         /// <summary>
         /// Formats a method parameter.
         /// </summary>
         /// <param name="member">The member whose parameter this is.</param>
         /// <param name="parameter">The parameter to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        private MethodParameter Parameter(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
+        private MethodParameter Parameter(IMemberDefinition member, ParameterDefinition parameter)
         {
             var parameterType = parameter.ParameterType;
             var byRefParameterType = parameterType as ByReferenceType;
@@ -170,7 +167,7 @@ namespace DotNetApis.Logic.Formatting
                 Type = _typeReferenceFormatter.TypeReference(parameterType, parameter.GetDynamicReplacement()),
                 Name = _nameFormatter.EscapeIdentifier(parameter.Name),
                 Value = value,
-                XmldocNode = _xmldocFormatter.XmldocNodeForParameter(member, parameter, xmldoc),
+                XmldocNode = _xmldocFormatter.XmldocNodeForParameter(member, parameter),
             };
         }
     }

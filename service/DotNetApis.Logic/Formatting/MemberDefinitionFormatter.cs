@@ -36,23 +36,22 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a member definition.
         /// </summary>
         /// <param name="member">The member to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IEntity MemberDefinition(IMemberDefinition member, XContainer xmldoc)
+        public IEntity MemberDefinition(IMemberDefinition member)
         {
             if (member is MethodDefinition method)
-                return _methodFormatter.Method(method, xmldoc);
+                return _methodFormatter.Method(method);
             if (member is PropertyDefinition property)
-                return _propertyFormatter.Property(property, xmldoc);
+                return _propertyFormatter.Property(property);
             if (member is EventDefinition @event)
-                return _eventFormatter.Event(@event, xmldoc);
+                return _eventFormatter.Event(@event);
             if (member is FieldDefinition field)
-                return _fieldFormatter.Field(field, xmldoc);
+                return _fieldFormatter.Field(field);
             var type = (TypeDefinition)member;
             if (type.IsEnum)
-                return _enumFormatter.Enum(type, xmldoc);
+                return _enumFormatter.Enum(type);
             if (type.IsDelegate())
-                return _delegateFormatter.Delegate(type, xmldoc);
-            return _typeFormatter.Type(type, xmldoc, MemberDefinition);
+                return _delegateFormatter.Delegate(type);
+            return _typeFormatter.Type(type, MemberDefinition);
         }
     }
 }

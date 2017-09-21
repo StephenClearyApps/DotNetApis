@@ -24,23 +24,25 @@ namespace DotNetApis.Logic.Formatting
         private readonly ILogger _logger;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly TypeLocator _typeLocator;
-        private readonly ScopeBase<GenerationScope>.Accessor _generationScope;
+        private readonly GenerationScope.Accessor _generationScope;
+        private readonly AssemblyScope.Accessor _assemblyScope;
 
-        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, GenerationScope.Accessor generationScope)
+        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, GenerationScope.Accessor generationScope, AssemblyScope.Accessor assemblyScope)
         {
             _logger = logger;
             _referenceXmldocTable = referenceXmldocTable;
             _typeLocator = typeLocator;
             _generationScope = generationScope;
+            _assemblyScope = assemblyScope;
         }
 
         /// <summary>
         /// Formats the XML documentation for a member.
         /// </summary>
         /// <param name="member">The member to describe.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public Xmldoc Xmldoc(IMemberDefinition member, XContainer xmldoc)
+        public Xmldoc Xmldoc(IMemberDefinition member)
         {
+            var xmldoc = _assemblyScope.Current.Xmldoc;
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
@@ -91,9 +93,9 @@ namespace DotNetApis.Logic.Formatting
         /// </summary>
         /// <param name="member">The member with the generic parameter.</param>
         /// <param name="parameter">The generic parameter.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IXmldocNode XmldocNodeForGenericParameter(IMemberDefinition member, GenericParameter parameter, XContainer xmldoc)
+        public IXmldocNode XmldocNodeForGenericParameter(IMemberDefinition member, GenericParameter parameter)
         {
+            var xmldoc = _assemblyScope.Current.Xmldoc;
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
@@ -116,9 +118,9 @@ namespace DotNetApis.Logic.Formatting
         /// </summary>
         /// <param name="member">The member with the generic parameter.</param>
         /// <param name="parameter">The parameter.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IXmldocNode XmldocNodeForParameter(IMemberDefinition member, ParameterDefinition parameter, XContainer xmldoc)
+        public IXmldocNode XmldocNodeForParameter(IMemberDefinition member, ParameterDefinition parameter)
         {
+            var xmldoc = _assemblyScope.Current.Xmldoc;
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();

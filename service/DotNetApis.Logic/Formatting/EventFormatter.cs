@@ -34,15 +34,14 @@ namespace DotNetApis.Logic.Formatting
         /// Formats an event declaration.
         /// </summary>
         /// <param name="event">The event to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public EventEntity Event(EventDefinition @event, XContainer xmldoc)
+        public EventEntity Event(EventDefinition @event)
         {
             var result = new EventEntity
             {
                 DnaId = @event.DnaId(),
                 Accessibility = EntityAccessibility.Hidden,
                 Type = _typeReferenceFormatter.TypeReference(@event.AddMethod.Parameters[0].ParameterType, @event.AddMethod.Parameters[0].GetDynamicReplacement()),
-                Xmldoc = _xmldocFormatter.Xmldoc(@event, xmldoc),
+                Xmldoc = _xmldocFormatter.Xmldoc(@event),
             };
 
             var field = @event.TryGetField();

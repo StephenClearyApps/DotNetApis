@@ -36,8 +36,7 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a property declaration, which may be a property or an indexer.
         /// </summary>
         /// <param name="property">The property to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public PropertyEntity Property(PropertyDefinition property, XContainer xmldoc)
+        public PropertyEntity Property(PropertyDefinition property)
         {
             var result = new PropertyEntity
             {
@@ -47,7 +46,7 @@ namespace DotNetApis.Logic.Formatting
                 Type = _typeReferenceFormatter.TypeReference(property.GetMethod == null ?
                     property.SetMethod.Parameters.Last().ParameterType :
                     property.GetMethod.ReturnType, property.GetDynamicReplacement()),
-                Xmldoc = _xmldocFormatter.Xmldoc(property, xmldoc),
+                Xmldoc = _xmldocFormatter.Xmldoc(property),
             };
 
             var eitherMethod = property.GetMethod ?? property.SetMethod;
@@ -69,7 +68,7 @@ namespace DotNetApis.Logic.Formatting
                 propertyName = propertyName.Substring(propertyName.LastIndexOf('.') + 1);
             }
             result.Name = indexerParameters.Count == 0 ? _nameFormatter.EscapeIdentifier(propertyName) : "this";
-            result.Parameters = _methodFormatter.Parameters(property, indexerParameters, xmldoc).ToList();
+            result.Parameters = _methodFormatter.Parameters(property, indexerParameters).ToList();
 
             if (property.GetMethod != null)
             {

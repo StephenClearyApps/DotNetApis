@@ -30,8 +30,7 @@ namespace DotNetApis.Logic.Formatting
         /// Formats an enumeration.
         /// </summary>
         /// <param name="type">The enumeration type to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public EnumEntity Enum(TypeDefinition type, XContainer xmldoc)
+        public EnumEntity Enum(TypeDefinition type)
         {
             var underlyingType = type.GetEnumUnderlyingType();
             if (underlyingType.FullName == "System.Int32")
@@ -49,9 +48,9 @@ namespace DotNetApis.Logic.Formatting
                 {
                     Name = _nameFormatter.EscapeIdentifier(field.Name),
                     Value = field.Constant,
-                    Xmldoc = _xmldocFormatter.Xmldoc(field, xmldoc),
+                    Xmldoc = _xmldocFormatter.Xmldoc(field),
                 }).ToList(),
-                Xmldoc = _xmldocFormatter.Xmldoc(type, xmldoc),
+                Xmldoc = _xmldocFormatter.Xmldoc(type),
             };
         }
     }

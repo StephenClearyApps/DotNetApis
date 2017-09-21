@@ -36,8 +36,7 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a delegate.
         /// </summary>
         /// <param name="type">The delegate to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public DelegateEntity Delegate(TypeDefinition type, XContainer xmldoc)
+        public DelegateEntity Delegate(TypeDefinition type)
         {
             var method = type.Methods.First(x => x.Name == "Invoke");
 
@@ -53,9 +52,9 @@ namespace DotNetApis.Logic.Formatting
                 Name = _nameFormatter.EscapeIdentifier(typeWithGenericParameters.Name),
                 Namespace = type.IsNested ? null : type.Namespace,
                 ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement()),
-                GenericParameters = _genericsFormatter.GenericParameters(type, typeWithGenericParameters.GenericParameters, xmldoc).ToList(),
-                Parameters = _methodFormatter.Parameters(type, method.Parameters, xmldoc).ToList(),
-                Xmldoc = _xmldocFormatter.Xmldoc(type, xmldoc),
+                GenericParameters = _genericsFormatter.GenericParameters(type, typeWithGenericParameters.GenericParameters).ToList(),
+                Parameters = _methodFormatter.Parameters(type, method.Parameters).ToList(),
+                Xmldoc = _xmldocFormatter.Xmldoc(type),
             };
         }
     }

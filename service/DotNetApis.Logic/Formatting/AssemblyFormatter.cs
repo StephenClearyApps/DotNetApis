@@ -20,6 +20,10 @@ namespace DotNetApis.Logic.Formatting
             _memberDefinitionFormatter = memberDefinitionFormatter;
         }
 
+        /// <summary>
+        /// Formats an assembly. This method establishes its own <see cref="AssemblyScope"/>.
+        /// </summary>
+        /// <param name="assembly">The assembly to format.</param>
         public AssemblyJson Assembly(CurrentPackageAssembly assembly)
         {
             using (AssemblyScope.Create(assembly.Xmldoc))
@@ -30,7 +34,7 @@ namespace DotNetApis.Logic.Formatting
                     Path = assembly.Path,
                     FileLength = assembly.FileLength,
                     Attributes = _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList(),
-                    Types = assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()).Select(x => _memberDefinitionFormatter.MemberDefinition(x, assembly.Xmldoc)).ToList(),
+                    Types = assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()).Select(x => _memberDefinitionFormatter.MemberDefinition(x)).ToList(),
                 };
             }
         }

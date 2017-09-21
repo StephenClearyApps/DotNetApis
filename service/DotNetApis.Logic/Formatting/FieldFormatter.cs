@@ -37,8 +37,7 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a field declaration, which may be a field or a constant.
         /// </summary>
         /// <param name="field">The field to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public FieldEntity Field(FieldDefinition field, XContainer xmldoc)
+        public FieldEntity Field(FieldDefinition field)
         {
             var result = new FieldEntity
             {
@@ -48,7 +47,7 @@ namespace DotNetApis.Logic.Formatting
                 Modifiers = field.IsStatic ? EntityModifiers.Static : EntityModifiers.None,
                 Name = _nameFormatter.EscapeIdentifier(field.Name),
                 Type = _typeReferenceFormatter.TypeReference(field.FieldType, field.GetDynamicReplacement()),
-                Xmldoc = _xmldocFormatter.Xmldoc(field, xmldoc),
+                Xmldoc = _xmldocFormatter.Xmldoc(field),
             };
 
             var decimalConstantAttribute = field.TryGetDecimalConstantAttribute();

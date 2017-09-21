@@ -32,17 +32,15 @@ namespace DotNetApis.Logic.Formatting
         /// </summary>
         /// <param name="member">The member defining this generic parameter.</param>
         /// <param name="parameters">The generic parameters to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        public IEnumerable<GenericParameterJson> GenericParameters(IMemberDefinition member, IEnumerable<GenericParameter> parameters, XContainer xmldoc) =>
-            parameters.Select(x => GenericParameter(member, x, xmldoc));
+        public IEnumerable<GenericParameterJson> GenericParameters(IMemberDefinition member, IEnumerable<GenericParameter> parameters) =>
+            parameters.Select(x => GenericParameter(member, x));
 
         /// <summary>
         /// Formats a generic parameter.
         /// </summary>
         /// <param name="member">The member defining this generic parameter.</param>
         /// <param name="parameter">The generic parameter to format.</param>
-        /// <param name="xmldoc">The XML documentation. May be <c>null</c>.</param>
-        private GenericParameterJson GenericParameter(IMemberDefinition member, GenericParameter parameter, XContainer xmldoc)
+        private GenericParameterJson GenericParameter(IMemberDefinition member, GenericParameter parameter)
         {
             return new GenericParameterJson
             {
@@ -51,7 +49,7 @@ namespace DotNetApis.Logic.Formatting
                     GenericParameterModifiers.Invariant,
                 Name = _nameFormatter.EscapeIdentifier(parameter.Name),
                 GenericConstraints = parameter.GenericConstraints().Select(GenericConstraint).ToList(),
-                XmldocNode = _xmldocFormatter.XmldocNodeForGenericParameter(member, parameter, xmldoc),
+                XmldocNode = _xmldocFormatter.XmldocNodeForGenericParameter(member, parameter),
             };
         }
 
