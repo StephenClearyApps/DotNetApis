@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Cecil;
 using DotNetApis.Structure.Entities;
+using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 
 namespace DotNetApis.Logic.Formatting
@@ -19,9 +20,10 @@ namespace DotNetApis.Logic.Formatting
         private readonly EnumFormatter _enumFormatter;
         private readonly DelegateFormatter _delegateFormatter;
         private readonly TypeFormatter _typeFormatter;
+        private readonly ILogger _logger;
 
         public MemberDefinitionFormatter(MethodFormatter methodFormatter, PropertyFormatter propertyFormatter, EventFormatter eventFormatter, FieldFormatter fieldFormatter,
-            EnumFormatter enumFormatter, DelegateFormatter delegateFormatter, TypeFormatter typeFormatter)
+            EnumFormatter enumFormatter, DelegateFormatter delegateFormatter, TypeFormatter typeFormatter, ILogger logger)
         {
             _methodFormatter = methodFormatter;
             _propertyFormatter = propertyFormatter;
@@ -30,6 +32,7 @@ namespace DotNetApis.Logic.Formatting
             _enumFormatter = enumFormatter;
             _delegateFormatter = delegateFormatter;
             _typeFormatter = typeFormatter;
+            _logger = logger;
         }
 
         /// <summary>
@@ -38,6 +41,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="member">The member to format.</param>
         public IEntity MemberDefinition(IMemberDefinition member)
         {
+            _logger.LogDebug("Processing entity {entity}", member.FullName);
             if (member is MethodDefinition method)
                 return _methodFormatter.Method(method);
             if (member is PropertyDefinition property)
