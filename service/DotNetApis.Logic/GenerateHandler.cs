@@ -55,7 +55,6 @@ namespace DotNetApis.Logic
             try
             {
                 var json = await HandleAsync(idver, target).ConfigureAwait(false);
-                Debugger.Break();
                 await _packageJsonCombinedStorage.WriteAsync(idver, target, JsonConvert.SerializeObject(json, Constants.JsonSerializerSettings)).ConfigureAwait(false);
                 await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
