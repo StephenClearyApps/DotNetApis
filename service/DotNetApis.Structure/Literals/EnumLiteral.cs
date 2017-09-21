@@ -35,5 +35,7 @@ namespace DotNetApis.Structure.Literals
         /// </summary>
         [JsonProperty("n")]
         public IReadOnlyList<string> Names { get; set; }
+
+        public override string ToString() => Names.Count == 0 ? Value.ToString() : string.Join("|", Names);
     }
 }

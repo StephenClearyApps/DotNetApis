@@ -6,5 +6,7 @@
     public sealed class NullLiteral : ILiteral
     {
         public LiteralKind Kind => LiteralKind.Null;
+
+        public override string ToString() => "null";
     }
 }

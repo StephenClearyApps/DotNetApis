@@ -40,5 +40,7 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("f")]
         public IReadOnlyList<EnumField> Fields { get; set; }
+
+        public override string ToString() => Namespace == null ? Name : Namespace + "." + Name;
     }
 }

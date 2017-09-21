@@ -40,5 +40,7 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("r")]
         public IReadOnlyList<AttributeJson> RemoveMethodAttributes { get; set; }
+
+        public override string ToString() => Type + " " + Name;
     }
 }

@@ -35,5 +35,13 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("e")]
         public TypeEntityMemberGrouping Members { get; set; }
+
+        public override string ToString()
+        {
+            var result = Namespace == null ? Name : Namespace + "." + Name;
+            if (GenericParameters.Count != 0)
+                result += "<" + string.Join(",", GenericParameters) + ">";
+            return result;
+        }
     }
 }

@@ -18,5 +18,14 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("l")]
         public int? LowerBound { get; set; }
+
+        public override string ToString()
+        {
+            var result = "[" + (LowerBound ?? 0);
+            if (UpperBound != null)
+                result += UpperBound;
+            result += ")";
+            return result;
+        }
     }
 }

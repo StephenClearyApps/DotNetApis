@@ -22,5 +22,7 @@ namespace DotNetApis.Structure.Literals
         /// </summary>
         [JsonProperty("v")]
         public IReadOnlyList<ILiteral> Values { get; set; }
+
+        public override string ToString() => "[" + string.Join(",", Values) + "]";
     }
 }

@@ -30,5 +30,7 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("x")]
         public Xmldoc.Xmldoc Xmldoc { get; set; }
+
+        public override string ToString() => Name + "=" + Value;
     }
 }

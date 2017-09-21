@@ -83,5 +83,7 @@ namespace DotNetApis.Structure
         /// </summary>
         [JsonProperty("l")]
         public IReadOnlyList<AssemblyJson> Assemblies { get; set; }
+
+        public override string ToString() => PackageId + "/" + Version;
     }
 }

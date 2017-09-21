@@ -41,5 +41,14 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("p")]
         public IReadOnlyList<MethodParameter> Parameters { get; set; }
+
+        public override string ToString()
+        {
+            var result = ReturnType + " " + Name;
+            if (GenericParameters.Count != 0)
+                result += "<" + string.Join(",", GenericParameters) + ">";
+            result += "(" + string.Join(",", Parameters) + ")";
+            return result;
+        }
     }
 }

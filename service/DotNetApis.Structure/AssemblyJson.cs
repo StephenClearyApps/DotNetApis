@@ -42,5 +42,7 @@ namespace DotNetApis.Structure
         /// </summary>
         [JsonProperty("t")]
         public IReadOnlyList<IEntity> Types { get; set; }
+
+        public override string ToString() => Path;
     }
 }

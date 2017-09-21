@@ -14,5 +14,7 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("n")]
         public string Name { get; set; }
+
+        public override string ToString() => Name;
     }
 }

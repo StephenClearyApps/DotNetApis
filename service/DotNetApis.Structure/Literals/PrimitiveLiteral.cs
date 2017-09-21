@@ -21,5 +21,7 @@ namespace DotNetApis.Structure.Literals
         /// </summary>
         [JsonProperty("h"), JsonConverter(typeof(IntBooleanConverter))]
         public bool PreferHex { get; set; }
+
+        public override string ToString() => Value.ToString();
     }
 }

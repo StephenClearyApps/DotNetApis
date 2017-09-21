@@ -24,5 +24,7 @@ namespace DotNetApis.Structure
         /// </summary>
         [JsonProperty("v")]
         public ILiteral Value { get; set; }
+
+        public override string ToString() => Value.ToString();
     }
 }

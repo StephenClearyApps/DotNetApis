@@ -39,5 +39,16 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("a")]
         public int GenericArgumentCount { get; set; }
+
+        public override string ToString()
+        {
+            var result = Namespace ?? DeclaringType.ToString();
+            result += "." + Name;
+            if (GenericArgumentCount != 0)
+            {
+                result += "<" + new string(',', GenericArgumentCount - 1) + ">";
+            }
+            return result;
+        }
     }
 }

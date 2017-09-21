@@ -46,5 +46,7 @@ namespace DotNetApis.Structure.Entities
         /// </summary>
         [JsonProperty("s")]
         public PropertyMethod SetMethod { get; set; }
+
+        public override string ToString() => Type + " " + Name;
     }
 }

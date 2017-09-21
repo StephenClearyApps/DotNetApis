@@ -21,5 +21,7 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("t")]
         public ITypeReference ElementType { get; set; }
+
+        public override string ToString() => "reqmod(" + ElementType + ")";
     }
 }

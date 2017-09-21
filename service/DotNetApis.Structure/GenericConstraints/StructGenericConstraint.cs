@@ -12,5 +12,7 @@ namespace DotNetApis.Structure.GenericConstraints
     public sealed class StructGenericConstraint : IGenericConstraint
     {
         public GenericConstraintKind Kind => GenericConstraintKind.Struct;
+
+        public override string ToString() => "struct";
     }
 }

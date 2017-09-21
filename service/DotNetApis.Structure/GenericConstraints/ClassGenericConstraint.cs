@@ -12,5 +12,7 @@ namespace DotNetApis.Structure.GenericConstraints
     public sealed class ClassGenericConstraint : IGenericConstraint
     {
         public GenericConstraintKind Kind => GenericConstraintKind.Class;
+
+        public override string ToString() => "class";
     }
 }

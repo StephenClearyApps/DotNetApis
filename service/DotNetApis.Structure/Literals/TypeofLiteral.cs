@@ -15,5 +15,7 @@ namespace DotNetApis.Structure.Literals
         /// </summary>
         [JsonProperty("t")]
         public ITypeReference Type { get; set; }
+
+        public override string ToString() => "typeof(" + Type + ")";
     }
 }

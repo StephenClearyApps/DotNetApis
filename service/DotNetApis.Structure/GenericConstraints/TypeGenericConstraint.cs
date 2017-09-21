@@ -20,5 +20,7 @@ namespace DotNetApis.Structure.GenericConstraints
         /// </summary>
         [JsonProperty("t")]
         public ITypeReference Type { get; set; }
+
+        public override string ToString() => Type.ToString();
     }
 }

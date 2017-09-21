@@ -12,5 +12,7 @@ namespace DotNetApis.Structure.Locations
         /// </summary>
         [JsonProperty("i")]
         public string DnaId { get; set; }
+
+        public override string ToString() => "$/" + DnaId;
     }
 }

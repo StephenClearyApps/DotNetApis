@@ -59,5 +59,7 @@ namespace DotNetApis.Structure
         /// </summary>
         [JsonProperty("p")]
         public string ProjectUrl { get; set; }
+
+        public override string ToString() => PackageId + "/" + Version;
     }
 }

@@ -15,5 +15,7 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("t")]
         public IReadOnlyList<GenericConcreteType> DeclaringTypesAndThis { get; set; }
+
+        public override string ToString() => string.Join(".", DeclaringTypesAndThis);
     }
 }

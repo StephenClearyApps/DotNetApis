@@ -15,6 +15,8 @@ namespace DotNetApis.Structure.Locations
         /// The DNA ID of the location.
         /// </summary>
         public string DnaId { get; set; }
+
+        public override string ToString() => DnaId;
     }
 
     [EditorBrowsable(EditorBrowsableState.Never)]

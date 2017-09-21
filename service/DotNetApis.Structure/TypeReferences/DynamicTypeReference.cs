@@ -6,5 +6,7 @@
     public sealed class DynamicTypeReference : ITypeReference
     {
         public TypeReferenceKind Kind => TypeReferenceKind.Dynamic;
+
+        public override string ToString() => "dynamic";
     }
 }

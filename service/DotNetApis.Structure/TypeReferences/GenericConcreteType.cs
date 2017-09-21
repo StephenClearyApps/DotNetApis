@@ -26,5 +26,7 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("a")]
         public IReadOnlyList<ITypeReference> GenericArguments { get; set; }
+
+        public override string ToString() => Name + "<" + string.Join(",", GenericArguments) + ">";
     }
 }

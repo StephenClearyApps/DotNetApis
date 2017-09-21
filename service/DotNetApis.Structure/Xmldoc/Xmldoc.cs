@@ -36,5 +36,7 @@ namespace DotNetApis.Structure.Xmldoc
         /// The <c>returns</c> documentation.
         /// </summary>
         public IXmldocNode Returns { get; set; }
+
+        public override string ToString() => Basic?.ToString() ?? "";
     }
 }

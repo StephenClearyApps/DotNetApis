@@ -30,5 +30,7 @@ namespace DotNetApis.Structure.Xmldoc
         /// </summary>
         [JsonProperty("c")]
         public IReadOnlyList<IXmldocNode> Children { get; }
+
+        public override string ToString() => string.Join("", Children);
     }
 }

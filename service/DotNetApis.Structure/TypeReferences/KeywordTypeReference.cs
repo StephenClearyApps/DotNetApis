@@ -21,5 +21,7 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("l")]
         public ILocation Location { get; set; }
+
+        public override string ToString() => Name;
     }
 }

@@ -21,5 +21,7 @@ namespace DotNetApis.Structure.TypeReferences
         /// </summary>
         [JsonProperty("d")]
         public IReadOnlyList<ArrayDimensionJson> Dimensions { get; set; }
+
+        public override string ToString() => ElementType + "[]";
     }
 }

@@ -36,5 +36,7 @@ namespace DotNetApis.Structure
         /// </summary>
         [JsonProperty("a")]
         public IReadOnlyList<AttributeArgumentJson> Arguments { get; set; }
+
+        public override string ToString() => Target == null ? Name : Target + ":" + Name;
     }
 }
