@@ -29,9 +29,11 @@ namespace DotNetApis.Logic
         private readonly Lazy<Task<ReferenceAssemblies>> _referenceAssemblies;
         private readonly IReferenceStorage _referenceStorage;
         private readonly AssemblyFormatter _assemblyFormatter;
+        private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
 
         public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
-            NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter)
+            NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter,
+            PackageJsonCombinedStorage packageJsonCombinedStorage)
         {
             _logger = logger;
             _logStorage = logStorage;
@@ -41,6 +43,7 @@ namespace DotNetApis.Logic
             _referenceAssemblies = referenceAssemblies;
             _referenceStorage = referenceStorage;
             _assemblyFormatter = assemblyFormatter;
+            _packageJsonCombinedStorage = packageJsonCombinedStorage;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -51,8 +54,9 @@ namespace DotNetApis.Logic
                 throw new InvalidOperationException("Invalid generation request");
             try
             {
-                var json = await HandleAsync(idver, target).ConfigureAwait(false); // TODO: handle result
+                var json = await HandleAsync(idver, target).ConfigureAwait(false);
                 Debugger.Break();
+                await _packageJsonCombinedStorage.WriteAsync(idver, target, JsonConvert.SerializeObject(json, Constants.JsonSerializerSettings)).ConfigureAwait(false);
                 await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, string.Join("\n", AmbientContext.InMemoryLogger?.Messages ?? new List<string>())).ConfigureAwait(false);
             }
             catch (Exception ex)
