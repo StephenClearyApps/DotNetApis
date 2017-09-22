@@ -96,6 +96,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncLazy.cs" />
+    <Compile Include="AsyncLocalAblyLogger.cs" />
     <Compile Include="ScopeBase.cs" />
     <Compile Include="AsyncLocalLogger.cs" />
     <Compile Include="AsyncLocalStack.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Internals\AblyService.cs" />
     <Compile Include="InMemoryLogger.cs" />
     <Compile Include="CompositeLogger.cs" />
+    <Compile Include="Singleton.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="ThreadPoolTurbo.cs" />
     <Compile Include="TraceDump.cs" />

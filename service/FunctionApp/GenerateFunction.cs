@@ -16,16 +16,19 @@ namespace FunctionApp
     public sealed class GenerateFunction
     {
         private readonly GenerateHandler _handler;
+        private readonly ILogger _logger;
 
-        public GenerateFunction(GenerateHandler handler)
+        public GenerateFunction(GenerateHandler handler, ILogger logger)
         {
             _handler = handler;
+            _logger = logger;
         }
 
         public async Task RunAsync(string queueMessage)
         {
             var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage);
             AmbientContext.ParentOperationId = message.OperationId;
+            AsyncLocalAblyLogger.TryCreate(message.NormalizedPackageId + "/" + message.NormalizedPackageVersion + "/" + message.NormalizedFrameworkTarget, _logger);
 
             await _handler.HandleAsync(message);
         }
@@ -40,7 +43,7 @@ namespace FunctionApp
                 GlobalConfig.Initialize();
                 AmbientContext.InMemoryLogger = new InMemoryLogger();
                 AmbientContext.OperationId = context.InvocationId;
-                AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, new TraceWriterLogger(writer))); // TODO: Ably
+                AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, new TraceWriterLogger(writer), new AsyncLocalAblyLogger()));
 
                 var container = await CompositionRoot.GetContainerAsync();
                 using (AsyncScopedLifestyle.BeginScope(container))

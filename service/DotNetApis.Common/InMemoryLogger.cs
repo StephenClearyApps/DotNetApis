@@ -18,9 +18,6 @@ namespace DotNetApis.Common
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            throw new NotImplementedException();
-        }
+        public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
     }
 }

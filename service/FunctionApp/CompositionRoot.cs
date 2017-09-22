@@ -14,7 +14,6 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Microsoft.WindowsAzure.Storage.Table;
-using Nito.AsyncEx;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 

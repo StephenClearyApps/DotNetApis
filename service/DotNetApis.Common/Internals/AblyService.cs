@@ -1,25 +1,13 @@
 ﻿using System;
 using IO.Ably;
-using Config = DotNetApis.Common.Config;
 
 namespace DotNetApis.Common.Internals
 {
-    public sealed class AblyService
+    public static class AblyService
     {
-        private static readonly string AblyApiKey = Config.GetSetting("ABLY_API_KEY");
+        // "Singleton" is not the right word for this. But "RetryableFactory" is just too enterprisey.
+        private static readonly ISingleton<AblyRealtime> Client = Singleton.Create(() => new AblyRealtime(Config.GetSetting("ABLY_API_KEY")));
 
-        private readonly AblyRealtime _client;
-
-        private AblyService()
-        {
-            _client = new AblyRealtime(AblyApiKey);
-        }
-
-        public AblyChannel LogChannel(Guid operation)
-        {
-            return new AblyChannel(_client.Channels.Get("log:" + operation.ToString("N")), operation);
-        }
-
-        public static AblyService Instance { get; } = new AblyService();
+        public static AblyChannel CreateLogChannel(string name) => new AblyChannel(Client.Value.Channels.Get("log:" + name));
     }
 }
