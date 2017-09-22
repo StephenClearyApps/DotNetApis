@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,10 @@ namespace DotNetApis.Logic
 
         public async Task HandleAsync()
         {
+            var stopwatch = Stopwatch.StartNew();
             var referenceAssemblies = await _referenceAssemblies.Value.ConfigureAwait(false);
+            stopwatch.Stop();
+            _logger.LogDebug("Reference assemblies loaded in {elapsed}", stopwatch.Elapsed);
             var maxDegreeOfParallelism = _storageBackend.SupportsConcurrency ? 64 : 1;
             _logger.LogInformation("Using {threadCount} threads", maxDegreeOfParallelism);
             using (ThreadPoolTurbo.Engage(maxDegreeOfParallelism))

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics;
+using System.IO;
 using System.Net;
 using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
@@ -47,6 +48,7 @@ namespace DotNetApis.Nuget
         public NugetPackageIdVersion TryLookupLatestPackageVersion(string packageId)
         {
             _logger.LogDebug("Looking up latest package version for {packageId}", packageId);
+            var stopwatch = Stopwatch.StartNew();
             var package = _repository.FindPackage(packageId, version: null, allowPrereleaseVersions: false, allowUnlisted: false);
             if (package == null)
             {
@@ -55,42 +57,44 @@ namespace DotNetApis.Nuget
             }
             if (package == null)
             {
-                _logger.LogWarning("No package version found for {packageId}", packageId);
+                _logger.LogWarning("No package version found for {packageId} in {elapsed}", packageId, stopwatch.Elapsed);
                 return null;
             }
             var idver = new NugetPackageIdVersion(packageId, new NugetVersion(package.Version));
-            _logger.LogInformation("Found version {idver} for {packageId}", idver, packageId);
+            _logger.LogInformation("Found version {idver} for {packageId} in {elapsed}", idver, packageId, stopwatch.Elapsed);
             return idver;
         }
 
         public NugetPackageIdVersion TryLookupPackage(string packageId, NugetVersionRange versionRange)
         {
             _logger.LogDebug("Searching for package {packageId} {versionRange}", packageId, versionRange);
+            var stopwatch = Stopwatch.StartNew();
             var package = _repository.FindPackage(packageId, versionRange.ToVersionSpec(), allowPrereleaseVersions: true, allowUnlisted: true);
             if (package == null)
             {
-                _logger.LogWarning("Package {packageId} {versionRange} was not found", packageId, versionRange);
+                _logger.LogWarning("Package {packageId} {versionRange} was not found in {elapsed}", packageId, versionRange, stopwatch.Elapsed);
                 return null;
             }
             var idver = new NugetPackageIdVersion(packageId, NugetVersion.FromSemanticVersion(package.Version));
-            _logger.LogInformation("Package {packageId} {versionRange} resolved to {idver}", packageId, versionRange, idver);
+            _logger.LogInformation("Package {packageId} {versionRange} resolved to {idver} in {elapsed}", packageId, versionRange, idver, stopwatch.Elapsed);
             return idver;
         }
 
         public NugetFullPackage DownloadPackage(NugetPackageIdVersion idver)
         {
             _logger.LogDebug("Downloading package {idver} from Nuget", idver);
+            var stopwatch = Stopwatch.StartNew();
             var package = _repository.FindPackage(idver.PackageId, idver.Version.ToSemanticVersion(), allowPrereleaseVersions: true, allowUnlisted: true);
             if (package == null)
             {
-                _logger.LogError("Could not find package {idver} on Nuget", idver);
+                _logger.LogError("Could not find package {idver} on Nuget in {elapsed}", idver, stopwatch.Elapsed);
                 throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {idver} on Nuget; this error can happen if NuGet is currently indexing this package; if this is a newly released version, try again in 5 minutes or so.");
             }
             var published = package.Published;
             if (published == null)
                 throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
             var result = new NugetFullPackage(new DotNetApis.Nuget.NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
-            _logger.LogDebug("Successfully downloaded package {idver} as {result} from Nuget", idver, result);
+            _logger.LogDebug("Successfully downloaded package {idver} as {result} from Nuget in {elapsed}", idver, result, stopwatch.Elapsed);
             return result;
         }
     }

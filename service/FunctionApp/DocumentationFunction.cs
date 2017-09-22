@@ -82,7 +82,7 @@ namespace FunctionApp
             }
             catch (ExpectedException ex)
             {
-                _logger.LogInformation("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
+                _logger.LogDebug("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
                 return req.CreateErrorResponseWithLog(ex);
             }
         }

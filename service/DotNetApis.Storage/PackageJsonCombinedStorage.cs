@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
@@ -27,9 +28,12 @@ namespace DotNetApis.Storage
         public async Task<Uri> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
         {
             _logger.LogDebug("Saving json for {idver} target {target}", idver, target);
+            var stopwatch = Stopwatch.StartNew();
             var blobPath = await _storage.WriteAsync(idver, target, json);
             await _table.SetBlobPathAsync(idver, target, blobPath);
-            return _storage.GetUri(idver, target);
+            var result =  _storage.GetUri(idver, target);
+            _logger.LogDebug("Saved json for {idver} target {target} at {url} in {elapsed}", idver, target, result, stopwatch.Elapsed);
+            return result;
         }
 
         /// <summary>

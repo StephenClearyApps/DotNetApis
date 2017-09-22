@@ -65,9 +65,17 @@ namespace DotNetApis.Logic
             }
         }
 
+        private async Task<ReferenceAssemblies> LoadReferenceAssembliesAsync()
+        {
+            var stopwatch = Stopwatch.StartNew();
+            var result = await _referenceAssemblies.Value.ConfigureAwait(false);
+            _logger.LogDebug("Reference assemblies loaded in {elapsed}", stopwatch.Elapsed);
+            return result;
+        }
+
         private async Task<PackageJson> HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
-            var referenceAssembliesTask = _referenceAssemblies.Value;
+            var referenceAssembliesTask = LoadReferenceAssembliesAsync();
 
             // Load the package.
             var publishedPackage = await _packageDownloader.GetPackageAsync(idver).ConfigureAwait(false);

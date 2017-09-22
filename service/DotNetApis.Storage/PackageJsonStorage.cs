@@ -51,7 +51,6 @@ namespace DotNetApis.Storage
             blob.Properties.ContentType = "application/json; charset=utf-8";
             blob.Properties.ContentEncoding = "gzip";
             await blob.SetPropertiesAsync().ConfigureAwait(false);
-            _logger.LogDebug("Saved json for {idver} target {target} at {uri}", idver, target, blob.Uri);
             return blobPath;
         }
 
