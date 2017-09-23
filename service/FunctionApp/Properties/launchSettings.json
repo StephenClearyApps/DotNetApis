@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FunctionApp": {
+      "commandName": "Project",
+      "commandLineArgs": "host start --cors *"
+    }
+  }
+}

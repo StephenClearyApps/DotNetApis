@@ -47,6 +47,7 @@
     "redux-devtools-extension": "^2.13.2",
     "redux-thunk": "^2.2.0",
     "typescript": "^2.5.2",
-    "webpack": "^2.7.0"
+    "webpack": "^2.7.0",
+    "whatwg-fetch": "^2.0.3"
   }
 }

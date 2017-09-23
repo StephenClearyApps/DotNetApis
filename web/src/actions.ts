@@ -7,8 +7,12 @@ export const DocActions = {
     getDoc: (key: PackageKey) => async (dispatch: Dispatch<any>) => {
         dispatch(actions.getDocBegin(key));
         try {
-            const result = await api.getDoc();
-            dispatch(actions.getDocEnd(key, result));
+            const result = await api.getDoc(key);
+            if (api.isInProgressResponse(result)) {
+                
+            } else {
+                dispatch(actions.getDocEnd(key, result));
+            }
         } catch (e) {
             dispatch(actions.getDocError(key, e));
         }
