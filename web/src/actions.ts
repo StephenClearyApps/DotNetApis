@@ -1,7 +1,5 @@
 import * as actions from './actionTypes';
 
-const DocActions = {
+export const DocActions = {
     getDoc: actions.getDocBegin
 }
-
-export default DocActions;
