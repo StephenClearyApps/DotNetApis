@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using DotNetApis.Cecil;
 using DotNetApis.Common;
 using DotNetApis.Logic.Assemblies;
 using DotNetApis.Logic.Formatting;
@@ -14,7 +13,6 @@ using DotNetApis.Storage;
 using DotNetApis.Structure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using NuGet.Common;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace DotNetApis.Logic
