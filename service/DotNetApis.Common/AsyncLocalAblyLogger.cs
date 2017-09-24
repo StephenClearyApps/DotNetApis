@@ -28,10 +28,11 @@ namespace DotNetApis.Common
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            ImplicitChannel.Value?.LogMessage(logLevel.ToString(), formatter(state, exception));
+            if (IsEnabled(logLevel))
+                ImplicitChannel.Value?.LogMessage(logLevel.ToString(), formatter(state, exception));
         }
 
-        public bool IsEnabled(LogLevel logLevel) => ImplicitChannel.Value != null && logLevel > LogLevel.Information;
+        public bool IsEnabled(LogLevel logLevel) => ImplicitChannel.Value != null && logLevel >= LogLevel.Information;
 
         public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
     }
