@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.Xmldoc
 {
     /// <summary>
-    /// This must be kept in sync with util/entities/xmldoc.ts
+    /// This must be kept in sync with util/structure/xmldoc.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum XmlXmldocNodeKind

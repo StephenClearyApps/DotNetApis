@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.GenericConstraints
 {
     /// <summary>
-    /// This must be kept in sync with constants/entityGenericConstraintsKinds.js
+    /// This must be kept in sync with util/structure/genericConstraints.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum GenericConstraintKind

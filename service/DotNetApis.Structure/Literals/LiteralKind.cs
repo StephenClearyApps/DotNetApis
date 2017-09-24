@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.Literals
 {
     /// <summary>
-    /// This must be kept in sync with constants\entityLiteralKinds.js
+    /// This must be kept in sync with util/structure/literals.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum LiteralKind

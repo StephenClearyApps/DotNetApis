@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.TypeReferences
 {
     /// <summary>
-    /// This must be kept in sync with constants/entityReferenceKinds.js
+    /// This must be kept in sync with util/structure/typeReferences.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum TypeReferenceKind

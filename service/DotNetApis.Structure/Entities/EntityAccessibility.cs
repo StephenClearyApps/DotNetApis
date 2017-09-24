@@ -5,7 +5,7 @@ namespace DotNetApis.Structure.Entities
 {
     /// <summary>
     /// The accessibility of an entity.
-    /// This must be kept in sync with constants/entityAccessibility.js
+    /// This must be kept in sync with util/structure/entities.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum EntityAccessibility

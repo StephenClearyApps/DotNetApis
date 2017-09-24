@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 namespace DotNetApis.Structure.Entities
 {
     /// <summary>
-    /// This must be kept in sync with constants/entityGenericParameterModifiers.js
+    /// This must be kept in sync with util/structure/entities.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum GenericParameterModifiers

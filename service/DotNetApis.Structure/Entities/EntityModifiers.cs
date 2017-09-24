@@ -6,7 +6,7 @@ namespace DotNetApis.Structure.Entities
 {
     /// <summary>
     /// Modifiers on entities.
-    /// Must be kept in sync with constants/entityModifiers.js
+    /// Must be kept in sync with util/structure/entities.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     [Flags]

@@ -5,7 +5,7 @@ namespace DotNetApis.Structure.Entities
 {
     /// <summary>
     /// The kind of entity this structured entry represents.
-    /// This must be kept in sync with $FrontEnd/src/constants/entityKinds.js
+    /// This must be kept in sync with util/structure/entities.ts
     /// </summary>
     [JsonConverter(typeof(IntEnumConverter))]
     public enum EntityKind
