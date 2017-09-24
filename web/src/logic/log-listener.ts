@@ -29,7 +29,7 @@ export async function listen(channelName: string, handler: (err: Ably.ablyLib.Er
             }
             page = await nextAsync(page);
         }
-        handler(undefined, undefined, "Subscribing...");
+        handler(undefined, undefined, "Switching to live updates...");
         for (let message of buffer) {
             handler(undefined, message, undefined);
         }

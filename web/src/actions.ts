@@ -3,6 +3,7 @@ import { Dispatch } from 'redux';
 import * as actions from './actionTypes';
 import * as api from './api';
 import { listen } from './logic/log-listener';
+import { packageKey } from './util/packageKey';
 
 export const DocActions = {
     getDoc: (key: PackageKey) => async (dispatch: Dispatch<any>) => {
@@ -10,14 +11,17 @@ export const DocActions = {
         try {
             const result = await api.getDoc(key);
             if (api.isInProgressResponse(result)) {
-                const name = "log:" + result.normalizedPackageId + "/" + result.normalizedPackageVersion + "/" + result.normalizedFrameworkTarget;
-                listen(name, (err, message, meta) => {
+                const normalizedKey = { packageId: result.normalizedPackageId, packageVersion: result.normalizedPackageVersion, targetFramework: result.normalizedFrameworkTarget };
+                dispatch(actions.getDocProcessing(key, normalizedKey, result.log));
+                // TODO: start polling status API
+                const channelName = "log:" + packageKey(normalizedKey);
+                listen(channelName, (err, message, meta) => {
                     if (err) {
-                        console.log("Ably error: " + err.message);
+                        dispatch(actions.getDocProgress(normalizedKey, "meta", (new Date).getTime(), "Streaming log error: " + err.message));
                     } else if (meta) {
-                        console.log("Ably meta: " + meta);
+                        dispatch(actions.getDocProgress(normalizedKey, "meta", (new Date).getTime(), meta));
                     } else {
-                        console.log("Ably message: ", message);
+                        dispatch(actions.getDocProgress(normalizedKey, message.name, message.timestamp, message.data.message));
                     }
                 });
             } else {
