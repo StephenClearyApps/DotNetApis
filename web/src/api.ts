@@ -1,3 +1,5 @@
+import { IPackage } from './util/structure/packages';
+
 // This must be kept in sync with DotNetApis.Structure.JsonFactory.Version.
 export const jsonVersion = "0";
 
@@ -52,4 +54,4 @@ async function get<T>(url: string, query: { [key:string]: string }) {
 }
 
 export const getDoc = ({ packageId, packageVersion, targetFramework }: PackageKey) =>
-    get<InProgressResponse | PackageDoc>("http://localhost:7071/api/0/doc", { packageId, packageVersion, targetFramework});
+    get<InProgressResponse | IPackage>("http://localhost:7071/api/0/doc", { packageId, packageVersion, targetFramework});

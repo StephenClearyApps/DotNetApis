@@ -1,3 +1,5 @@
+import { PackageDoc } from "./util/packageDoc";
+
 export const ActionTypes = {
     GET_DOC_BEGIN: 'GET_DOC_BEGIN',
     GET_DOC_PROCESSING: 'GET_DOC_PROCESSING',

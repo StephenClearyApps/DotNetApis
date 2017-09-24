@@ -3,6 +3,7 @@ import { handleActions } from 'redux-actions';
 
 import * as A from './actionTypes';
 import { packageKey } from './util/packageKey';
+import { PackageDoc } from './util/packageDoc';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';
 

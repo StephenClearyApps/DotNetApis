@@ -202,19 +202,18 @@ export function isField(entity: IEntityBase): entity is IFieldEntity {
 
 export interface IEntityGrouping {
     /** Lifetime entities. */
-    l?: Array<IEntity>;
+    l?: IEntity[];
 
     /** Shared/static entities. */
-    s?: Array<IEntity>;
+    s?: IEntity[];
 
     /** Instance entities. */
-    i?: Array<IEntity>;
-
-    /** Derived entities. */
-    d?: Array<IEntity>;
+    i?: IEntity[];
 
     /** Type entities. */
-    t?: Array<IEntity>;
+    t?: IEntity[];
+
+    [groupName: string]: IEntity[];
 }
 
 export interface IEnumField {

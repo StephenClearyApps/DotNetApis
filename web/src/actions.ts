@@ -4,6 +4,7 @@ import * as actions from './actionTypes';
 import * as api from './api';
 import { listen } from './logic/log-listener';
 import { packageKey } from './util/packageKey';
+import { PackageDoc } from './util/packageDoc';
 
 export const DocActions = {
     getDoc: (key: PackageKey) => async (dispatch: Dispatch<any>) => {
@@ -25,7 +26,7 @@ export const DocActions = {
                     }
                 });
             } else {
-                dispatch(actions.getDocEnd(key, result));
+                dispatch(actions.getDocEnd(key, PackageDoc.create(result)));
             }
         } catch (e) {
             dispatch(actions.getDocError(key, e));
