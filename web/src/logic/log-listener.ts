@@ -14,31 +14,41 @@ function nextAsync<T>(page: Ably.ablyLib.PaginatedResult<T>): Promise<Ably.ablyL
     return new Promise((resolve, reject) => page.next((err, nextPage) => err ? reject(err) : resolve(nextPage)));
 }
 
-export async function listen(channelName: string, handler: (err: Ably.ablyLib.ErrorInfo, message: Ably.ablyLib.Message, meta: string) => void) {
-    handler(undefined, undefined, "Establishing connection to log streaming service...");
-    const buffer: Ably.ablyLib.Message[] = [];
-    const channel = client.channels.get(channelName);
-    try {
-        await attachAsync(channel);
-        handler(undefined, undefined, "Connection established; reviewing history...");
-        let page = await historyAsync(channel, { untilAttach: true, direction: "forwards" });
-        while (true) {
-            buffer.push(...page.items);
-            if (page.isLast()) {
-                break;
+export class LogListener {
+    private channel: Ably.ablyLib.RealtimeChannel;
+    constructor(name: string, private handler: (err: Ably.ablyLib.ErrorInfo | Error, message: Ably.ablyLib.Message, meta: string) => void) {
+        this.channel = client.channels.get(name);
+    }
+
+    public async listen() {
+        try {
+            this.handler(undefined, undefined, "Establishing connection to log streaming service...");
+            const buffer: Ably.ablyLib.Message[] = [];
+            await attachAsync(this.channel);
+            this.handler(undefined, undefined, "Connection established; reviewing history...");
+            let page = await historyAsync(this.channel, { untilAttach: true, direction: "forwards" });
+            while (true) {
+                buffer.push(...page.items);
+                if (page.isLast()) {
+                    break;
+                }
+                page = await nextAsync(page);
             }
-            page = await nextAsync(page);
+            this.handler(undefined, undefined, "Switching to live updates...");
+            for (let message of buffer) {
+                this.handler(undefined, message, undefined);
+            }
+            this.channel.subscribe(message => {
+                this.handler(undefined, message, undefined);
+            });
+        } catch (e) {
+            this.handler(e, undefined, undefined);
+            this.dispose();
         }
-        handler(undefined, undefined, "Switching to live updates...");
-        for (let message of buffer) {
-            handler(undefined, message, undefined);
-        }
-        channel.subscribe(message => {
-            handler(undefined, message, undefined);
-        });
-    } catch (e) {
-        channel.unsubscribe(); // TODO: provide a way for callers to unsubscribe.
-        channel.detach();
-        handler(e, undefined, undefined);
+    }
+
+    public dispose() {
+        this.channel.unsubscribe();
+        this.channel.detach();
     }
 }
