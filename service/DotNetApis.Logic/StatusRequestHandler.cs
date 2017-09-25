@@ -37,7 +37,7 @@ namespace DotNetApis.Logic
             return (idver, target);
         }
 
-        public async Task<(Status status, Uri logUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
+        public async Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
         {
             var result = await _statusTable.TryGetStatusAsync(idver, target, timestamp).ConfigureAwait(false);
             if (result == null)
@@ -45,8 +45,8 @@ namespace DotNetApis.Logic
                 _logger.LogDebug("Status for {idver} target {target} on {timestamp} was not found", idver, target, timestamp);
                 return null;
             }
-            var (status, logUri) = result.Value;
-            _logger.LogDebug("Status for {idver} target {target} on {timestamp} is {status}, {logUri}", idver, target, timestamp, status, logUri);
+            var (status, logUri, jsonUri) = result.Value;
+            _logger.LogDebug("Status for {idver} target {target} on {timestamp} is {status}, {logUri}, {jsonUri}", idver, target, timestamp, status, logUri, jsonUri);
             return result;
         }
     }

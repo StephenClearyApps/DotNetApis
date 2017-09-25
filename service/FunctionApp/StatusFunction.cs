@@ -54,8 +54,9 @@ namespace FunctionApp
 
                 return req.CreateResponse(HttpStatusCode.OK, new StatusResponseMessage
                 {
-                    Status = result.Value.status,
-                    LogUri = result.Value.logUri,
+                    Status = result.Value.Status,
+                    LogUri = result.Value.LogUri,
+                    JsonUri = result.Value.JsonUri,
                 });
             }
             catch (ExpectedException ex)

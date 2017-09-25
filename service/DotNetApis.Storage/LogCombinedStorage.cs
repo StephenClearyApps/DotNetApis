@@ -23,10 +23,11 @@ namespace DotNetApis.Storage
         /// <param name="timestamp">The timestamp of the original documentation request.</param>
         /// <param name="status">The result of the request.</param>
         /// <param name="log">The log data.</param>
-        public async Task WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, string log)
+        /// <param name="jsonUri">The URI to the resulting JSON. May be <c>null</c>.</param>
+        public async Task WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, string log, Uri jsonUri)
         {
-            var uri = await _storage.WriteAsync(idver, target, timestamp, log).ConfigureAwait(false);
-            await _table.WriteStatusAsync(idver, target, timestamp, status, uri).ConfigureAwait(false);
+            var logUri = await _storage.WriteAsync(idver, target, timestamp, log).ConfigureAwait(false);
+            await _table.WriteStatusAsync(idver, target, timestamp, status, logUri, jsonUri).ConfigureAwait(false);
         }
     }
 }

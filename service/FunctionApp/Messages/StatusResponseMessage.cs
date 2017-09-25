@@ -12,5 +12,7 @@ namespace FunctionApp.Messages
         public Status Status { get; set; }
 
         public Uri LogUri { get; set; }
+
+        public Uri JsonUri { get; set; }
     }
 }

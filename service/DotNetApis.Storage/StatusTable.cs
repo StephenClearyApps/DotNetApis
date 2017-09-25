@@ -38,7 +38,7 @@ namespace DotNetApis.Storage
         /// <param name="idver">The id and version of the package.</param>
         /// <param name="target">The target of the package.</param>
         /// <param name="timestamp">The timestamp of the original documentation request.</param>
-        Task<(Status status, Uri logUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp);
+        Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp);
 
         /// <summary>
         /// Writes an entity to the status table, overwriting any existing entity.
@@ -48,8 +48,8 @@ namespace DotNetApis.Storage
         /// <param name="timestamp">The timestamp of the original documentation request.</param>
         /// <param name="status">The result of the documentation request.</param>
         /// <param name="logUri">The URI of the detailed log of the documentation generation.</param>
-        /// <returns></returns>
-        Task WriteStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, Uri logUri);
+        /// <param name="jsonUri">The URI of the JSON result. May be <c>null</c>.</param>
+        Task WriteStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, Uri logUri, Uri jsonUri);
     }
 
     public sealed class AzureStatusTable : IStatusTable
@@ -71,16 +71,16 @@ namespace DotNetApis.Storage
             return _cloudTableClient.GetTableReference("status" + Version + "x" + timestamp.ToString("yyyyMMdd"));
         }
 
-        public async Task<(Status status, Uri logUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
+        public async Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
         {
             var table = GetTable(timestamp);
             if (!await table.ExistsAsync().ConfigureAwait(false))
                 return null;
             var entity = await Entity.FindOrDefaultAsync(table, idver, target).ConfigureAwait(false);
-            return (entity.Status, entity.LogUri);
+            return (entity.Status, entity.LogUri, entity.JsonUri);
         }
 
-        public async Task WriteStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, Uri logUri)
+        public async Task WriteStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp, Status status, Uri logUri, Uri jsonUri)
         {
             var table = GetTable(timestamp);
             await table.CreateIfNotExistsAsync().ConfigureAwait(false);
@@ -88,6 +88,7 @@ namespace DotNetApis.Storage
             {
                 Status = status,
                 LogUri = logUri,
+                JsonUri = jsonUri,
             };
             await entity.InsertOrReplaceAsync().ConfigureAwait(false);
         }
@@ -129,7 +130,13 @@ namespace DotNetApis.Storage
             public Uri LogUri
             {
                 get => new Uri(Get("l", null));
-                set => Set("l", value.ToString());
+                set => Set("l", value?.ToString());
+            }
+
+            public Uri JsonUri
+            {
+                get => new Uri(Get("j", null));
+                set => Set("j", value?.ToString());
             }
         }
     }
