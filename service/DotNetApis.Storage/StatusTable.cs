@@ -129,13 +129,21 @@ namespace DotNetApis.Storage
 
             public Uri LogUri
             {
-                get => new Uri(Get("l", null));
+                get
+                {
+                    var stringValue = Get("l", null);
+                    return stringValue == null ? null : new Uri(stringValue);
+                }
                 set => Set("l", value?.ToString());
             }
 
             public Uri JsonUri
             {
-                get => new Uri(Get("j", null));
+                get
+                {
+                    var stringValue = Get("j", null);
+                    return stringValue == null ? null : new Uri(stringValue);
+                }
                 set => Set("j", value?.ToString());
             }
         }
