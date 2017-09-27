@@ -7,7 +7,7 @@ import { PackageDoc } from './util/packageDoc';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';
 
-interface LogMessage {
+export interface LogMessage {
     type?: string;
     timestamp?: number;
     message: string;

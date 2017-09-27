@@ -20,7 +20,8 @@ export const getDocProgress = (normalized: PackageKey, type: string, timestamp: 
     ({ type: ActionTypes.GET_DOC_PROGRESS, meta: { normalized }, payload: { type, timestamp, message }});
 
 export type GetDocEndAction = MetaPayloadAction<{ key: PackageKey }, { data: PackageDoc }>;
-export const getDocEnd = (key: PackageKey, data: PackageDoc): GetDocEndAction => ({ type: ActionTypes.GET_DOC_END, meta: { key }, payload: { data } });
+export const getDocEnd = (key: PackageKey, data: PackageDoc): GetDocEndAction =>
+    ({ type: ActionTypes.GET_DOC_END, meta: { key }, payload: { data } });
 
 export type GetDocErrorAction = MetaErrorAction<{ key: PackageKey }>;
 export const getDocError = (key: PackageKey, error: Error): GetDocErrorAction =>
