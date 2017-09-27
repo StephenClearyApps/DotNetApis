@@ -39,6 +39,7 @@ export type Status = "Requested" | "Succeeded" | "Failed";
 export interface StatusResponse {
     status: Status;
     logUri: string;
+    jsonUri: string;
 }
 
 export function isInProgressResponse<T>(response: InProgressResponse | T): response is InProgressResponse {
@@ -59,8 +60,9 @@ function checkResponseError(response: Response, json: ErrorDetails) {
     }
 }
 
-async function get<T>(url: string, query: { [key:string]: string }) {
-    const response = await fetch(url + "?" + encodeQuery({ ...query, jsonVersion }));
+export async function getJson<T>(url: string, query?: { [key:string]: string }) {
+    const uri = query === undefined ? url : url + "?" + encodeQuery({ ...query, jsonVersion });
+    const response = await fetch(uri);
     check422(response);
     const json = await response.json();
     checkResponseError(response, json);
@@ -68,7 +70,7 @@ async function get<T>(url: string, query: { [key:string]: string }) {
 }
 
 export const getDoc = ({ packageId, packageVersion, targetFramework }: PackageKey) =>
-    get<InProgressResponse | IPackage>("http://localhost:7071/api/0/doc", { packageId, packageVersion, targetFramework});
+    getJson<InProgressResponse | IPackage>("http://localhost:7071/api/0/doc", { packageId, packageVersion, targetFramework});
 
 export const getStatus = (packageId: string, packageVersion: string, targetFramework: string, timestamp: string) =>
-    get<StatusResponse>("http://localhost:7071/api/0/status", { packageId, packageVersion, targetFramework, timestamp });
+    getJson<StatusResponse>("http://localhost:7071/api/0/status", { packageId, packageVersion, targetFramework, timestamp });

@@ -35,10 +35,11 @@ export const DocActions = {
                     const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion,
                         normalizedKey.targetFramework, result.timestamp);
                     if (pollResult.status === "Succeeded") {
-                        dispatch(actions.getDocEnd(key, PackageDoc.create(await api.getDoc(key) as IPackage)));
+                        dispatch(actions.getDocEnd(key, PackageDoc.create(await api.getJson<IPackage>(pollResult.jsonUri))));
                         return;
                     } else if (pollResult.status === "Failed") {
                         dispatch(actions.getDocError(key, new Error("Log failed; see " + pollResult.logUri)));
+                        return;
                     }
                 }
             } finally {
