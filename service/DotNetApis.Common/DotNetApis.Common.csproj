@@ -98,6 +98,8 @@
   <ItemGroup>
     <Compile Include="AsyncLazy.cs" />
     <Compile Include="AsyncLocalAblyLogger.cs" />
+    <Compile Include="LogStructure\EpochTimestampJsonConverter.cs" />
+    <Compile Include="LogStructure\LogMessage.cs" />
     <Compile Include="ScopeBase.cs" />
     <Compile Include="AsyncLocalLogger.cs" />
     <Compile Include="AsyncLocalStack.cs" />

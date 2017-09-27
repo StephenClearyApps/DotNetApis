@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using DotNetApis.Common;
+using DotNetApis.Common.LogStructure;
 
 namespace DotNetApis.Logic.Messages
 {
@@ -12,6 +13,6 @@ namespace DotNetApis.Logic.Messages
         /// <summary>
         /// The trace log for this request.
         /// </summary>
-        public IReadOnlyList<string> Log { get; } = AmbientContext.InMemoryLogger?.Messages;
+        public IReadOnlyList<LogMessage> Log { get; } = AmbientContext.InMemoryLogger?.Messages;
     }
 }
