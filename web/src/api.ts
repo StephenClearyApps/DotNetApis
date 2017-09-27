@@ -70,16 +70,5 @@ async function get<T>(url: string, query: { [key:string]: string }) {
 export const getDoc = ({ packageId, packageVersion, targetFramework }: PackageKey) =>
     get<InProgressResponse | IPackage>("http://localhost:7071/api/0/doc", { packageId, packageVersion, targetFramework});
 
-export async function getStatus(packageId: string, packageVersion: string, targetFramework: string, timestamp: string): Promise<StatusResponse> {
-    const response = await fetch("http://localhost:7071/api/0/status?" + encodeQuery({ jsonVersion, packageId, packageVersion, targetFramework, timestamp }));
-    check422(response);
-    if (response.status === 404) {
-        return {
-            status: "Requested",
-            logUri: null
-        }
-    }
-    const json = await response.json();
-    checkResponseError(response, json);
-    return json as StatusResponse;
-}
+export const getStatus = (packageId: string, packageVersion: string, targetFramework: string, timestamp: string) =>
+    get<StatusResponse>("http://localhost:7071/api/0/status", { packageId, packageVersion, targetFramework, timestamp });
