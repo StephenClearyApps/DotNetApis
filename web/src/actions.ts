@@ -7,6 +7,18 @@ import { packageKey } from './util/packageKey';
 import { PackageDoc } from './util/packageDoc';
 import { IPackage } from './util/structure/packages';
 
+const millisecondsPerMinute = 60 * 1000;
+function currentMinute() {
+    return Math.round(new Date().getTime() / millisecondsPerMinute) * millisecondsPerMinute;
+}
+
+export const TimeActions = {
+    startTicks: (dispatch: Dispatch<actions.TickAction>) => {
+        dispatch(actions.getTick(currentMinute()));
+        setInterval(() => dispatch(actions.getTick(currentMinute())), millisecondsPerMinute);
+    }
+}
+
 export const DocActions = {
     getDoc: (key: PackageKey) => async (dispatch: Dispatch<any>) => {
         dispatch(actions.getDocBegin(key));

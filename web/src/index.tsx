@@ -20,4 +20,5 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 window.onload = () => {
     const ConnectedMain = connect(x => x, mapDispatchToProps)(Main);
     render(<Provider store={store}><ConnectedMain /></Provider>, document.getElementById("app"));
+    actions.TimeActions.startTicks(store.dispatch);
 };

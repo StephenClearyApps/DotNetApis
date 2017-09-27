@@ -1,6 +1,8 @@
 import { PackageDoc } from "./util/packageDoc";
 
 export const ActionTypes = {
+    TICK: 'TICK',
+
     GET_DOC_BEGIN: 'GET_DOC_BEGIN',
     GET_DOC_PROCESSING: 'GET_DOC_PROCESSING',
     GET_DOC_PROGRESS: 'GET_DOC_PROGRESS',
@@ -8,8 +10,13 @@ export const ActionTypes = {
     GET_DOC_ERROR: 'GET_DOC_ERROR'
 };
 
+export type TickAction = PayloadAction<{ timestamp: number }>;
+export const getTick = (timestamp: number): TickAction =>
+    ({ type: ActionTypes.TICK, payload: { timestamp }});
+
 export type GetDocBeginAction = MetaAction<{ key: PackageKey }>;
-export const getDocBegin = (key: PackageKey): GetDocBeginAction => ({ type: ActionTypes.GET_DOC_BEGIN, meta: { key } });
+export const getDocBegin = (key: PackageKey): GetDocBeginAction =>
+    ({ type: ActionTypes.GET_DOC_BEGIN, meta: { key } });
 
 export type GetDocProcessingAction = MetaPayloadAction<{ key: PackageKey, normalized: PackageKey }, { log: string[] }>;
 export const getDocProcessing = (key: PackageKey, normalized: PackageKey, log: string[]): GetDocProcessingAction =>

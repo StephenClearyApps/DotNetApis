@@ -9,7 +9,7 @@ export function Main(props: State & typeof actions)
     console.log(props);
     return (
     <div>
-        {props.packageDoc.logs["nito.asyncex/4.0.1/net45"] ? <LogMessages messages={props.packageDoc.logs["nito.asyncex/4.0.1/net45"]} /> : null}
+        {props.packageDoc.logs["nito.asyncex/4.0.1/net45"] ? <LogMessages messages={props.packageDoc.logs["nito.asyncex/4.0.1/net45"]} currentTimestamp={props.time.timestamp} /> : null}
         <button onClick={() => props.DocActions.getDoc({ packageId: "Nito.AsyncEx" })}>Click me!</button>
     </div>);
 }
