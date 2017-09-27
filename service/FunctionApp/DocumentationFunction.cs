@@ -7,6 +7,7 @@ using DotNetApis.Common;
 using FunctionApp.Messages;
 using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
+using DotNetApis.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Azure.WebJobs.Host;
@@ -22,11 +23,13 @@ namespace FunctionApp
     {
         private readonly ILogger _logger;
         private readonly DocRequestHandler _handler;
+        private readonly IStatusTable _statusTable;
 
-        public DocumentationFunction(ILogger logger, DocRequestHandler handler)
+        public DocumentationFunction(ILogger logger, DocRequestHandler handler, IStatusTable statusTable)
         {
             _logger = logger;
             _handler = handler;
+            _statusTable = statusTable;
         }
 
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req, IAsyncCollector<CloudQueueMessage> generateQueue)
@@ -59,8 +62,11 @@ namespace FunctionApp
                     return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage()).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
                 }
 
-                // Forward the request to the processing queue.
+                // Make a note that it is in progress.
                 var timestamp = DateTimeOffset.UtcNow;
+                await _statusTable.WriteStatusAsync(idver, target, timestamp, Status.Requested, null, null);
+
+                // Forward the request to the processing queue.
                 var message = JsonConvert.SerializeObject(new GenerateRequestMessage
                 {
                     JsonVersion = jsonVersion,
