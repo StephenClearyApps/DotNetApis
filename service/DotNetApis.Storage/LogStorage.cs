@@ -33,6 +33,12 @@ namespace DotNetApis.Storage
             // Create container if necessary.
             var container = _cloudBlobClient.GetContainerReference("log" + JsonFactory.Version + "-" + timestamp.ToString("yyyy-MM-dd"));
             await container.CreateIfNotExistsAsync().ConfigureAwait(false);
+            var permissions = await container.GetPermissionsAsync().ConfigureAwait(false);
+            if (permissions.PublicAccess != BlobContainerPublicAccessType.Blob)
+            {
+                permissions.PublicAccess = BlobContainerPublicAccessType.Blob;
+                await container.SetPermissionsAsync(permissions).ConfigureAwait(false);
+            }
 
             // Upload to blob.
             var blobPath = GetBlobPath(idver, target);

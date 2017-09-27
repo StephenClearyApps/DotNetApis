@@ -70,19 +70,28 @@ namespace FunctionApp
         private static readonly IAsyncSingleton<ReferenceAssemblies> ReferenceAssembliesInstance = Singleton.Create(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
         private static readonly IAsyncSingleton<IReferenceStorage> ReferenceStorageInstance = Singleton.Create(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value) as IReferenceStorage);
 
-        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage>> ReferenceStorageCloudBlobContainer = CreateContainerAsync<AzureReferenceStorage>(AzureReferenceStorage.ContainerName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzureReferenceStorage>> ReferenceStorageCloudBlobContainer = CreateContainerAsync<AzureReferenceStorage>(AzureReferenceStorage.ContainerName, publicAccess: false);
         private static readonly IAsyncSingleton<InstanceOf<CloudTable>.For<AzureReferenceXmldocTable>> ReferenceXmldocTableCloudTable = CreateTableAsync<AzureReferenceXmldocTable>(AzureReferenceXmldocTable.TableName);
-        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzurePackageJsonStorage>> PackageJsonStorageCloudBlobContainer = CreateContainerAsync<AzurePackageJsonStorage>(AzurePackageJsonStorage.ContainerName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzurePackageJsonStorage>> PackageJsonStorageCloudBlobContainer = CreateContainerAsync<AzurePackageJsonStorage>(AzurePackageJsonStorage.ContainerName, publicAccess: true);
         private static readonly IAsyncSingleton<InstanceOf<CloudTable>.For<AzurePackageJsonTable>> PackageJsonTableCloudTable = CreateTableAsync<AzurePackageJsonTable>(AzurePackageJsonTable.TableName);
         private static readonly IAsyncSingleton<InstanceOf<CloudTable>.For<AzurePackageTable>> PackageTableCloudTable = CreateTableAsync<AzurePackageTable>(AzurePackageTable.TableName);
-        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzurePackageStorage>> PackageStorageCloudBlobContainer = CreateContainerAsync<AzurePackageStorage>(AzurePackageStorage.ContainerName);
+        private static readonly IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<AzurePackageStorage>> PackageStorageCloudBlobContainer = CreateContainerAsync<AzurePackageStorage>(AzurePackageStorage.ContainerName, publicAccess: false);
 
         // Special-purpose factory methods to reduce code duplication.
-        private static IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<T>> CreateContainerAsync<T>(string name) => Singleton.Create(async () =>
+        private static IAsyncSingleton<InstanceOf<CloudBlobContainer>.For<T>> CreateContainerAsync<T>(string name, bool publicAccess) => Singleton.Create(async () =>
         {
             var client = await CloudBlobClientInstance;
             var result = client.GetContainerReference(name);
             await result.CreateIfNotExistsAsync();
+            if (publicAccess)
+            {
+                var permissions = await result.GetPermissionsAsync();
+                if (permissions.PublicAccess != BlobContainerPublicAccessType.Blob)
+                {
+                    permissions.PublicAccess = BlobContainerPublicAccessType.Blob;
+                    await result.SetPermissionsAsync(permissions);
+                }
+            }
             return new InstanceOf<CloudBlobContainer>.For<T>(result);
         });
         private static IAsyncSingleton<InstanceOf<CloudTable>.For<T>> CreateTableAsync<T>(string name) => Singleton.Create(async () =>
