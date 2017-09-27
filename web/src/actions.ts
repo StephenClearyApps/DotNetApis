@@ -31,6 +31,7 @@ export const DocActions = {
             try {
                 listener.listen();
                 while (true) {
+                    await Promise.delay(2000);
                     const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion,
                         normalizedKey.targetFramework, result.timestamp);
                     if (pollResult.status === "Succeeded") {
