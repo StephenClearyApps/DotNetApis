@@ -1,3 +1,5 @@
+const { CheckerPlugin } = require("awesome-typescript-loader");
+
 module.exports = {
     entry: "./src/index.tsx",
     output: {
@@ -28,4 +30,8 @@ module.exports = {
             }
         ]
     },
+
+    plugins: [
+        new CheckerPlugin()
+    ]
 };
