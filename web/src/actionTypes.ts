@@ -1,4 +1,5 @@
 import { PackageDoc } from "./util/packageDoc";
+import { LogMessage } from "./api";
 
 export const ActionTypes = {
     TICK: 'TICK',
@@ -18,8 +19,8 @@ export type GetDocBeginAction = MetaAction<{ key: PackageKey }>;
 export const getDocBegin = (key: PackageKey): GetDocBeginAction =>
     ({ type: ActionTypes.GET_DOC_BEGIN, meta: { key } });
 
-export type GetDocProcessingAction = MetaPayloadAction<{ key: PackageKey, normalized: PackageKey }, { log: string[] }>;
-export const getDocProcessing = (key: PackageKey, normalized: PackageKey, log: string[]): GetDocProcessingAction =>
+export type GetDocProcessingAction = MetaPayloadAction<{ key: PackageKey, normalized: PackageKey }, { log: LogMessage[] }>;
+export const getDocProcessing = (key: PackageKey, normalized: PackageKey, log: LogMessage[]): GetDocProcessingAction =>
     ({ type: ActionTypes.GET_DOC_PROCESSING, meta: { key, normalized }, payload: { log } });
 
 export type GetDocProgressAction = MetaPayloadAction<{ normalized: PackageKey }, { type: string, timestamp: number, message: string }>;

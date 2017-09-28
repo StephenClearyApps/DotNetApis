@@ -1,8 +1,6 @@
 import * as React from "react";
 import * as moment from "moment";
 
-import { LogMessage } from "../reducers/packageDocReducer";
-
 const shortNbsp = '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
 const fullNbsp = '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
 export function Timestamp(props: { timestamp: number, fullTimestamp: boolean }) {

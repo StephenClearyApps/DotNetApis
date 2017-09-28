@@ -9,6 +9,12 @@ function encodeQuery(data: { [key:string]: string }) {
     ).join("&");
 }
 
+export interface LogMessage {
+    type?: string;
+    timestamp?: number;
+    message: string;
+}
+
 export interface ErrorDetails {
     message: string;
     exceptionMessage: string;
@@ -16,7 +22,7 @@ export interface ErrorDetails {
     stackTrace: string;
     operationId: string;
     requestId: string;
-    log: string[];
+    log: LogMessage[];
 }
 
 export interface ResponseError {
@@ -32,7 +38,7 @@ export interface InProgressResponse {
     normalizedFrameworkTarget: string;
     operationId: string;
     requestId: string;
-    log: string[];
+    log: LogMessage[];
 }
 
 export type Status = "Requested" | "Succeeded" | "Failed";

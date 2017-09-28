@@ -4,6 +4,28 @@
         <meta charset="UTF-8" />
         <title>Hello React!</title>
         <script src="//cdn.jsdelivr.net/bluebird/3.5.0/bluebird.min.js"></script>
+        <style>
+            /* Solarized logs */
+            .logs {
+                background-color: #002b36; /* base03 */
+                font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+                line-height: 1.42857143;
+                word-break: break-all;
+                word-wrap: break-word;
+                color: #839496; /* base0 */
+            }
+            .logs .message {
+                text-indent: -2em;
+                padding-left: 2em;
+            }
+            .logs .message:hover {
+                background-color: #073642; /* base02 */
+            }
+            .logs .message.meta { color: #586e75; } /* base01 */
+            .logs .message.Information { color: #268bd2; }
+            .logs .message.Warning { color: #b58900; }
+            .logs .message.Error { color: #dc322f; }
+        </style>
     </head>
     <body>
         <div id="app"></div>

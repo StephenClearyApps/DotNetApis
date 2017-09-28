@@ -3,14 +3,9 @@ import { handleActions } from 'redux-actions';
 import * as A from '../actionTypes';
 import { packageKey } from '../util/packageKey';
 import { PackageDoc } from '../util/packageDoc';
+import { LogMessage } from '../api';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';
-
-export interface LogMessage {
-    type?: string;
-    timestamp?: number;
-    message: string;
-}
 
 export interface PackageDocsState {
     packages: {
@@ -48,7 +43,7 @@ function getDocProcessing(state: PackageDocsState, action: A.GetDocProcessingAct
         },
         logs: {
             ...state.logs,
-            [packageKey(action.meta.normalized)]: action.payload.log.map(x => ({ message: x }))
+            [packageKey(action.meta.normalized)]: action.payload.log
         }
     };
 }
