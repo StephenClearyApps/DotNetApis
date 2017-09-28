@@ -37,8 +37,8 @@ namespace DotNetApis.Common
         /// </summary>
         public static (string Name, int Value) StripBacktickSuffix(this string s)
         {
-            var backtickIndex = s.IndexOf('`');
-            if (backtickIndex == -1)
+            var backtickIndex = s.LastIndexOf('`');
+            if (backtickIndex == -1 || backtickIndex < s.LastIndexOf('.'))
                 return (s, 0);
             return (s.Substring(0, backtickIndex), int.Parse(s.Substring(s.LastIndexOf('`') + 1), CultureInfo.InvariantCulture));
         }
