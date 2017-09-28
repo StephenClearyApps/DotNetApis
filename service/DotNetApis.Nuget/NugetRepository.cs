@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
@@ -32,6 +34,12 @@ namespace DotNetApis.Nuget
         /// </summary>
         /// <param name="idver">The identity of the package.</param>
         NugetFullPackage DownloadPackage(NugetPackageIdVersion idver);
+
+        /// <summary>
+        /// Gets all versions for a package, including prerelease versions.
+        /// </summary>
+        /// <param name="packageId">The package id.</param>
+        IReadOnlyList<NugetVersion> GetPackageVersions(string packageId);
     }
 
     public sealed class NugetRepository : INugetRepository
@@ -63,6 +71,21 @@ namespace DotNetApis.Nuget
             var idver = new NugetPackageIdVersion(packageId, new NugetVersion(package.Version));
             _logger.LogInformation("Found version {idver} for {packageId} in {elapsed}", idver, packageId, stopwatch.Elapsed);
             return idver;
+        }
+
+        public IReadOnlyList<NugetVersion> GetPackageVersions(string packageId)
+        {
+            _logger.LogDebug("Lookup up all package versions for {packageId}", packageId);
+            var stopwatch = Stopwatch.StartNew();
+            var results = _repository.FindPackages(packageId, versionSpec: null, allowPrereleaseVersions: true, allowUnlisted: false).ToList();
+            if (results.Count == 0)
+            {
+                _logger.LogWarning("No package versions found for {packageId} in {elapsed}", packageId, stopwatch.Elapsed);
+                return new NugetVersion[0];
+            }
+            var result = results.Select(x => new NugetVersion(x.Version)).ToList();
+            _logger.LogInformation("Found versions {versions} for {packageId} in {elapsed}", result.Dump(), packageId, stopwatch.Elapsed);
+            return result;
         }
 
         public NugetPackageIdVersion TryLookupPackage(string packageId, NugetVersionRange versionRange)

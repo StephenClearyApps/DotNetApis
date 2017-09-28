@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Cecil;
+using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
 
@@ -35,6 +36,10 @@ namespace DotNetApis.Logic.Assemblies
             var assembly = _collection.AllAssemblies.FirstOrDefault(x => x.Name.Equals(name.Name, StringComparison.InvariantCultureIgnoreCase) && x.AssemblyDefinition != null);
             if (assembly != null)
                 return assembly.AssemblyDefinition;
+
+            // F# libraries have an implicit dependency on FSharp.Core.
+            if ("FSharp.Core".Equals(name.Name, StringComparison.InvariantCultureIgnoreCase))
+                throw new NeedsFSharpCoreException();
 
             // As a last-ditch resort, check the GAC on whatever machine we're on.
             _logger.LogWarning("Unable to resolve assembly {name}; falling back on GAC as a last-ditch effort", name.FullName);

@@ -28,10 +28,11 @@ namespace DotNetApis.Logic
         private readonly IReferenceStorage _referenceStorage;
         private readonly AssemblyFormatter _assemblyFormatter;
         private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
+        private readonly INugetRepository _nugetRepository;
 
         public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
             NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter,
-            PackageJsonCombinedStorage packageJsonCombinedStorage)
+            PackageJsonCombinedStorage packageJsonCombinedStorage, INugetRepository nugetRepository)
         {
             _logger = logger;
             _logStorage = logStorage;
@@ -42,6 +43,7 @@ namespace DotNetApis.Logic
             _referenceStorage = referenceStorage;
             _assemblyFormatter = assemblyFormatter;
             _packageJsonCombinedStorage = packageJsonCombinedStorage;
+            _nugetRepository = nugetRepository;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -117,6 +119,46 @@ namespace DotNetApis.Logic
                     assemblies.AddReferenceAssembly(path, () => _referenceStorage.Download(path));
             }
 
+            try
+            {
+                return GenerateAsync(target, assemblies, publishedPackage, dependencyPackages, allTargets);
+            }
+            catch (NeedsFSharpCoreException)
+            {
+                // https://fsharp.github.io/2015/04/18/fsharp-core-notes.html#a-c-project-referencing-an-f-dll-or-nuget-package-may-need-to-also-have-a-reference-to-fsharpcoredll
+                _logger.LogInformation("Detected implicit dependency on FSharp.Core. Retrying...");
+
+                // Attempt to load all versions of FSharp.Core from highest to lowest until we find one compatible with this target.
+                var found = false;
+                var versions = _nugetRepository.GetPackageVersions("FSharp.Core");
+                foreach (var version in versions.Where(x => !x.IsPrerelease).Concat(versions.Where(x => x.IsPrerelease)))
+                {
+                    var fsharpIdver = new NugetPackageIdVersion("FSharp.Core", version);
+                    var fsharp = await _packageDownloader.GetPackageAsync(fsharpIdver).ConfigureAwait(false);
+                    var compatibleReferences = fsharp.Package.GetCompatibleAssemblyReferences(target).ToList();
+                    if (compatibleReferences.Count == 0)
+                    {
+                        _logger.LogDebug("Rejecting {idver} because it does not support target {target}", fsharpIdver, target);
+                    }
+                    else
+                    {
+                        found = true;
+                        foreach (var path in compatibleReferences)
+                            assemblies.AddDependencyPackageAssembly(fsharp.Package, path);
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    _logger.LogError("Could not find compatible version of FSharp.Core");
+                    throw new ExpectedException(HttpStatusCode.BadRequest, "Could not find compatible version of FSharp.Core");
+                }
+                return GenerateAsync(target, assemblies, publishedPackage, dependencyPackages, allTargets);
+            }
+        }
+
+        private PackageJson GenerateAsync(PlatformTarget target, AssemblyCollection assemblies, NugetFullPackage publishedPackage, IEnumerable<NugetPackage> dependencyPackages, IEnumerable<PlatformTarget> allTargets)
+        {
             using (GenerationScope.Create(target, assemblies))
             {
                 // Produce JSON structure for all package dependencies.
