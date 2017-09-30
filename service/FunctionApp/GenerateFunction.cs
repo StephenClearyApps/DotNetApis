@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using FunctionApp.Messages;
 using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
+using FunctionApp.CompositionRoot;
 using Newtonsoft.Json;
 
 namespace FunctionApp
@@ -45,7 +46,7 @@ namespace FunctionApp
                 AmbientContext.OperationId = context.InvocationId;
                 AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, new TraceWriterLogger(writer), new AsyncLocalAblyLogger()));
 
-                var container = await CompositionRoot.GetContainerAsync();
+                var container = await Containers.GetContainerAsync();
                 using (AsyncScopedLifestyle.BeginScope(container))
                 {
                     await container.GetInstance<GenerateFunction>().RunAsync(queueMessage);

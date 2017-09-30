@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Logic;
+using FunctionApp.CompositionRoot;
 using FunctionApp.Messages;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -52,7 +53,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = await CompositionRoot.GetContainerAsync();
+            var container = await Containers.GetContainerAsync();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<OpsFunction>().RunAsync(req);

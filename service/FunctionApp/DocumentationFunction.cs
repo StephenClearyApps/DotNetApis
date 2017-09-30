@@ -16,6 +16,7 @@ using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using SimpleInjector.Lifestyles;
 using DotNetApis.Structure;
+using FunctionApp.CompositionRoot;
 
 namespace FunctionApp
 {
@@ -106,7 +107,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = await CompositionRoot.GetContainerAsync();
+            var container = await Containers.GetContainerAsync();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<DocumentationFunction>().RunAsync(req, generateQueue);
