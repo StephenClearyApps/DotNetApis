@@ -34,15 +34,34 @@ namespace FunctionApp
             }
         }
 
+        public static Container GetContainerForNugetSearch()
+        {
+            try
+            {
+                return NugetSearchContainer.Value;
+            }
+            catch (Exception ex)
+            {
+                AsyncLocalLogger.Logger.LogCritical(0, ex, "Failed to create container composition root");
+                throw;
+            }
+        }
+
+        private static readonly ISingleton<Container> NugetSearchContainer = Singleton.Create(() =>
+        {
+            var container = CreateContainer();
+            container.Register<ILogger, AsyncLocalLogger>();
+            container.Register<NugetSearchFunction>();
+            container.Verify();
+            return container;
+        });
+
         private static readonly IAsyncSingleton<Container> Container = Singleton.Create(async () =>
         {
             var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Value, CloudBlobClientInstance.Value, PackageStorageCloudBlobContainer.Value,
                 PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value);
 
-            var container = new Container();
-            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-            container.Options.DefaultLifestyle = Lifestyle.Scoped;
-            container.UseAutomaticInstanceOf();
+            var container = CreateContainer();
             container.RegisterSingletons((CloudStorageAccountInstance.Value, CloudTableClientInstance.Value));
             container.RegisterSingletons(singletons);
             container.Register(() => new Lazy<Task<ReferenceAssemblies>>(async () => await ReferenceAssembliesInstance));
@@ -66,6 +85,15 @@ namespace FunctionApp
             container.Verify();
             return container;
         });
+
+        private static Container CreateContainer()
+        {
+            var container = new Container();
+            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+            container.Options.DefaultLifestyle = Lifestyle.Scoped;
+            container.UseAutomaticInstanceOf();
+            return container;
+        }
 
         private static readonly IAsyncSingleton<ReferenceAssemblies> ReferenceAssembliesInstance = Singleton.Create(async () => await ReferenceAssemblies.CreateAsync(await ReferenceStorageInstance));
         private static readonly IAsyncSingleton<IReferenceStorage> ReferenceStorageInstance = Singleton.Create(async () => new AzureReferenceStorage((await ReferenceStorageCloudBlobContainer).Value) as IReferenceStorage);

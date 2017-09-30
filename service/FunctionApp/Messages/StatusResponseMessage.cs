@@ -5,7 +5,7 @@ using DotNetApis.Storage;
 namespace FunctionApp.Messages
 {
     /// <summary>
-    /// The message returned from the HTTP trigger function to .
+    /// The message returned from the HTTP trigger function to request operation status.
     /// </summary>
     public sealed class StatusResponseMessage : MessageBaseWithLog
     {

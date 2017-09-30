@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using Newtonsoft.Json;
-using DotNetApis.SimpleInjector;
 
 namespace FunctionApp
 {
@@ -17,7 +16,7 @@ namespace FunctionApp
     public static class GlobalConfig
     {
         /// <summary>
-        /// Ensures that all initialization has completed for this AppDomain. This method must be called from within a container scope.
+        /// Ensures that all initialization has completed for this AppDomain.
         /// </summary>
         public static void Initialize()
         {

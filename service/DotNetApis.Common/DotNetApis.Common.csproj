@@ -123,6 +123,7 @@
     <Compile Include="TraceWriterLogger.cs" />
     <Compile Include="Compression.cs" />
     <Compile Include="AsyncTupleHelpers.cs" />
+    <Compile Include="UriUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
