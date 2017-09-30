@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Common;
-using DotNetApis.Logic;
 using DotNetApis.Nuget;
 using DotNetApis.SimpleInjector;
 using DotNetApis.Storage;
@@ -12,16 +11,73 @@ using Microsoft.Extensions.Logging;
 using SimpleInjector;
 using SimpleInjector.Lifestyles;
 using static FunctionApp.CompositionRoot.Singletons;
+using static DotNetApis.Common.AsyncTupleHelpers;
 
 namespace FunctionApp.CompositionRoot
 {
     public static class Containers
     {
-        public static async Task<Container> GetContainerAsync()
+        static Containers()
+        {
+            ContainerFor<NugetSearchFunction>.Create();
+            ContainerFor<OpsFunction>.Create(async container =>
+            {
+                var singletons = await WhenAll(ReferenceStorageInstance.Value, ReferenceXmldocTableCloudTable.Value);
+                container.RegisterSingletons(singletons);
+                container.RegisterSingleton(CloudStorageAccountInstance.Value);
+                container.RegisterLazyTask(() => ReferenceAssembliesInstance.Value);
+                container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
+                container.Register<IStorageBackend, AzureStorageBackend>();
+            });
+            ContainerFor<StatusFunction>.Create(container =>
+            {
+                container.RegisterSingleton(CloudTableClientInstance.Value);
+                container.Register<IStatusTable, AzureStatusTable>();
+            });
+            ContainerFor<DocumentationFunction>.Create(async container =>
+            {
+                var singletons = await WhenAll(PackageTableCloudTable.Value, PackageStorageCloudBlobContainer.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value);
+                container.RegisterSingletons(singletons);
+                container.RegisterSingleton(CloudTableClientInstance.Value);
+                container.Register<INugetRepository, NugetRepository>();
+                container.Register<IPackageTable, AzurePackageTable>();
+                container.Register<IPackageStorage, AzurePackageStorage>();
+                container.Register<IPackageJsonTable, AzurePackageJsonTable>();
+                container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
+                container.Register<IStatusTable, AzureStatusTable>();
+            });
+            ContainerFor<GenerateFunction>.Create(async container =>
+            {
+                var singletons = await WhenAll(CloudBlobClientInstance.Value, PackageTableCloudTable.Value, PackageStorageCloudBlobContainer.Value, ReferenceStorageInstance.Value,
+                    ReferenceXmldocTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value);
+                container.RegisterSingletons(singletons);
+                container.RegisterSingleton(CloudTableClientInstance.Value);
+                container.RegisterLazyTask(() => ReferenceAssembliesInstance.Value);
+                container.Register<ILogStorage, AzureLogStorage>();
+                container.Register<IStatusTable, AzureStatusTable>();
+                container.Register<IPackageTable, AzurePackageTable>();
+                container.Register<IPackageStorage, AzurePackageStorage>();
+                container.Register<INugetRepository, NugetRepository>();
+                container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
+                container.Register<IPackageJsonTable, AzurePackageJsonTable>();
+                container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
+            });
+
+#if DEBUG
+            // When in debug mode, force all containers to validate as soon as any container is requested.
+            ContainerFor<NugetSearchFunction>.GetAsync().Wait();
+            ContainerFor<OpsFunction>.GetAsync().Wait();
+            ContainerFor<StatusFunction>.GetAsync().Wait();
+            ContainerFor<DocumentationFunction>.GetAsync().Wait();
+            ContainerFor<GenerateFunction>.GetAsync().Wait();
+#endif
+        }
+
+        public static async Task<Container> GetContainerForAsync<T>() where T : class
         {
             try
             {
-                return await Container;
+                return await ContainerFor<T>.GetAsync();
             }
             catch (Exception ex)
             {
@@ -30,65 +86,40 @@ namespace FunctionApp.CompositionRoot
             }
         }
 
-        public static Container GetContainerForNugetSearch()
+        private static class ContainerFor<T>
+            where T : class
         {
-            try
+            // ReSharper disable once StaticMemberInGenericType
+            private static IAsyncSingleton<Container> _instance;
+
+            public static void Create(Func<Container, Task> registrations)
             {
-                return NugetSearchContainer.Value;
+                _instance = Singleton.Create(async () =>
+                {
+                    var container = new Container();
+                    container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
+                    container.Options.DefaultLifestyle = Lifestyle.Scoped;
+
+                    // Registrations common for all containers
+                    container.UseAutomaticInstanceOf();
+                    container.Register<ILogger, AsyncLocalLogger>();
+
+                    // Container-specific registrations
+                    await registrations(container);
+
+                    // Best practice: register the root element explicitly, so missing registrations are found immediately.
+                    container.Register<T>();
+
+                    container.Verify();
+                    return container;
+                });
             }
-            catch (Exception ex)
-            {
-                AsyncLocalLogger.Logger.LogCritical(0, ex, "Failed to create container composition root");
-                throw;
-            }
-        }
 
-        private static readonly ISingleton<Container> NugetSearchContainer = Singleton.Create(() =>
-        {
-            var container = CreateContainer();
-            container.Register<ILogger, AsyncLocalLogger>();
-            container.Register<NugetSearchFunction>();
-            container.Verify();
-            return container;
-        });
+#pragma warning disable 1998
+            public static void Create(Action<Container> registrations = null) => Create(async container => registrations?.Invoke(container));
+#pragma warning restore 1998
 
-        private static readonly IAsyncSingleton<Container> Container = Singleton.Create(async () =>
-        {
-            var singletons = await AsyncTupleHelpers.WhenAll(ReferenceStorageInstance.Value, CloudBlobClientInstance.Value, PackageStorageCloudBlobContainer.Value,
-                PackageTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value, ReferenceXmldocTableCloudTable.Value);
-
-            var container = CreateContainer();
-            container.RegisterSingletons((CloudStorageAccountInstance.Value, CloudTableClientInstance.Value));
-            container.RegisterSingletons(singletons);
-            container.Register(() => new Lazy<Task<ReferenceAssemblies>>(async () => await ReferenceAssembliesInstance));
-            container.Register<ILogger, AsyncLocalLogger>();
-            container.Register<INugetRepository, NugetRepository>();
-            container.Register<IStorageBackend, AzureStorageBackend>();
-            container.Register<ILogStorage, AzureLogStorage>();
-            container.Register<IStatusTable, AzureStatusTable>();
-            container.Register<IPackageStorage, AzurePackageStorage>();
-            container.Register<IPackageTable, AzurePackageTable>();
-            container.Register<IPackageJsonTable, AzurePackageJsonTable>();
-            container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
-            container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
-
-            // Best practice: register all root elements explicitly, so missing registrations are found immediately.
-            container.Register<DocumentationFunction>();
-            container.Register<GenerateFunction>();
-            container.Register<StatusFunction>();
-            container.Register<OpsFunction>();
-
-            container.Verify();
-            return container;
-        });
-
-        private static Container CreateContainer()
-        {
-            var container = new Container();
-            container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
-            container.Options.DefaultLifestyle = Lifestyle.Scoped;
-            container.UseAutomaticInstanceOf();
-            return container;
+            public static Task<Container> GetAsync() => _instance.Value;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = await Containers.GetContainerAsync();
+            var container = await Containers.GetContainerForAsync<OpsFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<OpsFunction>().RunAsync(req);

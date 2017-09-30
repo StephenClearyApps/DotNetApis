@@ -9,6 +9,14 @@ namespace DotNetApis.SimpleInjector
 {
     public static class ContainerExtensions
     {
+        /// <summary>
+        /// Registers a <c>Lazy&lt;Task&lt;T&gt;&gt;</c> for an asynchronous singleton. The actual lazy instance is registered in the default scope, so it is re-created if the singleton initialization fails.
+        /// </summary>
+        public static void RegisterLazyTask<T>(this Container container, Func<Task<T>> func)
+        {
+            container.Register(() => new Lazy<Task<T>>(func));
+        }
+
         public static void RegisterSingletons<T1, T2>(this Container container, (T1, T2) tuple)
         {
             container.RegisterSingleton(typeof(T1), tuple.Item1);

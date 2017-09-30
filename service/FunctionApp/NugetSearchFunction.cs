@@ -84,7 +84,7 @@ namespace FunctionApp
 
         [FunctionName("NugetSearch")]
         public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")] HttpRequestMessage req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/search")] HttpRequestMessage req,
             ILogger log, TraceWriter writer, ExecutionContext context)
         {
             GlobalConfig.Initialize();
@@ -94,7 +94,7 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
             AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
 
-            var container = Containers.GetContainerForNugetSearch();
+            var container = await Containers.GetContainerForAsync<NugetSearchFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
             {
                 return await container.GetInstance<NugetSearchFunction>().RunAsync(req);

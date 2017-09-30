@@ -46,7 +46,7 @@ namespace FunctionApp
                 AmbientContext.OperationId = context.InvocationId;
                 AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, new TraceWriterLogger(writer), new AsyncLocalAblyLogger()));
 
-                var container = await Containers.GetContainerAsync();
+                var container = await Containers.GetContainerForAsync<GenerateFunction>();
                 using (AsyncScopedLifestyle.BeginScope(container))
                 {
                     await container.GetInstance<GenerateFunction>().RunAsync(queueMessage);
