@@ -9,6 +9,9 @@ import { Main } from "./components/Main";
 import { store } from "./store";
 import * as actions from "./actions";
 
+// Load the stylesheet
+import "./site.css";
+
 /** Binds action creators that are in one level of namespacing */
 function mapDispatchToProps(dispatch: Dispatch<any>) {
     const result : any = { };

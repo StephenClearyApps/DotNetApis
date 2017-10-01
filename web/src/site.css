@@ -1,0 +1,34 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+code {
+    font-family: 'Roboto Mono', monospace;
+}
+
+/* Code styles borrowed from Visual Studio light theme */
+.highlight .c { color: #008000 } /* Comment */
+.highlight .k { color: #0000ff } /* Keyword */
+.highlight .t { color: #2b91af } /* Type */
+.highlight .s { color: #a31515 } /* Literal.String */
+
+/* Solarized logs (dark theme) */
+.logs {
+    background-color: #002b36; /* base03 */
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    line-height: 1.42857143;
+    word-break: break-all;
+    word-wrap: break-word;
+    color: #839496; /* base0 */
+}
+.logs .message {
+    text-indent: -2em;
+    padding-left: 2em;
+}
+.logs .message:hover {
+    background-color: #073642; /* base02 */
+}
+.logs .message.meta { color: #586e75; } /* base01 */
+.logs .message.Information { color: #268bd2; }
+.logs .message.Warning { color: #b58900; }
+.logs .message.Error { color: #dc322f; }
