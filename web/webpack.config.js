@@ -6,7 +6,7 @@ module.exports = env => {
     return {
         entry: "./src/index.tsx",
         output: {
-            filename: "static/bundle.js",
+            filename: env.prod ? "static/[name].[chunkhash].js" : "static/bundle.js",
             path: __dirname + "/../docs"
         },
 
