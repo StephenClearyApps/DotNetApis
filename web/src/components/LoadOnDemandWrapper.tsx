@@ -1,17 +1,15 @@
 import * as React from 'react';
-
-import { Status } from '../reducers/packageDocReducer';
+import { CircularProgress } from 'material-ui';
 
 export interface LoadOnDemandWrapperProps {
-    /** Gets the current status of the desired item */
-    getStatus: () => Status | undefined;
+    /** Gets whether the desired item is loaded; this should return true if the item is loaded, loading, or errored. */
+    isLoaded: () => boolean;
 
-    /** Starts loading the desired item; this is only invoked if getStatus returns undefined */
+    /** Starts loading the desired item; this is only invoked if isLoaded returns false */
     load: () => void;
 
-    loadingElement: React.ReactNode;
-    errorElement: React.ReactNode;
-    valueElement: React.ReactNode;
+    /** The element to display while loading; if not specified, this component uses a CircularProgress */
+    loadingElement?: React.ReactNode;
 }
 
 export class LoadOnDemandWrapper extends React.Component<LoadOnDemandWrapperProps> {
@@ -20,17 +18,15 @@ export class LoadOnDemandWrapper extends React.Component<LoadOnDemandWrapperProp
 
     requestDataIfNecessary(props: LoadOnDemandWrapperProps) {
         // Only send request if the current store state is not loaded.
-        const status = props.getStatus();
-        if (!status)
+        const loaded = props.isLoaded();
+        if (!loaded)
             props.load();
     }
 
     render() {
-        const status = this.props.getStatus();
-        if (!status || status === 'STARTED')
-            return <div>{this.props.loadingElement}</div>;
-        if (status === 'ERROR')
-            return <div>{this.props.errorElement}</div>;
-        return <div>{this.props.valueElement}</div>;
+        const loaded = this.props.isLoaded();
+        if (!loaded)
+            return <div>{this.props.loadingElement || <CircularProgress/>}</div>;
+        return <div>{this.props.children}</div>;
     }
 }
