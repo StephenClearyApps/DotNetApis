@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "webpack -p --env.prod=1",
     "dev": "webpack -d --env.prod=0",
-    "watch": "webpack -d --watch",
+    "watch": "webpack -d --env.prod=0 --watch",
     "serve": "http-server ../docs -s -c-1 -o"
   },
   "repository": {
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@types/bluebird-global": "^3.5.3",
+    "@types/material-ui": "^0.18.2",
     "@types/react": "^15.6.2",
     "@types/react-dom": "^15.5.4",
     "@types/react-redux": "^5.0.9",
@@ -44,6 +45,7 @@
     "ably": "^1.0.5",
     "awesome-typescript-loader": "^3.2.3",
     "bluebird": "^3.5.0",
+    "material-ui": "^0.19.3",
     "moment": "^2.18.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

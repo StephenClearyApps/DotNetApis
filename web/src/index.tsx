@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import { bindActionCreators, Dispatch } from "redux";
 import { Provider, connect } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
+import { MuiThemeProvider } from 'material-ui/styles';
 import "whatwg-fetch";
 
 import { Main } from "./components/Main";
@@ -23,6 +24,13 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 
 window.onload = () => {
     const ConnectedMain = connect(x => x, mapDispatchToProps)(Main);
-    render(<Provider store={store}><BrowserRouter><ConnectedMain /></BrowserRouter></Provider>, document.getElementById("app"));
+    render(
+        <Provider store={store}>
+            <BrowserRouter>
+                <MuiThemeProvider>
+                    <ConnectedMain />
+                </MuiThemeProvider>
+            </BrowserRouter>
+        </Provider>, document.getElementById("app"));
     actions.TimeActions.startTicks(store.dispatch);
 };
