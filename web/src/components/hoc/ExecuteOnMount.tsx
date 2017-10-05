@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { lifecycle } from 'recompose';
 
 import { ReactComponent } from './util';
 
@@ -6,11 +7,7 @@ import { ReactComponent } from './util';
 export const withExecuteOnMount =
     <TProps extends {}>(action: (state: TProps) => void) =>
     (Component: ReactComponent<TProps>) =>
-    class ExecuteOnMount extends React.Component<TProps> {
-        componentDidMount() { action(this.props); }
-        componentWillReceiveProps(nextProps: TProps) { action(nextProps); }
-
-        render() {
-            return <Component {...this.props}/>;
-        }
-    };
+    lifecycle<TProps, {}>({
+        componentDidMount: () => action(this.props),
+        componentWillReceiveProps: (props) => action(props)
+    })(Component);
