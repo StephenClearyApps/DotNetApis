@@ -4,6 +4,18 @@ import { State } from '../reducers';
 
 type ReactComponent<T = {}> = React.ComponentClass<T> | React.StatelessComponent<T>;
 
+function compose(...funcs: Array<(component: ReactComponent) => ReactComponent>) {
+    if (funcs.length === 0) {
+        return (component: ReactComponent) => component;
+    }
+
+    if (funcs.length === 1) {
+        return funcs[0];
+    }
+
+    return funcs.reduce((a, b) => (component: ReactComponent) => a(b(component)));
+}
+
 /** Displays a component only while a given predicate returns true */
 export const withMaybe =
     <TProps extends {}>(predicate: (state: TProps) => boolean) =>
@@ -43,23 +55,15 @@ interface LoadOnDemandOptions<T> {
 /** Determines if a desired item is loaded, and if not, loads it while showing a LoadingComponent. */
 export const withLoadOnDemand =
     <TComponentProps extends {}>({ isLoaded, load, LoadingComponent } : LoadOnDemandOptions<TComponentProps>) =>
-    (Component: ReactComponent<TComponentProps>) => {
-    return class LoadOnDemandWrapper extends React.Component<TComponentProps> {
-        componentDidMount() { this.requestDataIfNecessary(this.props); }
-        componentWillReceiveProps(nextProps: TComponentProps) { this.requestDataIfNecessary(nextProps); }
+    (Component: ReactComponent<TComponentProps>) =>
+    withExecuteOnMount((state: TComponentProps) => { if (!isLoaded(state)) load(state); })(
+        withEither(isLoaded, LoadingComponent)(Component)
+    );
 
-        requestDataIfNecessary(props: TComponentProps) {
-            // Only send request if the current store state is not loaded.
-            const loaded = isLoaded(props);
-            if (!loaded)
-                load(props);
-        }
-
-        render() {
-            const loaded = isLoaded(this.props);
-            if (!loaded)
-                return <LoadingComponent {...this.props} />;
-            return <Component {...this.props}/>;
-        }
-    };
-}
+export const withLoadOnDemand2 =
+    <TComponentProps extends {}>({ isLoaded, load, LoadingComponent } : LoadOnDemandOptions<TComponentProps>) =>
+    (Component: ReactComponent<TComponentProps>) =>
+    compose(
+        withExecuteOnMount((state: TComponentProps) => { if (!isLoaded(state)) load(state); }),
+        withEither(isLoaded, LoadingComponent)
+    )(Component);
