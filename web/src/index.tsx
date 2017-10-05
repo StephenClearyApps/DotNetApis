@@ -8,7 +8,7 @@ import "whatwg-fetch";
 
 import { Main } from "./components/Main";
 import { store } from "./store";
-import * as actions from "./actions";
+import { actions, TimeActions } from "./actions";
 
 // Load the stylesheet
 import "./site.css";
@@ -32,5 +32,5 @@ window.onload = () => {
                 </MuiThemeProvider>
             </BrowserRouter>
         </Provider>, document.getElementById("app"));
-    actions.TimeActions.startTicks(store.dispatch);
+    TimeActions.startTicks(store.dispatch);
 };

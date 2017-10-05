@@ -4,9 +4,9 @@ import { FlatButton } from "material-ui";
 
 import { LogMessages } from "./LogMessages";
 import { State } from "../reducers";
-import * as actions from "../actions";
+import { Actions } from "../actions";
 
-export function Home(props: State & typeof actions)
+export function Home(props: State & Actions)
 {
     return (
     <div>
