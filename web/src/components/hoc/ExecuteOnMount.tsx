@@ -8,6 +8,6 @@ export const withExecuteOnMount =
     <TProps extends {}>(action: (state: TProps) => void) =>
     (Component: ReactComponent<TProps>) =>
     lifecycle<TProps, {}>({
-        componentDidMount: () => action(this.props),
-        componentWillReceiveProps: (props) => action(props)
+        componentDidMount: function() { action(this.props); },
+        componentWillReceiveProps: props => action(props)
     })(Component);
