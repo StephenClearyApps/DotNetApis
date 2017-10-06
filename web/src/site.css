@@ -20,6 +20,7 @@ code {
     word-break: break-all;
     word-wrap: break-word;
     color: #839496; /* base0 */
+    text-align: left;
 }
 .logs .message {
     text-indent: -2em;
