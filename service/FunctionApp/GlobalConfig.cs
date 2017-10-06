@@ -30,7 +30,7 @@ namespace FunctionApp
         private static readonly ISingleton<object> SetDefaultJsonNetSerialization = Singleton.Create(() =>
         {
             // Configure default JSON.NET serialization.
-            JsonConvert.DefaultSettings = () => Constants.JsonSerializerSettings;
+            JsonConvert.DefaultSettings = () => Constants.CommunicationJsonSerializerSettings;
         });
 
         private static readonly ISingleton<object> SetDefaultThreadCurrentCulture = Singleton.Create(() =>

@@ -29,7 +29,7 @@ namespace FunctionApp
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
         {
             var command = await req.Content.ReadAsAsync<OpsMessage>();
-            _logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command));
+            _logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command, Constants.StorageJsonSerializerSettings));
 
             switch (command.Type)
             {

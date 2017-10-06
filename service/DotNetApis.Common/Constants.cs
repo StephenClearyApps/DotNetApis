@@ -11,12 +11,25 @@ namespace DotNetApis.Common
 {
     public static class Constants
     {
-        public static readonly UTF8Encoding Utf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
-        public static readonly SHA1Managed Sha1 = new SHA1Managed();
+        public static UTF8Encoding Utf8 { get; } = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);
+        public static SHA1Managed Sha1 { get; } = new SHA1Managed();
 
-        public static readonly JsonSerializerSettings JsonSerializerSettings = CreateJsonSerializerSettings();
+        public static JsonSerializerSettings StorageJsonSerializerSettings { get; } = CreateStorageJsonSerializerSettings();
+        public static JsonSerializerSettings CommunicationJsonSerializerSettings { get; } = CreateCommunicationJsonSerializerSettings();
 
-        private static JsonSerializerSettings CreateJsonSerializerSettings()
+        private static JsonSerializerSettings CreateCommunicationJsonSerializerSettings()
+        {
+            var result = new JsonSerializerSettings
+            {
+                Culture = CultureInfo.InvariantCulture,
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Formatting = Formatting.None,
+            };
+            result.Converters.Add(new StringEnumConverter());
+            return result;
+        }
+
+        private static JsonSerializerSettings CreateStorageJsonSerializerSettings()
         {
             var result = new JsonSerializerSettings
             {

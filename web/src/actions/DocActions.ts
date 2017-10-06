@@ -54,6 +54,8 @@ export const DocActions = {
                         // TODO: save backend log uri in state
                         dispatch(actions.getDocError(requestKey, new Error("Log failed; see " + pollResult.logUri)));
                         return;
+                    } else {
+                        dispatch(actions.getDocProgress(requestKey, { type: "meta", timestamp: (new Date).getTime(), message: "Documentation processing status: " + pollResult.status}));
                     }
                 }
             } finally {

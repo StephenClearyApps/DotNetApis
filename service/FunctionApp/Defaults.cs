@@ -18,7 +18,7 @@ namespace FunctionApp
             // Use our own JSON serializer settings everywhere.
             var config = request.GetConfiguration();
             foreach (var formatter in config.Formatters.OfType<JsonMediaTypeFormatter>())
-                formatter.SerializerSettings = Constants.JsonSerializerSettings;
+                formatter.SerializerSettings = Constants.CommunicationJsonSerializerSettings;
 
             // Propagate error details in responses generated from exceptions.
             request.GetConfiguration().Services.Replace(typeof(IExceptionHandler), new DetailedExceptionHandler());

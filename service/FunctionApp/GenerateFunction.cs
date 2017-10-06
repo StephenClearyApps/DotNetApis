@@ -27,7 +27,7 @@ namespace FunctionApp
 
         public async Task RunAsync(string queueMessage)
         {
-            var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage);
+            var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage, Constants.CommunicationJsonSerializerSettings);
             AmbientContext.ParentOperationId = message.OperationId;
             AsyncLocalAblyLogger.TryCreate(message.NormalizedPackageId + "/" + message.NormalizedPackageVersion + "/" + message.NormalizedFrameworkTarget, _logger);
 
@@ -60,7 +60,7 @@ namespace FunctionApp
                     ExceptionType = ex.GetType().FullName,
                     ExceptionMessage = ex.Message,
                     ExceptionStackTrace = ex.StackTrace,
-                }, Constants.JsonSerializerSettings)));
+                }, Constants.CommunicationJsonSerializerSettings)));
             }
         }
     }

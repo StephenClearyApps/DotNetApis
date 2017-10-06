@@ -82,7 +82,7 @@ namespace FunctionApp
                     NormalizedPackageId = idver.PackageId,
                     NormalizedPackageVersion = idver.Version.ToString(),
                     NormalizedFrameworkTarget = target.ToString(),
-                }, Constants.JsonSerializerSettings);
+                }, Constants.CommunicationJsonSerializerSettings);
                 await generateQueue.AddAsync(new CloudQueueMessage(message));
 
                 _logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);

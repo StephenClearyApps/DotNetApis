@@ -55,14 +55,14 @@ namespace DotNetApis.Logic
             try
             {
                 var json = await HandleAsync(idver, target).ConfigureAwait(false);
-                var uri = await _packageJsonCombinedStorage.WriteAsync(idver, target, JsonConvert.SerializeObject(json, Constants.JsonSerializerSettings)).ConfigureAwait(false);
-                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, JsonConvert.SerializeObject(AmbientContext.InMemoryLogger?.Messages, Constants.JsonSerializerSettings), uri).ConfigureAwait(false);
+                var uri = await _packageJsonCombinedStorage.WriteAsync(idver, target, JsonConvert.SerializeObject(json, Constants.StorageJsonSerializerSettings)).ConfigureAwait(false);
+                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, JsonConvert.SerializeObject(AmbientContext.InMemoryLogger?.Messages, Constants.StorageJsonSerializerSettings), uri).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 // TODO: logs should be preserved eternally alongside the json; just roll LogStorage into PackageJsonCombinedStorage.
-                _logger.LogCritical(0, ex, "Error handling message {message}", JsonConvert.SerializeObject(message, Constants.JsonSerializerSettings));
-                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Failed, JsonConvert.SerializeObject(AmbientContext.InMemoryLogger?.Messages, Constants.JsonSerializerSettings), null).ConfigureAwait(false);
+                _logger.LogCritical(0, ex, "Error handling message {message}", JsonConvert.SerializeObject(message, Constants.StorageJsonSerializerSettings));
+                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Failed, JsonConvert.SerializeObject(AmbientContext.InMemoryLogger?.Messages, Constants.StorageJsonSerializerSettings), null).ConfigureAwait(false);
             }
         }
 
