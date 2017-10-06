@@ -8,24 +8,35 @@ import { PackageDoc } from '../util/packageDoc';
 import { IPackage } from '../util/structure/packages';
 
 export const DocActions = {
-    getDoc: (key: PackageKey) => async (dispatch: Dispatch<any>) => {
-        dispatch(actions.getDocBegin(key));
+    getDoc: (requestKey: PackageKey) => async (dispatch: Dispatch<any>) => {
+        dispatch(actions.getDocBegin(requestKey));
         try {
-            const result = await api.getDoc(key);
-            if (!api.isInProgressResponse(result)) {
-                dispatch(actions.getDocEnd(key, PackageDoc.create(result)));
+            const getDocResponse = await api.getDoc(requestKey);
+
+            // A non-error response always includes normalization information
+            const normalizedKey = { packageId: getDocResponse.normalizedPackageId, packageVersion: getDocResponse.normalizedPackageVersion, targetFramework: getDocResponse.normalizedFrameworkTarget };
+            dispatch(actions.mapPackageKey(requestKey, normalizedKey));
+
+            if (!api.isInProgressResponse(getDocResponse)) {
+                // Response is a redirect response
+                const redirectResponse = getDocResponse as api.RedirectResponse;
+                dispatch(actions.getDocRedirecting(requestKey, redirectResponse.log));
+                // TODO: save backend log uri in state
+                const doc = await api.getPackageDocumentation(redirectResponse.jsonUri);
+                dispatch(actions.getDocEnd(requestKey, PackageDoc.create(doc)));
                 return;
             }
-            const normalizedKey = { packageId: result.normalizedPackageId, packageVersion: result.normalizedPackageVersion, targetFramework: result.normalizedFrameworkTarget };
-            dispatch(actions.getDocProcessing(key, normalizedKey, result.log));
+
+            // Response is a processing response.
+            dispatch(actions.getDocProcessing(requestKey, getDocResponse.log));
             const channelName = "log:" + packageKey(normalizedKey);
             const listener = new LogListener(channelName, (err, message, meta) => {
                 if (err) {
-                    dispatch(actions.getDocProgress(normalizedKey, "meta", (new Date).getTime(), "Streaming log error: " + err.message));
+                    dispatch(actions.getDocProgress(requestKey, { type: "meta", timestamp: (new Date).getTime(), message: "Streaming log error: " + err.message }));
                 } else if (meta) {
-                    dispatch(actions.getDocProgress(normalizedKey, "meta", (new Date).getTime(), meta));
+                    dispatch(actions.getDocProgress(requestKey, { type: "meta", timestamp: (new Date).getTime(), message: meta }));
                 } else {
-                    dispatch(actions.getDocProgress(normalizedKey, message.name, message.timestamp, message.data.message));
+                    dispatch(actions.getDocProgress(requestKey, { type: message.name, timestamp: message.timestamp, message: message.data.message }));
                 }
             });
             try {
@@ -33,12 +44,15 @@ export const DocActions = {
                 while (true) {
                     await Promise.delay(2000);
                     const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion,
-                        normalizedKey.targetFramework, result.timestamp);
+                        normalizedKey.targetFramework, getDocResponse.timestamp);
                     if (pollResult.status === "Succeeded") {
-                        dispatch(actions.getDocEnd(key, PackageDoc.create(await api.getJson<IPackage>(pollResult.jsonUri))));
+                        // TODO: save backend log uri in state
+                        const doc = await api.getPackageDocumentation(pollResult.jsonUri);
+                        dispatch(actions.getDocEnd(requestKey, PackageDoc.create(doc)));
                         return;
                     } else if (pollResult.status === "Failed") {
-                        dispatch(actions.getDocError(key, new Error("Log failed; see " + pollResult.logUri)));
+                        // TODO: save backend log uri in state
+                        dispatch(actions.getDocError(requestKey, new Error("Log failed; see " + pollResult.logUri)));
                         return;
                     }
                 }
@@ -46,7 +60,7 @@ export const DocActions = {
                 listener.dispose();
             }
         } catch (e) {
-            dispatch(actions.getDocError(key, e));
+            dispatch(actions.getDocError(requestKey, e));
         }
     }
 }

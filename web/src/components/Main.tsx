@@ -11,6 +11,6 @@ export function Main(props: State & Actions)
     return (
     <div>
         <Route exact path="/" render={() => <Home {...props} />} />
-        <Route path="/pkg/:packageId/:packageVersion/:packageTarget" render={(routeProps) => <Package {...props} {...routeProps}/>}/>
+        <Route path="/pkg/:packageId/:packageVersion?/:targetFramework?" render={(routeProps) => <Package {...props} {...routeProps}/>}/>
     </div>);
 }

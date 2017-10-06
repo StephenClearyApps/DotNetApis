@@ -7,69 +7,161 @@ import { LogMessage } from '../api';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';
 
-export interface PackageDocsState {
-    packages: {
-        [key: string]: PackageDoc;
-    };
-    mapping: {
-        [key: string]: {
-            status: Status;
-            key?: string;
-        }
-    };
-    logs: {
-        [key: string]: LogMessage[];
-    };
+interface PackageDocumentationRequest {
+    /** The status of the request */
+    status: Status;
+    
+    /** The request log (not backend log), if known */
+    log?: LogMessage[];
+
+    /** The streaming log (partial backend log); this is cleared out when the request completes */
+    streamingLog?: LogMessage[];
+
+    /** The normalized package key, if known; this is used as the key for `packageDocumentation` */
+    normalizedPackageKey?: string;
+
+    /** The error, if any */
+    error?: Error;
 }
 
-// The "get doc" command has started
+interface PackageDocumentationRequests {
+    [requestPackageKey: string]: PackageDocumentationRequest;
+}
+
+export interface PackageDocsState {
+    /** The documentation for all known packages, indexed by normalized package key */
+    packageDocumentation: {
+        [normalizedPackageKey: string]: PackageDoc;
+    };
+
+    /** The status of all package documentation requests, indexed by the request's package key */
+    packageDocumentationRequests: PackageDocumentationRequests;
+}
+
+/** The "get doc" command has started */
 function getDocBegin(state: PackageDocsState, action: A.GetDocBeginAction): PackageDocsState {
     return {
         ...state,
-        mapping: {
-            ...state.mapping,
-            [packageKey(action.meta.key)]: { status: 'STARTED' }
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [packageKey(action.meta.requestPackageKey)]: { status: 'STARTED' }
         }
     };
 }
 
-// The "get doc" command has been queued to the backend; we know the normalized key at this point.
-function getDocProcessing(state: PackageDocsState, action: A.GetDocProcessingAction): PackageDocsState {
+/** The "get doc" command has gotten to a point where it knows its normalized key */
+function mapPackageKey(state: PackageDocsState, action: A.MapPackageKeyAction): PackageDocsState {
+    const requestKey = packageKey(action.payload.requestPackageKey);
+    const normalizedKey = packageKey(action.payload.normalizedPackageKey);
     return {
         ...state,
-        mapping: {
-            ...state.mapping,
-            [packageKey(action.meta.key)]: { status: 'STARTED', key: packageKey(action.meta.normalized)}
-        },
-        logs: {
-            ...state.logs,
-            [packageKey(action.meta.normalized)]: action.payload.log
+        packageDocumentationRequests: {
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                normalizedPackageKey: normalizedKey
+            }
+        }
+    };
+}
+
+/** The "get doc" command has completed with a redirection */
+function getDocRedirecting(state: PackageDocsState, action: A.GetDocRedirectingAction): PackageDocsState {
+    const requestKey = packageKey(action.meta.requestPackageKey);
+    return {
+        ...state,
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                log: action.payload.log
+            }
+        }
+    };
+}
+
+/** The "get doc" command has been queued to the backend */
+function getDocProcessing(state: PackageDocsState, action: A.GetDocProcessingAction): PackageDocsState {
+    const requestKey = packageKey(action.meta.requestPackageKey);
+    return {
+        ...state,
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                log: action.payload.log,
+                streamingLog: []
+            }
         }
     };
 }
 
 // A progress report from the "get doc" command.
 function getDocProgress(state: PackageDocsState, action: A.GetDocProgressAction): PackageDocsState {
-    const key = packageKey(action.meta.normalized);
+    const requestKey = packageKey(action.meta.requestPackageKey);
+    if (state.packageDocumentationRequests[requestKey].streamingLog === undefined)
+        return;
     return {
         ...state,
-        logs: {
-            ...state.logs,
-            [key]: [
-                ...state.logs[key],
-                action.payload
-            ]
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                streamingLog: [
+                    ...state.packageDocumentationRequests[requestKey].streamingLog,
+                    action.payload.logMessage
+                ]
+            }
         }
     }
 }
 
+/** We have received the documentation for the package */
+function getDocEnd(state: PackageDocsState, action: A.GetDocEndAction): PackageDocsState {
+    const requestKey = packageKey(action.meta.requestPackageKey);
+    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
+    return {
+        ...state,
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                status: 'DONE',
+                streamingLog: undefined
+            }
+        },
+        packageDocumentation: {
+            ...state.packageDocumentation,
+            [normalizedKey]: action.payload.data
+        }
+    }
+}
+
+/** Some part of the "get doc" command has failed */
+function getDocError(state: PackageDocsState, action: A.GetDocErrorAction): PackageDocsState {
+    const requestKey = packageKey(action.meta.requestPackageKey);
+    return {
+        ...state,
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                status: 'ERROR',
+                error: action.payload
+            }
+        }
+    };
+}
+
 const defaultState: PackageDocsState = {
-    packages: {},
-    mapping: {},
-    logs: {}
+    packageDocumentation: { },
+    packageDocumentationRequests: { }
 };
 export const packageDoc = handleActions({
     [A.ActionTypes.GET_DOC_BEGIN]: getDocBegin,
+    [A.ActionTypes.MAP_PACKAGE_KEY]: mapPackageKey,
+    [A.ActionTypes.GET_DOC_REDIRECTING]: getDocRedirecting,
     [A.ActionTypes.GET_DOC_PROCESSING]: getDocProcessing,
-    [A.ActionTypes.GET_DOC_PROGRESS]: getDocProgress
+    [A.ActionTypes.GET_DOC_PROGRESS]: getDocProgress,
+    [A.ActionTypes.GET_DOC_END]: getDocEnd,
+    [A.ActionTypes.GET_DOC_ERROR]: getDocError
 }, defaultState);

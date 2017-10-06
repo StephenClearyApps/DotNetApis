@@ -60,7 +60,14 @@ namespace FunctionApp
                 {
                     _logger.LogDebug("Redirecting to {uri}", uri);
                     var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
-                    return req.CreateResponse(HttpStatusCode.TemporaryRedirect, new RedirectResponseMessage()).WithLocationHeader(uri).EnableCacheHeaders(cacheTime);
+                    return req.CreateResponse(HttpStatusCode.OK, new RedirectResponseMessage
+                    {
+                        NormalizedPackageId = idver.PackageId,
+                        NormalizedPackageVersion = idver.Version.ToString(),
+                        NormalizedFrameworkTarget = target.ToString(),
+                        JsonUri = uri,
+                        // TODO: LogUri
+                    }).EnableCacheHeaders(cacheTime);
                 }
 
                 // Make a note that it is in progress.
@@ -79,7 +86,7 @@ namespace FunctionApp
                 await generateQueue.AddAsync(new CloudQueueMessage(message));
 
                 _logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
-                return req.CreateResponse(HttpStatusCode.OK, new GenerateRequestQueuedResponseMessage
+                return req.CreateResponse(HttpStatusCode.Accepted, new GenerateRequestQueuedResponseMessage
                 {
                     Timestamp = timestamp,
                     NormalizedPackageId = idver.PackageId,

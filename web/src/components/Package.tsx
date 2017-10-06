@@ -10,16 +10,16 @@ import { packageKey } from "../util/packageKey";
 interface RouteParams {
     packageId: string;
     packageVersion: string;
-    packageTarget: string;
+    targetFramework: string;
 }
 
 function PackageComponent(props: State & Actions & RouteComponentProps<RouteParams>)
 {
     console.log(props);
-    const mapping = props.packageDoc.mapping[packageKey(props.match.params)];
-    if (mapping.status === 'ERROR')
+    const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
+    if (request.status === 'ERROR')
         return <div>TODO: error display</div>;
-    const doc = props.packageDoc.packages[mapping.key];
+    const doc = props.packageDoc.packageDocumentation[request.normalizedPackageKey];
     return (
     <div>
         {JSON.stringify(doc)}
@@ -28,12 +28,12 @@ function PackageComponent(props: State & Actions & RouteComponentProps<RoutePara
 
 export const Package = withLoadOnDemand<State & Actions & RouteComponentProps<RouteParams>>({
     hasStarted: props => {
-        const mapping = props.packageDoc.mapping[packageKey(props.match.params)];
-        return !!mapping;
+        const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
+        return !!request;
     },
     isLoaded: props => {
-        const mapping = props.packageDoc.mapping[packageKey(props.match.params)];
-        return mapping && mapping.status !== 'STARTED';
+        const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
+        return request && request.status !== 'STARTED';
     },
     load: props => props.DocActions.getDoc(props.match.params),
     LoadingComponent: props => <LoadingMessage message={"Loading documentation for " + props.match.params.packageId} />
