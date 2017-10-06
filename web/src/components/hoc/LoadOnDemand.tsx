@@ -6,9 +6,12 @@ import { withExecuteOnMount } from './ExecuteOnMount';
 import { withEither } from './Either';
 
 interface LoadOnDemandOptions<T> {
-    /** Gets whether the desired item is loaded; this should return true if the item is loaded, loading, or errored. */
-    isLoaded: (state: T) => boolean;
+    /** Gets whether the desired item has started loading; this should return true if the item is loading, loaded, or errored. */
+    hasStarted: (state: T) => boolean;
     
+    /** Gets whether the desired item has completed loading; this should return true if the item is loaded or errored. */
+    isLoaded: (state: T) => boolean;
+
     /** Starts loading the desired item; this is only invoked if isLoaded returns false */
     load: (state: T) => void;
 
@@ -17,9 +20,9 @@ interface LoadOnDemandOptions<T> {
 }
 
 export const withLoadOnDemand =
-    <TComponentProps extends {}>({ isLoaded, load, LoadingComponent } : LoadOnDemandOptions<TComponentProps>) =>
+    <TComponentProps extends {}>({ hasStarted, isLoaded, load, LoadingComponent } : LoadOnDemandOptions<TComponentProps>) =>
     (Component: ReactComponent<TComponentProps>) =>
     compose(
-        withExecuteOnMount((state: TComponentProps) => { if (!isLoaded(state)) load(state); }),
+        withExecuteOnMount((state: TComponentProps) => { if (!hasStarted(state)) load(state); }),
         withEither(isLoaded, LoadingComponent)
     )(Component);
