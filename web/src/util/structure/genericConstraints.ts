@@ -28,18 +28,18 @@ export interface ITypeGenericConstraint extends IGenericConstraintBase {
 
 export type IGenericConstraint = IClassGenericConstraint | IStructGenericConstraint | INewGenericConstraint | ITypeGenericConstraint;
 
-export function isClass(genericConstraint: IGenericConstraintBase): genericConstraint is IClassGenericConstraint {
+export function isClassGenericConstrint(genericConstraint: IGenericConstraintBase): genericConstraint is IClassGenericConstraint {
     return !genericConstraint.k;
 }
 
-export function isStruct(genericConstraint: IGenericConstraintBase): genericConstraint is IStructGenericConstraint {
+export function isStructGenericConstrint(genericConstraint: IGenericConstraintBase): genericConstraint is IStructGenericConstraint {
     return genericConstraint.k === GenericConstraintKind.STRUCT;
 }
 
-export function isNew(genericConstraint: IGenericConstraintBase): genericConstraint is INewGenericConstraint {
+export function isNewGenericConstrint(genericConstraint: IGenericConstraintBase): genericConstraint is INewGenericConstraint {
     return genericConstraint.k === GenericConstraintKind.NEW;
 }
 
-export function isType(genericConstraint: IGenericConstraintBase): genericConstraint is ITypeGenericConstraint {
+export function isTypeGenericConstrint(genericConstraint: IGenericConstraintBase): genericConstraint is ITypeGenericConstraint {
     return genericConstraint.k === GenericConstraintKind.TYPE;
 }

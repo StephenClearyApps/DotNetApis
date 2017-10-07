@@ -1,7 +1,6 @@
 import * as React from "react";
 
-import { PackageDoc } from "../../util/packageDoc";
-import { IXmldocNode, isStringXmldocNode, isSeeXmldocNode, isLinkXmldocNode, XmlXmldocNodeKind } from "../../util/structure/xmldoc";
+import { PackageDoc, IXmldocNode, isStringXmldocNode, isSeeXmldocNode, isLinkXmldocNode, XmlXmldocNodeKind } from "../../util";
 import { LocationLink } from "../links";
 
 interface XmldocProps {
