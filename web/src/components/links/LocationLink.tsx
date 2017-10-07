@@ -1,20 +1,19 @@
 import * as React from "react";
 import { LinkProps } from "react-router-dom";
 
-import { ILocation, isCurrentPackageLocation, isDependencyLocation } from "../../util/structure/locations";
+import { ILocation, isCurrentPackageLocation, isDependencyLocation, FormatContext } from "../../util";
 import { PackageEntityLink } from "./PackageEntityLink";
 import { ReferenceEntityLink } from "./ReferenceEntityLink";
-import { PackageDoc } from "../../util/packageDoc";
 
 interface LocationLinkProps {
-    pkg: PackageDoc;
-    elideLinks?: boolean;
+    context: FormatContext;
     location?: ILocation;
     linkProps?: LinkProps;
 }
 
-export const LocationLink: React.StatelessComponent<LocationLinkProps> = ({ pkg, elideLinks, location, linkProps, children }) => {
-    if (!location || elideLinks)
+export const LocationLink: React.StatelessComponent<LocationLinkProps> = ({ context, location, linkProps, children }) => {
+    const { pkg } = context;
+    if (!location || !context.includeLinks)
         return <span>{children}</span>;
     else if (isCurrentPackageLocation(location))
         return <PackageEntityLink packageId={pkg.i} packageVersion={pkg.v} targetFramework={pkg.t} dnaid={location} linkProps={linkProps}>{children}</PackageEntityLink>;
