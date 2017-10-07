@@ -5,7 +5,6 @@ interface ReferenceEntityLinkProps {
     targetFramework: string;
     dnaid: string;
     linkProps?: LinkProps;
-    children?: React.ReactNode;
 }
 
 export const ReferenceEntityLink: React.StatelessComponent<ReferenceEntityLinkProps> = ({ targetFramework, dnaid, linkProps, children }) =>

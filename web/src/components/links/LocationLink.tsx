@@ -8,14 +8,13 @@ import { PackageDoc } from "../../util/packageDoc";
 
 interface LocationLinkProps {
     pkg: PackageDoc;
-    includeLinks: boolean;
+    elideLinks?: boolean;
     location?: ILocation;
     linkProps?: LinkProps;
-    children?: React.ReactNode;
 }
 
-export const LocationLink: React.StatelessComponent<LocationLinkProps> = ({ pkg, includeLinks, location, linkProps, children }) => {
-    if (!location || !includeLinks)
+export const LocationLink: React.StatelessComponent<LocationLinkProps> = ({ pkg, elideLinks, location, linkProps, children }) => {
+    if (!location || elideLinks)
         return <span>{children}</span>;
     else if (isCurrentPackageLocation(location))
         return <PackageEntityLink packageId={pkg.i} packageVersion={pkg.v} targetFramework={pkg.t} dnaid={location} linkProps={linkProps}>{children}</PackageEntityLink>;
