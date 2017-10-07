@@ -8,7 +8,7 @@
     "prod": "webpack -p --env.prod=1",
     "dev": "webpack -d --env.prod=0",
     "watch": "webpack -d --env.prod=0 --watch",
-    "serve": "http-server ../docs -s -c-1 -o"
+    "serve": "http-server ../docs -s -c-1 -o -P http://127.0.0.1:8080/?"
   },
   "repository": {
     "type": "git",
