@@ -10,5 +10,5 @@ interface PackageEntityLinkProps {
     children?: React.ReactNode;
 }
 
-export const PackageEntityLink = ({ packageId, packageVersion, targetFramework, dnaid, linkProps, children }: PackageEntityLinkProps) =>
+export const PackageEntityLink: React.StatelessComponent<PackageEntityLinkProps> = ({ packageId, packageVersion, targetFramework, dnaid, linkProps, children }) =>
     <Link {...linkProps} to={'/pkg/' + packageId + '/' + packageVersion + '/' + targetFramework + '/doc/' + dnaid}>{children}</Link>;

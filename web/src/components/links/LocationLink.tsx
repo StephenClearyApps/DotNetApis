@@ -6,7 +6,7 @@ import { PackageEntityLink } from "./PackageEntityLink";
 import { ReferenceEntityLink } from "./ReferenceEntityLink";
 import { PackageDoc } from "../../util/packageDoc";
 
-interface PackageEntityLinkProps {
+interface LocationLinkProps {
     pkg: PackageDoc;
     includeLinks: boolean;
     location?: ILocation;
@@ -14,7 +14,7 @@ interface PackageEntityLinkProps {
     children?: React.ReactNode;
 }
 
-export const LocationLink = ({ pkg, includeLinks, location, linkProps, children }: PackageEntityLinkProps): JSX.Element => {
+export const LocationLink: React.StatelessComponent<LocationLinkProps> = ({ pkg, includeLinks, location, linkProps, children }) => {
     if (!location || !includeLinks)
         return <span>{children}</span>;
     else if (isCurrentPackageLocation(location))

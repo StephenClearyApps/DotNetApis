@@ -4,7 +4,12 @@ import { PackageDoc } from "../../util/packageDoc";
 import { IXmldocNode, isStringXmldocNode, isSeeXmldocNode, isLinkXmldocNode, XmlXmldocNodeKind } from "../../util/structure/xmldoc";
 import { LocationLink } from "../links";
 
-function Xmldoc({ data, pkg }: { data: IXmldocNode, pkg: PackageDoc }): JSX.Element {
+interface XmldocProps {
+    data: IXmldocNode;
+    pkg: PackageDoc;
+}
+
+export const Xmldoc: React.StatelessComponent<XmldocProps> = ({ data, pkg }) => {
     if (!data)
         return null;
     if (isStringXmldocNode(data))
