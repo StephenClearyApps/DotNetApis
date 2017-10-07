@@ -3,7 +3,7 @@ import { handleActions } from 'redux-actions';
 import * as A from '../actionTypes';
 import { packageKey } from '../util/packageKey';
 import { PackageDoc } from '../util/packageDoc';
-import { LogMessage } from '../api';
+import { LogMessage, Status as PackageStatus } from '../api';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';
 
@@ -28,10 +28,27 @@ interface PackageDocumentationRequests {
     [requestPackageKey: string]: PackageDocumentationRequest;
 }
 
+interface PackageDocumentationStatus {
+    /** The status of the package documentation generation. */
+    status: PackageStatus;
+
+    /** The URI of the actual documentation. */
+    jsonUri?: string;
+
+    /** The URI of the backend processing log. */
+    logUri?: string;
+
+    /** The backend processing log, if loaded. */
+    log?: LogMessage[];
+
+    /** The documentation, if loaded. */
+    json?: PackageDoc;
+}
+
 export interface PackageDocsState {
     /** The documentation for all known packages, indexed by normalized package key */
     packageDocumentation: {
-        [normalizedPackageKey: string]: PackageDoc;
+        [normalizedPackageKey: string]: PackageDocumentationStatus;
     };
 
     /** The status of all package documentation requests, indexed by the request's package key */
@@ -56,9 +73,16 @@ function mapPackageKey(state: PackageDocsState, action: A.MapPackageKeyAction): 
     return {
         ...state,
         packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
             [requestKey]: {
                 ...state.packageDocumentationRequests[requestKey],
                 normalizedPackageKey: normalizedKey
+            }
+        },
+        packageDocumentation: {
+            ...state.packageDocumentation,
+            [normalizedKey]: {
+                status: 'Requested'
             }
         }
     };
@@ -67,6 +91,7 @@ function mapPackageKey(state: PackageDocsState, action: A.MapPackageKeyAction): 
 /** The "get doc" command has completed with a redirection */
 function getDocRedirecting(state: PackageDocsState, action: A.GetDocRedirectingAction): PackageDocsState {
     const requestKey = packageKey(action.meta.requestPackageKey);
+    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
     return {
         ...state,
         packageDocumentationRequests: {
@@ -74,6 +99,14 @@ function getDocRedirecting(state: PackageDocsState, action: A.GetDocRedirectingA
             [requestKey]: {
                 ...state.packageDocumentationRequests[requestKey],
                 log: action.payload.log
+            }
+        },
+        packageDocumentation: {
+            ...state.packageDocumentation,
+            [normalizedKey]: {
+                status: 'Succeeded',
+                jsonUri: action.payload.jsonUri,
+                logUri: action.payload.logUri
             }
         }
     };
@@ -131,9 +164,30 @@ function getDocEnd(state: PackageDocsState, action: A.GetDocEndAction): PackageD
         },
         packageDocumentation: {
             ...state.packageDocumentation,
-            [normalizedKey]: action.payload.data
+            [normalizedKey]: {
+                ...state.packageDocumentation[normalizedKey],
+                status: 'Succeeded',
+                json: action.payload.data
+            }
         }
     }
+}
+
+/** The "get doc" command failed on the backend */
+function getDocBackendError(state: PackageDocsState, action: A.GetDocBackendErrorAction): PackageDocsState {
+    const requestKey = packageKey(action.meta.requestPackageKey);
+    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
+    return {
+        ...state,
+        packageDocumentation: {
+            ...state.packageDocumentation,
+            [normalizedKey]: {
+                ...state.packageDocumentation[normalizedKey],
+                status: 'Failed',
+                logUri: action.payload.logUri
+            }
+        }
+    };
 }
 
 /** Some part of the "get doc" command has failed */
@@ -163,5 +217,6 @@ export const packageDoc = handleActions({
     [A.ActionTypes.GET_DOC_PROCESSING]: getDocProcessing,
     [A.ActionTypes.GET_DOC_PROGRESS]: getDocProgress,
     [A.ActionTypes.GET_DOC_END]: getDocEnd,
+    [A.ActionTypes.GET_DOC_BACKEND_ERROR]: getDocBackendError,
     [A.ActionTypes.GET_DOC_ERROR]: getDocError
 }, defaultState);

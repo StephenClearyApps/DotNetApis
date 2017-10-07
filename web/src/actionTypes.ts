@@ -10,6 +10,7 @@ export const ActionTypes = {
     GET_DOC_PROCESSING: 'GET_DOC_PROCESSING',
     GET_DOC_PROGRESS: 'GET_DOC_PROGRESS',
     GET_DOC_END: 'GET_DOC_END',
+    GET_DOC_BACKEND_ERROR: 'GET_DOC_BACKEND_ERROR',
     GET_DOC_ERROR: 'GET_DOC_ERROR'
 };
 
@@ -25,9 +26,9 @@ export type MapPackageKeyAction = PayloadAction<{ requestPackageKey: PackageKey,
 export const mapPackageKey = (requestPackageKey: PackageKey, normalizedPackageKey: PackageKey): MapPackageKeyAction =>
     ({ type: ActionTypes.MAP_PACKAGE_KEY, payload: { requestPackageKey, normalizedPackageKey } });
 
-export type GetDocRedirectingAction = MetaPayloadAction<{ requestPackageKey: PackageKey }, { log: LogMessage[] }>;
-export const getDocRedirecting = (requestPackageKey: PackageKey, log: LogMessage[]): GetDocRedirectingAction =>
-    ({ type: ActionTypes.GET_DOC_REDIRECTING, meta: { requestPackageKey }, payload: { log } });
+export type GetDocRedirectingAction = MetaPayloadAction<{ requestPackageKey: PackageKey }, { log: LogMessage[], jsonUri: string, logUri: string }>;
+export const getDocRedirecting = (requestPackageKey: PackageKey, log: LogMessage[], jsonUri: string, logUri: string): GetDocRedirectingAction =>
+    ({ type: ActionTypes.GET_DOC_REDIRECTING, meta: { requestPackageKey }, payload: { log, jsonUri, logUri } });
     
 export type GetDocProcessingAction = MetaPayloadAction<{ requestPackageKey: PackageKey }, { log: LogMessage[] }>;
 export const getDocProcessing = (requestPackageKey: PackageKey, log: LogMessage[]): GetDocProcessingAction =>
@@ -40,6 +41,10 @@ export const getDocProgress = (requestPackageKey: PackageKey, logMessage: LogMes
 export type GetDocEndAction = MetaPayloadAction<{ requestPackageKey: PackageKey }, { data: PackageDoc }>;
 export const getDocEnd = (requestPackageKey: PackageKey, data: PackageDoc): GetDocEndAction =>
     ({ type: ActionTypes.GET_DOC_END, meta: { requestPackageKey }, payload: { data } });
+
+export type GetDocBackendErrorAction = MetaPayloadAction<{ requestPackageKey: PackageKey}, { logUri: string }>;
+export const getDocBackendError = (requestPackageKey: PackageKey, logUri: string): GetDocBackendErrorAction =>
+    ({ type: ActionTypes.GET_DOC_BACKEND_ERROR, meta: { requestPackageKey }, payload: { logUri } });
 
 export type GetDocErrorAction = MetaErrorAction<{ requestPackageKey: PackageKey }>;
 export const getDocError = (requestPackageKey: PackageKey, error: Error): GetDocErrorAction =>

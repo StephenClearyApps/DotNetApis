@@ -20,8 +20,7 @@ export const DocActions = {
             if (!api.isInProgressResponse(getDocResponse)) {
                 // Response is a redirect response
                 const redirectResponse = getDocResponse as api.RedirectResponse;
-                dispatch(actions.getDocRedirecting(requestKey, redirectResponse.log));
-                // TODO: save backend log uri in state
+                dispatch(actions.getDocRedirecting(requestKey, redirectResponse.log, redirectResponse.jsonUri, redirectResponse.logUri));
                 const doc = await api.getPackageDocumentation(redirectResponse.jsonUri);
                 dispatch(actions.getDocEnd(requestKey, PackageDoc.create(doc)));
                 return;
@@ -45,14 +44,13 @@ export const DocActions = {
                     await Promise.delay(2000);
                     const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion, normalizedKey.targetFramework);
                     if (pollResult.status === "Succeeded") {
-                        // TODO: save backend log uri in state
+                        dispatch(actions.getDocRedirecting(requestKey, getDocResponse.log, pollResult.jsonUri, pollResult.logUri));
                         const doc = await api.getPackageDocumentation(pollResult.jsonUri);
                         dispatch(actions.getDocEnd(requestKey, PackageDoc.create(doc)));
                         return;
                     } else if (pollResult.status === "Failed") {
-                        // TODO: save backend log uri in state
-                        dispatch(actions.getDocError(requestKey, new Error("Log failed; see " + pollResult.logUri)));
-                        return;
+                        dispatch(actions.getDocBackendError(requestKey, pollResult.logUri));
+                        throw new Error("Documentation generation failed; see " + pollResult.logUri);
                     } else {
                         dispatch(actions.getDocProgress(requestKey, { type: "meta", timestamp: (new Date).getTime(), message: "Documentation processing status: " + pollResult.status}));
                     }
