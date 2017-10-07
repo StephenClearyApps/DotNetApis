@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace DotNetApis.Storage
 {
@@ -20,34 +22,45 @@ namespace DotNetApis.Storage
         }
 
         /// <summary>
-        /// Writes a complete JSON string to storage and returns the direct-access URI for that JSON.
+        /// Writes a complete JSON string to storage.
         /// </summary>
         /// <param name="idver">The id and version of the package.</param>
         /// <param name="target">The target for the package.</param>
-        /// <param name="json">The JSON documentation for the specified package id, version, and target.</param>
-        public async Task<Uri> WriteAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
+        /// <param name="docJson">The JSON documentation for the specified package id, version, and target.</param>
+        public async Task WriteSuccessAsync(NugetPackageIdVersion idver, PlatformTarget target, string docJson)
         {
+            // Save the JSON documentation to blob storage.
             _logger.LogDebug("Saving json for {idver} target {target}", idver, target);
             var stopwatch = Stopwatch.StartNew();
-            var blobPath = await _storage.WriteAsync(idver, target, json);
-            await _table.SetBlobPathAsync(idver, target, blobPath);
-            var result =  _storage.GetUri(idver, target);
-            _logger.LogDebug("Saved json for {idver} target {target} at {url} in {elapsed}", idver, target, result, stopwatch.Elapsed);
-            return result;
+            var jsonUri = await _storage.WriteJsonAsync(idver, target, docJson).ConfigureAwait(false);
+            _logger.LogDebug("Saved json for {idver} target {target} at {url} in {elapsed}", idver, target, jsonUri, stopwatch.Elapsed);
+
+            // Save the processing log to blob storage.
+            var logUri = await SaveLogAsync(idver, target).ConfigureAwait(false);
+
+            // Mark the processing as complete.
+            await _table.SetRecordAsync(idver, target, Status.Succeeded, logUri, jsonUri).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Returns the direct-access URI for a package's JSON. Returns <c>null</c> if the package hasn't been processed yet.
+        /// Writes a failure notification to storage.
         /// </summary>
         /// <param name="idver">The id and version of the package.</param>
         /// <param name="target">The target for the package.</param>
-        public async Task<Uri> TryGetUriAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        public async Task WriteFailureAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
-            // Do a point lookup; if the package hasn't been processed yet, then return null.
-            if (await _table.TryGetBlobPathAsync(idver, target).ConfigureAwait(false) == null)
-                return null;
+            // Save the processing log to blob storage.
+            var logUri = await SaveLogAsync(idver, target).ConfigureAwait(false);
 
-            return _storage.GetUri(idver, target);
+            // Mark the processing as failed.
+            await _table.SetRecordAsync(idver, target, Status.Failed, logUri, null).ConfigureAwait(false);
+        }
+
+        private async Task<Uri> SaveLogAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        {
+            var log = AmbientContext.InMemoryLogger?.Messages;
+            var logJson = JsonConvert.SerializeObject(log, Constants.StorageJsonSerializerSettings);
+            return await _storage.WriteLogAsync(idver, target, logJson).ConfigureAwait(false);
         }
     }
 }

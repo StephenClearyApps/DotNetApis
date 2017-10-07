@@ -16,16 +16,18 @@ namespace DotNetApis.Logic
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
+        private readonly IPackageJsonTable _packageJsonTable;
         private readonly Parser _parser;
 
         public DocRequestHandler(ILogger logger, INugetRepository nugetRepository, PackageDownloader packageDownloader, PlatformResolver platformResolver,
-            PackageJsonCombinedStorage packageJsonCombinedStorage, Parser parser)
+            PackageJsonCombinedStorage packageJsonCombinedStorage, IPackageJsonTable packageJsonTable, Parser parser)
         {
             _logger = logger;
             _nugetRepository = nugetRepository;
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
             _packageJsonCombinedStorage = packageJsonCombinedStorage;
+            _packageJsonTable = packageJsonTable;
             _parser = parser;
         }
 
@@ -47,7 +49,13 @@ namespace DotNetApis.Logic
             return (idver, target);
         }
 
-        public Task<Uri> TryGetExistingJsonUriAsync(NugetPackageIdVersion idver, PlatformTarget target) => _packageJsonCombinedStorage.TryGetUriAsync(idver, target);
+        public async Task<(Uri JsonUri, Uri LogUri)> TryGetExistingJsonAndLogUriAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        {
+            var result = await _packageJsonTable.TryGetRecordAsync(idver, target).ConfigureAwait(false);
+            if (result == null)
+                return (null, null);
+            return (result.Value.JsonUri, result.Value.LogUri);
+        }
 
         private NugetPackageIdVersion LookupLatestPackageVersion(string packageId)
         {

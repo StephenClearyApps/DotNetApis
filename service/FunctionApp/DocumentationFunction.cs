@@ -24,13 +24,13 @@ namespace FunctionApp
     {
         private readonly ILogger _logger;
         private readonly DocRequestHandler _handler;
-        private readonly IStatusTable _statusTable;
+        private readonly IPackageJsonTable _packageJsonTable;
 
-        public DocumentationFunction(ILogger logger, DocRequestHandler handler, IStatusTable statusTable)
+        public DocumentationFunction(ILogger logger, DocRequestHandler handler, IPackageJsonTable packageJsonTable)
         {
             _logger = logger;
             _handler = handler;
-            _statusTable = statusTable;
+            _packageJsonTable = packageJsonTable;
         }
 
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req, IAsyncCollector<CloudQueueMessage> generateQueue)
@@ -55,30 +55,29 @@ namespace FunctionApp
                 var (idver, target) = await _handler.NormalizeRequestAsync(packageId, packageVersion, targetFramework);
 
                 // If the JSON is already there, then redirect the user to it.
-                var uri = await _handler.TryGetExistingJsonUriAsync(idver, target);
-                if (uri != null)
+                var (jsonUri, logUri) = await _handler.TryGetExistingJsonAndLogUriAsync(idver, target);
+                if (jsonUri != null)
                 {
-                    _logger.LogDebug("Redirecting to {uri}", uri);
+                    _logger.LogDebug("Redirecting to {uri}", jsonUri);
                     var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
                     return req.CreateResponse(HttpStatusCode.OK, new RedirectResponseMessage
                     {
                         NormalizedPackageId = idver.PackageId,
                         NormalizedPackageVersion = idver.Version.ToString(),
                         NormalizedFrameworkTarget = target.ToString(),
-                        JsonUri = uri,
-                        // TODO: LogUri
+                        JsonUri = jsonUri,
+                        LogUri = logUri,
                     }).EnableCacheHeaders(cacheTime);
                 }
 
                 // Make a note that it is in progress.
                 var timestamp = DateTimeOffset.UtcNow;
-                await _statusTable.WriteStatusAsync(idver, target, timestamp, Status.Requested, null, null);
+                await _packageJsonTable.SetRecordAsync(idver, target, Status.Requested, null, null);
 
                 // Forward the request to the processing queue.
                 var message = JsonConvert.SerializeObject(new GenerateRequestMessage
                 {
                     JsonVersion = jsonVersion,
-                    Timestamp = timestamp,
                     NormalizedPackageId = idver.PackageId,
                     NormalizedPackageVersion = idver.Version.ToString(),
                     NormalizedFrameworkTarget = target.ToString(),
@@ -88,7 +87,6 @@ namespace FunctionApp
                 _logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
                 return req.CreateResponse(HttpStatusCode.Accepted, new GenerateRequestQueuedResponseMessage
                 {
-                    Timestamp = timestamp,
                     NormalizedPackageId = idver.PackageId,
                     NormalizedPackageVersion = idver.Version.ToString(),
                     NormalizedFrameworkTarget = target.ToString(),

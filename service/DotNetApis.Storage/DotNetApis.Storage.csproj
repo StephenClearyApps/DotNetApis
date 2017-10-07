@@ -80,15 +80,12 @@
   <ItemGroup>
     <Compile Include="BatchOperation.cs" />
     <Compile Include="CloudTableExtensions.cs" />
-    <Compile Include="LogCombinedStorage.cs" />
     <Compile Include="PackageJsonCombinedStorage.cs" />
-    <Compile Include="LogStorage.cs" />
     <Compile Include="PackageJsonTable.cs" />
     <Compile Include="PackageJsonStorage.cs" />
     <Compile Include="ReferenceXmldocTable.cs" />
     <Compile Include="ReferenceStorage.cs" />
     <Compile Include="PackageStorage.cs" />
-    <Compile Include="StatusTable.cs" />
     <Compile Include="PackageTable.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StorageBackend.cs" />

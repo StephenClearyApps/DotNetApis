@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
@@ -7,24 +8,47 @@ using Microsoft.WindowsAzure.Storage.Table;
 namespace DotNetApis.Storage
 {
     /// <summary>
+    /// The status of a background operation.
+    /// </summary>
+    public enum Status
+    {
+        /// <summary>
+        /// The operation has been requested and has possibly started.
+        /// </summary>
+        Requested,
+
+        /// <summary>
+        /// The operation has succeeded.
+        /// </summary>
+        Succeeded,
+
+        /// <summary>
+        /// The operation has failed.
+        /// </summary>
+        Failed,
+    }
+
+    /// <summary>
     /// Represents the "packagejson" table in Table storage.
     /// </summary>
     public interface IPackageJsonTable
     {
         /// <summary>
-        /// Looks up a package in the table, and returns the path to the blob representing the json for that package. Returns <c>null</c> if the package is not in the table.
+        /// Looks up a package in the table, and returns the information for that package. Returns <c>null</c> if the package is not in the table.
         /// </summary>
         /// <param name="idVer">The id and version of the package.</param>
         /// <param name="target">The target context.</param>
-        Task<string> TryGetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target);
+        Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetRecordAsync(NugetPackageIdVersion idVer, PlatformTarget target);
 
         /// <summary>
         /// Writes an entry in the table, overwriting any existing entry for the package.
         /// </summary>
         /// <param name="idVer">The id and version of the package.</param>
         /// <param name="target">The target context.</param>
-        /// <param name="blobPath">The path to the blob representing the JSON for that dll. The blob must already exist.</param>
-        Task SetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target, string blobPath);
+        /// <param name="status">The result of the documentation request.</param>
+        /// <param name="logUri">The URI of the detailed log of the documentation generation.</param>
+        /// <param name="jsonUri">The URI of the JSON result. May be <c>null</c>.</param>
+        Task SetRecordAsync(NugetPackageIdVersion idVer, PlatformTarget target, Status status, Uri logUri, Uri jsonUri);
     }
 
     public sealed class AzurePackageJsonTable : IPackageJsonTable
@@ -42,15 +66,22 @@ namespace DotNetApis.Storage
             _table = table;
         }
 
-        public async Task<string> TryGetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target)
+        public async Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetRecordAsync(NugetPackageIdVersion idVer, PlatformTarget target)
         {
             var entity = await Entity.FindOrDefaultAsync(_table, idVer, target).ConfigureAwait(false);
-            return entity?.BlobPath;
+            if (entity == null)
+                return null;
+            return (entity.Status, entity.LogUri, entity.JsonUri);
         }
 
-        public Task SetBlobPathAsync(NugetPackageIdVersion idVer, PlatformTarget target, string blobPath)
+        public Task SetRecordAsync(NugetPackageIdVersion idVer, PlatformTarget target, Status status, Uri logUri, Uri jsonUri)
         {
-            var entity = new Entity(_table, idVer, target) { BlobPath = blobPath };
+            var entity = new Entity(_table, idVer, target)
+            {
+                Status = status,
+                LogUri = logUri,
+                JsonUri = jsonUri,
+            };
             return entity.InsertOrReplaceAsync();
         }
 
@@ -76,10 +107,30 @@ namespace DotNetApis.Storage
                 return entity == null ? null : new Entity(table, entity);
             }
 
-            public string BlobPath
+            public Status Status
             {
-                get => Get("p", null);
-                set => Set("p", value);
+                get => (Status)Get("s", 0);
+                set => Set("s", (int)value);
+            }
+
+            public Uri LogUri
+            {
+                get
+                {
+                    var stringValue = Get("l", null);
+                    return stringValue == null ? null : new Uri(stringValue);
+                }
+                set => Set("l", value?.ToString());
+            }
+
+            public Uri JsonUri
+            {
+                get
+                {
+                    var stringValue = Get("j", null);
+                    return stringValue == null ? null : new Uri(stringValue);
+                }
+                set => Set("j", value?.ToString());
             }
         }
     }

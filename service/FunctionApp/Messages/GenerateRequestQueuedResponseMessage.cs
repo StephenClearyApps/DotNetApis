@@ -9,11 +9,6 @@ namespace FunctionApp.Messages
     public sealed class GenerateRequestQueuedResponseMessage : MessageBaseWithLog
     {
         /// <summary>
-        /// The timestamp of the request.
-        /// </summary>
-        public DateTimeOffset Timestamp { get; set; }
-
-        /// <summary>
         /// The id of the package, lowercased.
         /// </summary>
         public string NormalizedPackageId { get; set; }

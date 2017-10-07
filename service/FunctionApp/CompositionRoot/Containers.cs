@@ -29,10 +29,11 @@ namespace FunctionApp.CompositionRoot
                 container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
                 container.Register<IStorageBackend, AzureStorageBackend>();
             });
-            ContainerFor<StatusFunction>.Create(container =>
+            ContainerFor<StatusFunction>.Create(async container =>
             {
+                container.RegisterSingleton(await PackageJsonTableCloudTable);
                 container.RegisterSingleton(CloudTableClientInstance.Value);
-                container.Register<IStatusTable, AzureStatusTable>();
+                container.Register<IPackageJsonTable, AzurePackageJsonTable>();
             });
             ContainerFor<DocumentationFunction>.Create(async container =>
             {
@@ -44,7 +45,6 @@ namespace FunctionApp.CompositionRoot
                 container.Register<IPackageStorage, AzurePackageStorage>();
                 container.Register<IPackageJsonTable, AzurePackageJsonTable>();
                 container.Register<IPackageJsonStorage, AzurePackageJsonStorage>();
-                container.Register<IStatusTable, AzureStatusTable>();
             });
             ContainerFor<GenerateFunction>.Create(async container =>
             {
@@ -53,8 +53,6 @@ namespace FunctionApp.CompositionRoot
                 container.RegisterSingletons(singletons);
                 container.RegisterSingleton(CloudTableClientInstance.Value);
                 container.RegisterLazyTask(() => ReferenceAssembliesInstance.Value);
-                container.Register<ILogStorage, AzureLogStorage>();
-                container.Register<IStatusTable, AzureStatusTable>();
                 container.Register<IPackageTable, AzurePackageTable>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
                 container.Register<INugetRepository, NugetRepository>();

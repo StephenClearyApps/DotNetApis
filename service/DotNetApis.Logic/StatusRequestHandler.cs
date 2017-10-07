@@ -11,13 +11,13 @@ namespace DotNetApis.Logic
     public sealed class StatusRequestHandler
     {
         private readonly ILogger _logger;
-        private readonly IStatusTable _statusTable;
+        private readonly IPackageJsonTable _packageJsonTable;
         private readonly Parser _parser;
 
-        public StatusRequestHandler(ILogger logger, IStatusTable statusTable, Parser parser)
+        public StatusRequestHandler(ILogger logger, IPackageJsonTable packageJsonTable, Parser parser)
         {
             _logger = logger;
-            _statusTable = statusTable;
+            _packageJsonTable = packageJsonTable;
             _parser = parser;
         }
 
@@ -37,16 +37,16 @@ namespace DotNetApis.Logic
             return (idver, target);
         }
 
-        public async Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target, DateTimeOffset timestamp)
+        public async Task<(Status Status, Uri LogUri, Uri JsonUri)?> TryGetStatusAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
-            var result = await _statusTable.TryGetStatusAsync(idver, target, timestamp).ConfigureAwait(false);
+            var result = await _packageJsonTable.TryGetRecordAsync(idver, target).ConfigureAwait(false);
             if (result == null)
             {
-                _logger.LogDebug("Status for {idver} target {target} on {timestamp} was not found", idver, target, timestamp);
+                _logger.LogDebug("Status for {idver} target {target} was not found", idver, target);
                 return null;
             }
             var (status, logUri, jsonUri) = result.Value;
-            _logger.LogDebug("Status for {idver} target {target} on {timestamp} is {status}, {logUri}, {jsonUri}", idver, target, timestamp, status, logUri, jsonUri);
+            _logger.LogDebug("Status for {idver} target {target} is {status}, {logUri}, {jsonUri}", idver, target, status, logUri, jsonUri);
             return result;
         }
     }

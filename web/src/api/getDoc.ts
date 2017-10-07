@@ -3,7 +3,6 @@ import { getJsonResponse } from "./util";
 
 export interface InProgressResponse extends MessageBase {
     _type: "InProgressResponse";
-    timestamp: string;
     normalizedPackageId: string;
     normalizedPackageVersion: string;
     normalizedFrameworkTarget: string;

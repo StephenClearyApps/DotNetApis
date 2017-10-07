@@ -8,5 +8,5 @@ export interface StatusResponse extends MessageBase {
     jsonUri: string;
 }
 
-export const getStatus = (packageId: string, packageVersion: string, targetFramework: string, timestamp: string) =>
-    getJson<StatusResponse>("http://localhost:7071/api/0/status", { packageId, packageVersion, targetFramework, timestamp });
+export const getStatus = (packageId: string, packageVersion: string, targetFramework: string) =>
+    getJson<StatusResponse>("http://localhost:7071/api/0/status", { packageId, packageVersion, targetFramework });

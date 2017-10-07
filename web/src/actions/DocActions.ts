@@ -43,8 +43,7 @@ export const DocActions = {
                 listener.listen();
                 while (true) {
                     await Promise.delay(2000);
-                    const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion,
-                        normalizedKey.targetFramework, getDocResponse.timestamp);
+                    const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion, normalizedKey.targetFramework);
                     if (pollResult.status === "Succeeded") {
                         // TODO: save backend log uri in state
                         const doc = await api.getPackageDocumentation(pollResult.jsonUri);

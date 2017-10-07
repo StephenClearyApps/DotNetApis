@@ -18,11 +18,6 @@ namespace DotNetApis.Logic.Messages
         public int JsonVersion { get; set; }
 
         /// <summary>
-        /// The timestamp of this request.
-        /// </summary>
-        public DateTimeOffset Timestamp { get; set; }
-
-        /// <summary>
         /// The id of the package, lowercased.
         /// </summary>
         public string NormalizedPackageId { get; set; }

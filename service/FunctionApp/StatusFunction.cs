@@ -36,9 +36,8 @@ namespace FunctionApp
                 var packageId = query.Required("packageId");
                 var packageVersion = query.Required("packageVersion");
                 var targetFramework = query.Required("targetFramework");
-                var timestamp = query.Required("timestamp", DateTimeOffset.Parse);
-                _logger.LogDebug("Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}, timestamp={timestamp}",
-                    jsonVersion, packageId, packageVersion, targetFramework, timestamp);
+                _logger.LogDebug("Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
+                    jsonVersion, packageId, packageVersion, targetFramework);
 
                 if (jsonVersion < JsonFactory.Version)
                 {
@@ -49,7 +48,7 @@ namespace FunctionApp
                 // Parse and normalize the user request.
                 var (idver, target) = _handler.NormalizeRequest(packageId, packageVersion, targetFramework);
 
-                var result = await _handler.TryGetStatusAsync(idver, target, timestamp);
+                var result = await _handler.TryGetStatusAsync(idver, target);
                 if (result == null)
                     throw new ExpectedException(HttpStatusCode.NotFound, "Request status not found.");
 

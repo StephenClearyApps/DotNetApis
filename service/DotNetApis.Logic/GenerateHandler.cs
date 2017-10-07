@@ -20,7 +20,6 @@ namespace DotNetApis.Logic
     public sealed class GenerateHandler
     {
         private readonly ILogger _logger;
-        private readonly LogCombinedStorage _logStorage;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly NugetPackageDependencyResolver _dependencyResolver;
@@ -30,12 +29,11 @@ namespace DotNetApis.Logic
         private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
         private readonly INugetRepository _nugetRepository;
 
-        public GenerateHandler(ILogger logger, LogCombinedStorage logStorage, PackageDownloader packageDownloader, PlatformResolver platformResolver,
+        public GenerateHandler(ILogger logger, PackageDownloader packageDownloader, PlatformResolver platformResolver,
             NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter,
             PackageJsonCombinedStorage packageJsonCombinedStorage, INugetRepository nugetRepository)
         {
             _logger = logger;
-            _logStorage = logStorage;
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
             _dependencyResolver = dependencyResolver;
@@ -54,15 +52,14 @@ namespace DotNetApis.Logic
                 throw new InvalidOperationException("Invalid generation request");
             try
             {
-                var json = await HandleAsync(idver, target).ConfigureAwait(false);
-                var uri = await _packageJsonCombinedStorage.WriteAsync(idver, target, JsonConvert.SerializeObject(json, Constants.StorageJsonSerializerSettings)).ConfigureAwait(false);
-                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Succeeded, JsonConvert.SerializeObject(AmbientContext.InMemoryLogger?.Messages, Constants.StorageJsonSerializerSettings), uri).ConfigureAwait(false);
+                var doc = await HandleAsync(idver, target).ConfigureAwait(false);
+                var docJson = JsonConvert.SerializeObject(doc, Constants.StorageJsonSerializerSettings);
+                await _packageJsonCombinedStorage.WriteSuccessAsync(idver, target, docJson).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                // TODO: logs should be preserved eternally alongside the json; just roll LogStorage into PackageJsonCombinedStorage.
                 _logger.LogCritical(0, ex, "Error handling message {message}", JsonConvert.SerializeObject(message, Constants.StorageJsonSerializerSettings));
-                await _logStorage.WriteAsync(idver, target, message.Timestamp, Status.Failed, JsonConvert.SerializeObject(AmbientContext.InMemoryLogger?.Messages, Constants.StorageJsonSerializerSettings), null).ConfigureAwait(false);
+                await _packageJsonCombinedStorage.WriteFailureAsync(idver, target).ConfigureAwait(false);
             }
         }
 
