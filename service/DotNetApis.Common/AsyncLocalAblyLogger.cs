@@ -32,7 +32,7 @@ namespace DotNetApis.Common
                 ImplicitChannel.Value?.LogMessage(logLevel.ToString(), formatter(state, exception));
         }
 
-        public bool IsEnabled(LogLevel logLevel) => ImplicitChannel.Value != null && logLevel >= LogLevel.Information;
+        public bool IsEnabled(LogLevel logLevel) => ImplicitChannel.Value != null && logLevel >= LogLevel.Information && logLevel != LogLevel.Warning;
 
         public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
     }
