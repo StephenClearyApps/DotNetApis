@@ -1,4 +1,4 @@
-import { PackageDoc } from "./util/packageDoc";
+import { PackageDoc } from "./util";
 import { LogMessage } from "./api";
 
 export const ActionTypes = {

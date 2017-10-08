@@ -3,7 +3,7 @@ import { LinkProps } from "react-router-dom";
 
 import { ILocation, isCurrentPackageLocation, isDependencyLocation } from "../structure";
 import { ReactFragment, FormatContext } from "./util";
-import { PackageEntityLink, ReferenceEntityLink } from "../../components/links";
+import { PackageEntityLink, ReferenceEntityLink } from "../components/links";
 
 export function locationLink(context: FormatContext, location: ILocation, content: ReactFragment, linkProps?: LinkProps): ReactFragment {
     const { pkg } = context;

@@ -1,8 +1,7 @@
 import { handleActions } from 'redux-actions';
 
 import * as A from '../actionTypes';
-import { packageKey } from '../util/packageKey';
-import { PackageDoc } from '../util/packageDoc';
+import { packageKey, PackageDoc } from '../util';
 import { LogMessage, Status as PackageStatus } from '../api';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';

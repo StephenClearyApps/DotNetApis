@@ -1,4 +1,4 @@
-export * from "../formatContext";
+export * from "../util/formatContext";
 
 import { ILocation, isCurrentPackageLocation } from "../structure";
 

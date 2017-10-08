@@ -2,10 +2,9 @@ import { Dispatch } from 'redux';
 
 import * as actions from '../actionTypes';
 import * as api from '../api';
-import { LogListener } from '../logic/log-listener';
-import { packageKey } from '../util/packageKey';
-import { PackageDoc } from '../util/packageDoc';
-import { IPackage } from '../util/structure/packages';
+import { LogListener } from '../logic';
+import { packageKey, PackageDoc } from '../util';
+import { IPackage } from '../structure';
 
 export const DocActions = {
     getDoc: (requestKey: PackageKey) => async (dispatch: Dispatch<any>) => {

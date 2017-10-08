@@ -6,7 +6,7 @@ import { LogMessages } from "./LogMessages";
 import { State } from "../reducers";
 import { Actions } from "../actions";
 import { withLoadOnDemand } from "./hoc";
-import { packageKey } from "../util/packageKey";
+import { packageKey } from "../util";
 
 interface RouteParams {
     packageId: string;

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { PackageDoc } from "../packageDoc";
+import { PackageDoc } from "../util";
 import { IEntity, isClass, ITypeEntity, EntityModifiers, isInterface, isStruct, isEnum, IEnumEntity,
     isDelegate, isMethod, isProperty, isEvent, isField, IDelegateEntity, IMethodEntity, MethodStyles, IPropertyEntity, IEventEntity, IFieldEntity
 } from "../structure";

@@ -1,13 +1,12 @@
-import * as entities from './structure/entities';
-import * as packages from './structure/packages';
+import { IEntityBase, IEntity, isType, ITypeEntity, IPackage, IPackageDependency, IAssembly } from '../structure';
 
 const entityCollections = ['l', 's', 'i', 't'];
 
-function find(entity: entities.IEntityBase, i: string): entities.IEntity {
+function find(entity: IEntityBase, i: string): IEntity {
     if (entity.i === i)
         return entity;
 
-    if (entities.isType(entity) && entity.e) {
+    if (isType(entity) && entity.e) {
         for (let name of entityCollections) {
             if (entity.e[name]) {
                 for (let nestedEntity of entity.e[name]) {
@@ -21,8 +20,8 @@ function find(entity: entities.IEntityBase, i: string): entities.IEntity {
     return undefined;
 }
 
-function findParent(entity: entities.IEntityBase, i: string): entities.ITypeEntity {
-    if (entities.isType(entity) && entity.e) {
+function findParent(entity: IEntityBase, i: string): ITypeEntity {
+    if (isType(entity) && entity.e) {
         for (let name of entityCollections) {
             if (entity.e[name]) {
                 for (let nestedEntity of entity.e[name]) {
@@ -38,7 +37,7 @@ function findParent(entity: entities.IEntityBase, i: string): entities.ITypeEnti
     return undefined;
 }
 
-export class PackageDoc implements packages.IPackage {
+export class PackageDoc implements IPackage {
     i: string; // Package ID
     v: string; // Version
     t: string; // Platform target
@@ -47,12 +46,12 @@ export class PackageDoc implements packages.IPackage {
     c: string; // Icon URL
     p: string; // Project URL
     f: string[]; // All supported platform targets
-    e: packages.IPackageDependency[]; // Dependencies
+    e: IPackageDependency[]; // Dependencies
     b: string; // Publication date
     r: boolean; // Version is a release version (not pre-release).
-    l: packages.IAssembly[]; // .NET files
+    l: IAssembly[]; // .NET files
 
-    findEntity(i: string): entities.IEntity {
+    findEntity(i: string): IEntity {
         for (let dll of this.l) {
             for (let type of dll.t) {
                 const result = find(type, i);
@@ -63,7 +62,7 @@ export class PackageDoc implements packages.IPackage {
         return undefined;
     }
 
-    findEntityParent(i: string): entities.ITypeEntity {
+    findEntityParent(i: string): ITypeEntity {
         for (let dll of this.l) {
             for (let type of dll.t) {
                 if (type.i === i)
@@ -76,7 +75,7 @@ export class PackageDoc implements packages.IPackage {
         return undefined;
     }
 
-    findEntityAssembly(i: string): packages.IAssembly {
+    findEntityAssembly(i: string): IAssembly {
         for (let assembly of this.l) {
             for (let type of assembly.t) {
                 if (find(type, i))
@@ -86,7 +85,7 @@ export class PackageDoc implements packages.IPackage {
         return undefined;
     }
 
-    static create(data: packages.IPackage): PackageDoc {
+    static create(data: IPackage): PackageDoc {
         const result = Object.assign(new PackageDoc(), data);
         return result;
     }

@@ -1,4 +1,4 @@
 import { getPlainJson } from "./util";
-import { IPackage } from "../util/structure/packages";
+import { IPackage } from "../structure";
 
 export const getPackageDocumentation = (url: string) => getPlainJson<IPackage>(url);
