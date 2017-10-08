@@ -11,3 +11,4 @@ export * from "./declarationLocation";
 export * from "./declaration";
 export * from "./title";
 export * from "./locationLink";
+export * from "./parameterDeclaration";

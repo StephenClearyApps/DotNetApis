@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { PackageDoc, FormatContext } from "../../util";
+import { PackageDoc } from "../../util";
 import { IFieldEntity } from "../../structure";
 import { title, declarationLocation, declaration } from "../../fragments";
 import { XmldocBasic } from "./XmldocBasic";

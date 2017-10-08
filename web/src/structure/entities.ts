@@ -1,7 +1,7 @@
 import { IAttribute } from './attributes';
 import { ITypeReference } from './typeReferences';
 import { ILiteral } from './literals';
-import { IXmldoc } from './xmldoc';
+import { IXmldoc, IXmldocNode } from './xmldoc';
 import { IGenericConstraint } from './genericConstraints';
 
 // This must be kept in sync with DotNetApis.Structure.Entities.EntityKind
@@ -249,7 +249,7 @@ export interface IParameter {
     v?: ILiteral;
 
     /** Structured XML documentation */
-    x?: IXmldoc;
+    x?: IXmldocNode;
 }
 
 // This must be kept in sync with DotNetApis.Structure.Entities.EntityAccessibility
