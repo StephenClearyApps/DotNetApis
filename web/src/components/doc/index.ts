@@ -1,4 +1,6 @@
-export * from "./Xmldoc";
+export * from "./Field";
+export * from "./Parameter";
+export * from "./XmldocNode";
 export * from "./XmldocBasic";
 export * from "./XmldocExamples";
 export * from "./XmldocExceptions";
