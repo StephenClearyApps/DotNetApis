@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Xmldoc } from "./Xmldoc";
+import { XmldocNode } from "./XmldocNode";
 
 import { PackageDoc } from "../../util";
 import { IXmldoc } from "../../structure";
@@ -16,7 +16,7 @@ export const XmldocExceptions: React.StatelessComponent<XmldocExceptionsProps> =
     return (
         <div>
             <h2>Exceptions</h2>
-            {data.x.map((x, i) => <Xmldoc data={x} pkg={pkg} key={i}/>)}
+            {data.x.map((x, i) => <XmldocNode data={x} pkg={pkg} key={i}/>)}
         </div>
     );
 }

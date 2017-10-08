@@ -9,7 +9,7 @@ import { ReactFragment, FormatContext, Styles, join, array } from "./util";
 import { typeReference } from "./typeReference";
 import { parameter } from "./parameter";
 
-export function formatTitle(pkg: PackageDoc, entity: IEntity): ReactFragment {
+export function title(pkg: PackageDoc, entity: IEntity): ReactFragment {
     const context = new FormatContext(pkg, Styles.TITLE);
     if (isClass(entity))
         return titleTypeDeclaration(context, entity, "Class");

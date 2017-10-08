@@ -9,13 +9,13 @@ interface XmldocProps {
     pkg: PackageDoc;
 }
 
-export const Xmldoc: React.StatelessComponent<XmldocProps> = ({ data, pkg }) => {
+export const XmldocNode: React.StatelessComponent<XmldocProps> = ({ data, pkg }) => {
     if (!data)
         return null;
     if (isStringXmldocNode(data))
         return <span>{data}</span>;
     else {
-        const children = data.c.map((x, i) => <Xmldoc data={x} key={i} pkg={pkg} />);
+        const children = data.c.map((x, i) => <XmldocNode data={x} key={i} pkg={pkg} />);
         if (isSeeXmldocNode(data))
             return <code>{locationLink(new FormatContext(pkg), data.a && data.a.l, children)}</code>;
         else if (isLinkXmldocNode(data))

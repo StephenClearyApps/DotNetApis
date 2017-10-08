@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { Xmldoc } from "./Xmldoc";
+import { XmldocNode } from "./XmldocNode";
 
 import { PackageDoc } from "../../util";
 import { IXmldoc } from "../../structure";
@@ -16,7 +16,7 @@ export const XmldocReturn: React.StatelessComponent<XmldocReturnProps> = ({ data
     return (
         <div>
             <h2>Return Value</h2>
-            <Xmldoc data={data.r} pkg={pkg}/>)
+            <XmldocNode data={data.r} pkg={pkg}/>)
         </div>
     );
 }
