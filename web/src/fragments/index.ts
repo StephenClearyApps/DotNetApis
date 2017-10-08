@@ -5,8 +5,9 @@
 // 3) Take a FormatContext parameter.
 
 // Note: not all types should be exported from this folder!
+// The exported types ("public api") take packages instead of FormatContext parameters.
 
-export * from "./locationLink";
 export * from "./declarationLocation";
 export * from "./declaration";
 export * from "./title";
+export * from "./locationLink";

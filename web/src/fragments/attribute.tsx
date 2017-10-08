@@ -2,7 +2,7 @@ import { IAttribute, IAttributeArgument } from "../structure";
 import { ReactFragment, FormatContext, join } from "./util";
 import { keyword } from "./keyword";
 import { literal } from "./literal";
-import { locationLink } from "./locationLink";
+import { location } from "./location";
 
 function attributeTarget(value: IAttribute): ReactFragment {
     return value.t ? [keyword(value.t), ': '] : null;
@@ -19,7 +19,7 @@ export function attribute(context: FormatContext, value: IAttribute): ReactFragm
     return [
         '[',
         attributeTarget(value),
-        locationLink(context, value.l, value.n),
+        location(context, value.l, value.n),
         value.a ?
             ['(', join(value.a.map(x => attributeConstructorArgument(context, x)), ', '), ')'] :
             null,

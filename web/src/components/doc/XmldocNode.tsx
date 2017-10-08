@@ -17,7 +17,7 @@ export const XmldocNode: React.StatelessComponent<XmldocProps> = ({ data, pkg })
     else {
         const children = data.c.map((x, i) => <XmldocNode data={x} key={i} pkg={pkg} />);
         if (isSeeXmldocNode(data))
-            return <code>{locationLink(new FormatContext(pkg), data.a && data.a.l, children)}</code>;
+            return <code>{locationLink(pkg, data.a && data.a.l, children)}</code>;
         else if (isLinkXmldocNode(data))
             return <a href={data.a.h} target='_blank'>{children}</a>;
         switch (data.k) {
