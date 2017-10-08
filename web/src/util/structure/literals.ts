@@ -19,6 +19,9 @@ export interface IPrimitiveLiteral extends ILiteralBase {
 
     /** `1` to prefer hexadecimal. */
     h?: number;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IPrimitiveLiteral: undefined;
 }
 
 export interface IArrayLiteral extends ILiteralBase {
@@ -27,11 +30,17 @@ export interface IArrayLiteral extends ILiteralBase {
 
     /** The values. */
     v: Array<ILiteral>;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IArrayLiteral: undefined;
 }
 
 export interface ITypeofLiteral extends ILiteralBase {
     /** The type passed to the typeof operator. */
     t: ITypeReference;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __ITypeofLiteral: undefined;
 }
 
 export interface IEnumLiteral extends ILiteralBase {
@@ -46,11 +55,14 @@ export interface IEnumLiteral extends ILiteralBase {
 
     /** Enum value names. Not present if the value is not an exact match for one (or more) of the enum names. */
     n?: Array<string>;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IEnumLiteral: undefined;
 }
 
 export type ILiteral = IArrayLiteral | ITypeofLiteral | IPrimitiveLiteral | IEnumLiteral;
 
-export function isNull(literal: ILiteralBase): boolean {
+export function isNullLiteral(literal: ILiteralBase): boolean {
     return !literal.k;
 }
 

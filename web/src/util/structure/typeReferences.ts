@@ -31,6 +31,9 @@ export interface ISimpleOrOpenGenericTypeReference extends ITypeReferenceBase {
 
     /** Number of generic arguments. Only present if this is an open generic type. */
     a?: number;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __ISimpleOrOpenGenericTypeReference: undefined;
 }
 
 export interface IKeywordTypeReference extends ITypeReferenceBase {
@@ -39,19 +42,30 @@ export interface IKeywordTypeReference extends ITypeReferenceBase {
 
     /** The location of the type for this keyword. */
     l: ILocation;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IKeywordTypeReference: undefined;
 }
 
 export interface IGenericInstanceTypeReference extends ITypeReferenceBase {
     /** Full child types. */
     t: Array<IConcreteTypeReference>;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IGenericInstanceTypeReference: undefined;
 }
 
 export interface IDynamicTypeReference extends ITypeReferenceBase {
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IDynamicTypeReference: undefined;
 }
 
 export interface IGenericParameterTypeReference extends ITypeReferenceBase {
     /** The name of the generic parameter. */
     n: string;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IGenericParameterTypeReference: undefined;
 }
 
 export interface IArrayTypeReference extends ITypeReferenceBase {
@@ -60,6 +74,9 @@ export interface IArrayTypeReference extends ITypeReferenceBase {
 
     /** The array dimensions. */
     d?: Array<IArrayDimension>;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IArrayTypeReference: undefined;
 }
 
 export interface IRequiredModifierTypeReference extends ITypeReferenceBase {
@@ -68,45 +85,51 @@ export interface IRequiredModifierTypeReference extends ITypeReferenceBase {
 
     /** The child type. */
     t: ITypeReference;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IRequiredModifierTypeReference: undefined;
 }
 
 export interface IPointerTypeReference extends ITypeReferenceBase {
     /** The child type. */
     t: ITypeReference;
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IPointerTypeReference: undefined;
 }
 
 export type ITypeReference = ISimpleOrOpenGenericTypeReference | IKeywordTypeReference | IGenericInstanceTypeReference | IDynamicTypeReference |
     IGenericParameterTypeReference | IArrayTypeReference | IRequiredModifierTypeReference | IPointerTypeReference;
 
-export function isSimpleOrOpenGeneric(typeReference: ITypeReferenceBase): typeReference is ISimpleOrOpenGenericTypeReference {
+export function isSimpleOrOpenGeneric(typeReference: ITypeReference): typeReference is ISimpleOrOpenGenericTypeReference {
     return !typeReference.k;
 }
 
-export function isKeyword(typeReference: ITypeReferenceBase): typeReference is IKeywordTypeReference {
+export function isKeyword(typeReference: ITypeReference): typeReference is IKeywordTypeReference {
     return typeReference.k === TypeReferenceKind.KEYWORD;
 }
 
-export function isGenericInstance(typeReference: ITypeReferenceBase): typeReference is IGenericInstanceTypeReference {
+export function isGenericInstance(typeReference: ITypeReference): typeReference is IGenericInstanceTypeReference {
     return typeReference.k === TypeReferenceKind.GENERIC_INSTANCE;
 }
 
-export function isDynamic(typeReference: ITypeReferenceBase): typeReference is IDynamicTypeReference {
+export function isDynamic(typeReference: ITypeReference): typeReference is IDynamicTypeReference {
     return typeReference.k === TypeReferenceKind.DYNAMIC;
 }
 
-export function isGenericParameter(typeReference: ITypeReferenceBase): typeReference is IGenericParameterTypeReference {
+export function isGenericParameter(typeReference: ITypeReference): typeReference is IGenericParameterTypeReference {
     return typeReference.k === TypeReferenceKind.GENERIC_PARAMETER;
 }
 
-export function isArray(typeReference: ITypeReferenceBase): typeReference is IArrayTypeReference {
+export function isArray(typeReference: ITypeReference): typeReference is IArrayTypeReference {
     return typeReference.k === TypeReferenceKind.ARRAY;
 }
 
-export function isRequiredModifier(typeReference: ITypeReferenceBase): typeReference is IRequiredModifierTypeReference {
+export function isRequiredModifier(typeReference: ITypeReference): typeReference is IRequiredModifierTypeReference {
     return typeReference.k === TypeReferenceKind.REQMOD;
 }
 
-export function isPointer(typeReference: ITypeReferenceBase): typeReference is IPointerTypeReference {
+export function isPointer(typeReference: ITypeReference): typeReference is IPointerTypeReference {
     return typeReference.k === TypeReferenceKind.POINTER;
 }
 
