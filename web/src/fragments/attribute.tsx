@@ -4,24 +4,24 @@ import { keyword } from "./keyword";
 import { literal } from "./literal";
 import { locationLink } from "./locationLink";
 
-function attributeTarget(entity: IAttribute): ReactFragment {
-    return entity.t ? [keyword(entity.t), ': '] : null;
+function attributeTarget(value: IAttribute): ReactFragment {
+    return value.t ? [keyword(value.t), ': '] : null;
 }
 
-function attributeConstructorArgument(context: FormatContext, entity: IAttributeArgument): ReactFragment {
-    if (entity.n)
-        return [entity.n, ' = ', literal(context, entity.v)]
+function attributeConstructorArgument(context: FormatContext, value: IAttributeArgument): ReactFragment {
+    if (value.n)
+        return [value.n, ' = ', literal(context, value.v)]
     else
-        return literal(context, entity.v);
+        return literal(context, value.v);
 }
 
-export function attribute(context: FormatContext, entity: IAttribute): ReactFragment {
+export function attribute(context: FormatContext, value: IAttribute): ReactFragment {
     return [
         '[',
-        attributeTarget(entity),
-        locationLink(context, entity.l, entity.n),
-        entity.a ?
-            ['(', join(entity.a.map(x => attributeConstructorArgument(context, x)), ', '), ')'] :
+        attributeTarget(value),
+        locationLink(context, value.l, value.n),
+        value.a ?
+            ['(', join(value.a.map(x => attributeConstructorArgument(context, x)), ', '), ')'] :
             null,
         ']'
     ];

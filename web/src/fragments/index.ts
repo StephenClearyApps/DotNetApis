@@ -9,3 +9,4 @@
 export * from "./locationLink";
 export * from "./formatTitle";
 export * from "./declarationLocation";
+export * from "./declaration";

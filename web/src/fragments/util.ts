@@ -6,9 +6,9 @@ import { ILocation, isCurrentPackageLocation } from "../structure";
 interface ReactFragmentArray extends Array<ReactFragment> { }
 export type ReactFragment = string | null | React.ReactElement<any> | ReactFragmentArray;
 
-export function join(components: ReactFragment[], separator: ReactFragment): ReactFragment {
-    const last = components.length - 1;
-    return components.map<ReactFragment[] | ReactFragment>((x, i) => i === last ? x : [x, separator]);
+export function join(fragments: ReactFragment[], separator: ReactFragment): ReactFragment {
+    const last = fragments.length - 1;
+    return fragments.map<ReactFragment>((x, i) => i === last ? x : [x, separator]);
 }
 
 export function locationDnaid(location: ILocation): string {
@@ -18,4 +18,9 @@ export function locationDnaid(location: ILocation): string {
         return location;
     else
         return location.i;
+}
+
+/** If the argument array is undefined or null, returns a new, empty array. Otherwise, returns its argument. */
+export function array<T>(value: T[]): T[] {
+    return value || [];
 }

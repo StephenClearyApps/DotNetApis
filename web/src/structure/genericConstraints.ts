@@ -14,16 +14,25 @@ export interface IGenericConstraintBase {
 }
 
 export interface IClassGenericConstraint extends IGenericConstraintBase {
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IClassGenericConstraint: undefined;
 }
 
 export interface IStructGenericConstraint extends IGenericConstraintBase {
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __IStructGenericConstraint: undefined;
 }
 
 export interface INewGenericConstraint extends IGenericConstraintBase {
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __INewGenericConstraint: undefined;
 }
 
 export interface ITypeGenericConstraint extends IGenericConstraintBase {
     t: ITypeReference; // The type.
+
+    /** https://github.com/Microsoft/TypeScript/issues/13325 */
+    __ITypeGenericConstraint: undefined;
 }
 
 export type IGenericConstraint = IClassGenericConstraint | IStructGenericConstraint | INewGenericConstraint | ITypeGenericConstraint;

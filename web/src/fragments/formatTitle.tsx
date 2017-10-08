@@ -5,7 +5,7 @@ import { IEntity, isClass, ITypeEntity, EntityModifiers, isInterface, isStruct, 
     isDelegate, isMethod, isProperty, isEvent, isField, IDelegateEntity, IMethodEntity, MethodStyles, IPropertyEntity, IEventEntity, IFieldEntity
 } from "../structure";
 import { nameWithGenericParameters } from "./nameWithGenericParameters";
-import { ReactFragment, FormatContext, Styles, join } from "./util";
+import { ReactFragment, FormatContext, Styles, join, array } from "./util";
 import { typeReference } from "./typeReference";
 import { parameter } from "./parameter";
 
@@ -56,13 +56,13 @@ function titleDelegateDeclaration(context: FormatContext, entity: IDelegateEntit
 function titleMethodDeclaration(context: FormatContext, entity: IMethodEntity): ReactFragment {
     if (entity.s === MethodStyles.IMPLICIT || entity.s === MethodStyles.EXPLICIT) {
         return [
-            <code>{typeReference(context, entity.r)}({join(entity.p.map(x => parameter(context, x)), ', ')})</code>,
+            <code>{typeReference(context, entity.r)}({join(array(entity.p).map(x => parameter(context, x)), ', ')})</code>,
             ' Operator'
         ];
     }
 
     return [
-        <code>{nameWithGenericParameters(context, entity)}({join(entity.p.map(x => parameter(context, x)), ', ')})</code>,
+        <code>{nameWithGenericParameters(context, entity)}({join(array(entity.p).map(x => parameter(context, x)), ', ')})</code>,
         entity.s === MethodStyles.OPERATOR ? ' Operator' :
             [entity.m & EntityModifiers.STATIC ? ' Static' : null, ' Method']
     ];

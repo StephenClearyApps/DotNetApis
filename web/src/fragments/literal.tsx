@@ -1,34 +1,34 @@
 import * as React from "react";
 
 import { ILiteral, isNullLiteral, isArrayLiteral, isTypeofLiteral, isPrimitiveLiteral, isEnumLiteral, IPrimitiveLiteral, IEnumLiteral } from "../structure";
-import { ReactFragment, FormatContext, join } from "./util";
+import { ReactFragment, FormatContext, join, array } from "./util";
 import { keyword } from "./keyword";
 import { typeReference } from "./typeReference";
 
-function valueString(entity: IPrimitiveLiteral | IEnumLiteral): ReactFragment {
-    if (typeof(entity.v) === 'string')
-        return <span className='s'>{'"' + entity.v + '"'}</span>;
-    return entity.h ? entity.v.toString(16) : entity.v.toString();
+function valueString(value: IPrimitiveLiteral | IEnumLiteral): ReactFragment {
+    if (typeof(value.v) === 'string')
+        return <span className='s'>{'"' + value.v + '"'}</span>;
+    return value.h ? value.v.toString(16) : value.v.toString();
 }
 
-export function literal(context: FormatContext, entity: ILiteral): ReactFragment {
-    if (isNullLiteral(entity))
+export function literal(context: FormatContext, value: ILiteral): ReactFragment {
+    if (isNullLiteral(value))
         return keyword('null');
-    else if (isArrayLiteral(entity))
+    else if (isArrayLiteral(value))
         return [
             keyword('new'),
             ' ',
-            typeReference(context, entity.t),
+            typeReference(context, value.t),
             '[] { ',
-            join(entity.v.map(x => literal(context, x)), ', '),
+            join(array(value.v).map(x => literal(context, x)), ', '),
             ' }'
         ];
-    else if (isTypeofLiteral(entity))
-        return [keyword('typeof'), '(', typeReference(context, entity.t), ')'];
-    else if (isPrimitiveLiteral(entity))
-        return valueString(entity);
-    else if (isEnumLiteral(entity))
-        return entity.n ?
-            join(entity.n.map(x => [typeReference(context, entity.t), '.', x]), ' | ') :
-            valueString(entity);
+    else if (isTypeofLiteral(value))
+        return [keyword('typeof'), '(', typeReference(context, value.t), ')'];
+    else if (isPrimitiveLiteral(value))
+        return valueString(value);
+    else if (isEnumLiteral(value))
+        return value.n ?
+            join(value.n.map(x => [typeReference(context, value.t), '.', x]), ' | ') :
+            valueString(value);
 }
