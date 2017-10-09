@@ -1,9 +1,10 @@
 import * as React from 'react';
 
+import { XmldocNode } from ".";
+
 import { PackageDoc } from "../../util";
 import { IEntity, IParameter } from "../../structure";
 import { parameterDeclaration } from "../../fragments";
-import { XmldocNode } from "./XmldocNode";
 
 interface ParameterProps {
     entity: IEntity;

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { XmldocNode } from "./XmldocNode";
+import { XmldocNode } from ".";
 
 import { PackageDoc } from "../../util";
 import { IXmldoc } from "../../structure";

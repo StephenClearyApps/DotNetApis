@@ -1,17 +1,17 @@
 import * as React from 'react';
 
-import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
+import { XmldocBasic, XmldocRemarks, XmldocReturn, XmldocExceptions, XmldocExamples, XmldocSeeAlso } from ".";
 
 import { PackageDoc } from "../../util";
-import { IFieldEntity } from "../../structure";
+import { IEventEntity } from "../../structure";
 import { title, declarationLocation, declaration } from "../../fragments";
 
-interface FieldProps {
-    data: IFieldEntity;
+interface EventProps {
+    data: IEventEntity;
     pkg: PackageDoc;
 }
 
-export const Field: React.StatelessComponent<FieldProps> = ({ data, pkg }) => (
+export const Event: React.StatelessComponent<EventProps> = ({ data, pkg }) => (
     <div>
         <h1>{title(pkg, data)}</h1>
 
@@ -21,6 +21,8 @@ export const Field: React.StatelessComponent<FieldProps> = ({ data, pkg }) => (
         <pre className='highlight'><span className='c'>// At {declarationLocation(pkg, data)}</span><br/>{declaration(pkg, data)}</pre>
 
         <XmldocRemarks data={data.x} pkg={pkg}/>
+        <XmldocReturn data={data.x} pkg={pkg}/>
+        <XmldocExceptions data={data.x} pkg={pkg}/>
         <XmldocExamples data={data.x} pkg={pkg}/>
         <XmldocSeeAlso data={data.x} pkg={pkg}/>
     </div>
