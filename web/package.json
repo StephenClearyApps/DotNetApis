@@ -35,6 +35,7 @@
   "dependencies": {
     "@types/bluebird-global": "^3.5.3",
     "@types/material-ui": "^0.18.2",
+    "@types/query-string": "^5.0.0",
     "@types/react": "^15.6.2",
     "@types/react-dom": "^15.5.4",
     "@types/react-redux": "^5.0.9",
@@ -48,6 +49,7 @@
     "bluebird": "^3.5.0",
     "material-ui": "^0.19.3",
     "moment": "^2.18.1",
+    "query-string": "^5.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-redux": "^5.0.6",
