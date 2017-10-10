@@ -15,6 +15,6 @@ export function Main(props: State & Actions & RouteComponentProps<any>)
     <div>
         <Route exact path="/" render={() => <Home {...props} />} />
         <Route exact path="/pkg/:packageId/:packageVersion?/:targetFramework?" render={() => <Package {...props}/>}/>
-        <Route exact path="/pkg/:packageId/:packageVersion/:targetFramework/:dnaid+" render={() => <EntityDoc {...props}/>}/>
+        <Route exact path="/pkg/:packageId/:packageVersion/:targetFramework/doc/:dnaid+" render={() => <EntityDoc {...props}/>}/>
     </div>);
 }

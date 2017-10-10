@@ -5,20 +5,17 @@ import { ReactComponent } from './util';
 import { State, PackageDocumentationRequest } from '../../reducers';
 import { packageKey } from '../../util';
 
-interface RouteParams {
-    packageId: string;
-    packageVersion?: string;
-    targetFramework?: string;
+export interface PackageRequestRouteParams extends PackageKey {
 }
 
 export interface PackageRequestInjectedProps {
     request: PackageDocumentationRequest;
-    requestParams: RouteParams;
+    requestParams: PackageRequestRouteParams;
 }
 
 const packageRequest =
     <TComponentProps extends {}>(Component: ReactComponent<TComponentProps & PackageRequestInjectedProps>) =>
-    (props: TComponentProps & State & RouteComponentProps<RouteParams>) => {
+    (props: TComponentProps & State & RouteComponentProps<PackageRequestRouteParams>) => {
         const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
         return <Component {...props} request={request} requestParams={props.match.params}/>;
     };

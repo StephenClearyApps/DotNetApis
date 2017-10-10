@@ -42,7 +42,7 @@ export function Home(props: State & Actions & RouteComponentProps<{}>)
     return (
     <div>
         <div><Link to="/pkg/Nito.AsyncEx">Load</Link></div>
-        <HashFilteredGroupedList groups={groups} />
+        <HashFilteredGroupedList groups={groups} hashPrefix="test" />
     </div>);
 }
 

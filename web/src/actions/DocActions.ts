@@ -41,7 +41,7 @@ export const DocActions = {
                 listener.listen();
                 while (true) {
                     await Promise.delay(2000);
-                    const pollResult = await api.getStatus(normalizedKey.packageId, normalizedKey.packageVersion, normalizedKey.targetFramework);
+                    const pollResult = await api.getStatus(normalizedKey);
                     if (pollResult.status === "Succeeded") {
                         dispatch(actions.getDocRedirecting(requestKey, getDocResponse.log, pollResult.jsonUri, pollResult.logUri));
                         const doc = await api.getPackageDocumentation(pollResult.jsonUri);

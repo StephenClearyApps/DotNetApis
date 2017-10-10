@@ -20,7 +20,7 @@ export const Type: React.StatelessComponent<TypeProps> = ({ data, pkg }) => {
         memberGrouping("Instance", data.e.i, pkg),
         // TODO: ("Protected", data.e.d, pkg),
         memberGrouping("Nested types", data.e.t, pkg)
-    ];
+    ].filter(x => x !== null);
     return (
         <div>
             <h1>{title(pkg, data)}</h1>
@@ -42,12 +42,14 @@ export const Type: React.StatelessComponent<TypeProps> = ({ data, pkg }) => {
 };
 
 function memberGrouping(name: string, items: IEntity[], pkg: PackageDoc): FilteredListItemGroup {
+    if (!items || items.length === 0)
+        return null;
     return {
         heading: name,
         items: items.map(x => ({
                 search: x.n,
                 content:
-                    <PackageEntityLink key={x.i} packageId={pkg.i} packageVersion={pkg.v} targetFramework={pkg.t} dnaid={x.i}>
+                    <PackageEntityLink key={x.i} {...pkg.packageKey} dnaid={x.i}>
                         <code>{simpleDeclaration(pkg, x)}</code>
                     </PackageEntityLink>
         }))

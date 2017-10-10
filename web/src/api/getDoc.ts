@@ -1,5 +1,6 @@
 import { MessageBase } from "./messages";
 import { getJsonResponse } from "./util";
+import { without$ } from "../util";
 
 export interface InProgressResponse extends MessageBase {
     _type: "InProgressResponse";
@@ -21,8 +22,8 @@ export function isInProgressResponse(response: InProgressResponse | RedirectResp
     return response._type === "InProgressResponse";
 }
 
-export async function getDoc({ packageId, packageVersion, targetFramework }: PackageKey): Promise<InProgressResponse | RedirectResponse> {
-    const response = await getJsonResponse<InProgressResponse | RedirectResponse>("http://localhost:7071/api/0/doc", { packageId, packageVersion, targetFramework });
+export async function getDoc(key: PackageKey): Promise<InProgressResponse | RedirectResponse> {
+    const response = await getJsonResponse<InProgressResponse | RedirectResponse>("http://localhost:7071/api/0/doc", {...without$(key)});
     if (response.status === 202)
         return {...response.json as InProgressResponse, _type: "InProgressResponse"};
     return {...response.json as RedirectResponse, _type: "RedirectResponse"};

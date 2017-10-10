@@ -1,5 +1,6 @@
 import { getJson } from "./util";
 import { MessageBase } from "./messages";
+import { without$ } from "../util";
 
 export type Status = "Requested" | "Succeeded" | "Failed";
 export interface StatusResponse extends MessageBase {
@@ -8,5 +9,5 @@ export interface StatusResponse extends MessageBase {
     jsonUri: string;
 }
 
-export const getStatus = (packageId: string, packageVersion: string, targetFramework: string) =>
-    getJson<StatusResponse>("http://localhost:7071/api/0/status", { packageId, packageVersion, targetFramework });
+export const getStatus = (key: PackageKey) =>
+    getJson<StatusResponse>("http://localhost:7071/api/0/status", {...without$(key)});
