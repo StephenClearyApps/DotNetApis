@@ -1,23 +1,20 @@
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
-import { parse, stringify } from "query-string";
 
 import { FilteredListItem, FilteredListItemGroup, FilteredGroupedList } from "./FilteredGroupedList";
 export { FilteredListItem, FilteredListItemGroup } from "./FilteredGroupedList";
+
+import { HashFilter } from "../logic";
 
 export interface HashFilteredGroupedListProps {
     groups: FilteredListItemGroup[];
 }
 
-interface HashParams {
-    filter: string;
-}
-
 const HashFilteredGroupedListComponent: React.StatelessComponent<HashFilteredGroupedListProps & RouteComponentProps<any>> = ({ groups, location, history }) => {
-    const hashParams : HashParams = parse(location.hash);
+    const hash = new HashFilter(location, history);
     return <FilteredGroupedList groups={groups}
-            filter={hashParams.filter}
-            filterChanged={value => history.replace("#" + stringify({ ...hashParams, filter: value }))} />;
+            filter={hash.filter}
+            filterChanged={value => hash.filter = value} />;
 };
 
 export const HashFilteredGroupedList = withRouter(HashFilteredGroupedListComponent);

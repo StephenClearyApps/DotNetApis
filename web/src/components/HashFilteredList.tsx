@@ -1,23 +1,20 @@
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
-import { parse, stringify } from "query-string";
 
 import { FilteredListItem, FilteredList } from "./FilteredList";
 export { FilteredListItem } from "./FilteredList";
+
+import { HashFilter } from "../logic";
 
 export interface HashFilteredListProps {
     items: FilteredListItem[];
 }
 
-interface HashParams {
-    filter: string;
-}
-
 const HashFilteredListComponent: React.StatelessComponent<HashFilteredListProps & RouteComponentProps<any>> = ({ items, location, history }) => {
-    const hashParams : HashParams = parse(location.hash);
+    const hash = new HashFilter(location, history);
     return <FilteredList items={items}
-            filter={hashParams.filter}
-            filterChanged={value => history.replace("#" + stringify({ ...hashParams, filter: value }))} />;
+            filter={hash.filter}
+            filterChanged={value => hash.filter = value} />;
 };
 
 export const HashFilteredList = withRouter(HashFilteredListComponent);
