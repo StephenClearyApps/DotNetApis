@@ -1,5 +1,6 @@
 export * from 'recompose';
 
+export * from './AutoPackage';
 export * from './Either';
 export * from './ExecuteOnMount';
 export * from './LoadOnDemand';

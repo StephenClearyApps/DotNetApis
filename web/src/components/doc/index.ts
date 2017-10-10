@@ -6,6 +6,7 @@ export * from "./Method";
 export * from "./Parameter";
 export * from "./Parameters";
 export * from "./Property";
+export * from "./Type";
 export * from "./XmldocNode";
 export * from "./XmldocBasic";
 export * from "./XmldocExamples";

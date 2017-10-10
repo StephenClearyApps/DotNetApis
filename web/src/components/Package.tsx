@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { State } from "../reducers";
 import { Actions } from "../actions";
-import { withPackageRequestLoadOnDemand, withPackage, PackageInjectedProps } from "./hoc";
+import { withAutoPackage, PackageInjectedProps } from "./hoc";
 
 export interface PackageProps extends State, Actions {
 }
@@ -14,4 +14,4 @@ function PackageComponent({ pkg, packageDoc }: PackageProps & PackageInjectedPro
     </div>);
 }
 
-export const Package = withPackageRequestLoadOnDemand(withPackage(PackageComponent));
+export const Package = withAutoPackage(PackageComponent);
