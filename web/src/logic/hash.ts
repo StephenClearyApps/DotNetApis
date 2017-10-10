@@ -5,8 +5,12 @@ export function getHash<T extends object>(location: Location): T {
     return parse(location.hash);
 }
 
-export function setHash<T extends object>(history: History, value: T) {
+export function replaceHash<T extends object>(history: History, value: T) {
     history.replace("#" + stringify(value));
+}
+
+export function pushHash<T extends object>(history: History, value: T) {
+    history.push("#" + stringify(value));
 }
 
 interface FilterHash {
@@ -23,7 +27,11 @@ export class HashFilter {
         return this.hash.filter || "";
     }
     set filter(value: string) {
+        const replace = (this.hash.filter && value) || (!this.hash.filter && !value);
         this.hash.filter = value ? value : undefined;
-        setHash(this.history, this.hash);
+        if (replace)
+            replaceHash(this.history, this.hash);
+        else
+            pushHash(this.history, this.hash);
     }
 }
