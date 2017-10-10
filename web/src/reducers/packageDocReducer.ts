@@ -6,7 +6,7 @@ import { LogMessage, Status as PackageStatus } from '../api';
 
 export type Status = 'STARTED' | 'DONE' | 'ERROR';
 
-interface PackageDocumentationRequest {
+export interface PackageDocumentationRequest {
     /** The status of the request */
     status: Status;
     
