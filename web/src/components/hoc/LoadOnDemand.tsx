@@ -22,7 +22,7 @@ interface LoadOnDemandOptions<T> {
 export const withLoadOnDemand =
     <TComponentProps extends {}>({ hasStarted, isLoaded, load, LoadingComponent } : LoadOnDemandOptions<TComponentProps>) =>
     (Component: ReactComponent<TComponentProps>) =>
-    compose(
+    compose<TComponentProps, TComponentProps>(
         withExecuteOnMount((state: TComponentProps) => { if (!hasStarted(state)) load(state); }),
         withEither(isLoaded, LoadingComponent)
     )(Component);
