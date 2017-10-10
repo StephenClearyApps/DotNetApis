@@ -1,9 +1,9 @@
 import * as React from "react";
-import { IconButton, FontIcon, Toolbar, ToolbarGroup, TextField, List, ListItem } from "material-ui";
+import { IconButton, Toolbar, ToolbarGroup, TextField, List, ListItem } from "material-ui";
 
 export interface FilteredListItem {
     /** The content to display */
-    content: JSX.Element;
+    content: React.ReactElement<ListItem>;
     /** The search text to apply the filter to */
     search: string;
 }
@@ -21,7 +21,6 @@ function generateRegex(filter: string) {
 }
 
 export const FilteredList: React.StatelessComponent<FilteredListProps> = ({ filter, filterChanged, items }) => {
-    console.log(filter);
     if (filter === "")
         filter = undefined;
     const regex = generateRegex(filter);
@@ -34,10 +33,10 @@ export const FilteredList: React.StatelessComponent<FilteredListProps> = ({ filt
     return (
         <div>
             <Toolbar>
-                <ToolbarGroup>
-                    <TextField hintText="Filter" value={filter || ""} onChange={(e, newValue) => filterChanged(newValue ? newValue : undefined)}/>
+                <ToolbarGroup style={{flex: "auto"}}>
+                    <TextField hintText="Filter" value={filter || ""} onChange={(e, newValue) => filterChanged(newValue ? newValue : undefined)} style={{flex: "auto"}}/>
                 </ToolbarGroup>
-                <ToolbarGroup>
+                <ToolbarGroup lastChild={true} style={{marginLeft: "24px"}}>
                     {filteredMessage}
                     {clearFilterButton}
                 </ToolbarGroup>
