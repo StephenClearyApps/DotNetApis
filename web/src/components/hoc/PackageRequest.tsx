@@ -20,7 +20,7 @@ const packageRequest =
     <TComponentProps extends {}>(Component: ReactComponent<TComponentProps & PackageRequestInjectedProps>) =>
     (props: TComponentProps & State & RouteComponentProps<RouteParams>) => {
         const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
-        return <Component {...props} request={request} requestParams={props.match.params}/>
+        return <Component {...props} request={request} requestParams={props.match.params}/>;
     };
 
 /** Takes the route parameters `packageId`, `packageVersion`, and `targetFramework`; and injects `packageDocumentationRequest` */

@@ -2,17 +2,16 @@ import * as React from "react";
 
 import { State } from "../reducers";
 import { Actions } from "../actions";
-import { withPackageRequestLoadOnDemand, PackageRequestInjectedProps } from "./hoc";
+import { withPackageRequestLoadOnDemand, withPackage, PackageInjectedProps } from "./hoc";
 
 export interface PackageProps extends State, Actions {
 }
 
-function PackageComponent({ request, packageDoc }: PackageProps & PackageRequestInjectedProps) {
-    const doc = packageDoc.packageDocumentation[request.normalizedPackageKey];
+function PackageComponent({ pkg, packageDoc }: PackageProps & PackageInjectedProps) {
     return (
     <div>
-        {JSON.stringify(doc)}
+        {JSON.stringify(pkg)}
     </div>);
 }
 
-export const Package = withPackageRequestLoadOnDemand(PackageComponent);
+export const Package = withPackageRequestLoadOnDemand(withPackage(PackageComponent));

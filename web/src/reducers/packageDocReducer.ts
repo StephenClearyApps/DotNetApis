@@ -27,7 +27,7 @@ interface PackageDocumentationRequests {
     [requestPackageKey: string]: PackageDocumentationRequest;
 }
 
-interface PackageDocumentationStatus {
+export interface PackageDocumentationStatus {
     /** The status of the package documentation generation. */
     status: PackageStatus;
 

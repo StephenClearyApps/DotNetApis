@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-export { PackageDocumentationRequest } from './packageDocReducer';
+export * from './packageDocReducer';
 import { packageDoc, PackageDocsState } from './packageDocReducer';
 import { time, TimeState } from './timeReducer';
 
