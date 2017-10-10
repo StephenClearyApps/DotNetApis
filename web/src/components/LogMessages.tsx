@@ -3,9 +3,13 @@ import * as React from "react";
 import { LogMessage as LogMessageType } from "../api";
 import { LogMessage } from "./LogMessage";
 
-export function LogMessages(props: { messages: LogMessageType[], currentTimestamp: number }) {
-    const { messages } = props;
-    const oneDayAgo = props.currentTimestamp - 24 * 60 * 60 * 1000;
+export interface LogMessagesProps {
+    messages: LogMessageType[];
+    currentTimestamp: number;
+}
+
+export const LogMessages: React.StatelessComponent<LogMessagesProps> = ({ messages, currentTimestamp }) => {
+    const oneDayAgo = currentTimestamp - 24 * 60 * 60 * 1000;
     const fullTimestamp = messages.some(x => x.timestamp && x.timestamp < oneDayAgo);
     return (
         <div className="logs">

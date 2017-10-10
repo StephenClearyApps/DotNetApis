@@ -1,10 +1,12 @@
 import * as React from "react";
 import * as moment from "moment";
 
-const shortNbsp = '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
-const fullNbsp = '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0';
-export function Timestamp(props: { timestamp: number, fullTimestamp: boolean }) {
-    const { timestamp, fullTimestamp } = props;
+export interface TimestampProps {
+    timestamp: number;
+    fullTimestamp: boolean;
+}
+
+export const Timestamp: React.StatelessComponent<TimestampProps> = ({ timestamp, fullTimestamp }) => {
     if (fullTimestamp)
         return <span>{timestamp ? moment(timestamp).format('YYYY-MM-DD HH:mm:ss.SSS') : "---------- ------------"}</span>;
     else
