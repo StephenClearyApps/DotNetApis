@@ -2,7 +2,7 @@
 // These formatting functions:
 // 1) Take regular parameters instead of "props".
 // 2) Return an array of child elements complete with keys.
-// 3) Take a Package parameter.
+// 3) Take a PackageContext parameter.
 
 export * from "./declaration";
 export * from "./declarationLocation";
