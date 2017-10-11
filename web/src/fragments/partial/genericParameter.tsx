@@ -1,6 +1,5 @@
-import { IGenericParameter, GenericParameterModifiers } from "../structure";
-import { ReactFragment, FormatContext } from "./util";
-import { keyword } from "./keyword";
+import { IGenericParameter, GenericParameterModifiers } from "../../structure";
+import { ReactFragment, FormatContext, keyword } from ".";
 
 export function genericParameter(context: FormatContext, value: IGenericParameter): ReactFragment {
     if (!context.includeParameterModifiers)

@@ -1,6 +1,5 @@
-import { EntityModifiers } from "../structure";
-import { ReactFragment } from "./util";
-import { keyword } from "./keyword";
+import { EntityModifiers } from "../../structure";
+import { ReactFragment, keyword } from ".";
 
 export function modifiers(value: EntityModifiers): ReactFragment {
     const result = [];

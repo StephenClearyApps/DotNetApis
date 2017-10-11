@@ -1,12 +1,12 @@
 import * as React from "react";
 
-import { PackageContext } from "../util";
-import { ReactFragment, FormatContext, Styles } from "./util";
 import { IEntity, ITopLevelEntityBase } from "../structure";
-import { fullConcreteTypeReference } from "./fullConcreteTypeReference";
+import { PackageContext, FormatContext, Styles } from "../util";
+import { fullConcreteTypeReference } from "./partial";
 
-export function declarationLocation(pkgContext: PackageContext, entity: IEntity): ReactFragment {
+export function declarationLocation(pkgContext: PackageContext, entity: IEntity): React.ReactChild[] {
     const context = new FormatContext(pkgContext, Styles.DECLARATION);
     const parent = pkgContext.pkg.findEntityParent(entity.i);
-    return [<code key={entity.i}>{React.Children.toArray(parent ? fullConcreteTypeReference(context, parent) : (entity as ITopLevelEntityBase).s)}</code>];
+    const result = parent ? fullConcreteTypeReference(context, parent) : (entity as ITopLevelEntityBase).s;
+    return React.Children.toArray(result);
 }

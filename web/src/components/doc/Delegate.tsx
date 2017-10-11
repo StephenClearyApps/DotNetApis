@@ -4,7 +4,7 @@ import { XmldocBasic, XmldocRemarks, XmldocReturn, XmldocExceptions, XmldocExamp
 
 import { PackageContext } from "../../util";
 import { IDelegateEntity } from "../../structure";
-import { title, declarationLocation, declaration } from "../../fragments";
+import { titleDeclaration, declarationLocation, declaration } from "../../fragments";
 
 interface DelegateProps extends PackageContext {
     data: IDelegateEntity;
@@ -14,7 +14,7 @@ export const Delegate: React.StatelessComponent<DelegateProps> = props => {
     const { data } = props;
     return (
     <div>
-        <h1>{title(props, data)}</h1>
+        <h1>{titleDeclaration(props, data)}</h1>
 
         <XmldocBasic {...props} data={data.x}/>
 

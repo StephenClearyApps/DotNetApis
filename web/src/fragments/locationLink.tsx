@@ -1,10 +1,11 @@
+import * as React from "react";
 import { LinkProps } from "react-router-dom";
 
 import { ILocation } from "../structure";
-import { ReactFragment, FormatContext } from "./util";
-import { PackageContext } from "../util";
-import { location as loc } from "./location";
+import { PackageContext, FormatContext } from "../util";
+import { location as partialLocation, ReactFragment } from "./partial";
 
-export function locationLink(pkgContext: PackageContext, location: ILocation, content: ReactFragment, linkProps?: LinkProps): ReactFragment {
-    return loc(new FormatContext(pkgContext), location, content, linkProps);
+export function locationLink(pkgContext: PackageContext, location: ILocation, content: ReactFragment, linkProps?: LinkProps): React.ReactChild[] {
+    const context = new FormatContext(pkgContext);
+    return React.Children.toArray(partialLocation(context, location, content, linkProps));
 }

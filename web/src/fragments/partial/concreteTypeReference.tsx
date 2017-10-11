@@ -1,7 +1,5 @@
-import { IConcreteTypeReference } from "../structure";
-import { ReactFragment, FormatContext, locationDnaid, join } from "./util";
-import { location } from "./location";
-import { typeReference } from "./typeReference";
+import { IConcreteTypeReference } from "../../structure";
+import { ReactFragment, FormatContext, locationDnaid, join, location, typeReference } from ".";
 
 export function concreteTypeReference(context: FormatContext, value: IConcreteTypeReference): ReactFragment {
     if (locationDnaid(value.l) === 'System.Nullable\'1')

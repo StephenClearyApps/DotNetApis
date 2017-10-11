@@ -1,6 +1,5 @@
-import { EntityAccessibility } from "../structure";
-import { ReactFragment } from "./util";
-import { keyword } from "./keyword";
+import { EntityAccessibility } from "../../structure";
+import { ReactFragment, keyword } from ".";
 
 export function accessibility(value: EntityAccessibility): ReactFragment {
     switch (value) {

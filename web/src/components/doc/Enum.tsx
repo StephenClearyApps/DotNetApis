@@ -4,7 +4,7 @@ import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
 
 import { PackageContext } from "../../util";
 import { IEnumEntity } from "../../structure";
-import { title, declarationLocation, declaration } from "../../fragments";
+import { titleDeclaration, declarationLocation, declaration } from "../../fragments";
 
 interface EnumProps extends PackageContext {
     data: IEnumEntity;
@@ -14,7 +14,7 @@ export const Enum: React.StatelessComponent<EnumProps> = props => {
     const { data } = props;
     return (
     <div>
-        <h1>{title(props, data)}</h1>
+        <h1>{titleDeclaration(props, data)}</h1>
 
         <XmldocBasic {...props} data={data.x}/>
 

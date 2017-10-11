@@ -1,9 +1,9 @@
 import * as React from "react";
 import { LinkProps } from "react-router-dom";
 
-import { ILocation, isCurrentPackageLocation, isDependencyLocation } from "../structure";
-import { ReactFragment, FormatContext } from "./util";
-import { PackageEntityLink, ReferenceEntityLink } from "../components/links";
+import { ILocation, isCurrentPackageLocation, isDependencyLocation } from "../../structure";
+import { ReactFragment, FormatContext } from ".";
+import { PackageEntityLink, ReferenceEntityLink } from "../../components/links"; // TODO: move these here?
 
 export function location(context: FormatContext, location: ILocation, content: ReactFragment, linkProps?: LinkProps): ReactFragment {
     const { pkg } = context;

@@ -1,9 +1,5 @@
-import { IParameter, MethodParameterModifiers } from "../structure";
-import { ReactFragment, FormatContext, array } from "./util";
-import { keyword } from "./keyword";
-import { literal } from "./literal";
-import { typeReference } from "./typeReference";
-import { attribute } from "./attribute";
+import { IParameter, MethodParameterModifiers } from "../../structure";
+import { ReactFragment, FormatContext, array, keyword, literal, typeReference, attribute } from ".";
 
 export function parameter(context: FormatContext, value: IParameter, attributeDivider?: ReactFragment): ReactFragment {
     attributeDivider = attributeDivider || ' ';

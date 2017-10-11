@@ -1,6 +1,6 @@
-export * from "../util/formatContext";
+export * from "../../util/formatContext";
 
-import { ILocation, isCurrentPackageLocation } from "../structure";
+import { ILocation, isCurrentPackageLocation } from "../../structure";
 
 // Note that react elements are not react fragments; returning bare elements prevents React from auto-assigning keys, so they must be wrapped in an array.
 interface ReactFragmentArray extends Array<ReactFragment> { }

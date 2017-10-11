@@ -1,9 +1,7 @@
 import * as React from "react";
 
-import { IGenericParameter, IGenericConstraint, isClassGenericConstrint, isNewGenericConstrint, isStructGenericConstrint, isTypeGenericConstrint } from "../structure";
-import { ReactFragment, FormatContext, join } from "./util";
-import { keyword } from "./keyword";
-import { typeReference } from "./typeReference";
+import { IGenericParameter, IGenericConstraint, isClassGenericConstrint, isNewGenericConstrint, isStructGenericConstrint, isTypeGenericConstrint } from "../../structure";
+import { ReactFragment, FormatContext, join, keyword, typeReference } from ".";
 
 export function genericParameterConstraint(context: FormatContext, value: IGenericParameter): ReactFragment {
     if (!value.c)

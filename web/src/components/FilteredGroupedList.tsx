@@ -2,7 +2,7 @@ import * as React from 'react';
 import { IconButton, Toolbar, ToolbarGroup, TextField, List, Subheader, Divider } from "material-ui";
 
 import { FilteredListItem } from "./FilteredList";
-import { join } from '../fragments/util';
+import { join } from '../fragments/partial/util';
 export { FilteredListItem } from "./FilteredList";
 
 export interface FilteredListItemGroup {

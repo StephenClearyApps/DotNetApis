@@ -1,9 +1,7 @@
 import * as React from "react";
 
-import { ILiteral, isNullLiteral, isArrayLiteral, isTypeofLiteral, isPrimitiveLiteral, isEnumLiteral, IPrimitiveLiteral, IEnumLiteral } from "../structure";
-import { ReactFragment, FormatContext, join, array } from "./util";
-import { keyword } from "./keyword";
-import { typeReference } from "./typeReference";
+import { ILiteral, isNullLiteral, isArrayLiteral, isTypeofLiteral, isPrimitiveLiteral, isEnumLiteral, IPrimitiveLiteral, IEnumLiteral } from "../../structure";
+import { ReactFragment, FormatContext, join, array, keyword, typeReference } from ".";
 
 function valueString(value: IPrimitiveLiteral | IEnumLiteral): ReactFragment {
     if (typeof(value.v) === 'string')

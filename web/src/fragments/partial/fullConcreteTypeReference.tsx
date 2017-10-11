@@ -1,7 +1,5 @@
-import { ITypeEntity } from "../structure";
-import { ReactFragment, FormatContext } from "./util";
-import { location } from "./location";
-import { nameWithGenericParameters } from "./nameWithGenericParameters";
+import { ITypeEntity } from "../../structure";
+import { ReactFragment, FormatContext, location, nameWithGenericParameters } from ".";
 
 export function fullConcreteTypeReference(context: FormatContext, entity: ITypeEntity): ReactFragment {
     const parent = context.pkg.findEntityParent(entity.i);

@@ -7,7 +7,7 @@ import { PackageEntityLink } from '../links';
 
 import { PackageContext } from "../../util";
 import { ITypeEntity, IEntity } from "../../structure";
-import { title, declarationLocation, declaration, simpleDeclaration } from "../../fragments";
+import { titleDeclaration, declarationLocation, declaration, simpleDeclaration } from "../../fragments";
 
 interface TypeProps extends PackageContext {
     data: ITypeEntity;
@@ -24,7 +24,7 @@ export const Type: React.StatelessComponent<TypeProps> = (props) => {
     ].filter(x => x !== null);
     return (
         <div>
-            <h1>{title(props, data)}</h1>
+            <h1>{titleDeclaration(props, data)}</h1>
 
             <XmldocBasic {...props} data={data.x}/>
 

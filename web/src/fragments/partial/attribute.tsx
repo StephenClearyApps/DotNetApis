@@ -1,8 +1,5 @@
-import { IAttribute, IAttributeArgument } from "../structure";
-import { ReactFragment, FormatContext, join } from "./util";
-import { keyword } from "./keyword";
-import { literal } from "./literal";
-import { location } from "./location";
+import { IAttribute, IAttributeArgument } from "../../structure";
+import { ReactFragment, FormatContext, join, keyword, literal, location } from ".";
 
 function attributeTarget(value: IAttribute): ReactFragment {
     return value.t ? [keyword(value.t), ': '] : null;

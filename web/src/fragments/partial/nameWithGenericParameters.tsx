@@ -1,6 +1,5 @@
-import { ITypeEntity, IMethodEntity } from "../structure";
-import { ReactFragment, FormatContext, join } from "./util";
-import { genericParameter } from "./genericParameter";
+import { ITypeEntity, IMethodEntity } from "../../structure";
+import { ReactFragment, FormatContext, join, genericParameter } from ".";
 
 export function nameWithGenericParameters(context: FormatContext, entity: ITypeEntity | IMethodEntity): ReactFragment {
     if (!entity.g)
