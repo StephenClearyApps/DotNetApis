@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { ListItem } from 'material-ui';
 
 import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
 import { HashFilteredGroupedList, FilteredListItemGroup } from "../HashFilteredGroupedList";
@@ -49,8 +50,8 @@ function memberGrouping(name: string, items: IEntity[], pkg: PackageDoc): Filter
         items: items.map(x => ({
                 search: x.n,
                 content:
-                    <PackageEntityLink key={x.i} {...pkg.packageKey} dnaid={x.i}>
-                        <code>{simpleDeclaration(pkg, x)}</code>
+                    <PackageEntityLink key={x.i} {...pkg.getPackageKey()} dnaid={x.i}>
+                        <ListItem><code>{simpleDeclaration(pkg, x)}</code></ListItem>
                     </PackageEntityLink>
         }))
     };

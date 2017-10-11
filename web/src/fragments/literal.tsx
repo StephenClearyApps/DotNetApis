@@ -7,7 +7,7 @@ import { typeReference } from "./typeReference";
 
 function valueString(value: IPrimitiveLiteral | IEnumLiteral): ReactFragment {
     if (typeof(value.v) === 'string')
-        return <span className='s'>{'"' + value.v + '"'}</span>;
+        return [<span className='s'>{'"' + value.v + '"'}</span>];
     return value.h ? value.v.toString(16) : value.v.toString();
 }
 

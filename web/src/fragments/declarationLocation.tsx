@@ -8,5 +8,5 @@ import { fullConcreteTypeReference } from "./fullConcreteTypeReference";
 export function declarationLocation(pkg: PackageDoc, entity: IEntity): ReactFragment {
     const context = new FormatContext(pkg, Styles.DECLARATION);
     const parent = pkg.findEntityParent(entity.i);
-    return <code>{parent ? fullConcreteTypeReference(context, parent) : (entity as ITopLevelEntityBase).s}</code>;
+    return [<code key={entity.i}>{parent ? fullConcreteTypeReference(context, parent) : (entity as ITopLevelEntityBase).s}</code>];
 }

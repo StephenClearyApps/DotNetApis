@@ -9,7 +9,7 @@ export function genericParameterConstraint(context: FormatContext, value: IGener
     if (!value.c)
         return null;
     return [
-        <br/>,
+        [<br/>],
         '    ',
         keyword('where'),
         ' ' + value.n + ': ',

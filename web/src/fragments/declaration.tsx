@@ -37,7 +37,7 @@ export function declaration(pkg: PackageDoc, entity: IEntity): ReactFragment {
 
 function typeDeclaration(context: FormatContext, entity: ITypeEntity, typeKeyword: string): ReactFragment {
     return [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         modifiers(entity.m),
         keyword(typeKeyword), ' ', nameWithGenericParameters(context, entity),
@@ -48,21 +48,21 @@ function typeDeclaration(context: FormatContext, entity: ITypeEntity, typeKeywor
 
 function enumDeclaration(context: FormatContext, entity: IEnumEntity): ReactFragment {
     return [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         keyword('enum'), ' ', entity.n,
         entity.u ? [': ', entity.u] : null,
-        <br/>,
+        [<br/>],
         '{',
         entity.f ? entity.f.map(x => enumField(x, entity)) : null,
-        <br/>,
+        [<br/>],
         '}'
     ];
 }
 
 function enumField(value: IEnumField, entity: IEnumEntity): ReactFragment {
     return [
-        <br/>,
+        [<br/>],
         '    ' + value.n + ' = ',
         entity.h ? value.v.toString(16) : value.v.toString()
     ];
@@ -70,7 +70,7 @@ function enumField(value: IEnumField, entity: IEnumEntity): ReactFragment {
 
 function delegateDeclaration(context: FormatContext, entity: IDelegateEntity): ReactFragment {
     return [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         keyword('delegate'), ' ',
         typeReference(context, entity.r), ' ',
@@ -84,7 +84,7 @@ function delegateDeclaration(context: FormatContext, entity: IDelegateEntity): R
 
 function methodDeclaration(context: FormatContext, entity: IMethodEntity): ReactFragment {
     const result = [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         modifiers(entity.m)
     ];
@@ -116,7 +116,7 @@ function methodDeclaration(context: FormatContext, entity: IMethodEntity): React
 
 function propertyDeclaration(context: FormatContext, entity: IPropertyEntity): ReactFragment {
     const result = [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         modifiers(entity.m),
         typeReference(context, entity.t), ' ',
@@ -140,18 +140,18 @@ function propertyDeclaration(context: FormatContext, entity: IPropertyEntity): R
         }
         result.push('}');
     } else {
-        result.push(<br/>, '{');
+        result.push([<br/>], '{');
         if (entity.g) {
-            result.push(<br/>, '  ',
-                entity.g.b ? entity.g.b.map(x => [attribute(context, x), <br/>, '  ']) : null,
+            result.push([<br/>], '  ',
+                entity.g.b ? entity.g.b.map(x => [attribute(context, x), [<br/>], '  ']) : null,
                 accessibility(entity.g.a),
-                keyword('get'), ';', <br/>);
+                keyword('get'), ';', [<br/>]);
         }
         if (entity.s) {
-            result.push(<br/>, '  ',
-                entity.s.b ? entity.s.b.map(x => [attribute(context, x), <br/>, '  ']) : null,
+            result.push([<br/>], '  ',
+                entity.s.b ? entity.s.b.map(x => [attribute(context, x), [<br/>], '  ']) : null,
                 accessibility(entity.s.a),
-                keyword('set'), ';', <br/>);
+                keyword('set'), ';', [<br/>]);
         }
         result.push('}');
     }
@@ -161,7 +161,7 @@ function propertyDeclaration(context: FormatContext, entity: IPropertyEntity): R
 
 function eventDeclaration(context: FormatContext, entity: IEventEntity): ReactFragment {
     const result = [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         modifiers(entity.m),
         keyword('event'), ' ',
@@ -185,7 +185,7 @@ function eventDeclaration(context: FormatContext, entity: IEventEntity): ReactFr
 
 function fieldDeclaration(context: FormatContext, entity: IFieldEntity): ReactFragment {
     return [
-        entity.b ? entity.b.map(x => [attribute(context, x), <br/>]) : null,
+        entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
         modifiers(entity.m),
         typeReference(context, entity.t), ' ',

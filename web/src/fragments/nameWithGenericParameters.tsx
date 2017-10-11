@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { ITypeEntity, IMethodEntity } from "../structure";
 import { ReactFragment, FormatContext, join } from "./util";
 import { genericParameter } from "./genericParameter";

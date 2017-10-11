@@ -2,9 +2,10 @@ export * from "../util/formatContext";
 
 import { ILocation, isCurrentPackageLocation } from "../structure";
 
-// https://github.com/Microsoft/TypeScript/issues/3496#issuecomment-128553540
+// Note that react elements are not react fragments; returning bare elements prevents React from auto-assigning keys, so they must be wrapped in an array.
 interface ReactFragmentArray extends Array<ReactFragment> { }
-export type ReactFragment = string | null | React.ReactElement<any> | ReactFragmentArray;
+interface ReactElementArray extends Array<React.ReactElement<any>> { }
+export type ReactFragment = string | null | ReactFragmentArray | ReactElementArray;
 
 export function join(fragments: ReactFragment[], separator: ReactFragment): ReactFragment {
     const last = fragments.length - 1;

@@ -6,5 +6,5 @@ import { IEntity, IParameter } from "../structure";
 import { parameter } from "./parameter";
 
 export function parameterDeclaration(pkg: PackageDoc, entity: IEntity, value: IParameter): ReactFragment {
-    return parameter(new FormatContext(pkg, Styles.DECLARATION), value, <br/>);
+    return parameter(new FormatContext(pkg, Styles.DECLARATION), value, [<br/>]);
 }

@@ -5,7 +5,7 @@
 // 3) Take a FormatContext parameter.
 
 // Note: not all types should be exported from this folder!
-// The exported types ("public api") take a package instead of a FormatContext prop.
+// The exported types ("public api") take a package parameter instead of a FormatContext parameter.
 
 export * from "./declarationLocation";
 export * from "./declaration";

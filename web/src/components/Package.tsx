@@ -30,6 +30,7 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageRequestIn
         return 0;
     });
 
+    // TODO: determine defaultTabValue based on which tabs are visible
     return (
     <HashTabs defaultTabValue="types">
         {typesTab(pkg, requestParams, types)}
@@ -40,9 +41,15 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageRequestIn
 export const Package = withAutoPackage(PackageComponent);
 
 function typesTab(pkg: PackageDoc, requestParams: PackageRequestRouteParams, types: IEntity[]) {
+    if (types.length === 0)
+        return null;
+     // TODO: fix any hack
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n,
-        content: <PackageEntityLink {...requestParams} dnaid={x.i} key={x.i}><ListItem><code>{simpleDeclaration(pkg, x, (x as any).s)}</code></ListItem></PackageEntityLink> // TODO: any hack
+        content:
+            <PackageEntityLink {...requestParams} dnaid={x.i} key={x.i}>
+                <ListItem><code>{simpleDeclaration(pkg, x, (x as any).s)}</code></ListItem>
+            </PackageEntityLink>
     }));
     return <Tab label="Types" value="types" key="types"><HashFilteredList items={items} hashPrefix="types" /></Tab>;
 }

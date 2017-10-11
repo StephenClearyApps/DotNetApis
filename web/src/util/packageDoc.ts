@@ -51,7 +51,7 @@ export class PackageDoc implements IPackage {
     r: boolean; // Version is a release version (not pre-release).
     l: IAssembly[]; // .NET files
 
-    get packageKey(): PackageKey {
+    getPackageKey(): PackageKey {
         return { packageId: this.i, packageVersion: this.v, targetFramework: this.t };
     }
 

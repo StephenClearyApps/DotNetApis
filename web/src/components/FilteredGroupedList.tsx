@@ -55,7 +55,7 @@ export const FilteredGroupedList: React.StatelessComponent<FilteredGroupedListPr
                     {clearFilterButton}
                 </ToolbarGroup>
             </Toolbar>
-            {join(filteredGroups.map(x => headingList(x)).filter(x => x !== null), <Divider/>)}
+            {join(filteredGroups.map(x => [headingList(x)]).filter(x => x !== null), [<Divider/>])}
         </div>
     );
 };

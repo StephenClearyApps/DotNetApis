@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { PackageDoc } from "../util";
 import { ReactFragment, FormatContext, Styles, join, array } from "./util";
 import { IEntity, isClass, isInterface, isStruct, isEnum, isDelegate, isMethod, isProperty, isEvent, isField, ITypeEntity, IEnumEntity, IDelegateEntity, IMethodEntity, IPropertyEntity, IEventEntity, IFieldEntity, EntityModifiers, MethodStyles } from "../structure";

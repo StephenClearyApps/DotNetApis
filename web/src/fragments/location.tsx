@@ -10,9 +10,9 @@ export function location(context: FormatContext, location: ILocation, content: R
     if (!location || !context.includeLinks)
         return content;
     else if (isCurrentPackageLocation(location))
-        return <PackageEntityLink {...pkg.packageKey} dnaid={location} linkProps={linkProps}>{content}</PackageEntityLink>;
+        return [<PackageEntityLink {...pkg.getPackageKey()} dnaid={location} linkProps={linkProps}>{content}</PackageEntityLink>];
     else if (isDependencyLocation(location))
-        return <PackageEntityLink packageId={location.p} packageVersion={location.v} targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{content}</PackageEntityLink>;
+        return [<PackageEntityLink packageId={location.p} packageVersion={location.v} targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{content}</PackageEntityLink>];
     else
-        return <ReferenceEntityLink targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{content}</ReferenceEntityLink>;
+        return [<ReferenceEntityLink targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{content}</ReferenceEntityLink>];
 }

@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { ITypeReference, isDynamic, isKeyword, isGenericParameter, isRequiredModifier, isPointer, isArray, IArrayDimension, isGenericInstance, isSimpleOrOpenGeneric } from "../structure";
 import { ReactFragment, FormatContext, locationDnaid, join, array } from "./util";
 import { keyword } from "./keyword";
