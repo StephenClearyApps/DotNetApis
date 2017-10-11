@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prod": "rimraf ../docs/* && webpack -p --env.prod=1",
+    "analyze": "webpack -p --env.prod=1 | webpack-bundle-size-analyzer",
     "dev": "webpack -d --env.prod=0",
     "watch": "webpack -d --env.prod=0 --watch",
     "serve": "http-server ../docs -s -c-1 -o -P http://127.0.0.1:8080/?"
@@ -31,7 +32,8 @@
     "source-map-loader": "^0.2.1",
     "style-loader": "0.19.0",
     "typescript": "^2.3.3",
-    "webpack": "^3.6.0"
+    "webpack": "^3.6.0",
+    "webpack-bundle-size-analyzer": "^2.7.0"
   },
   "dependencies": {
     "@types/bluebird-global": "^3.5.3",
