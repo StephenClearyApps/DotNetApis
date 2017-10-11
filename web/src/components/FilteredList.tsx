@@ -1,5 +1,10 @@
 import * as React from "react";
-import { IconButton, Toolbar, ToolbarGroup, TextField, List, ListItem } from "material-ui";
+import IconButton from "material-ui/IconButton";
+import Toolbar from "material-ui/Toolbar";
+import ToolbarGroup from "material-ui/Toolbar/ToolbarGroup";
+import TextField from "material-ui/TextField";
+import List from "material-ui/List";
+import ListItem from "material-ui/List/ListItem";
 
 export interface FilteredListItem {
     /** The content to display */

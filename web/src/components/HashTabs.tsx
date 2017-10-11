@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Tabs } from "material-ui";
+import Tabs from "material-ui/Tabs";
 import { RouteComponentProps, withRouter } from "react-router";
 
 import { HashSettings } from "../logic";

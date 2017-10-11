@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import { bindActionCreators, Dispatch } from "redux";
 import { Provider, connect } from "react-redux";
 import { BrowserRouter, withRouter } from 'react-router-dom';
-import { MuiThemeProvider } from 'material-ui/styles';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import "whatwg-fetch";
 
 import { Main } from "./components/Main";

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { CircularProgress } from 'material-ui';
 
 import { PackageLoading } from '../PackageLoading';
 import { PackageError } from '../PackageError';

@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Tab, ListItem } from "material-ui";
+import Tab from "material-ui/Tabs/Tab";
+import ListItem from "material-ui/List/ListItem";
 
 import { HashTabs } from "./HashTabs";
 import { FilteredListItem, HashFilteredList } from "./HashFilteredList";

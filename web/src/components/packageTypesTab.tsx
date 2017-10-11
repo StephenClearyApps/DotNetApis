@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Tab } from "material-ui";
+import Tab from "material-ui/Tabs/Tab";
 
 import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
 
