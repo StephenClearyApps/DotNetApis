@@ -12,13 +12,13 @@ import { withLoadOnDemand } from './LoadOnDemand';
 import { withEither } from './Either';
 
 const loadOnDemand = withLoadOnDemand<State & Actions & PackageRequestInjectedProps>({
-    hasStarted: props => !!props.request,
-    isLoaded: props => props.request && props.request.status !== 'STARTED',
-    load: props => props.DocActions.getDoc(props.requestParams),
+    hasStarted: props => !!props.pkgRequestStatus,
+    isLoaded: props => props.pkgRequestStatus && props.pkgRequestStatus.status !== 'STARTED',
+    load: props => props.DocActions.getDoc(props.pkgRequestKey),
     LoadingComponent: PackageLoading
 });
 
-const eitherError = withEither<State & Actions & PackageRequestInjectedProps>(props => props.request.status !== 'ERROR', PackageError);
+const eitherError = withEither<State & Actions & PackageRequestInjectedProps>(props => props.pkgRequestStatus.status !== 'ERROR', PackageError);
 
 /** Loads a package on demand, and handles displaying package loading and package error components */
 export const withPackageRequestLoadOnDemand =

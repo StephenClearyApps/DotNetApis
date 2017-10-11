@@ -2,22 +2,19 @@ import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router';
 
 import { ReactComponent } from './util';
-import { State, PackageDocumentationRequest } from '../../reducers';
-import { packageKey } from '../../util';
-
-export interface PackageRequestRouteParams extends PackageKey {
-}
+import { State } from '../../reducers';
+import { packageKey, PackageDocumentationRequest } from '../../util';
 
 export interface PackageRequestInjectedProps {
-    request: PackageDocumentationRequest;
-    requestParams: PackageRequestRouteParams;
+    pkgRequestKey: PackageKey;
+    pkgRequestStatus: PackageDocumentationRequest;
 }
 
 const packageRequest =
     <TComponentProps extends {}>(Component: ReactComponent<TComponentProps & PackageRequestInjectedProps>) =>
-    (props: TComponentProps & State & RouteComponentProps<PackageRequestRouteParams>) => {
+    (props: TComponentProps & State & RouteComponentProps<PackageKey>) => {
         const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
-        return <Component {...props} request={request} requestParams={props.match.params}/>;
+        return <Component {...props} pkgRequestStatus={request} pkgRequestKey={props.match.params}/>;
     };
 
 /** Takes the route parameters `packageId`, `packageVersion`, and `targetFramework`; and injects `packageDocumentationRequest` */
