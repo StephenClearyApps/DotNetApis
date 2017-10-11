@@ -1,5 +1,4 @@
 import * as React from "react";
-import * as moment from "moment";
 
 import { Timestamp } from "./Timestamp";
 import { LogMessage as LogMessageType } from "../api";

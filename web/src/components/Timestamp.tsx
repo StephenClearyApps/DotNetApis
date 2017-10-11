@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as moment from "moment";
+import { format } from "date-fns";
 
 export interface TimestampProps {
     timestamp: number;
@@ -8,7 +8,7 @@ export interface TimestampProps {
 
 export const Timestamp: React.StatelessComponent<TimestampProps> = ({ timestamp, fullTimestamp }) => {
     if (fullTimestamp)
-        return <span>{timestamp ? moment(timestamp).format('YYYY-MM-DD HH:mm:ss.SSS') : "---------- ------------"}</span>;
+        return <span>{timestamp ? format(timestamp, 'YYYY-MM-DD HH:mm:ss.SSS') : "---------- ------------"}</span>;
     else
-        return <span>{timestamp ? moment(timestamp).format('HH:mm:ss.SSS') : '------------'}</span>;
+        return <span>{timestamp ? format(timestamp, 'HH:mm:ss.SSS') : '------------'}</span>;
 }
