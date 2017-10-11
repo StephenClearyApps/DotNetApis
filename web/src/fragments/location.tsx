@@ -9,10 +9,11 @@ export function location(context: FormatContext, location: ILocation, content: R
     const { pkg } = context;
     if (!location || !context.includeLinks)
         return content;
-    else if (isCurrentPackageLocation(location))
-        return [<PackageEntityLink {...context.pkgContext.pkgRequestKey} dnaid={location} linkProps={linkProps}>{content}</PackageEntityLink>];
+    const children = React.Children.toArray(content);
+    if (isCurrentPackageLocation(location))
+        return [<PackageEntityLink {...context.pkgContext.pkgRequestKey} dnaid={location} linkProps={linkProps}>{children}</PackageEntityLink>];
     else if (isDependencyLocation(location))
-        return [<PackageEntityLink packageId={location.p} packageVersion={location.v} targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{content}</PackageEntityLink>];
+        return [<PackageEntityLink packageId={location.p} packageVersion={location.v} targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{children}</PackageEntityLink>];
     else
-        return [<ReferenceEntityLink targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{content}</ReferenceEntityLink>];
+        return [<ReferenceEntityLink targetFramework={pkg.t} dnaid={location.i} linkProps={linkProps}>{children}</ReferenceEntityLink>];
 }

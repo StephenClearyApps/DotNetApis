@@ -33,7 +33,7 @@ export function title(pkgContext: PackageContext, entity: IEntity): ReactFragmen
 
 function titleTypeDeclaration(context: FormatContext, entity: ITypeEntity, typeKeyword: string): ReactFragment {
     return [
-        [<code>{nameWithGenericParameters(context, entity)}</code>],
+        [<code>{React.Children.toArray(nameWithGenericParameters(context, entity))}</code>],
         entity.m & EntityModifiers.STATIC ? ' Static' : null,
         ' ' + typeKeyword
     ];
@@ -48,7 +48,7 @@ function titleEnumDeclaration(entity: IEnumEntity): ReactFragment {
 
 function titleDelegateDeclaration(context: FormatContext, entity: IDelegateEntity): ReactFragment {
     return [
-        [<code>{nameWithGenericParameters(context, entity)}</code>],
+        [<code>{React.Children.toArray(nameWithGenericParameters(context, entity))}</code>],
         ' Delegate'
     ];
 }
@@ -56,13 +56,13 @@ function titleDelegateDeclaration(context: FormatContext, entity: IDelegateEntit
 function titleMethodDeclaration(context: FormatContext, entity: IMethodEntity): ReactFragment {
     if (entity.s === MethodStyles.IMPLICIT || entity.s === MethodStyles.EXPLICIT) {
         return [
-            [<code>{typeReference(context, entity.r)}({join(array(entity.p).map(x => parameter(context, x)), ', ')})</code>],
+            [<code>{React.Children.toArray(typeReference(context, entity.r))}({React.Children.toArray(join(array(entity.p).map(x => parameter(context, x)), ', '))})</code>],
             ' Operator'
         ];
     }
 
     return [
-        [<code>{nameWithGenericParameters(context, entity)}({join(array(entity.p).map(x => parameter(context, x)), ', ')})</code>],
+        [<code>{React.Children.toArray(nameWithGenericParameters(context, entity))}({React.Children.toArray(join(array(entity.p).map(x => parameter(context, x)), ', '))})</code>],
         entity.s === MethodStyles.OPERATOR ? ' Operator' :
             [entity.m & EntityModifiers.STATIC ? ' Static' : null, ' Method']
     ];

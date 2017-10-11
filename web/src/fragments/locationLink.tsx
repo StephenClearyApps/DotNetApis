@@ -1,4 +1,3 @@
-import * as React from "react";
 import { LinkProps } from "react-router-dom";
 
 import { ILocation } from "../structure";
