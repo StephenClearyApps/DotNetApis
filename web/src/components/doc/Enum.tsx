@@ -2,30 +2,32 @@ import * as React from 'react';
 
 import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IEnumEntity } from "../../structure";
 import { title, declarationLocation, declaration } from "../../fragments";
 
-interface EnumProps {
+interface EnumProps extends PackageContext {
     data: IEnumEntity;
-    pkg: PackageDoc;
 }
 
-export const Enum: React.StatelessComponent<EnumProps> = ({ data, pkg }) => (
+export const Enum: React.StatelessComponent<EnumProps> = props => {
+    const { data } = props;
+    return (
     <div>
-        <h1>{title(pkg, data)}</h1>
+        <h1>{title(props, data)}</h1>
 
-        <XmldocBasic data={data.x} pkg={pkg}/>
+        <XmldocBasic {...props} data={data.x}/>
 
         <h2>Declaration</h2>
-        <pre className='highlight'><span className='c'>// At {declarationLocation(pkg, data)}</span><br/>{declaration(pkg, data)}</pre>
+        <pre className='highlight'><span className='c'>// At {declarationLocation(props, data)}</span><br/>{declaration(props, data)}</pre>
 
-        <XmldocRemarks data={data.x} pkg={pkg}/>
+        <XmldocRemarks {...props} data={data.x}/>
 
         <h2>Members</h2>
         <div>TODO</div>
 
-        <XmldocExamples data={data.x} pkg={pkg}/>
-        <XmldocSeeAlso data={data.x} pkg={pkg}/>
+        <XmldocExamples {...props} data={data.x}/>
+        <XmldocSeeAlso {...props} data={data.x}/>
     </div>
-);
+    );
+};

@@ -8,7 +8,7 @@ import { PackageEntityLink } from "./links";
 import { State } from "../reducers";
 import { Actions } from "../actions";
 import { withAutoPackage, PackageInjectedProps } from "./hoc";
-import { PackageDoc } from "../util";
+import { PackageContext } from "../util";
 import { IEntity } from "../structure";
 import { simpleDeclaration } from "../fragments";
 import { packageEntityLink } from "../logic";
@@ -20,7 +20,8 @@ function normalizePath(path: string): string {
     return path.replace(/\\/g, '/');
 }
 
-const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = ({ pkg, packageDoc, pkgRequestKey }) => {
+const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = props => {
+    const { pkg, packageDoc, pkgRequestKey } = props;
     const types = pkg.l.map(x => x.t).reduce((a, b) => a.concat(b), []);
     types.sort((x, y) => {
         if (x.n < y.n)
@@ -33,28 +34,28 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedP
     // TODO: determine defaultTabValue based on which tabs are visible
     return (
     <HashTabs defaultTabValue="types">
-        {typesTab(pkg, pkgRequestKey, types)}
-        {assembliesTab(pkg, types)}
+        {typesTab(props, types)}
+        {assembliesTab(props, types)}
     </HashTabs>);
 }
 
 export const Package = withAutoPackage(PackageComponent);
 
-function typesTab(pkg: PackageDoc, pkgRequestKey: PackageKey, types: IEntity[]) {
+function typesTab(pkgContext: PackageContext, types: IEntity[]) {
     if (types.length === 0)
         return null;
      // TODO: fix any hack
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n,
         content:
-            <PackageEntityLink {...pkgRequestKey} dnaid={x.i} key={x.i}>
-                <ListItem><code>{simpleDeclaration(pkg, x, (x as any).s)}</code></ListItem>
+            <PackageEntityLink {...pkgContext.pkgRequestKey} dnaid={x.i} key={x.i}>
+                <ListItem><code>{simpleDeclaration(pkgContext, x, (x as any).s)}</code></ListItem>
             </PackageEntityLink>
     }));
     return <Tab label="Types" value="types" key="types"><HashFilteredList items={items} hashPrefix="types" /></Tab>;
 }
 
-function assembliesTab(pkg: PackageDoc, types: IEntity[]) {
+function assembliesTab(pkgContext: PackageContext, types: IEntity[]) {
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n,
         content: <div key={"bob" + x.i}></div>

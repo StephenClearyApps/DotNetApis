@@ -1,23 +1,23 @@
 import * as React from "react";
 
-import { PackageDoc, FormatContext } from "../../util";
+import { PackageContext } from "../../util";
 import { IXmldocNode, isStringXmldocNode, isSeeXmldocNode, isLinkXmldocNode, XmlXmldocNodeKind } from "../../structure";
 import { locationLink } from "../../fragments";
 
-interface XmldocProps {
+interface XmldocProps extends PackageContext {
     data: IXmldocNode;
-    pkg: PackageDoc;
 }
 
-export const XmldocNode: React.StatelessComponent<XmldocProps> = ({ data, pkg }) => {
+export const XmldocNode: React.StatelessComponent<XmldocProps> = (props) => {
+    const { data } = props;
     if (!data)
         return null;
     if (isStringXmldocNode(data))
         return <span>{data}</span>;
     else {
-        const children = data.c.map((x, i) => <XmldocNode data={x} key={i} pkg={pkg} />);
+        const children = data.c.map((x, i) => <XmldocNode {...props} data={x} key={i} />);
         if (isSeeXmldocNode(data))
-            return <code>{locationLink(pkg, data.a && data.a.l, children)}</code>;
+            return <code>{locationLink(props, data.a && data.a.l, children)}</code>;
         else if (isLinkXmldocNode(data))
             return <a href={data.a.h} target='_blank'>{children}</a>;
         switch (data.k) {

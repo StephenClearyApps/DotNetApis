@@ -2,19 +2,21 @@ import * as React from 'react';
 
 import { XmldocNode } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IEntity, IParameter } from "../../structure";
 import { parameterDeclaration } from "../../fragments";
 
-interface ParameterProps {
+interface ParameterProps extends PackageContext {
     entity: IEntity;
     parameter: IParameter;
-    pkg: PackageDoc;
 }
 
-export const Parameter: React.StatelessComponent<ParameterProps> = ({ entity, parameter, pkg }) => (
+export const Parameter: React.StatelessComponent<ParameterProps> = props => {
+    const { entity, parameter } = props;
+    return (
     <div>
-        <pre className='highlight'>{parameterDeclaration(pkg, entity, parameter)}</pre>
-        <XmldocNode data={parameter.x} pkg={pkg}/>
+        <pre className='highlight'>{parameterDeclaration(props, entity, parameter)}</pre>
+        <XmldocNode {...props} data={parameter.x}/>
     </div>
-);
+    );
+};

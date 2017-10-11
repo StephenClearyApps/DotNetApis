@@ -1,4 +1,4 @@
-import { PackageDoc } from "../util";
+import { PackageContext } from "../util";
 import { ReactFragment, FormatContext, Styles, join, array } from "./util";
 import { IEntity, isClass, isInterface, isStruct, isEnum, isDelegate, isMethod, isProperty, isEvent, isField, ITypeEntity, IEnumEntity, IDelegateEntity, IMethodEntity, IPropertyEntity, IEventEntity, IFieldEntity, EntityModifiers, MethodStyles } from "../structure";
 import { keyword } from "./keyword";
@@ -8,8 +8,8 @@ import { parameter } from "./parameter";
 import { accessibility } from "./accessibility";
 import { modifiers } from "./modifiers";
 
-export function simpleDeclaration(pkg: PackageDoc, entity: IEntity, ns?: string): ReactFragment {
-    const context = new FormatContext(pkg, Styles.MEMBER);
+export function simpleDeclaration(pkgContext: PackageContext, entity: IEntity, ns?: string): ReactFragment {
+    const context = new FormatContext(pkgContext, Styles.MEMBER);
     if (isClass(entity))
         return typeDeclaration(context, entity, 'class', ns);
     else if (isInterface(entity))

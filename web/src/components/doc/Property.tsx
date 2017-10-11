@@ -2,29 +2,31 @@ import * as React from 'react';
 
 import { XmldocBasic, XmldocRemarks, XmldocReturn, XmldocExceptions, XmldocExamples, XmldocSeeAlso, Parameters } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IPropertyEntity } from "../../structure";
 import { title, declarationLocation, declaration } from "../../fragments";
 
-interface PropertyProps {
+interface PropertyProps extends PackageContext {
     data: IPropertyEntity;
-    pkg: PackageDoc;
 }
 
-export const Property: React.StatelessComponent<PropertyProps> = ({ data, pkg }) => (
-    <div>
-        <h1>{title(pkg, data)}</h1>
+export const Property: React.StatelessComponent<PropertyProps> = props => {
+    const { data } = props;
+    return (
+        <div>
+            <h1>{title(props, data)}</h1>
 
-        <XmldocBasic data={data.x} pkg={pkg}/>
+            <XmldocBasic {...props} data={data.x}/>
 
-        <h2>Declaration</h2>
-        <pre className='highlight'><span className='c'>// At {declarationLocation(pkg, data)}</span><br/>{declaration(pkg, data)}</pre>
+            <h2>Declaration</h2>
+            <pre className='highlight'><span className='c'>// At {declarationLocation(props, data)}</span><br/>{declaration(props, data)}</pre>
 
-        <XmldocRemarks data={data.x} pkg={pkg}/>
-        <Parameters data={data} pkg={pkg}/>
-        <XmldocReturn data={data.x} pkg={pkg}/>
-        <XmldocExceptions data={data.x} pkg={pkg}/>
-        <XmldocExamples data={data.x} pkg={pkg}/>
-        <XmldocSeeAlso data={data.x} pkg={pkg}/>
-    </div>
-);
+            <XmldocRemarks {...props} data={data.x}/>
+            <Parameters {...props} data={data}/>
+            <XmldocReturn {...props} data={data.x}/>
+            <XmldocExceptions {...props} data={data.x}/>
+            <XmldocExamples {...props} data={data.x}/>
+            <XmldocSeeAlso {...props} data={data.x}/>
+        </div>
+    );
+};

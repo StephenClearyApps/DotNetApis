@@ -2,21 +2,21 @@ import * as React from "react";
 
 import { XmldocNode } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IXmldoc } from "../../structure";
 
-interface XmldocReturnProps {
+interface XmldocReturnProps extends PackageContext {
     data: IXmldoc;
-    pkg: PackageDoc;
 }
 
-export const XmldocReturn: React.StatelessComponent<XmldocReturnProps> = ({ data, pkg }) => {
+export const XmldocReturn: React.StatelessComponent<XmldocReturnProps> = (props) => {
+    const { data } = props;
     if (!data || !data.r)
         return null;
     return (
         <div>
             <h2>Return Value</h2>
-            <XmldocNode data={data.r} pkg={pkg}/>)
+            <XmldocNode {...props} data={data.r}/>)
         </div>
     );
 }

@@ -2,21 +2,21 @@ import * as React from "react";
 
 import { XmldocNode } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IXmldoc } from "../../structure";
 
-interface XmldocSeeAlsoProps {
+interface XmldocSeeAlsoProps extends PackageContext {
     data: IXmldoc;
-    pkg: PackageDoc;
 }
 
-export const XmldocSeeAlso: React.StatelessComponent<XmldocSeeAlsoProps> = ({ data, pkg }) => {
+export const XmldocSeeAlso: React.StatelessComponent<XmldocSeeAlsoProps> = (props) => {
+    const { data } = props;
     if (!data || !data.s)
         return null;
     return (
         <div>
             <h2>See Also</h2>
-            {data.s.map((x, i) => <XmldocNode data={x} pkg={pkg} key={i}/>)}
+            {data.s.map((x, i) => <XmldocNode {...props} data={x} key={i}/>)}
         </div>
     );
 }

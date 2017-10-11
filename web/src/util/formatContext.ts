@@ -1,4 +1,4 @@
-import { PackageDoc } from "./packageDoc";
+import { PackageDoc, PackageContext } from ".";
 
 export const enum Styles {
     // A full declaration listing (used in declaration blocks). Links and parameter modifiers are enabled.
@@ -12,7 +12,7 @@ export const enum Styles {
 };
 
 export class FormatContext {
-    constructor(public pkg: PackageDoc, public style: Styles = Styles.DECLARATION) {
+    constructor(public pkgContext: PackageContext, public style: Styles = Styles.DECLARATION) {
     }
 
     get includeLinks(): boolean {
@@ -21,5 +21,9 @@ export class FormatContext {
     
     get includeParameterModifiers(): boolean {
         return this.style !== Styles.TITLE;
+    }
+
+    get pkg(): PackageDoc {
+        return this.pkgContext.pkg;
     }
 }

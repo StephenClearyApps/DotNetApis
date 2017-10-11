@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { PackageDoc } from "../util";
+import { PackageContext } from "../util";
 import { ReactFragment, FormatContext, Styles, join, array } from "./util";
 import { IEntity, isClass, isInterface, isStruct, isEnum, isDelegate, isMethod, isProperty, isEvent, isField, ITypeEntity, IEnumEntity, IEnumField, IDelegateEntity, IMethodEntity, MethodStyles, IPropertyEntity, IEventEntity, IFieldEntity, EntityModifiers } from "../structure";
 import { attribute } from "./attribute";
@@ -13,8 +13,8 @@ import { genericParameterConstraint } from "./genericParameterConstraint";
 import { parameter } from "./parameter";
 import { literal } from "./literal";
 
-export function declaration(pkg: PackageDoc, entity: IEntity): ReactFragment {
-    const context = new FormatContext(pkg, Styles.DECLARATION);
+export function declaration(pkgContext: PackageContext, entity: IEntity): ReactFragment {
+    const context = new FormatContext(pkgContext, Styles.DECLARATION);
     if (isClass(entity))
         return typeDeclaration(context, entity, 'class');
     else if (isInterface(entity))

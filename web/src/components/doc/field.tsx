@@ -2,26 +2,28 @@ import * as React from 'react';
 
 import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IFieldEntity } from "../../structure";
 import { title, declarationLocation, declaration } from "../../fragments";
 
-interface FieldProps {
+interface FieldProps extends PackageContext {
     data: IFieldEntity;
-    pkg: PackageDoc;
 }
 
-export const Field: React.StatelessComponent<FieldProps> = ({ data, pkg }) => (
+export const Field: React.StatelessComponent<FieldProps> = props => {
+    const { data } = props;
+    return(
     <div>
-        <h1>{title(pkg, data)}</h1>
+        <h1>{title(props, data)}</h1>
 
-        <XmldocBasic data={data.x} pkg={pkg}/>
+        <XmldocBasic {...props} data={data.x}/>
 
         <h2>Declaration</h2>
-        <pre className='highlight'><span className='c'>// At {declarationLocation(pkg, data)}</span><br/>{declaration(pkg, data)}</pre>
+        <pre className='highlight'><span className='c'>// At {declarationLocation(props, data)}</span><br/>{declaration(props, data)}</pre>
 
-        <XmldocRemarks data={data.x} pkg={pkg}/>
-        <XmldocExamples data={data.x} pkg={pkg}/>
-        <XmldocSeeAlso data={data.x} pkg={pkg}/>
+        <XmldocRemarks {...props} data={data.x}/>
+        <XmldocExamples {...props} data={data.x}/>
+        <XmldocSeeAlso {...props} data={data.x}/>
     </div>
-);
+    );
+};

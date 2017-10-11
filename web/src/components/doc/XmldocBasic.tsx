@@ -2,16 +2,16 @@ import * as React from "react";
 
 import { XmldocNode } from ".";
 
-import { PackageDoc } from "../../util";
+import { PackageContext } from "../../util";
 import { IXmldoc } from "../../structure";
 
-interface XmldocBasicProps {
+interface XmldocBasicProps extends PackageContext {
     data: IXmldoc;
-    pkg: PackageDoc;
 }
 
-export const XmldocBasic: React.StatelessComponent<XmldocBasicProps> = ({ data, pkg }) => {
+export const XmldocBasic: React.StatelessComponent<XmldocBasicProps> = (props) => {
+    const { data } = props;
     if (!data || !data.b)
         return null;
-    return <XmldocNode data={data.b} pkg={pkg}/>;
+    return <XmldocNode {...props} data={data.b}/>;
 }

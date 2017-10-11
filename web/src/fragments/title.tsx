@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { PackageDoc } from "../util";
+import { PackageContext } from "../util";
 import { IEntity, isClass, ITypeEntity, EntityModifiers, isInterface, isStruct, isEnum, IEnumEntity,
     isDelegate, isMethod, isProperty, isEvent, isField, IDelegateEntity, IMethodEntity, MethodStyles, IPropertyEntity, IEventEntity, IFieldEntity
 } from "../structure";
@@ -9,8 +9,8 @@ import { ReactFragment, FormatContext, Styles, join, array } from "./util";
 import { typeReference } from "./typeReference";
 import { parameter } from "./parameter";
 
-export function title(pkg: PackageDoc, entity: IEntity): ReactFragment {
-    const context = new FormatContext(pkg, Styles.TITLE);
+export function title(pkgContext: PackageContext, entity: IEntity): ReactFragment {
+    const context = new FormatContext(pkgContext, Styles.TITLE);
     if (isClass(entity))
         return titleTypeDeclaration(context, entity, "Class");
     else if (isInterface(entity))
