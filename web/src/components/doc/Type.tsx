@@ -50,7 +50,7 @@ function memberGrouping(name: string, items: IEntity[], pkgContext: PackageConte
         items: items.map(x => ({
                 search: x.n,
                 content:
-                    <PackageEntityLink key={x.i} {...pkgContext.pkg.getPackageKey()} dnaid={x.i}>
+                    <PackageEntityLink key={x.i} {...pkgContext.pkgRequestKey} dnaid={x.i}>
                         <ListItem><code>{simpleDeclaration(pkgContext, x)}</code></ListItem>
                     </PackageEntityLink>
         }))
