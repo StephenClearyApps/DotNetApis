@@ -7,9 +7,14 @@ function currentMinute() {
     return Math.round(new Date().getTime() / millisecondsPerMinute) * millisecondsPerMinute;
 }
 
+const synchronize = (dispatch: Dispatch<actions.TickAction>) =>
+dispatch(actions.getTick(currentMinute()));
+
 export const TimeActions = {
+    synchronize,
+
     startTicks: (dispatch: Dispatch<actions.TickAction>) => {
-        dispatch(actions.getTick(currentMinute()));
-        setInterval(() => dispatch(actions.getTick(currentMinute())), millisecondsPerMinute);
+        synchronize(dispatch);
+        setInterval(() => synchronize(dispatch), millisecondsPerMinute);
     }
 }

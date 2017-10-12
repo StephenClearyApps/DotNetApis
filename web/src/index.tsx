@@ -32,5 +32,5 @@ window.onload = () => {
                 </MuiThemeProvider>
             </BrowserRouter>
         </Provider>, document.getElementById("app"));
-    TimeActions.startTicks(store.dispatch);
+    TimeActions.synchronize(store.dispatch);
 };
