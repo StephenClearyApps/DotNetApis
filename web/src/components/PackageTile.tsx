@@ -33,7 +33,7 @@ export const PackageTile: React.StatelessComponent<PackageTileProps> = (props) =
     const iconUrl = props.iconUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
     const idver = <code>{packageVersion ? packageId + " " + packageVersion : packageId}</code>;
     const titleProps: CardTitleProps = {
-        title: <span>{title} &mdash; {idver}</span>
+        title: title ? <span>{title} &mdash; {idver}</span> : <span>{idver}</span>
     };
     if (downloads)
         titleProps.subtitle = humanizedValue(downloads) + " downloads";
