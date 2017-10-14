@@ -1,12 +1,10 @@
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
-import ListItem from "material-ui/List/ListItem";
 
 import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
-import { PackageEntityLink } from "./links";
+import { EntityListItem } from './EntityListItem';
 
 import { PackageInjectedProps, withAutoPackage } from "./hoc";
-import { simpleDeclaration } from "../fragments";
 import { selectMany } from "../util";
 
 interface RouteParams {
@@ -17,7 +15,7 @@ export interface PackageNamespaceProps extends RouteComponentProps<RouteParams>,
 }
 
 const PackageNamespaceComponent: React.StatelessComponent<PackageNamespaceProps> = (props) => {
-    const { pkg, pkgRequestKey, match: { params: { ns } } } = props;
+    const { pkg, match: { params: { ns } } } = props;
     const types = selectMany(pkg.l, x => x.t).filter(x => x.s === ns);
     types.sort((x, y) => {
         if (x.n < y.n)
@@ -29,10 +27,7 @@ const PackageNamespaceComponent: React.StatelessComponent<PackageNamespaceProps>
 
     const typeList = types.map(x => ({
         search: x.n,
-        content:
-        <PackageEntityLink {...pkgRequestKey} dnaid={x.i} key={x.i}>
-            <ListItem><code>{simpleDeclaration(props, x, x.s)}</code></ListItem>
-        </PackageEntityLink>
+        content: <EntityListItem key={x.i} pkgContext={props} entity={x}/>
     }));
 
     return (

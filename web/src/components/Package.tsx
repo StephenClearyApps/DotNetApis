@@ -1,19 +1,19 @@
 import * as React from "react";
+import ListItem from 'material-ui/List/ListItem';
 import Tab from "material-ui/Tabs/Tab";
-import ListItem from "material-ui/List/ListItem";
 
 import { HashTabs } from "./HashTabs";
 import { FilteredListItem, HashFilteredList } from "./HashFilteredList";
 import { HashFilteredGroupedList, FilteredListItemGroup } from "./HashFilteredGroupedList";
-import { PackageEntityLink, PackageNamespaceLink, PackageFileLink } from "./links";
+import { PackageNamespaceLink, PackageFileLink } from "./links";
 import { PackageTile } from "./PackageTile";
+import { EntityListItem } from './EntityListItem';
 
 import { State } from "../reducers";
 import { Actions } from "../actions";
 import { withAutoPackage, PackageInjectedProps } from "./hoc";
 import { PackageContext, normalizePath, sortEntities, array, selectMany } from "../util";
 import { IEntity, IAssembly, IPackageDependency, IPackageEntity } from "../structure";
-import { simpleDeclaration } from "../fragments";
 import { packageEntityLink } from "../logic";
 
 export interface PackageProps extends State, Actions {
@@ -48,10 +48,7 @@ function typesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
         return null;
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n,
-        content:
-            <PackageEntityLink {...pkgContext.pkgRequestKey} dnaid={x.i} key={x.i}>
-                <ListItem><code>{simpleDeclaration(pkgContext, x, x.s)}</code></ListItem>
-            </PackageEntityLink>
+        content: <EntityListItem key={x.i} pkgContext={pkgContext} entity={x}/>
     }));
     return <Tab label="Types" value="types" key="types"><HashFilteredList items={items} hashPrefix="types" /></Tab>;
 }

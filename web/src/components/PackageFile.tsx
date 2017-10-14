@@ -1,13 +1,12 @@
 import * as React from "react";
 import { RouteComponentProps, withRouter } from "react-router";
-import ListItem from "material-ui/List/ListItem";
 
 import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
-import { PackageEntityLink } from "./links";
+import { EntityListItem } from './EntityListItem';
 
 import { PackageInjectedProps, withAutoPackage } from "./hoc";
 import { packageFriendlyName, normalizePath, sortEntities, fileName } from "../util";
-import { simpleDeclaration, attributeDeclaration } from "../fragments";
+import { attributeDeclaration } from "../fragments";
 
 interface RouteParams {
     path: string;
@@ -17,7 +16,7 @@ export interface PackageFileProps extends RouteComponentProps<RouteParams>, Pack
 }
 
 const PackageFileComponent: React.StatelessComponent<PackageFileProps> = (props) => {
-    const { pkg, pkgRequestKey, match: { params: { path } } } = props;
+    const { pkg, match: { params: { path } } } = props;
     // TODO: better error message
     if (!pkg.l)
         return <div>Sorry; file {path} was not found in package {packageFriendlyName(pkg.getPackageKey())}.</div>;
@@ -32,10 +31,7 @@ const PackageFileComponent: React.StatelessComponent<PackageFileProps> = (props)
 
         typeList = types.map(x => ({
             search: x.n,
-            content:
-                <PackageEntityLink {...pkgRequestKey} dnaid={x.i} key={x.i}>
-                    <ListItem><code>{simpleDeclaration(props, x)}</code></ListItem>
-                </PackageEntityLink>
+            content: <EntityListItem key={x.i} pkgContext={props} entity={x} />
         }));
     }
 

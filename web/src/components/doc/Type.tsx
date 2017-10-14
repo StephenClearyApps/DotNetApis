@@ -1,13 +1,12 @@
 import * as React from 'react';
-import ListItem from 'material-ui/List/ListItem';
 
 import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
 import { HashFilteredGroupedList, FilteredListItemGroup } from "../HashFilteredGroupedList";
-import { PackageEntityLink } from '../links';
+import { EntityListItem } from '../EntityListItem';
 
 import { PackageContext } from "../../util";
 import { ITypeEntity, IEntity } from "../../structure";
-import { titleDeclaration, declarationLocation, declaration, simpleDeclaration } from "../../fragments";
+import { titleDeclaration, declarationLocation, declaration } from "../../fragments";
 
 interface TypeProps extends PackageContext {
     data: ITypeEntity;
@@ -49,10 +48,7 @@ function memberGrouping(name: string, items: IEntity[], pkgContext: PackageConte
         heading: name,
         items: items.map(x => ({
                 search: x.n,
-                content:
-                    <PackageEntityLink key={x.i} {...pkgContext.pkgRequestKey} dnaid={x.i}>
-                        <ListItem><code>{simpleDeclaration(pkgContext, x)}</code></ListItem>
-                    </PackageEntityLink>
+                content: <EntityListItem key={x.i} pkgContext={pkgContext} entity={x} />
         }))
     };
 }
