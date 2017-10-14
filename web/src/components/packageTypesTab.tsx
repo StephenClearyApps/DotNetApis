@@ -6,7 +6,7 @@ import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
 import { IEntity } from "../structure";
 import { PackageDoc } from "../util";
 
-export function packageTypesTab(pkg: PackageDoc, types: IEntity[]) {
+export function PackageTypesTab(pkg: PackageDoc, types: IEntity[]) {
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n,
         content: null
