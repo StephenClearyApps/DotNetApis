@@ -33,14 +33,21 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedP
             return 1;
         return 0;
     });
+    const tabTypes = typesTab(props, types);
+    const tabNamespaces = namespacesTab(props, types);
+    const tabAssemblies = assembliesTab(props, pkg.l);
+    const tabDependencies = dependenciesTab(props, pkg.e);
 
-    // TODO: determine defaultTabValue based on which tabs are visible
+    const defaultTabValue = tabTypes ? "types" :
+        tabNamespaces ? "namespaces" :
+        tabAssemblies ? "assemblies" :
+        tabDependencies ? "dependencies" : undefined;
     return (
-    <HashTabs defaultTabValue="types">
-        {typesTab(props, types)}
-        {namespacesTab(props, types)}
-        {assembliesTab(props, pkg.l)}
-        {dependenciesTab(props, pkg.e)}
+    <HashTabs defaultTabValue={defaultTabValue}>
+        {tabTypes}
+        {tabNamespaces}
+        {tabAssemblies}
+        {tabDependencies}
     </HashTabs>);
 }
 
