@@ -2,7 +2,7 @@ import * as React from "react";
 import { Card, CardHeader, CardTitle, CardText } from "material-ui/Card";
 import { CardTitleProps, CardHeaderProps } from "material-ui";
 
-import { PackageLink } from "./links/PackageLink";
+import { PackageLink } from "./links";
 
 import { without$ } from "../util";
 
