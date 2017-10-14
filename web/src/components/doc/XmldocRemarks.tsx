@@ -16,7 +16,7 @@ export const XmldocRemarks: React.StatelessComponent<XmldocRemarksProps> = (prop
     return (
         <div>
             <h2>Remarks</h2>
-            <XmldocNode {...props} data={data.m}/>)
+            <XmldocNode {...props} data={data.m}/>
         </div>
     );
 }
