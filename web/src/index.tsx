@@ -23,7 +23,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 window.onload = () => {
-    const ConnectedMain = withRouter(connect(x => x, mapDispatchToProps)(Main));
+    const ConnectedMain = withRouter<{}>(connect(x => x, mapDispatchToProps)(Main));
     render(
         <Provider store={store}>
             <BrowserRouter>
