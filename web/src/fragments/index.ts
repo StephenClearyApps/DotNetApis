@@ -4,6 +4,7 @@
 // 2) Return an array of child elements complete with keys.
 // 3) Take a PackageContext parameter.
 
+export * from "./attributeDeclaration";
 export * from "./declaration";
 export * from "./declarationLocation";
 export * from "./locationLink";

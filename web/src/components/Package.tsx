@@ -11,7 +11,7 @@ import { PackageTile } from "./PackageTile";
 import { State } from "../reducers";
 import { Actions } from "../actions";
 import { withAutoPackage, PackageInjectedProps } from "./hoc";
-import { PackageContext } from "../util";
+import { PackageContext, normalizePath, sortEntities } from "../util";
 import { IEntity, IAssembly, IPackageDependency } from "../structure";
 import { simpleDeclaration } from "../fragments";
 import { packageEntityLink } from "../logic";
@@ -19,20 +19,10 @@ import { packageEntityLink } from "../logic";
 export interface PackageProps extends State, Actions {
 }
 
-function normalizePath(path: string): string {
-    return path.replace(/\\/g, '/');
-}
-
 const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = props => {
     const { pkg, packageDoc, pkgRequestKey } = props;
     const types = pkg.l.map(x => x.t).reduce((a, b) => a.concat(b), []);
-    types.sort((x, y) => {
-        if (x.n < y.n)
-            return -1;
-        if (x.n > y.n)
-            return 1;
-        return 0;
-    });
+    sortEntities(types);
     const tabTypes = typesTab(props, types);
     const tabNamespaces = namespacesTab(props, types);
     const tabAssemblies = assembliesTab(props, pkg.l);

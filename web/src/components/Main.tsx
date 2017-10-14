@@ -5,6 +5,7 @@ import { Route } from "react-router-dom";
 import { Home } from "./Home";
 import { Package } from "./Package";
 import { EntityDoc } from "./EntityDoc";
+import { PackageFile } from "./PackageFile";
 
 import { State } from "../reducers";
 import { Actions } from "../actions";
@@ -16,5 +17,6 @@ export function Main(props: State & Actions & RouteComponentProps<any>)
         <Route exact path="/" render={() => <Home {...props} />} />
         <Route exact path="/pkg/:packageId/:packageVersion?/:targetFramework?" render={() => <Package {...props}/>}/>
         <Route exact path="/pkg/:packageId/:packageVersion/:targetFramework/doc/:dnaid+" render={() => <EntityDoc {...props}/>}/>
+        <Route exact path="/pkg/:packageId/:packageVersion/:targetFramework/file/:path+" render={() => <PackageFile {...props}/>}/>
     </div>);
 }
