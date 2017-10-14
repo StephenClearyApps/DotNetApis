@@ -159,6 +159,7 @@ export interface IFieldEntity extends IEntityBase, IMemberEntityBase, IChildEnti
 }
 
 export type IEntity = IClassEntity | IStructEntity | IInterfaceEntity | IEnumEntity | IDelegateEntity | IMethodEntity | IPropertyEntity | IEventEntity | IFieldEntity;
+export type IPackageEntity = IClassEntity | IStructEntity | IInterfaceEntity | IEnumEntity | IDelegateEntity;
 
 export function isClass(entity: IEntityBase): entity is IClassEntity {
     return !entity.k;

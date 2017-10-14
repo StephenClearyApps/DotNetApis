@@ -1,5 +1,5 @@
 import { IAttribute } from './attributes';
-import { IEntity } from './entities';
+import { IEntity, IPackageEntity } from './entities';
 
 /** A package that is a dependency for a primary package */
 export interface IPackageDependency {
@@ -43,7 +43,7 @@ export interface IAssembly {
     b?: IAttribute[];
 
     /** Top-level entities in this assembly */
-    t: IEntity[];
+    t: IPackageEntity[];
 }
 
 /** A NuGet package, applied to a particular target framework. */

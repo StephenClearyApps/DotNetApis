@@ -11,8 +11,8 @@ import { PackageTile } from "./PackageTile";
 import { State } from "../reducers";
 import { Actions } from "../actions";
 import { withAutoPackage, PackageInjectedProps } from "./hoc";
-import { PackageContext, normalizePath, sortEntities } from "../util";
-import { IEntity, IAssembly, IPackageDependency } from "../structure";
+import { PackageContext, normalizePath, sortEntities, array, selectMany } from "../util";
+import { IEntity, IAssembly, IPackageDependency, IPackageEntity } from "../structure";
 import { simpleDeclaration } from "../fragments";
 import { packageEntityLink } from "../logic";
 
@@ -21,7 +21,7 @@ export interface PackageProps extends State, Actions {
 
 const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = props => {
     const { pkg, packageDoc, pkgRequestKey } = props;
-    const types = pkg.l ? pkg.l.map(x => x.t).reduce((a, b) => a.concat(b), []) : [];
+    const types = selectMany(pkg.l, x => x.t);
     sortEntities(types);
     const tabTypes = typesTab(props, types);
     const tabNamespaces = namespacesTab(props, types);
@@ -43,25 +43,25 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedP
 
 export const Package = withAutoPackage(PackageComponent);
 
-function typesTab(pkgContext: PackageContext, types: IEntity[]) {
+function typesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
     if (types.length === 0)
         return null;
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n,
         content:
             <PackageEntityLink {...pkgContext.pkgRequestKey} dnaid={x.i} key={x.i}>
-                <ListItem><code>{simpleDeclaration(pkgContext, x, (x as any).s)}</code></ListItem>
+                <ListItem><code>{simpleDeclaration(pkgContext, x, x.s)}</code></ListItem>
             </PackageEntityLink>
     }));
     return <Tab label="Types" value="types" key="types"><HashFilteredList items={items} hashPrefix="types" /></Tab>;
 }
 
-function namespacesTab(pkgContext: PackageContext, types: IEntity[]) {
+function namespacesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
     if (types.length === 0)
         return null;
     const namespaceMap : { [key: string]: 0 } = {};
     for (let t of types) {
-        const ns = (t as any).s;
+        const ns = t.s;
         if (ns)
             namespaceMap[ns] = 0;
     }

@@ -1,4 +1,5 @@
 export * from "../../util/formatContext";
+export { array } from "../../util";
 
 import { ILocation, isCurrentPackageLocation } from "../../structure";
 
@@ -19,9 +20,4 @@ export function locationDnaid(location: ILocation): string {
         return location;
     else
         return location.i;
-}
-
-/** If the argument array is undefined or null, returns a new, empty array. Otherwise, returns its argument. */
-export function array<T>(value: T[]): T[] {
-    return value || [];
 }

@@ -18,6 +18,7 @@ export interface PackageFileProps extends RouteComponentProps<RouteParams>, Pack
 
 const PackageFileComponent: React.StatelessComponent<PackageFileProps> = (props) => {
     const { pkg, pkgRequestKey, match: { params: { path } } } = props;
+    // TODO: better error message
     if (!pkg.l)
         return <div>Sorry; file {path} was not found in package {packageFriendlyName(pkg.getPackageKey())}.</div>;
     const file = pkg.l.find(x => normalizePath(x.p) === path);
