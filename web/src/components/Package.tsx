@@ -21,7 +21,7 @@ export interface PackageProps extends State, Actions {
 
 const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = props => {
     const { pkg, packageDoc, pkgRequestKey } = props;
-    const types = pkg.l.map(x => x.t).reduce((a, b) => a.concat(b), []);
+    const types = pkg.l ? pkg.l.map(x => x.t).reduce((a, b) => a.concat(b), []) : [];
     sortEntities(types);
     const tabTypes = typesTab(props, types);
     const tabNamespaces = namespacesTab(props, types);
@@ -78,7 +78,7 @@ function namespacesTab(pkgContext: PackageContext, types: IEntity[]) {
 }
 
 function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[]) {
-    if (assemblies.length === 0)
+    if (!assemblies || assemblies.length === 0)
         return null;
     const items : FilteredListItem[] = assemblies.map(x => normalizePath(x.p)).map(path => ({
         search: path,
@@ -91,7 +91,7 @@ function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[]) {
 }
 
 function dependenciesTab(pkgContext: PackageContext, dependencies: IPackageDependency[]) {
-    if (dependencies.length === 0)
+    if (!dependencies || dependencies.length === 0)
         return null;
     const groups: FilteredListItemGroup[] = [
         {
