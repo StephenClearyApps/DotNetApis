@@ -11,7 +11,11 @@ export const ActionTypes = {
     GET_DOC_PROGRESS: 'GET_DOC_PROGRESS',
     GET_DOC_END: 'GET_DOC_END',
     GET_DOC_BACKEND_ERROR: 'GET_DOC_BACKEND_ERROR',
-    GET_DOC_ERROR: 'GET_DOC_ERROR'
+    GET_DOC_ERROR: 'GET_DOC_ERROR',
+
+    GET_LOG_BEGIN: 'GET_LOG_BEGIN',
+    GET_LOG_END: 'GET_LOG_END',
+    GET_LOG_ERROR: 'GET_LOG_ERROR'
 };
 
 export type TickAction = PayloadAction<{ timestamp: number }>;
@@ -49,3 +53,15 @@ export const getDocBackendError = (requestPackageKey: PackageKey, logUri: string
 export type GetDocErrorAction = MetaErrorAction<{ requestPackageKey: PackageKey }>;
 export const getDocError = (requestPackageKey: PackageKey, error: Error): GetDocErrorAction =>
     ({ type: ActionTypes.GET_DOC_ERROR, meta: { requestPackageKey }, payload: error, error: true });
+
+export type GetLogBeginAction = MetaAction<{ normalizedPackageKey: PackageKey }>;
+export const getLogBegin = (normalizedPackageKey: PackageKey): GetLogBeginAction =>
+    ({ type: ActionTypes.GET_LOG_BEGIN, meta: { normalizedPackageKey }});
+
+export type GetLogEndAction = MetaPayloadAction<{ normalizedPackageKey: PackageKey }, { log: LogMessage[] }>;
+export const getLogEnd = (normalizedPackageKey: PackageKey, log: LogMessage[]): GetLogEndAction =>
+    ({ type: ActionTypes.GET_LOG_END, meta: { normalizedPackageKey }, payload: { log }});
+
+export type GetLogErrorAction = MetaErrorAction<{ normalizedPackageKey: PackageKey }>;
+export const getLogError = (normalizedPackageKey: PackageKey, error: Error): GetLogErrorAction =>
+    ({ type: ActionTypes.GET_LOG_ERROR, meta: { normalizedPackageKey }, payload: error, error: true });

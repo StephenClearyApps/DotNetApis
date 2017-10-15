@@ -37,9 +37,6 @@ export interface PackageDocumentationStatus {
     /** The URI of the backend processing log. */
     logUri?: string;
 
-    /** The backend processing log, if loaded. */
-    log?: LogMessage[];
-
     /** The documentation, if loaded. */
     json?: PackageDoc;
 }
