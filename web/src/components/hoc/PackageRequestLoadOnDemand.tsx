@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { PackageLoading } from '../PackageLoading';
-import { PackageError } from '../PackageError';
+import { PackageRequestError } from '../PackageRequestError';
 
 import { State } from '../../reducers';
 import { Actions } from '../../actions';
@@ -17,9 +17,9 @@ const loadOnDemand = withLoadOnDemand<State & Actions & PackageRequestInjectedPr
     LoadingComponent: PackageLoading
 });
 
-const eitherError = withEither<State & Actions & PackageRequestInjectedProps>(props => props.pkgRequestStatus.status !== 'ERROR', PackageError);
+const eitherError = withEither<State & Actions & PackageRequestInjectedProps>(props => props.pkgRequestStatus.status !== 'ERROR', PackageRequestError);
 
-/** Loads a package on demand, and handles displaying package loading and package error components */
+/** Loads a package on demand, and handles displaying package loading and package request error components */
 export const withPackageRequestLoadOnDemand =
     <TComponentProps extends {}>(Component: ReactComponent<TComponentProps & State & Actions & PackageRequestInjectedProps>) =>
     withPackageRequest(loadOnDemand(eitherError(Component)));

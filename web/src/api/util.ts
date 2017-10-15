@@ -26,7 +26,8 @@ function check422(response: Response) {
 /** Checks the response for an error and throws an error containing error details returned from the API */
 function checkResponseError(response: Response, json: ErrorDetails) {
     if (!response.ok) {
-        const error: ResponseError = { status: response.status, message: response.statusText, details: json };
+        const error = new ResponseError(response.status, response.statusText);
+        error.details = json;
         throw error;
     }
 }
@@ -60,8 +61,7 @@ export async function getJson<T>(url: string, query?: Query): Promise<T> {
 export async function getPlainJson<T>(url: string): Promise<T> {
     const response = await fetch(url);
     if (!response.ok) {
-        const error: ResponseError = { status: response.status, message: response.statusText };
-        throw error;
+        throw new ResponseError(response.status, response.statusText);
     }
     return await response.json();
 }
