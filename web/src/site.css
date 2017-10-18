@@ -33,3 +33,7 @@ code {
 .logs .message.Information { color: #268bd2; }
 .logs .message.Warning { color: #b58900; }
 .logs .message.Error { color: #dc322f; }
+
+.errorDetails pre {
+    overflow-x: auto;
+}

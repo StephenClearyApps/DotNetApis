@@ -50,5 +50,5 @@ export interface ErrorDetailsProps {
 }
 
 export const ErrorDetails: React.StatelessComponent<ErrorDetailsProps> = props => {
-    return <div>{javascriptErrorDetails(props.error, props.currentTimestamp)}</div>;
+    return <div className="errorDetails">{javascriptErrorDetails(props.error, props.currentTimestamp)}</div>;
 }
