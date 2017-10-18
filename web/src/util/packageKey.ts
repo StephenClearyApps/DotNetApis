@@ -12,12 +12,13 @@ export function packageKey(packageKey: PackageKey): string {
 }
 
 export function packageFriendlyName(packageKey: PackageKey): string {
-    let result = packageKey.packageId;
-    if (packageKey.packageVersion) {
-        result += " " + packageKey.packageVersion;
+    const { packageId, packageVersion, targetFramework } = without$(packageKey);
+    let result = packageId;
+    if (packageVersion) {
+        result += " " + packageVersion;
     }
-    if (packageKey.targetFramework) {
-        result += " (" + packageKey.targetFramework + ")";
+    if (targetFramework) {
+        result += " (" + targetFramework + ")";
     }
     return result;
 }
