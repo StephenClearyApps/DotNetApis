@@ -49,7 +49,7 @@ export const DocActions = {
                         return;
                     } else if (pollResult.status === "Failed") {
                         dispatch(actions.getDocBackendError(requestKey, pollResult.logUri));
-                        throw new Error("Documentation generation failed; see " + pollResult.logUri);
+                        return;
                     } else {
                         dispatch(actions.getDocProgress(requestKey, { type: "meta", timestamp: (new Date).getTime(), message: "Documentation processing status: " + pollResult.status}));
                     }
@@ -62,7 +62,7 @@ export const DocActions = {
         }
     },
 
-    getDocLog: (normalizedKey: PackageKey, logUri: string) => async (dispatch: Dispatch<any>) => {
+    getDocLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
         dispatch(actions.getLogBegin(normalizedKey));
         try {
             const result = await api.getPackageLog(logUri);

@@ -1,14 +1,13 @@
 import { handleActions } from 'redux-actions';
 
 import * as A from '../actionTypes';
-import { packageKey } from '../util';
 import { LogMessage, Status as PackageStatus } from '../api';
 
-export type Status = 'STARTED' | 'DONE' | 'ERROR';
+export type PackageLogRequestStatus = 'STARTED' | 'DONE' | 'ERROR';
 
 export interface PackageLogState {
     /** The status of the request */
-    status: Status;
+    status: PackageLogRequestStatus;
     
     /** The error, if any */
     error?: Error;
@@ -30,20 +29,19 @@ function getLogBegin(state: PackageLogsState, action: A.GetLogBeginAction): Pack
         ...state,
         packageLogs: {
             ...state.packageLogs,
-            [packageKey(action.meta.normalizedPackageKey)]: { status: 'STARTED' }
+            [action.meta.normalizedPackageKey]: { status: 'STARTED' }
         }
     };
 }
 
 /** We have received the log for the package */
 function getLogEnd(state: PackageLogsState, action: A.GetLogEndAction): PackageLogsState {
-    const key = packageKey(action.meta.normalizedPackageKey);
     return {
         ...state,
         packageLogs: {
             ...state.packageLogs,
-            [key]: {
-                ...state.packageLogs[key],
+            [action.meta.normalizedPackageKey]: {
+                ...state.packageLogs[action.meta.normalizedPackageKey],
                 status: 'DONE',
                 log: action.payload.log
             }
@@ -53,13 +51,12 @@ function getLogEnd(state: PackageLogsState, action: A.GetLogEndAction): PackageL
 
 /** Some part of the "get log" command has failed */
 function getLogError(state: PackageLogsState, action: A.GetLogErrorAction): PackageLogsState {
-    const key = packageKey(action.meta.normalizedPackageKey);
     return {
         ...state,
         packageLogs: {
             ...state.packageLogs,
-            [key]: {
-                ...state.packageLogs[key],
+            [action.meta.normalizedPackageKey]: {
+                ...state.packageLogs[action.meta.normalizedPackageKey],
                 status: 'ERROR',
                 error: action.payload
             }

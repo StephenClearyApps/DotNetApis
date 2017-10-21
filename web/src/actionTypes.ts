@@ -54,14 +54,14 @@ export type GetDocErrorAction = MetaErrorAction<{ requestPackageKey: PackageKey 
 export const getDocError = (requestPackageKey: PackageKey, error: Error): GetDocErrorAction =>
     ({ type: ActionTypes.GET_DOC_ERROR, meta: { requestPackageKey }, payload: error, error: true });
 
-export type GetLogBeginAction = MetaAction<{ normalizedPackageKey: PackageKey }>;
-export const getLogBegin = (normalizedPackageKey: PackageKey): GetLogBeginAction =>
+export type GetLogBeginAction = MetaAction<{ normalizedPackageKey: string }>;
+export const getLogBegin = (normalizedPackageKey: string): GetLogBeginAction =>
     ({ type: ActionTypes.GET_LOG_BEGIN, meta: { normalizedPackageKey }});
 
-export type GetLogEndAction = MetaPayloadAction<{ normalizedPackageKey: PackageKey }, { log: LogMessage[] }>;
-export const getLogEnd = (normalizedPackageKey: PackageKey, log: LogMessage[]): GetLogEndAction =>
+export type GetLogEndAction = MetaPayloadAction<{ normalizedPackageKey: string }, { log: LogMessage[] }>;
+export const getLogEnd = (normalizedPackageKey: string, log: LogMessage[]): GetLogEndAction =>
     ({ type: ActionTypes.GET_LOG_END, meta: { normalizedPackageKey }, payload: { log }});
 
-export type GetLogErrorAction = MetaErrorAction<{ normalizedPackageKey: PackageKey }>;
-export const getLogError = (normalizedPackageKey: PackageKey, error: Error): GetLogErrorAction =>
+export type GetLogErrorAction = MetaErrorAction<{ normalizedPackageKey: string }>;
+export const getLogError = (normalizedPackageKey: string, error: Error): GetLogErrorAction =>
     ({ type: ActionTypes.GET_LOG_ERROR, meta: { normalizedPackageKey }, payload: error, error: true });

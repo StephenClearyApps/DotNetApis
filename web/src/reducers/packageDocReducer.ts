@@ -4,11 +4,11 @@ import * as A from '../actionTypes';
 import { packageKey, PackageDoc } from '../util';
 import { LogMessage, Status as PackageStatus } from '../api';
 
-export type Status = 'STARTED' | 'DONE' | 'ERROR';
+export type PackageDocRequestStatus = 'STARTED' | 'DONE' | 'ERROR' | 'BACKEND_ERROR';
 
 export interface PackageDocumentationRequest {
     /** The status of the request */
-    status: Status;
+    status: PackageDocRequestStatus;
     
     /** The request log (not backend log), if known */
     log?: LogMessage[];
@@ -175,6 +175,14 @@ function getDocBackendError(state: PackageDocsState, action: A.GetDocBackendErro
     const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
     return {
         ...state,
+        packageDocumentationRequests: {
+            ...state.packageDocumentationRequests,
+            [requestKey]: {
+                ...state.packageDocumentationRequests[requestKey],
+                status: 'BACKEND_ERROR',
+                error: new Error("Documentation generation failed; see the processing log for details.")
+            }
+        },
         packageDocumentation: {
             ...state.packageDocumentation,
             [normalizedKey]: {

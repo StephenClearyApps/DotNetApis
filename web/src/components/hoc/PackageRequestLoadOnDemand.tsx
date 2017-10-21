@@ -17,7 +17,9 @@ const loadOnDemand = withLoadOnDemand<State & Actions & PackageRequestInjectedPr
     LoadingComponent: PackageLoading
 });
 
-const eitherError = withEither<State & Actions & PackageRequestInjectedProps>(props => props.pkgRequestStatus.status !== 'ERROR', PackageRequestError);
+const eitherError = withEither<State & Actions & PackageRequestInjectedProps>(
+    props => props.pkgRequestStatus.status !== 'ERROR' && props.pkgRequestStatus.status !== 'BACKEND_ERROR',
+    PackageRequestError);
 
 /** Loads a package on demand, and handles displaying package loading and package request error components */
 export const withPackageRequestLoadOnDemand =
