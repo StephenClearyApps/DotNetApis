@@ -25,6 +25,7 @@ code {
 .logs .message {
     text-indent: -2em;
     padding-left: 2em;
+    white-space: pre-wrap;
 }
 .logs .message:hover {
     background-color: #073642; /* base02 */
