@@ -36,7 +36,7 @@ namespace DotNetApis.Storage
             _logger.LogDebug("Saved json for {idver} target {target} at {url} in {elapsed}", idver, target, jsonUri, stopwatch.Elapsed);
 
             // Save the processing log to blob storage.
-            var logUri = await SaveLogAsync(idver, target).ConfigureAwait(false);
+            var logUri = await SaveLogAsync(idver, target, success: true).ConfigureAwait(false);
 
             // Mark the processing as complete.
             await _table.SetRecordAsync(idver, target, Status.Succeeded, logUri, jsonUri).ConfigureAwait(false);
@@ -50,17 +50,17 @@ namespace DotNetApis.Storage
         public async Task WriteFailureAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
             // Save the processing log to blob storage.
-            var logUri = await SaveLogAsync(idver, target).ConfigureAwait(false);
+            var logUri = await SaveLogAsync(idver, target, success: false).ConfigureAwait(false);
 
             // Mark the processing as failed.
             await _table.SetRecordAsync(idver, target, Status.Failed, logUri, null).ConfigureAwait(false);
         }
 
-        private async Task<Uri> SaveLogAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        private async Task<Uri> SaveLogAsync(NugetPackageIdVersion idver, PlatformTarget target, bool success)
         {
             var log = AmbientContext.InMemoryLogger?.Messages;
             var logJson = JsonConvert.SerializeObject(log, Constants.StorageJsonSerializerSettings);
-            return await _storage.WriteLogAsync(idver, target, logJson).ConfigureAwait(false);
+            return await _storage.WriteLogAsync(idver, target, logJson, success).ConfigureAwait(false);
         }
     }
 }

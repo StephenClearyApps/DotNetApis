@@ -24,7 +24,8 @@ namespace DotNetApis.Storage
         /// <param name="idver">The id and version of the package.</param>
         /// <param name="target">The target for the package.</param>
         /// <param name="json">The JSON documentation for the specified package id, version, and target.</param>
-        Task<Uri> WriteLogAsync(NugetPackageIdVersion idver, PlatformTarget target, string json);
+        /// <param name="success">The "slot" in which to save the log, whether successful or failed.</param>
+        Task<Uri> WriteLogAsync(NugetPackageIdVersion idver, PlatformTarget target, string json, bool success);
     }
 
     public sealed class AzurePackageJsonStorage : IPackageJsonStorage
@@ -53,10 +54,10 @@ namespace DotNetApis.Storage
             return blob.Uri;
         }
 
-        public async Task<Uri> WriteLogAsync(NugetPackageIdVersion idver, PlatformTarget target, string log)
+        public async Task<Uri> WriteLogAsync(NugetPackageIdVersion idver, PlatformTarget target, string log, bool success)
         {
             var (data, dataLength) = Compression.GzipString(log, _logger);
-            var blobPath = GetLogBlobPath(idver, target);
+            var blobPath = GetLogBlobPath(idver, target, success);
             var blob = _container.GetBlockBlobReference(blobPath);
             await blob.UploadFromByteArrayAsync(data, 0, dataLength).ConfigureAwait(false);
             blob.Properties.ContentType = "application/json; charset=utf-8";
@@ -67,6 +68,6 @@ namespace DotNetApis.Storage
 
         private static string GetJsonBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => idver.PackageId + "/" + idver.Version + "/" + target + ".json";
 
-        private static string GetLogBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => idver.PackageId + "/" + idver.Version + "/" + target + ".log.json";
+        private static string GetLogBlobPath(NugetPackageIdVersion idver, PlatformTarget target, bool success) => idver.PackageId + "/" + idver.Version + "/" + target + "." + (success ? "log" : "error") + ".json";
     }
 }

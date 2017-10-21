@@ -63,6 +63,7 @@ namespace DotNetApis.Logic.Formatting
                     continue;
                 yield return attribute;
             }
+            throw new InvalidOperationException("nope");
         }
 
         /// <summary>
