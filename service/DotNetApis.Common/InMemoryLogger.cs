@@ -18,7 +18,7 @@ namespace DotNetApis.Common
             {
                 Type = logLevel,
                 Timestamp = DateTimeOffset.UtcNow,
-                Message = formatter(state, exception),
+                Message = formatter(state, exception) + (exception == null ? "" : "\r\n" + exception),
             });
         }
 
