@@ -1,20 +1,19 @@
 import * as React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
 
 import { Enum, Delegate, Method, Property, Event, Field, Type } from './doc';
 
 import { PackageContext } from '../util';
 import { isEnum, isDelegate, isMethod, isProperty, isEvent, isField, isInterface, isStruct, isClass } from '../structure';
-import { PackageInjectedProps, withAutoPackage } from './hoc';
+import { PackageInjectedProps, withPackage, createRouterProps, RouteComponentProps } from './hoc';
+import { State } from '../reducers';
+import { Actions } from '../actions';
 
 interface RouteParams {
     dnaid: string;
 }
 
-export interface EntityDocProps extends RouteComponentProps<RouteParams>, PackageInjectedProps {
-}
-
-const EntityDocComponent: React.StatelessComponent<EntityDocProps> = props => {
+export type EntityDocProps = State & Actions;
+const EntityDocComponent: React.StatelessComponent<EntityDocProps & PackageInjectedProps & RouteComponentProps<RouteParams>> = props => {
     const { pkg, match } = props;
     const data = pkg.findEntity(match.params.dnaid);
     if (!data)
@@ -38,4 +37,4 @@ const EntityDocComponent: React.StatelessComponent<EntityDocProps> = props => {
     throw new Error('Unrecognized entity type.');
 };
 
-export const EntityDoc = withAutoPackage(withRouter(EntityDocComponent));
+export const EntityDoc = withPackage(createRouterProps<RouteParams>()(EntityDocComponent));

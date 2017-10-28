@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { RouteComponentProps } from 'react-router';
 
+import { RouteComponentProps } from '.';
 import { State } from '../../reducers';
 import { packageKey, PackageDocumentationRequest } from '../../util';
 

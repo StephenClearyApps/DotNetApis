@@ -1,6 +1,6 @@
 import * as React from "react";
-import { RouteComponentProps, withRouter } from "react-router";
 
+import { RouteComponentProps, createRouterProps } from "./hoc";
 import { FilteredListItem, FilteredListItemGroup, FilteredGroupedList } from "./FilteredGroupedList";
 export { FilteredListItem, FilteredListItemGroup } from "./FilteredGroupedList";
 
@@ -19,4 +19,4 @@ const HashFilteredGroupedListComponent: React.StatelessComponent<HashFilteredGro
             filterChanged={value => hash.setSetting("filter", value)} />;
 };
 
-export const HashFilteredGroupedList = withRouter(HashFilteredGroupedListComponent);
+export const HashFilteredGroupedList = createRouterProps<any>()(HashFilteredGroupedListComponent);

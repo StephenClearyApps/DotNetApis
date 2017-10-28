@@ -8,13 +8,14 @@ import "whatwg-fetch";
 
 import { Main } from "./components/Main";
 import { store } from "./store";
-import { actions, TimeActions } from "./actions";
+import { actions, TimeActions, Actions } from "./actions";
+import { State } from "./reducers";
 
 // Load the stylesheet
 import "./site.css";
 
 /** Binds action creators that are in one level of namespacing */
-function mapDispatchToProps(dispatch: Dispatch<any>) {
+function mapDispatchToProps(dispatch: Dispatch<any>): Actions {
     const result : any = { };
     for (let key of Object.keys(actions)) {
         result[key] = bindActionCreators((actions as any)[key], dispatch);
@@ -23,7 +24,8 @@ function mapDispatchToProps(dispatch: Dispatch<any>) {
 }
 
 window.onload = () => {
-    const ConnectedMain = withRouter<{}>(connect(x => x, mapDispatchToProps)(Main));
+    const connector = connect<State, Actions>(x => x, mapDispatchToProps);
+    const ConnectedMain = withRouter(connector(Main));
     render(
         <Provider store={store}>
             <BrowserRouter>

@@ -1,20 +1,19 @@
 import * as React from "react";
-import { RouteComponentProps, withRouter } from "react-router";
 
 import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
 import { EntityListItem } from './EntityListItem';
 
-import { PackageInjectedProps, withAutoPackage } from "./hoc";
+import { PackageInjectedProps, withPackage, RouteComponentProps, createRouterProps } from "./hoc";
 import { selectMany } from "../util";
+import { State } from "../reducers";
+import { Actions } from "../actions";
 
 interface RouteParams {
     ns: string;
 }
 
-export interface PackageNamespaceProps extends RouteComponentProps<RouteParams>, PackageInjectedProps {
-}
-
-const PackageNamespaceComponent: React.StatelessComponent<PackageNamespaceProps> = (props) => {
+export type PackageNamespaceProps = State & Actions;
+const PackageNamespaceComponent: React.StatelessComponent<PackageNamespaceProps & RouteComponentProps<RouteParams> & PackageInjectedProps> = (props) => {
     const { pkg, match: { params: { ns } } } = props;
     const types = selectMany(pkg.l, x => x.t).filter(x => x.s === ns);
     types.sort((x, y) => {
@@ -40,4 +39,4 @@ const PackageNamespaceComponent: React.StatelessComponent<PackageNamespaceProps>
     );
 }
 
-export const PackageNamespace = withAutoPackage(withRouter(PackageNamespaceComponent));
+export const PackageNamespace = withPackage(createRouterProps<RouteParams>()(PackageNamespaceComponent));

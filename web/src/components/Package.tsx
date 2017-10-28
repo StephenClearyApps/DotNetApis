@@ -11,14 +11,12 @@ import { EntityListItem } from './EntityListItem';
 
 import { State } from "../reducers";
 import { Actions } from "../actions";
-import { withAutoPackage, PackageInjectedProps } from "./hoc";
+import { withPackage, PackageInjectedProps } from "./hoc";
 import { PackageContext, normalizePath, sortEntities, array, selectMany } from "../util";
 import { IEntity, IAssembly, IPackageDependency, IPackageEntity } from "../structure";
 import { packageEntityLink } from "../logic";
 
-export interface PackageProps extends State, Actions {
-}
-
+export type PackageProps = State & Actions;
 const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = props => {
     const { pkg, packageDoc, pkgRequestKey } = props;
     const types = selectMany(pkg.l, x => x.t);
@@ -41,7 +39,7 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedP
     </HashTabs>);
 }
 
-export const Package = withAutoPackage(PackageComponent);
+export const Package = withPackage(PackageComponent);
 
 function typesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
     if (types.length === 0)

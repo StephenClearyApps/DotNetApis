@@ -1,21 +1,20 @@
 import * as React from "react";
-import { RouteComponentProps, withRouter } from "react-router";
 
 import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
 import { EntityListItem } from './EntityListItem';
 
-import { PackageInjectedProps, withAutoPackage } from "./hoc";
+import { PackageInjectedProps, withPackage, RouteComponentProps, createRouterProps } from "./hoc";
 import { packageFriendlyName, normalizePath, sortEntities, fileName } from "../util";
 import { attributeDeclaration } from "../fragments";
+import { State } from "../reducers";
+import { Actions } from "../actions";
 
 interface RouteParams {
     path: string;
 }
 
-export interface PackageFileProps extends RouteComponentProps<RouteParams>, PackageInjectedProps {
-}
-
-const PackageFileComponent: React.StatelessComponent<PackageFileProps> = (props) => {
+export type PackageFileProps = State & Actions;
+const PackageFileComponent: React.StatelessComponent<PackageFileProps & RouteComponentProps<RouteParams> & PackageInjectedProps> = (props) => {
     const { pkg, match: { params: { path } } } = props;
     // TODO: better error message
     if (!pkg.l)
@@ -57,4 +56,4 @@ const PackageFileComponent: React.StatelessComponent<PackageFileProps> = (props)
     );
 }
 
-export const PackageFile = withAutoPackage(withRouter(PackageFileComponent));
+export const PackageFile = withPackage(createRouterProps<RouteParams>()(PackageFileComponent));

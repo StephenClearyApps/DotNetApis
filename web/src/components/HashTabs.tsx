@@ -1,7 +1,7 @@
 import * as React from "react";
 import Tabs from "material-ui/Tabs";
-import { RouteComponentProps, withRouter } from "react-router";
 
+import { RouteComponentProps, createRouterProps } from "./hoc";
 import { HashSettings } from "../logic";
 
 export interface HashTabsProps {
@@ -18,4 +18,4 @@ const HashTabsComponent: React.StatelessComponent<HashTabsProps & RouteComponent
     return <Tabs value={value} onChange={onChange}>{children}</Tabs>;
 };
 
-export const HashTabs = withRouter(HashTabsComponent);
+export const HashTabs = createRouterProps<any>()(HashTabsComponent);
