@@ -4,6 +4,7 @@ export * from './createEither';
 export * from './createExecuteOnMount';
 export * from './createLoadOnDemand';
 export * from './createMaybe';
+export * from './createRouterProps';
 
 export * from './util';
 

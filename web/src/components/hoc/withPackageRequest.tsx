@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteComponentProps, withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router';
 
 import { ReactComponent } from '.';
 import { State } from '../../reducers';
@@ -17,8 +17,3 @@ export const withPackageRequest =
         const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
         return <Component {...props} pkgRequestStatus={request} pkgRequestKey={props.match.params}/>;
     };
-
-/** Takes the route parameters `PackageKey`, and injects `PackageRequestInjectedProps` */
-export const withRouterPackageRequest =
-    <TProps extends {}>(Component: ReactComponent<TProps & PackageRequestInjectedProps>) =>
-    withRouter<TProps & State>(withPackageRequest(Component));

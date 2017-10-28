@@ -3,7 +3,7 @@ import * as React from "react";
 import { PackageLoading } from "../PackageLoading";
 import { PackageRequestError } from '../PackageRequestError';
 
-import { PackageContextInjectedProps, ReactComponent, withPackageContext, createLoadOnDemand, PackageRequestInjectedProps, createEither, withLoadPackageOnDemand, withRouterPackageRequest } from '.';
+import { PackageContextInjectedProps, ReactComponent, withPackageContext, createLoadOnDemand, PackageRequestInjectedProps, createEither, withLoadPackageOnDemand, withPackageRequest, createRouterProps } from '.';
 import { State } from "../../reducers/index";
 import { Actions } from "../../actions";
 
@@ -19,7 +19,11 @@ export const withPackage =
         props => props.pkgRequestStatus.status !== 'ERROR' && props.pkgRequestStatus.status !== 'BACKEND_ERROR',
         props => <PackageRequestError {...props}/>
     );
-    return withRouterPackageRequest(withLoadPackageOnDemand(withEitherLoadingMessage(withEitherErrorMessage(withPackageContext(Component)))));
-}
 
-// TODO: withEitherErrorMessage
+    return createRouterProps<PackageKey>()(
+        withPackageRequest(
+            withLoadPackageOnDemand(
+                withEitherLoadingMessage(
+                    withEitherErrorMessage(
+                        withPackageContext(Component))))));
+}
