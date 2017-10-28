@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { ReactComponent, createExecuteOnMount } from '.';
+import { createExecuteOnMount } from '.';
 
 interface LoadOnDemandOptions<TProps> {
     /** Gets whether the desired item has started loading; this should return true if the item is loading, loaded, or errored. */
@@ -14,5 +14,5 @@ interface LoadOnDemandOptions<TProps> {
 export const createLoadOnDemand =
 <TProps extends {}>({ hasStarted, load }: LoadOnDemandOptions<TProps>) => {
     const withExecuteOnMount = createExecuteOnMount<TProps>(props => { if (!hasStarted(props)) load(props); });
-    return (Component: ReactComponent<TProps>) => withExecuteOnMount(Component);
+    return (Component: React.ComponentType<TProps>) => withExecuteOnMount(Component);
 }

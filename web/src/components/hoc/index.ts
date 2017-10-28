@@ -6,8 +6,6 @@ export * from './createLoadOnDemand';
 export * from './createMaybe';
 export * from './createRouterProps';
 
-export * from './util';
-
 export * from './withLoadPackageOnDemand';
 export * from './withPackage';
 export * from './withPackageContext';
