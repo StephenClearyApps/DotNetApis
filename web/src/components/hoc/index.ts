@@ -1,13 +1,13 @@
 export * from 'recompose';
 
-export * from './AutoPackage';
-export * from './Either';
-export * from './ExecuteOnMount';
-export * from './LoadOnDemand';
-export * from './Maybe';
-export * from './Package';
-export * from './PackageLogLoadOnDemand';
-export * from './PackageLogRequest';
-export * from './PackageRequest';
-export * from './PackageRequestLoadOnDemand';
+export * from './createEither';
+export * from './createExecuteOnMount';
+export * from './createLoadOnDemand';
+export * from './createMaybe';
+
 export * from './util';
+
+export * from './withLoadPackageOnDemand';
+export * from './withPackage';
+export * from './withPackageContext';
+export * from './withPackageRequest';
