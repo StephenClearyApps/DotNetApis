@@ -51,7 +51,7 @@
     "bluebird": "^3.5.1",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
-    "material-ui": "^0.19.4",
+    "material-ui": "0.20.0",
     "query-string": "^5.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
