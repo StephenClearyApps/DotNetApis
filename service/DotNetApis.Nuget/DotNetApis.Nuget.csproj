@@ -44,11 +44,11 @@
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Nito.Comparers.Core, Version=5.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Comparers.Core.5.0.3\lib\netstandard1.0\Nito.Comparers.Core.dll</HintPath>
+    <Reference Include="Nito.Comparers.Core, Version=5.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Comparers.Core.5.0.5\lib\netstandard2.0\Nito.Comparers.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Nito.Comparers.Linq, Version=5.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Comparers.Linq.5.0.3\lib\netstandard1.0\Nito.Comparers.Linq.dll</HintPath>
+    <Reference Include="Nito.Comparers.Linq, Version=5.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.Comparers.Linq.5.0.5\lib\netstandard2.0\Nito.Comparers.Linq.dll</HintPath>
     </Reference>
     <Reference Include="NuGet.Common, Version=4.3.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\NuGet.Common.4.3.0\lib\net45\NuGet.Common.dll</HintPath>
