@@ -1,7 +1,9 @@
 import * as React from 'react';
 
+import { Hoc } from '.';
+
 /** Displays either one component or another, depending on a given predicate */
-export const createEither =
-    <TProps extends {}>(predicate: (props: TProps) => boolean, FalseComponent: React.ComponentType<TProps>) =>
-    (Component: React.ComponentType<TProps>) =>
-    (props: TProps) => predicate(props) ? <Component {...props}/> : <FalseComponent {...props}/>;
+export function createEither<TProps>(predicate: (props: TProps) => boolean, FalseComponent: React.ComponentType<TProps>): Hoc<TProps> {
+    return Component => props =>
+    predicate(props) ? <Component {...props}/> : <FalseComponent {...props}/>;
+}
