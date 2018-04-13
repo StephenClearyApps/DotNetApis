@@ -152,7 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetApis.Cecil\DotNetApis.Cecil.csproj">
-      <Project>{f1f7f024-a30f-44db-8a18-eb5b864d9280}</Project>
+      <Project>{417554b2-feaf-4cd7-87f6-5d2255c5d8d9}</Project>
       <Name>DotNetApis.Cecil</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj">
