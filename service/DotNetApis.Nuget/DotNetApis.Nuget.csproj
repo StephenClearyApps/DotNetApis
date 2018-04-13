@@ -109,7 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj">
-      <Project>{22a1e92a-8ae8-4b36-acb2-3f84a56886c5}</Project>
+      <Project>{f040cc03-d413-4d28-8c9d-9a11fcda82b5}</Project>
       <Name>DotNetApis.Common</Name>
     </ProjectReference>
   </ItemGroup>
