@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { LogMessages } from './LogMessages';
 
-import { PackageLogRequestInjectedProps, withPackageLogLoadOnDemand } from './hoc';
+import { PackageLogRequestInjectedProps, withPackageLog } from './hoc';
 import { packageFriendlyName } from '../util';
 import { State } from '../reducers';
 
@@ -22,4 +22,4 @@ const PackageLogComponent: React.StatelessComponent<State & PackageLogProps> = (
     );
 }
 
-export const PackageLog = withPackageLogLoadOnDemand(PackageLogComponent);
+export const PackageLog = withPackageLog(PackageLogComponent);
