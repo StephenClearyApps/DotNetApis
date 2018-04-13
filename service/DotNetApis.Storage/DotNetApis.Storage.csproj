@@ -106,7 +106,7 @@
       <Name>DotNetApis.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj">
-      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
+      <Project>{3dd6c65e-3b72-4a05-83b5-f0d466a4917c}</Project>
       <Name>DotNetApis.Nuget</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj">

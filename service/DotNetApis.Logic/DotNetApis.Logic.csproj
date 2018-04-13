@@ -86,7 +86,10 @@
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
-    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.3.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
@@ -160,7 +163,7 @@
       <Name>DotNetApis.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj">
-      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
+      <Project>{3dd6c65e-3b72-4a05-83b5-f0d466a4917c}</Project>
       <Name>DotNetApis.Nuget</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj">
