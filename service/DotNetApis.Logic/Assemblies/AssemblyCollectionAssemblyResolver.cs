@@ -25,6 +25,12 @@ namespace DotNetApis.Logic.Assemblies
             _collection = collection;
         }
 
+        public override void Dispose()
+        {
+            if (_defaultAssemblyResolver.IsValueCreated)
+                _defaultAssemblyResolver.Value.Dispose();
+        }
+
         public override AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters)
         {
             parameters = parameters ?? new ReaderParameters();

@@ -37,7 +37,7 @@ namespace DotNetApis.Cecil
             if (baseType != null && baseType.FullName != "System.Object" && baseType.FullName != "System.ValueType" && baseType.FullName != "System.Enum" && baseType.FullName != "System.MulticastDelegate")
                 yield return baseType;
             foreach (var i in type.Interfaces)
-                yield return i;
+                yield return i.InterfaceType;
         }
 
         /// <summary>
