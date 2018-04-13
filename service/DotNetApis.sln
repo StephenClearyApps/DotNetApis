@@ -16,6 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BCA77A66-6E48-49E3-AAB4-408EC020E285}"
 	ProjectSection(SolutionItems) = preProject
 		..\.deployment = ..\.deployment
+		Packages.md = Packages.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Common", "DotNetApis.Common\DotNetApis.Common.csproj", "{22A1E92A-8AE8-4B36-ACB2-3F84A56886C5}"
