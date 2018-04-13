@@ -174,7 +174,7 @@
       <Name>DotNetApis.Storage</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj">
-      <Project>{dd42551c-ad74-4b2c-8d84-2643cbb6e22c}</Project>
+      <Project>{c13dcf2e-0dff-4c90-b1eb-37235fa45148}</Project>
       <Name>DotNetApis.Structure</Name>
     </ProjectReference>
   </ItemGroup>

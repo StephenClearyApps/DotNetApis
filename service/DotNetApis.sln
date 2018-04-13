@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Storage", "DotNe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Logic", "DotNetApis.Logic\DotNetApis.Logic.csproj", "{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Structure", "DotNetApis.Structure\DotNetApis.Structure.csproj", "{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Common", "DotNetApis.Common\DotNetApis.Common.csproj", "{F040CC03-D413-4D28-8C9D-9A11FCDA82B5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Cecil", "DotNetApis.Cecil\DotNetApis.Cecil.csproj", "{417554B2-FEAF-4CD7-87F6-5D2255C5D8D9}"
@@ -32,6 +30,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Nuget", "DotNetApis.Nuget\DotNetApis.Nuget.csproj", "{3DD6C65E-3B72-4A05-83B5-F0D466A4917C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.SimpleInjector", "DotNetApis.SimpleInjector\DotNetApis.SimpleInjector.csproj", "{9BBAB0A0-0900-4512-82FF-8E104ECD27EC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Structure", "DotNetApis.Structure\DotNetApis.Structure.csproj", "{C13DCF2E-0DFF-4C90-B1EB-37235FA45148}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,10 +51,6 @@ Global
 		{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DD42551C-AD74-4B2C-8D84-2643CBB6E22C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F040CC03-D413-4D28-8C9D-9A11FCDA82B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F040CC03-D413-4D28-8C9D-9A11FCDA82B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F040CC03-D413-4D28-8C9D-9A11FCDA82B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -71,6 +67,10 @@ Global
 		{9BBAB0A0-0900-4512-82FF-8E104ECD27EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BBAB0A0-0900-4512-82FF-8E104ECD27EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BBAB0A0-0900-4512-82FF-8E104ECD27EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C13DCF2E-0DFF-4C90-B1EB-37235FA45148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C13DCF2E-0DFF-4C90-B1EB-37235FA45148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C13DCF2E-0DFF-4C90-B1EB-37235FA45148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C13DCF2E-0DFF-4C90-B1EB-37235FA45148}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
