@@ -23,23 +23,23 @@ namespace FunctionApp.CompositionRoot
             ContainerFor<OpsFunction>.Create(async container =>
             {
                 var singletons = await WhenAll(ReferenceStorageInstance.Value, ReferenceXmldocTableCloudTable.Value);
-                container.RegisterSingletons(singletons);
-                container.RegisterSingleton(CloudStorageAccountInstance.Value);
+                container.RegisterInstances(singletons);
+                container.RegisterInstance(CloudStorageAccountInstance.Value);
                 container.RegisterLazyTask(() => ReferenceAssembliesInstance.Value);
                 container.Register<IReferenceXmldocTable, AzureReferenceXmldocTable>();
                 container.Register<IStorageBackend, AzureStorageBackend>();
             });
             ContainerFor<StatusFunction>.Create(async container =>
             {
-                container.RegisterSingleton(await PackageJsonTableCloudTable);
-                container.RegisterSingleton(CloudTableClientInstance.Value);
+                container.RegisterInstance(await PackageJsonTableCloudTable);
+                container.RegisterInstance(CloudTableClientInstance.Value);
                 container.Register<IPackageJsonTable, AzurePackageJsonTable>();
             });
             ContainerFor<DocumentationFunction>.Create(async container =>
             {
                 var singletons = await WhenAll(PackageTableCloudTable.Value, PackageStorageCloudBlobContainer.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value);
-                container.RegisterSingletons(singletons);
-                container.RegisterSingleton(CloudTableClientInstance.Value);
+                container.RegisterInstances(singletons);
+                container.RegisterInstance(CloudTableClientInstance.Value);
                 container.Register<INugetRepository, NugetRepository>();
                 container.Register<IPackageTable, AzurePackageTable>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
@@ -50,8 +50,8 @@ namespace FunctionApp.CompositionRoot
             {
                 var singletons = await WhenAll(CloudBlobClientInstance.Value, PackageTableCloudTable.Value, PackageStorageCloudBlobContainer.Value, ReferenceStorageInstance.Value,
                     ReferenceXmldocTableCloudTable.Value, PackageJsonTableCloudTable.Value, PackageJsonStorageCloudBlobContainer.Value);
-                container.RegisterSingletons(singletons);
-                container.RegisterSingleton(CloudTableClientInstance.Value);
+                container.RegisterInstances(singletons);
+                container.RegisterInstance(CloudTableClientInstance.Value);
                 container.RegisterLazyTask(() => ReferenceAssembliesInstance.Value);
                 container.Register<IPackageTable, AzurePackageTable>();
                 container.Register<IPackageStorage, AzurePackageStorage>();
