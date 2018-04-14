@@ -8,9 +8,9 @@ namespace DotNetApis.Cecil
     public static partial class CecilExtensions
     {
         /// <summary>
-        /// Get a friendly name for the member.
+        /// Gets a friendly name for the member.
         /// </summary>
-        public static FriendlyName GetFriendlyName(this IMemberDefinition member)
+        public static FriendlyName MemberFriendlyName(this IMemberDefinition member)
         {
             var ns = member.DeclaringType != null ? member.DeclaringTypesInnerToOuter().Last().Namespace : ((TypeDefinition)member).Namespace;
 
@@ -34,7 +34,7 @@ namespace DotNetApis.Cecil
         /// <summary>
         /// Get a friendly name for the method overload group.
         /// </summary>
-        public static FriendlyName GetOverloadFriendlyName(this MethodDefinition method)
+        public static FriendlyName OverloadFriendlyName(this MethodDefinition method)
         {
             var ns = method.DeclaringTypesInnerToOuter().Last().Namespace;
             var simpleName = method.Name.StripBacktickSuffix().Name; // Note: no generic parameters
