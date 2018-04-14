@@ -170,7 +170,7 @@
       <Name>DotNetApis.Nuget</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj">
-      <Project>{2602dd40-48d0-4172-842c-114caf4cf922}</Project>
+      <Project>{5e3540a9-ca0b-476d-aaeb-f1776c80a884}</Project>
       <Name>DotNetApis.Storage</Name>
     </ProjectReference>
     <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj">
