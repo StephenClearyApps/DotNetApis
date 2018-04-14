@@ -1,4 +1,4 @@
-DotNetApis are a form of identifier that is designed to be (mostly) human-readable and safe to use in the path portion of a URL.
+DotNetApiIds are a form of identifier that is designed to be (mostly) human-readable and safe to use in the path portion of a URL.
 
 # Alphabet
 
