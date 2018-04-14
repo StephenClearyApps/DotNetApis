@@ -35,6 +35,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Logic", "DotNetA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Cecil.UnitTests", "DotNetApis.Cecil.UnitTests\DotNetApis.Cecil.UnitTests.csproj", "{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetApis.Logic.UnitTests", "DotNetApis.Logic.UnitTests\DotNetApis.Logic.UnitTests.csproj", "{21C42712-E2EB-4E3B-950B-3F497702DFBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestUtility", "UnitTestUtility\UnitTestUtility.csproj", "{0A2829D4-7FE5-4472-90DC-92B38BB7F28A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +81,14 @@ Global
 		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21C42712-E2EB-4E3B-950B-3F497702DFBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21C42712-E2EB-4E3B-950B-3F497702DFBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21C42712-E2EB-4E3B-950B-3F497702DFBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21C42712-E2EB-4E3B-950B-3F497702DFBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A2829D4-7FE5-4472-90DC-92B38BB7F28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A2829D4-7FE5-4472-90DC-92B38BB7F28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A2829D4-7FE5-4472-90DC-92B38BB7F28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A2829D4-7FE5-4472-90DC-92B38BB7F28A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
