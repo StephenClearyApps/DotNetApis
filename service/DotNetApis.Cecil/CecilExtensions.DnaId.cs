@@ -36,10 +36,7 @@ namespace DotNetApis.Cecil
         {
             if (type.DeclaringType != null)
                 return type.DeclaringType.DnaId() + "/" + type.Name.DnaEncode();
-            var ns = type.Namespace.DnaEncode();
-            if (ns != "")
-                ns += ".";
-            return ns + type.Name.DnaEncode();
+            return type.Namespace.DnaEncode().DotAppend(type.Name.DnaEncode());
         }
 
         /// <summary>
