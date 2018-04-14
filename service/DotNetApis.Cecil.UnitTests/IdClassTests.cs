@@ -68,6 +68,21 @@ namespace DotNetApis.Cecil.UnitTests
         }
 
         [Fact]
+        public void Nested_InNamespace()
+        {
+            var code = @"namespace Ns { public class OuterClass { public class SampleClass { } } }";
+            var assembly = Compile(code).Dll;
+            var outer = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "OuterClass");
+            var type = outer.NestedTypes.Single(x => x.Name == "SampleClass");
+            Assert.Equal("T:Ns.OuterClass.SampleClass", type.XmldocIdentifier());
+            Assert.Equal("Ns.OuterClass/SampleClass", type.DnaId());
+            var name = type.MemberFriendlyName();
+            Assert.Equal("OuterClass.SampleClass", name.SimpleName);
+            Assert.Equal("Ns.OuterClass.SampleClass", name.QualifiedName);
+            Assert.Equal("Ns.OuterClass.SampleClass", name.FullyQualifiedName);
+        }
+
+        [Fact]
         public void SingleGenericParameter()
         {
             var code = @"public class SampleClass<TFirst> { }";
@@ -79,6 +94,50 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Equal("SampleClass<TFirst>", name.SimpleName);
             Assert.Equal("SampleClass<TFirst>", name.QualifiedName);
             Assert.Equal("SampleClass<TFirst>", name.FullyQualifiedName);
+        }
+
+        [Fact]
+        public void MultipleGenericParameters()
+        {
+            var code = @"public class SampleClass<TFirst, TSecond> { }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass`2");
+            Assert.Equal("T:SampleClass`2", type.XmldocIdentifier());
+            Assert.Equal("SampleClass'2", type.DnaId());
+            var name = type.MemberFriendlyName();
+            Assert.Equal("SampleClass<TFirst,TSecond>", name.SimpleName);
+            Assert.Equal("SampleClass<TFirst,TSecond>", name.QualifiedName);
+            Assert.Equal("SampleClass<TFirst,TSecond>", name.FullyQualifiedName);
+        }
+
+        [Fact]
+        public void Nested_GenericParameters()
+        {
+            var code = @"public class OuterClass<TFirst, TSecond> { public class SampleClass<TThird> { } }";
+            var assembly = Compile(code).Dll;
+            var outer = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "OuterClass`2");
+            var type = outer.NestedTypes.Single(x => x.Name == "SampleClass`1");
+            Assert.Equal("T:OuterClass`2.SampleClass`1", type.XmldocIdentifier());
+            Assert.Equal("OuterClass'2/SampleClass'1", type.DnaId());
+            var name = type.MemberFriendlyName();
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.SimpleName);
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.QualifiedName);
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.FullyQualifiedName);
+        }
+
+        [Fact]
+        public void Nested_GenericParameters_InNamespace()
+        {
+            var code = @"namespace Ns { public class OuterClass<TFirst, TSecond> { public class SampleClass<TThird> { } } }";
+            var assembly = Compile(code).Dll;
+            var outer = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "OuterClass`2");
+            var type = outer.NestedTypes.Single(x => x.Name == "SampleClass`1");
+            Assert.Equal("T:Ns.OuterClass`2.SampleClass`1", type.XmldocIdentifier());
+            Assert.Equal("Ns.OuterClass'2/SampleClass'1", type.DnaId());
+            var name = type.MemberFriendlyName();
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.SimpleName);
+            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.QualifiedName);
+            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.FullyQualifiedName);
         }
     }
 }
