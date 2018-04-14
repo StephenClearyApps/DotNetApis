@@ -139,5 +139,35 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.QualifiedName);
             Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.FullyQualifiedName);
         }
+
+        [Fact]
+        public void Nested_GenericParametersOnlyOnOuter()
+        {
+            var code = @"public class OuterClass<TFirst, TSecond> { public class SampleClass { } }";
+            var assembly = Compile(code).Dll;
+            var outer = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "OuterClass`2");
+            var type = outer.NestedTypes.Single(x => x.Name == "SampleClass");
+            Assert.Equal("T:OuterClass`2.SampleClass", type.XmldocIdentifier());
+            Assert.Equal("OuterClass'2/SampleClass", type.DnaId());
+            var name = type.MemberFriendlyName();
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass", name.SimpleName);
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass", name.QualifiedName);
+            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass", name.FullyQualifiedName);
+        }
+
+        [Fact]
+        public void Nested_GenericParameters_OnlyOnInner()
+        {
+            var code = @"public class OuterClass { public class SampleClass<TThird> { } }";
+            var assembly = Compile(code).Dll;
+            var outer = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "OuterClass");
+            var type = outer.NestedTypes.Single(x => x.Name == "SampleClass`1");
+            Assert.Equal("T:OuterClass.SampleClass`1", type.XmldocIdentifier());
+            Assert.Equal("OuterClass/SampleClass'1", type.DnaId());
+            var name = type.MemberFriendlyName();
+            Assert.Equal("OuterClass.SampleClass<TThird>", name.SimpleName);
+            Assert.Equal("OuterClass.SampleClass<TThird>", name.QualifiedName);
+            Assert.Equal("OuterClass.SampleClass<TThird>", name.FullyQualifiedName);
+        }
     }
 }
