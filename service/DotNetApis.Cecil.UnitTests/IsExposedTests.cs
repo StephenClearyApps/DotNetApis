@@ -59,7 +59,7 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Contains(type.ExposedMembers(), x => x.Name == "Member");
         }
 
-        [Fact(Skip = "Known bug: https://github.com/StephenClearyApps/DotNetApis/issues/51")]
+        [Fact]
         public void ProtectedMethod_OfPublicSealedClass_IsNotExposed()
         {
             var code = @"public sealed class SampleClass { protected void Member() { } }";
@@ -81,7 +81,7 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Contains(type.ExposedMembers(), x => x.Name == "Member");
         }
 
-        [Fact(Skip = "Known bug: https://github.com/StephenClearyApps/DotNetApis/issues/51")]
+        [Fact]
         public void ProtectedInternalMethod_OfPublicSealedClass_IsNotExposed()
         {
             var code = @"public sealed class SampleClass { protected internal void Member() { } }";

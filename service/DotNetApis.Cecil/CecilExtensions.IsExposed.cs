@@ -10,19 +10,39 @@ namespace DotNetApis.Cecil
     public static partial class CecilExtensions
     {
         /// <summary>
-        /// Whether this type is accessible from another assembly.
+        /// Whether this type is accessible from another assembly (if this is a nested type, then assuming its declaring type is accessible).
         /// </summary>
         public static bool IsExposed(this TypeDefinition type) => type.IsPublic || type.IsNestedPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly;
 
         /// <summary>
         /// Whether this field is accessible from another assembly (assuming its declaring type is accessible).
         /// </summary>
-        public static bool IsExposed(this FieldDefinition field) => field.IsPublic || field.IsFamily || field.IsFamilyOrAssembly;
+        public static bool IsExposed(this FieldDefinition field)
+        {
+            if (field.IsPublic)
+                return true;
+
+            // Protected fields are only accessible if the declaring type is not sealed.
+            if (field.IsFamily || field.IsFamilyOrAssembly)
+                return !field.DeclaringType.IsSealed;
+
+            return false;
+        }
 
         /// <summary>
         /// Whether this method is accessible from another assembly (assuming its declaring type is accessible).
         /// </summary>
-        public static bool IsExposed(this MethodDefinition method) => method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly || method.GetExplicitlyImplementedInterfaceMethod() != null;
+        public static bool IsExposed(this MethodDefinition method)
+        {
+            if (method.IsPublic)
+                return true;
+
+            // Protected methods are only accessible if the declaring type is not sealed.
+            if (method.IsFamily || method.IsFamilyOrAssembly)
+                return !method.DeclaringType.IsSealed;
+
+            return method.GetExplicitlyImplementedInterfaceMethod() != null;
+        }
 
         /// <summary>
         /// Whether this property is accessible from another assembly (assuming its declaring type is accessible).
