@@ -28,5 +28,25 @@ namespace DotNetApis.Logic.UnitTests
                     Assert.Contains("This is my sample class!", type.Xmldoc.Basic.ToXmlString());
                 });
         }
+
+        [Fact]
+        public void PublicClass_TopLevel()
+        {
+            var code = @"/// <summary>
+                        /// This is my sample class!
+                        /// </summary>
+                        public class SampleClass { }";
+            var structure = Format(code);
+            Assert.Collection(structure.Types,
+                type =>
+                {
+                    Assert.Equal(EntityKind.Class, type.Kind);
+                    Assert.Equal(EntityAccessibility.Public, type.Accessibility);
+                    Assert.Equal(EntityModifiers.None, type.Modifiers);
+                    Assert.Equal("SampleClass", type.Name);
+                    Assert.Equal("SampleClass", type.DnaId);
+                    Assert.Contains("This is my sample class!", type.Xmldoc.Basic.ToXmlString());
+                });
+        }
     }
 }

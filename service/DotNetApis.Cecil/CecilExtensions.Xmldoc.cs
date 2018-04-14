@@ -90,7 +90,10 @@ namespace DotNetApis.Cecil
         {
             if (type.DeclaringType != null)
                 return type.DeclaringType.XmldocIdentifierName() + "." + XmldocEncodeName(type.Name);
-            return type.Namespace + "." + type.Name;
+            var ns = type.Namespace;
+            if (ns != "")
+                ns += ".";
+            return ns + type.Name;
         }
 
         /// <summary>
