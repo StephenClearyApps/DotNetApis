@@ -54,5 +54,20 @@ namespace DotNetApis.Common
             var end = char.IsWhiteSpace(source[source.Length - 1]) ? " " : string.Empty;
             return begin + source.Trim() + end;
         }
+
+        /// <summary>
+        /// Returns this string appended with a "." and then the <paramref name="append"/> string. If either this string or the <paramref name="append"/> string is empty, then the other string is returned without a ".".
+        /// </summary>
+        /// <param name="source">The source string.</param>
+        /// <param name="append">The string to append.</param>
+        /// <returns></returns>
+        public static string DotAppend(this string source, string append)
+        {
+            if (source == "")
+                return append;
+            if (append == "")
+                return source;
+            return source + "." + append;
+        }
     }
 }

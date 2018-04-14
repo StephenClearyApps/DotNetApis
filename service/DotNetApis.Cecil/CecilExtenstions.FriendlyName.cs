@@ -17,7 +17,7 @@ namespace DotNetApis.Cecil
             if (member is TypeDefinition type)
             {
                 var simpleName = GetSimpleName(type);
-                return new FriendlyName(simpleName, ns + "." + simpleName, ns + "." + simpleName);
+                return new FriendlyName(simpleName, ns.DotAppend(simpleName), ns.DotAppend(simpleName));
             }
 
             var declaringType = string.Join(".", member.DeclaringType.GenericDeclaringTypesAndThis().Select(GetSimpleName));
@@ -43,7 +43,7 @@ namespace DotNetApis.Cecil
         }
 
         private static FriendlyName CreateFromDeclaringType(string simpleName, string declaringType, string ns) =>
-            new FriendlyName(simpleName, declaringType + "." + simpleName, ns + "." + declaringType + "." + simpleName);
+            new FriendlyName(simpleName, declaringType + "." + simpleName, ns.DotAppend(declaringType + "." + simpleName));
 
         private static string GetSimpleName(TypeReference type) => string.Join(".", type.GenericDeclaringTypesAndThis().Select(GetSimpleName));
 

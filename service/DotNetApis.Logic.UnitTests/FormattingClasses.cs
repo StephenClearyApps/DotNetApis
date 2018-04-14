@@ -6,7 +6,7 @@ using static FormatUtility;
 
 namespace DotNetApis.Logic.UnitTests
 {
-    public class Formatting
+    public class FormattingClasses
     {
         [Fact]
         public void PublicClass_InNamespace()
@@ -21,6 +21,7 @@ namespace DotNetApis.Logic.UnitTests
                 type =>
                 {
                     Assert.Equal(EntityKind.Class, type.Kind);
+                    Assert.IsType<TypeEntity>(type);
                     Assert.Equal(EntityAccessibility.Public, type.Accessibility);
                     Assert.Equal(EntityModifiers.None, type.Modifiers);
                     Assert.Equal("SampleClass", type.Name);
@@ -41,6 +42,7 @@ namespace DotNetApis.Logic.UnitTests
                 type =>
                 {
                     Assert.Equal(EntityKind.Class, type.Kind);
+                    Assert.IsType<TypeEntity>(type);
                     Assert.Equal(EntityAccessibility.Public, type.Accessibility);
                     Assert.Equal(EntityModifiers.None, type.Modifiers);
                     Assert.Equal("SampleClass", type.Name);
