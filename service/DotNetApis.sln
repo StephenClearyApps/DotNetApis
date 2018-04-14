@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Storage", "DotNe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Logic", "DotNetApis.Logic\DotNetApis.Logic.csproj", "{CE7FDC24-D991-4D71-8403-0DEB31F3A069}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNetApis.Cecil.UnitTests", "DotNetApis.Cecil.UnitTests\DotNetApis.Cecil.UnitTests.csproj", "{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{CE7FDC24-D991-4D71-8403-0DEB31F3A069}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE7FDC24-D991-4D71-8403-0DEB31F3A069}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE7FDC24-D991-4D71-8403-0DEB31F3A069}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C959C6E-8726-42F5-AC76-0EE2E4020C1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
