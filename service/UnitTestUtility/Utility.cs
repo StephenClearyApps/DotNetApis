@@ -18,15 +18,8 @@ public static class Utility
     /// <returns></returns>
     public static (AssemblyDefinition Dll, XDocument Xml) Compile(string code)
     {
-        var parseOptions = new CSharpParseOptions()
-            .WithKind(SourceCodeKind.Regular)
-            .WithLanguageVersion(LanguageVersion.Latest);
         var tree = CSharpSyntaxTree.ParseText(code, parseOptions);
-        var compileOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-            .WithOptimizationLevel(OptimizationLevel.Release);
-        var compilation = CSharpCompilation.Create("TestInMemoryAssembly", options: compileOptions)
-            .AddSyntaxTrees(tree)
-            .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
+        var compilation = sharedCompilation.Clone().AddSyntaxTrees(tree);
         var peStream = new MemoryStream();
         var xmlStream = new MemoryStream();
         var emitResult = compilation.Emit(peStream, xmlDocumentationStream: xmlStream);
@@ -36,4 +29,13 @@ public static class Utility
         xmlStream.Seek(0, SeekOrigin.Begin);
         return (AssemblyDefinition.ReadAssembly(peStream), XDocument.Load(xmlStream));
     }
+
+    private static readonly CSharpParseOptions parseOptions = new CSharpParseOptions()
+        .WithKind(SourceCodeKind.Regular)
+        .WithLanguageVersion(LanguageVersion.Latest);
+    private static readonly CSharpCompilationOptions compileOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        .WithOptimizationLevel(OptimizationLevel.Release);
+    private static readonly CSharpCompilation sharedCompilation = CSharpCompilation.Create("TestInMemoryAssembly")
+        .WithOptions(compileOptions)
+        .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
 }

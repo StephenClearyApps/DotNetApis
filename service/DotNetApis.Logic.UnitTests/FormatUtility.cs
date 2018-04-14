@@ -20,9 +20,9 @@ using System.Xml.Linq;
 
 public static class FormatUtility
 {
-    public static AssemblyJson Format(string code)
+    static FormatUtility()
     {
-        var container = new Container();
+        container = new Container();
         container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
         container.Options.DefaultLifestyle = Lifestyle.Scoped;
         container.RegisterInstance<ILogger>(NullLogger.Instance);
@@ -30,10 +30,13 @@ public static class FormatUtility
         container.Register<AttributeFormatter>();
         container.Register<MemberDefinitionFormatter>();
         container.Verify();
+    }
 
+    public static AssemblyJson Format(string code)
+    {
         var (dll, xml) = Utility.Compile(code);
         using (AsyncScopedLifestyle.BeginScope(container))
-        using (GenerationScope.Create(PlatformTarget.TryParse("net46"), new AssemblyCollection(NullLogger.Instance, null)))
+        using (GenerationScope.Create(platformTarget, assemblyCollection))
         using (AssemblyScope.Create(xml))
         {
             var attributeFormatter = container.GetInstance<AttributeFormatter>();
@@ -45,6 +48,10 @@ public static class FormatUtility
             };
         }
     }
+
+    private static readonly Container container;
+    private static readonly PlatformTarget platformTarget = PlatformTarget.TryParse("net46");
+    private static readonly AssemblyCollection assemblyCollection = new AssemblyCollection(NullLogger.Instance, null);
 
     private sealed class NullReferenceXmldocTable : IReferenceXmldocTable
     {
