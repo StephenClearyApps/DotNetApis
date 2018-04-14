@@ -125,7 +125,7 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Contains(type.ExposedMembers(), x => x.Name == "System.IDisposable.Dispose");
         }
 
-        [Fact(Skip = "Known bug: https://github.com/StephenClearyApps/DotNetApis/issues/82")]
+        [Fact]
         public void ExplicitlyImplementedMethod_OfInternalInterface_InPublicClass_IsNotExposed()
         {
             var code = @"internal interface IInternal { void Method(); } public class SampleClass: IInternal { void IInternal.Method() { } }";
@@ -134,6 +134,17 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "IInternal.Method");
             Assert.False(method.IsExposed());
             Assert.DoesNotContain(type.ExposedMembers(), x => x.Name == "IInternal.Method");
+        }
+
+        [Fact]
+        public void ExplicitlyImplementedMethod_OfPublicInterfaceInInternalDeclaringType_InPublicClass_IsNotExposed()
+        {
+            var code = @"internal class Internal { public interface IInternal { void Method(); } } public class SampleClass: Internal.IInternal { void Internal.IInternal.Method() { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
+            var method = type.Methods.Single(x => x.Name == "Internal.IInternal.Method");
+            Assert.False(method.IsExposed());
+            Assert.DoesNotContain(type.ExposedMembers(), x => x.Name == "Internal.IInternal.Method");
         }
     }
 }

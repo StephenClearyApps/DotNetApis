@@ -41,7 +41,12 @@ namespace DotNetApis.Cecil
             if (method.IsFamily || method.IsFamilyOrAssembly)
                 return !method.DeclaringType.IsSealed;
 
-            return method.GetExplicitlyImplementedInterfaceMethod() != null;
+            // Explicitly implemented interface methods are only accessible if their interface type is accessible (in addition to its declaring types).
+            var interfaceMethod = method.GetExplicitlyImplementedInterfaceMethod();
+            if (interfaceMethod != null)
+                return interfaceMethod.DeclaringType.DeclaringTypesAndThis().All(x => x.Resolve().IsExposed());
+
+            return false;
         }
 
         /// <summary>
