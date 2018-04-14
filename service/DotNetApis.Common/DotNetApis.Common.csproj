@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="ably.io" Version="0.8.9" />
-    <PackageReference Include="Microsoft.Azure.WebJobs" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />
     <PackageReference Include="Microsoft.WindowsAzure.ConfigurationManager" Version="3.2.3" />
     <PackageReference Include="Nito.Disposables" Version="1.2.3" />
