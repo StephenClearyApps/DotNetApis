@@ -18,10 +18,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:SampleEnum", type.XmldocIdentifier());
             Assert.Equal("SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleEnum", name.SimpleName);
-            Assert.Equal("SampleEnum", name.QualifiedName);
-            Assert.Equal("SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleEnum", "SampleEnum", "SampleEnum");
         }
 
         [Fact]
@@ -32,10 +29,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:MyNamespace.SampleEnum", type.XmldocIdentifier());
             Assert.Equal("MyNamespace.SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleEnum", name.SimpleName);
-            Assert.Equal("MyNamespace.SampleEnum", name.QualifiedName);
-            Assert.Equal("MyNamespace.SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleEnum", "MyNamespace.SampleEnum", "MyNamespace.SampleEnum");
         }
 
         [Fact]
@@ -46,10 +40,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:MyNamespace.InnerNamespace.ThirdNamespace.SampleEnum", type.XmldocIdentifier());
             Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleEnum", name.SimpleName);
-            Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleEnum", name.QualifiedName);
-            Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleEnum", "MyNamespace.InnerNamespace.ThirdNamespace.SampleEnum", "MyNamespace.InnerNamespace.ThirdNamespace.SampleEnum");
         }
 
         [Fact]
@@ -61,10 +52,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:OuterClass.SampleEnum", type.XmldocIdentifier());
             Assert.Equal("OuterClass/SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass.SampleEnum", name.SimpleName);
-            Assert.Equal("OuterClass.SampleEnum", name.QualifiedName);
-            Assert.Equal("OuterClass.SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass.SampleEnum", "OuterClass.SampleEnum", "OuterClass.SampleEnum");
         }
 
         [Fact]
@@ -76,10 +64,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:Ns.OuterClass.SampleEnum", type.XmldocIdentifier());
             Assert.Equal("Ns.OuterClass/SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass.SampleEnum", name.SimpleName);
-            Assert.Equal("Ns.OuterClass.SampleEnum", name.QualifiedName);
-            Assert.Equal("Ns.OuterClass.SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass.SampleEnum", "Ns.OuterClass.SampleEnum", "Ns.OuterClass.SampleEnum");
         }
 
         [Fact]
@@ -91,10 +76,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:OuterClass`2.SampleEnum", type.XmldocIdentifier());
             Assert.Equal("OuterClass'2/SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleEnum", name.SimpleName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleEnum", name.QualifiedName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass<TFirst,TSecond>.SampleEnum", "OuterClass<TFirst,TSecond>.SampleEnum", "OuterClass<TFirst,TSecond>.SampleEnum");
         }
 
         [Fact]
@@ -106,10 +88,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleEnum");
             Assert.Equal("T:Ns.OuterClass`2.SampleEnum", type.XmldocIdentifier());
             Assert.Equal("Ns.OuterClass'2/SampleEnum", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleEnum", name.SimpleName);
-            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleEnum", name.QualifiedName);
-            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleEnum", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass<TFirst,TSecond>.SampleEnum", "Ns.OuterClass<TFirst,TSecond>.SampleEnum", "Ns.OuterClass<TFirst,TSecond>.SampleEnum");
         }
     }
 }

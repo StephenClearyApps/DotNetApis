@@ -18,10 +18,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleStruct");
             Assert.Equal("T:SampleStruct", type.XmldocIdentifier());
             Assert.Equal("SampleStruct", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleStruct", name.SimpleName);
-            Assert.Equal("SampleStruct", name.QualifiedName);
-            Assert.Equal("SampleStruct", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleStruct", "SampleStruct", "SampleStruct");
         }
 
         [Fact]
@@ -32,10 +29,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleStruct");
             Assert.Equal("T:MyNamespace.SampleStruct", type.XmldocIdentifier());
             Assert.Equal("MyNamespace.SampleStruct", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleStruct", name.SimpleName);
-            Assert.Equal("MyNamespace.SampleStruct", name.QualifiedName);
-            Assert.Equal("MyNamespace.SampleStruct", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleStruct", "MyNamespace.SampleStruct", "MyNamespace.SampleStruct");
         }
 
         [Fact]
@@ -46,10 +40,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleStruct");
             Assert.Equal("T:MyNamespace.InnerNamespace.ThirdNamespace.SampleStruct", type.XmldocIdentifier());
             Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleStruct", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleStruct", name.SimpleName);
-            Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleStruct", name.QualifiedName);
-            Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleStruct", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleStruct", "MyNamespace.InnerNamespace.ThirdNamespace.SampleStruct", "MyNamespace.InnerNamespace.ThirdNamespace.SampleStruct");
         }
 
         [Fact]
@@ -61,10 +52,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleStruct");
             Assert.Equal("T:OuterStruct.SampleStruct", type.XmldocIdentifier());
             Assert.Equal("OuterStruct/SampleStruct", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterStruct.SampleStruct", name.SimpleName);
-            Assert.Equal("OuterStruct.SampleStruct", name.QualifiedName);
-            Assert.Equal("OuterStruct.SampleStruct", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterStruct.SampleStruct", "OuterStruct.SampleStruct", "OuterStruct.SampleStruct");
         }
 
         [Fact]
@@ -76,10 +64,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleStruct");
             Assert.Equal("T:Ns.OuterStruct.SampleStruct", type.XmldocIdentifier());
             Assert.Equal("Ns.OuterStruct/SampleStruct", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterStruct.SampleStruct", name.SimpleName);
-            Assert.Equal("Ns.OuterStruct.SampleStruct", name.QualifiedName);
-            Assert.Equal("Ns.OuterStruct.SampleStruct", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterStruct.SampleStruct", "Ns.OuterStruct.SampleStruct", "Ns.OuterStruct.SampleStruct");
         }
 
         [Fact]
@@ -90,10 +75,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleStruct`1");
             Assert.Equal("T:SampleStruct`1", type.XmldocIdentifier());
             Assert.Equal("SampleStruct'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleStruct<TFirst>", name.SimpleName);
-            Assert.Equal("SampleStruct<TFirst>", name.QualifiedName);
-            Assert.Equal("SampleStruct<TFirst>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleStruct<TFirst>", "SampleStruct<TFirst>", "SampleStruct<TFirst>");
         }
 
         [Fact]
@@ -104,10 +86,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleStruct`2");
             Assert.Equal("T:SampleStruct`2", type.XmldocIdentifier());
             Assert.Equal("SampleStruct'2", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleStruct<TFirst,TSecond>", name.SimpleName);
-            Assert.Equal("SampleStruct<TFirst,TSecond>", name.QualifiedName);
-            Assert.Equal("SampleStruct<TFirst,TSecond>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleStruct<TFirst,TSecond>", "SampleStruct<TFirst,TSecond>", "SampleStruct<TFirst,TSecond>");
         }
 
         [Fact]
@@ -119,10 +98,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleStruct`1");
             Assert.Equal("T:OuterStruct`2.SampleStruct`1", type.XmldocIdentifier());
             Assert.Equal("OuterStruct'2/SampleStruct'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", name.SimpleName);
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", name.QualifiedName);
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", "OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", "OuterStruct<TFirst,TSecond>.SampleStruct<TThird>");
         }
 
         [Fact]
@@ -134,10 +110,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleStruct`1");
             Assert.Equal("T:Ns.OuterStruct`2.SampleStruct`1", type.XmldocIdentifier());
             Assert.Equal("Ns.OuterStruct'2/SampleStruct'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", name.SimpleName);
-            Assert.Equal("Ns.OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", name.QualifiedName);
-            Assert.Equal("Ns.OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", "Ns.OuterStruct<TFirst,TSecond>.SampleStruct<TThird>", "Ns.OuterStruct<TFirst,TSecond>.SampleStruct<TThird>");
         }
 
         [Fact]
@@ -149,10 +122,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleStruct");
             Assert.Equal("T:OuterStruct`2.SampleStruct", type.XmldocIdentifier());
             Assert.Equal("OuterStruct'2/SampleStruct", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct", name.SimpleName);
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct", name.QualifiedName);
-            Assert.Equal("OuterStruct<TFirst,TSecond>.SampleStruct", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterStruct<TFirst,TSecond>.SampleStruct", "OuterStruct<TFirst,TSecond>.SampleStruct", "OuterStruct<TFirst,TSecond>.SampleStruct");
         }
 
         [Fact]
@@ -164,10 +134,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleStruct`1");
             Assert.Equal("T:OuterStruct.SampleStruct`1", type.XmldocIdentifier());
             Assert.Equal("OuterStruct/SampleStruct'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterStruct.SampleStruct<TThird>", name.SimpleName);
-            Assert.Equal("OuterStruct.SampleStruct<TThird>", name.QualifiedName);
-            Assert.Equal("OuterStruct.SampleStruct<TThird>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterStruct.SampleStruct<TThird>", "OuterStruct.SampleStruct<TThird>", "OuterStruct.SampleStruct<TThird>");
         }
     }
 }

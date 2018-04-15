@@ -19,10 +19,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:SampleClass.SampleMethod", method.XmldocIdentifier());
             Assert.Equal("SampleClass/SampleMethod()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod", name.SimpleName);
-            Assert.Equal("SampleClass.SampleMethod", name.QualifiedName);
-            Assert.Equal("SampleClass.SampleMethod", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod", "SampleClass.SampleMethod", "SampleClass.SampleMethod");
         }
 
         [Fact]
@@ -34,10 +31,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:MyNamespace.SampleClass.SampleMethod", method.XmldocIdentifier());
             Assert.Equal("MyNamespace.SampleClass/SampleMethod()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod", name.SimpleName);
-            Assert.Equal("SampleClass.SampleMethod", name.QualifiedName);
-            Assert.Equal("MyNamespace.SampleClass.SampleMethod", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod", "SampleClass.SampleMethod", "MyNamespace.SampleClass.SampleMethod");
         }
 
         [Fact]
@@ -50,10 +44,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:OuterClass.SampleClass.SampleMethod", method.XmldocIdentifier());
             Assert.Equal("OuterClass/SampleClass/SampleMethod()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod", name.SimpleName);
-            Assert.Equal("OuterClass.SampleClass.SampleMethod", name.QualifiedName);
-            Assert.Equal("OuterClass.SampleClass.SampleMethod", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod", "OuterClass.SampleClass.SampleMethod", "OuterClass.SampleClass.SampleMethod");
         }
 
         [Fact]
@@ -66,10 +57,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:Ns.OuterClass.SampleClass.SampleMethod", method.XmldocIdentifier());
             Assert.Equal("Ns.OuterClass/SampleClass/SampleMethod()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod", name.SimpleName);
-            Assert.Equal("OuterClass.SampleClass.SampleMethod", name.QualifiedName);
-            Assert.Equal("Ns.OuterClass.SampleClass.SampleMethod", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod", "OuterClass.SampleClass.SampleMethod", "Ns.OuterClass.SampleClass.SampleMethod");
         }
 
         [Fact]
@@ -81,10 +69,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:SampleClass.SampleMethod``1", method.XmldocIdentifier());
             Assert.Equal("SampleClass/SampleMethod''1()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod<TFirst>", name.SimpleName);
-            Assert.Equal("SampleClass.SampleMethod<TFirst>", name.QualifiedName);
-            Assert.Equal("SampleClass.SampleMethod<TFirst>", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod<TFirst>", "SampleClass.SampleMethod<TFirst>", "SampleClass.SampleMethod<TFirst>");
         }
 
         [Fact]
@@ -97,10 +82,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:OuterClass`2.SampleClass`1.SampleMethod``1", method.XmldocIdentifier());
             Assert.Equal("OuterClass'2/SampleClass'1/SampleMethod''1()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod<TFourth>", name.SimpleName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>", name.QualifiedName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod<TFourth>", "OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>", "OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>");
         }
 
         [Fact]
@@ -113,10 +95,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:Ns.OuterClass`2.SampleClass`1.SampleMethod``1", method.XmldocIdentifier());
             Assert.Equal("Ns.OuterClass'2/SampleClass'1/SampleMethod''1()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod<TFourth>", name.SimpleName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>", name.QualifiedName);
-            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod<TFourth>", "OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>", "Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>.SampleMethod<TFourth>");
         }
 
         [Fact]
@@ -128,10 +107,7 @@ namespace DotNetApis.Cecil.UnitTests
             var method = type.Methods.Single(x => x.Name == "SampleMethod");
             Assert.Equal("M:SampleClass`1.SampleMethod", method.XmldocIdentifier());
             Assert.Equal("SampleClass'1/SampleMethod()", method.DnaId());
-            var name = method.MemberFriendlyName();
-            Assert.Equal("SampleMethod", name.SimpleName);
-            Assert.Equal("SampleClass<TFirst>.SampleMethod", name.QualifiedName);
-            Assert.Equal("SampleClass<TFirst>.SampleMethod", name.FullyQualifiedName);
+            method.MemberFriendlyName().AssertEqual("SampleMethod", "SampleClass<TFirst>.SampleMethod", "SampleClass<TFirst>.SampleMethod");
         }
     }
 }

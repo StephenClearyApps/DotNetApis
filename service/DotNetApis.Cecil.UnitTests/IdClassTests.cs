@@ -18,10 +18,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
             Assert.Equal("T:SampleClass", type.XmldocIdentifier());
             Assert.Equal("SampleClass", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleClass", name.SimpleName);
-            Assert.Equal("SampleClass", name.QualifiedName);
-            Assert.Equal("SampleClass", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleClass", "SampleClass", "SampleClass");
         }
 
         [Fact]
@@ -32,10 +29,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
             Assert.Equal("T:MyNamespace.SampleClass", type.XmldocIdentifier());
             Assert.Equal("MyNamespace.SampleClass", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleClass", name.SimpleName);
-            Assert.Equal("MyNamespace.SampleClass", name.QualifiedName);
-            Assert.Equal("MyNamespace.SampleClass", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleClass", "MyNamespace.SampleClass", "MyNamespace.SampleClass");
         }
 
         [Fact]
@@ -46,10 +40,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
             Assert.Equal("T:MyNamespace.InnerNamespace.ThirdNamespace.SampleClass", type.XmldocIdentifier());
             Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleClass", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleClass", name.SimpleName);
-            Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleClass", name.QualifiedName);
-            Assert.Equal("MyNamespace.InnerNamespace.ThirdNamespace.SampleClass", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleClass", "MyNamespace.InnerNamespace.ThirdNamespace.SampleClass", "MyNamespace.InnerNamespace.ThirdNamespace.SampleClass");
         }
 
         [Fact]
@@ -61,10 +52,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleClass");
             Assert.Equal("T:OuterClass.SampleClass", type.XmldocIdentifier());
             Assert.Equal("OuterClass/SampleClass", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass.SampleClass", name.SimpleName);
-            Assert.Equal("OuterClass.SampleClass", name.QualifiedName);
-            Assert.Equal("OuterClass.SampleClass", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass.SampleClass", "OuterClass.SampleClass", "OuterClass.SampleClass");
         }
 
         [Fact]
@@ -76,10 +64,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleClass");
             Assert.Equal("T:Ns.OuterClass.SampleClass", type.XmldocIdentifier());
             Assert.Equal("Ns.OuterClass/SampleClass", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass.SampleClass", name.SimpleName);
-            Assert.Equal("Ns.OuterClass.SampleClass", name.QualifiedName);
-            Assert.Equal("Ns.OuterClass.SampleClass", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass.SampleClass", "Ns.OuterClass.SampleClass", "Ns.OuterClass.SampleClass");
         }
 
         [Fact]
@@ -90,10 +75,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass`1");
             Assert.Equal("T:SampleClass`1", type.XmldocIdentifier());
             Assert.Equal("SampleClass'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleClass<TFirst>", name.SimpleName);
-            Assert.Equal("SampleClass<TFirst>", name.QualifiedName);
-            Assert.Equal("SampleClass<TFirst>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleClass<TFirst>", "SampleClass<TFirst>", "SampleClass<TFirst>");
         }
 
         [Fact]
@@ -104,10 +86,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass`2");
             Assert.Equal("T:SampleClass`2", type.XmldocIdentifier());
             Assert.Equal("SampleClass'2", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("SampleClass<TFirst,TSecond>", name.SimpleName);
-            Assert.Equal("SampleClass<TFirst,TSecond>", name.QualifiedName);
-            Assert.Equal("SampleClass<TFirst,TSecond>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("SampleClass<TFirst,TSecond>", "SampleClass<TFirst,TSecond>", "SampleClass<TFirst,TSecond>");
         }
 
         [Fact]
@@ -119,10 +98,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleClass`1");
             Assert.Equal("T:OuterClass`2.SampleClass`1", type.XmldocIdentifier());
             Assert.Equal("OuterClass'2/SampleClass'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.SimpleName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.QualifiedName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass<TFirst,TSecond>.SampleClass<TThird>", "OuterClass<TFirst,TSecond>.SampleClass<TThird>", "OuterClass<TFirst,TSecond>.SampleClass<TThird>");
         }
 
         [Fact]
@@ -134,10 +110,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleClass`1");
             Assert.Equal("T:Ns.OuterClass`2.SampleClass`1", type.XmldocIdentifier());
             Assert.Equal("Ns.OuterClass'2/SampleClass'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.SimpleName);
-            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.QualifiedName);
-            Assert.Equal("Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass<TFirst,TSecond>.SampleClass<TThird>", "Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>", "Ns.OuterClass<TFirst,TSecond>.SampleClass<TThird>");
         }
 
         [Fact]
@@ -149,10 +122,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleClass");
             Assert.Equal("T:OuterClass`2.SampleClass", type.XmldocIdentifier());
             Assert.Equal("OuterClass'2/SampleClass", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass", name.SimpleName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass", name.QualifiedName);
-            Assert.Equal("OuterClass<TFirst,TSecond>.SampleClass", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass<TFirst,TSecond>.SampleClass", "OuterClass<TFirst,TSecond>.SampleClass", "OuterClass<TFirst,TSecond>.SampleClass");
         }
 
         [Fact]
@@ -164,10 +134,7 @@ namespace DotNetApis.Cecil.UnitTests
             var type = outer.NestedTypes.Single(x => x.Name == "SampleClass`1");
             Assert.Equal("T:OuterClass.SampleClass`1", type.XmldocIdentifier());
             Assert.Equal("OuterClass/SampleClass'1", type.DnaId());
-            var name = type.MemberFriendlyName();
-            Assert.Equal("OuterClass.SampleClass<TThird>", name.SimpleName);
-            Assert.Equal("OuterClass.SampleClass<TThird>", name.QualifiedName);
-            Assert.Equal("OuterClass.SampleClass<TThird>", name.FullyQualifiedName);
+            type.MemberFriendlyName().AssertEqual("OuterClass.SampleClass<TThird>", "OuterClass.SampleClass<TThird>", "OuterClass.SampleClass<TThird>");
         }
     }
 }
