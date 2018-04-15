@@ -34,7 +34,8 @@ public static class Utility
         .WithKind(SourceCodeKind.Regular)
         .WithLanguageVersion(LanguageVersion.Latest);
     private static readonly CSharpCompilationOptions compileOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        .WithOptimizationLevel(OptimizationLevel.Release);
+        .WithOptimizationLevel(OptimizationLevel.Release)
+        .WithAllowUnsafe(enabled: true);
     private static readonly CSharpCompilation sharedCompilation = CSharpCompilation.Create("TestInMemoryAssembly")
         .WithOptions(compileOptions)
         .AddReferences(MetadataReference.CreateFromFile(typeof(object).Assembly.Location));
