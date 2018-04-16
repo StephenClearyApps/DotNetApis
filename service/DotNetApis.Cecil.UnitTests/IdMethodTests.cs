@@ -358,5 +358,95 @@ namespace DotNetApis.Cecil.UnitTests
             method.MemberFriendlyName().AssertEqual("op_Implicit", "SampleClass.op_Implicit", "SampleClass.op_Implicit");
             method.OverloadFriendlyName().AssertEqual("op_Implicit", "SampleClass.op_Implicit", "SampleClass.op_Implicit");
         }
+
+        [Fact]
+        public void SimpleGenericParameter()
+        {
+            var code = @"using System.Collections.Generic; public class SampleClass { public void SampleMethod(List<int> x) { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
+            var method = type.Methods.Single(x => x.Name == "SampleMethod");
+            Assert.Equal("M:SampleClass.SampleMethod(System.Collections.Generic.List{System.Int32})", method.XmldocIdentifier());
+            Assert.Equal("SampleClass/SampleMethod(System.Collections.Generic.List(System.Int32))", method.DnaId());
+            Assert.Equal("O:SampleClass.SampleMethod", method.OverloadXmldocIdentifier());
+            Assert.Equal("SampleClass/SampleMethod", method.OverloadDnaId());
+            method.MemberFriendlyName().AssertEqual("SampleMethod", "SampleClass.SampleMethod", "SampleClass.SampleMethod");
+            method.OverloadFriendlyName().AssertEqual("SampleMethod", "SampleClass.SampleMethod", "SampleClass.SampleMethod");
+        }
+
+        [Fact]
+        public void ExplicitInterfaceImplementation()
+        {
+            var code = @"using System; public class SampleClass: IDisposable { void IDisposable.Dispose() { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
+            var method = type.Methods.Single(x => x.Name == "System.IDisposable.Dispose");
+            Assert.Equal("M:SampleClass.System#IDisposable#Dispose", method.XmldocIdentifier());
+            Assert.Equal("SampleClass/System.IDisposable.Dispose()", method.DnaId());
+            Assert.Equal("O:SampleClass.System#IDisposable#Dispose", method.OverloadXmldocIdentifier());
+            Assert.Equal("SampleClass/System.IDisposable.Dispose", method.OverloadDnaId());
+            method.MemberFriendlyName().AssertEqual("System.IDisposable.Dispose", "SampleClass.System.IDisposable.Dispose", "SampleClass.System.IDisposable.Dispose");
+            method.OverloadFriendlyName().AssertEqual("System.IDisposable.Dispose", "SampleClass.System.IDisposable.Dispose", "SampleClass.System.IDisposable.Dispose");
+        }
+
+        [Fact]
+        public void ExplicitInterfaceImplementation_OfGenericInterface()
+        {
+            var code = @"public interface IGeneric<TFirst> { void SampleMethod(); } public class SampleClass<T>: IGeneric<T> { void IGeneric<T>.SampleMethod() { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass`1");
+            var method = type.Methods.Single(x => x.Name == "IGeneric<T>.SampleMethod");
+            Assert.Equal("M:SampleClass`1.IGeneric{T}#SampleMethod", method.XmldocIdentifier());
+            Assert.Equal("SampleClass'1/IGeneric(T).SampleMethod()", method.DnaId());
+            Assert.Equal("O:SampleClass`1.IGeneric{T}#SampleMethod", method.OverloadXmldocIdentifier());
+            Assert.Equal("SampleClass'1/IGeneric(T).SampleMethod", method.OverloadDnaId());
+            method.MemberFriendlyName().AssertEqual("IGeneric<T>.SampleMethod", "SampleClass<T>.IGeneric<T>.SampleMethod", "SampleClass<T>.IGeneric<T>.SampleMethod");
+            method.OverloadFriendlyName().AssertEqual("IGeneric<T>.SampleMethod", "SampleClass<T>.IGeneric<T>.SampleMethod", "SampleClass<T>.IGeneric<T>.SampleMethod");
+        }
+
+        [Fact]
+        public void ExplicitInterfaceImplementation_OfGenericMethodOfGenericInterface()
+        {
+            var code = @"public interface IGeneric<TFirst> { void SampleMethod<TSecond>(); } public class SampleClass<T>: IGeneric<T> { void IGeneric<T>.SampleMethod<TThird>() { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass`1");
+            var method = type.Methods.Single(x => x.Name == "IGeneric<T>.SampleMethod");
+            Assert.Equal("M:SampleClass`1.IGeneric{T}#SampleMethod``1", method.XmldocIdentifier());
+            Assert.Equal("SampleClass'1/IGeneric(T).SampleMethod''1()", method.DnaId());
+            Assert.Equal("O:SampleClass`1.IGeneric{T}#SampleMethod", method.OverloadXmldocIdentifier());
+            Assert.Equal("SampleClass'1/IGeneric(T).SampleMethod", method.OverloadDnaId());
+            method.MemberFriendlyName().AssertEqual("IGeneric<T>.SampleMethod<TThird>", "SampleClass<T>.IGeneric<T>.SampleMethod<TThird>", "SampleClass<T>.IGeneric<T>.SampleMethod<TThird>");
+            method.OverloadFriendlyName().AssertEqual("IGeneric<T>.SampleMethod", "SampleClass<T>.IGeneric<T>.SampleMethod", "SampleClass<T>.IGeneric<T>.SampleMethod");
+        }
+
+        [Fact]
+        public void Constructor()
+        {
+            var code = @"public class SampleClass { public SampleClass() { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
+            var method = type.Methods.Single(x => x.Name == ".ctor");
+            Assert.Equal("M:SampleClass.#ctor", method.XmldocIdentifier());
+            Assert.Equal("SampleClass/.ctor()", method.DnaId());
+            Assert.Equal("O:SampleClass.#ctor", method.OverloadXmldocIdentifier());
+            Assert.Equal("SampleClass/.ctor", method.OverloadDnaId());
+            method.MemberFriendlyName().AssertEqual(".ctor", "SampleClass..ctor", "SampleClass..ctor"); // TODO: expected behavior?
+            method.OverloadFriendlyName().AssertEqual(".ctor", "SampleClass..ctor", "SampleClass..ctor");
+        }
+
+        [Fact]
+        public void EscapedCharacter()
+        {
+            var code = @"public class SampleClass { public void SampleMethôd() { } }";
+            var assembly = Compile(code).Dll;
+            var type = assembly.Modules.SelectMany(x => x.Types).Single(x => x.Name == "SampleClass");
+            var method = type.Methods.Single(x => x.Name == "SampleMethôd");
+            Assert.Equal("M:SampleClass.SampleMethôd", method.XmldocIdentifier());
+            Assert.Equal("SampleClass/SampleMeth@C3@B4d()", method.DnaId());
+            Assert.Equal("O:SampleClass.SampleMethôd", method.OverloadXmldocIdentifier());
+            Assert.Equal("SampleClass/SampleMeth@C3@B4d", method.OverloadDnaId());
+            method.MemberFriendlyName().AssertEqual("SampleMethôd", "SampleClass.SampleMethôd", "SampleClass.SampleMethôd");
+            method.OverloadFriendlyName().AssertEqual("SampleMethôd", "SampleClass.SampleMethôd", "SampleClass.SampleMethôd");
+        }
     }
 }
