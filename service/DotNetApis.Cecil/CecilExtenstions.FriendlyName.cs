@@ -8,16 +8,16 @@ namespace DotNetApis.Cecil
     public static partial class CecilExtensions
     {
         /// <summary>
-        /// Get a friendly name for the member.
+        /// Gets a friendly name for the member.
         /// </summary>
-        public static FriendlyName GetFriendlyName(this IMemberDefinition member)
+        public static FriendlyName MemberFriendlyName(this IMemberDefinition member)
         {
             var ns = member.DeclaringType != null ? member.DeclaringTypesInnerToOuter().Last().Namespace : ((TypeDefinition)member).Namespace;
 
             if (member is TypeDefinition type)
             {
                 var simpleName = GetSimpleName(type);
-                return new FriendlyName(simpleName, ns + "." + simpleName, ns + "." + simpleName);
+                return new FriendlyName(simpleName, ns.DotAppend(simpleName), ns.DotAppend(simpleName));
             }
 
             var declaringType = string.Join(".", member.DeclaringType.GenericDeclaringTypesAndThis().Select(GetSimpleName));
@@ -34,7 +34,7 @@ namespace DotNetApis.Cecil
         /// <summary>
         /// Get a friendly name for the method overload group.
         /// </summary>
-        public static FriendlyName GetOverloadFriendlyName(this MethodDefinition method)
+        public static FriendlyName OverloadFriendlyName(this MethodDefinition method)
         {
             var ns = method.DeclaringTypesInnerToOuter().Last().Namespace;
             var simpleName = method.Name.StripBacktickSuffix().Name; // Note: no generic parameters
@@ -43,7 +43,7 @@ namespace DotNetApis.Cecil
         }
 
         private static FriendlyName CreateFromDeclaringType(string simpleName, string declaringType, string ns) =>
-            new FriendlyName(simpleName, declaringType + "." + simpleName, ns + "." + declaringType + "." + simpleName);
+            new FriendlyName(simpleName, declaringType + "." + simpleName, ns.DotAppend(declaringType + "." + simpleName));
 
         private static string GetSimpleName(TypeReference type) => string.Join(".", type.GenericDeclaringTypesAndThis().Select(GetSimpleName));
 

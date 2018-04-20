@@ -13,5 +13,7 @@ namespace DotNetApis.Cecil
     public sealed class NullAssemblyResolver : AssemblyResolverBase
     {
         public override AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters) => null;
+
+        public override void Dispose() { }
     }
 }

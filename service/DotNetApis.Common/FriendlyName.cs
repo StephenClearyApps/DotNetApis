@@ -14,16 +14,18 @@
         
         /// <summary>
         /// The simple name of the entity, including generic parameters.
+        /// If the entity is a type entity, then this is qualified by its declaring type(s), and both <see cref="QualifiedName"/> and <see cref="FullyQualifiedName"/> are qualified by both its declaring type(s) and namespace.
         /// </summary>
         public string SimpleName { get; }
 
         /// <summary>
-        /// The name of the entity, qualified by its declaring type(s) or namespace.
+        /// The name of the entity, qualified by its declaring type(s).
+        /// If the entity is a type entity, then this is also qualified by its namespace, and is equal to <see cref="FullyQualifiedName"/>.
         /// </summary>
         public string QualifiedName { get; }
 
         /// <summary>
-        /// The name of the entity, qualified by its declaring type(s) and namespace.
+        /// The name of the entity, qualified by both its declaring type(s) and namespace.
         /// </summary>
         public string FullyQualifiedName { get; }
     }

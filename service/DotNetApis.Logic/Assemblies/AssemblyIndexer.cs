@@ -30,7 +30,7 @@ namespace DotNetApis.Logic.Assemblies
         public void Add(IMemberDefinition member)
         {
             var dnaId = member.MemberDnaId();
-            _dnaidToFriendlyName[dnaId] = member.CreateFriendlyName();
+            _dnaidToFriendlyName[dnaId] = member.MemberFriendlyName();
             _xmldocIdToDnaId[member.MemberXmldocIdentifier()] = dnaId;
         }
 
@@ -41,7 +41,7 @@ namespace DotNetApis.Logic.Assemblies
         public void AddOverload(MethodDefinition method)
         {
             var dnaId = method.OverloadDnaId();
-            _dnaidToFriendlyName[dnaId] = method.CreateOverloadFriendlyName();
+            _dnaidToFriendlyName[dnaId] = method.OverloadFriendlyName();
             _xmldocIdToDnaId[method.OverloadXmldocIdentifier()] = dnaId;
         }
 

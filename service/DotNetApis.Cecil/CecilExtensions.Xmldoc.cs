@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using Mono.Cecil;
 
 namespace DotNetApis.Cecil
@@ -90,7 +91,7 @@ namespace DotNetApis.Cecil
         {
             if (type.DeclaringType != null)
                 return type.DeclaringType.XmldocIdentifierName() + "." + XmldocEncodeName(type.Name);
-            return type.Namespace + "." + type.Name;
+            return type.Namespace.DotAppend(type.Name);
         }
 
         /// <summary>
@@ -129,9 +130,9 @@ namespace DotNetApis.Cecil
                 {
                     var myArgs = arguments.Take(int.Parse(type.Name.Substring(backtickIndex + 1), CultureInfo.InvariantCulture)).ToArray();
                     arguments.RemoveRange(0, myArgs.Length);
-                    return result + "." + type.Name.Substring(0, backtickIndex) + "{" + string.Join(",", myArgs.Select(x => XmldocName(x, arguments))) + "}";
+                    return result.DotAppend(type.Name.Substring(0, backtickIndex) + "{" + string.Join(",", myArgs.Select(x => XmldocName(x, arguments))) + "}");
                 }
-                return result + "." + type.Name;
+                return result.DotAppend(type.Name);
             }
 
             // It's a fully-qualified reference to a type.
@@ -142,9 +143,9 @@ namespace DotNetApis.Cecil
                 {
                     var myArgs = genericArguments.Take(int.Parse(type.Name.Substring(backtickIndex + 1), CultureInfo.InvariantCulture)).ToArray();
                     genericArguments.RemoveRange(0, myArgs.Length);
-                    return result + "." + type.Name.Substring(0, backtickIndex) + "{" + string.Join(",", myArgs.Select(x => XmldocName(x, genericArguments))) + "}";
+                    return result.DotAppend(type.Name.Substring(0, backtickIndex) + "{" + string.Join(",", myArgs.Select(x => XmldocName(x, genericArguments))) + "}");
                 }
-                return result + "." + type.Name;
+                return result.DotAppend(type.Name);
             }
         }
 

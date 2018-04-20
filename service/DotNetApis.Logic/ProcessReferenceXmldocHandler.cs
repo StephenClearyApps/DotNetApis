@@ -194,7 +194,7 @@ namespace DotNetApis.Logic
             {
                 var dnaId = member.MemberDnaId();
                 var xmldocId = member.MemberXmldocIdentifier();
-                var friendlyName = member.CreateFriendlyName();
+                var friendlyName = member.MemberFriendlyName();
 
                 AddToBatch(xmldocId, new ReferenceXmldocTableRecord { DnaId = dnaId, FriendlyName = friendlyName });
             }
@@ -203,7 +203,7 @@ namespace DotNetApis.Logic
             {
                 var dnaId = method.OverloadDnaId();
                 var xmldocId = method.OverloadXmldocIdentifier();
-                var friendlyName = method.CreateOverloadFriendlyName();
+                var friendlyName = method.OverloadFriendlyName();
 
                 if (_processedOverloadXmldocIds.Contains(xmldocId))
                     return;

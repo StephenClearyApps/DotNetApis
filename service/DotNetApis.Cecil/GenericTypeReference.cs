@@ -36,7 +36,6 @@ namespace DotNetApis.Cecil
         /// </summary>
         public static IEnumerable<GenericTypeReference> GenericDeclaringTypesAndThis(this TypeReference @this)
         {
-
             var argumentIndex = 0;
             var arguments = @this.GenericParameters.ToArray();
             foreach (var declaringType in @this.DeclaringTypesAndThis())

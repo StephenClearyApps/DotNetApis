@@ -17,6 +17,6 @@ namespace DotNetApis.Cecil
 
         public abstract AssemblyDefinition Resolve(AssemblyNameReference name, ReaderParameters parameters);
 
-        void IDisposable.Dispose() { }
+        public abstract void Dispose();
     }
 }

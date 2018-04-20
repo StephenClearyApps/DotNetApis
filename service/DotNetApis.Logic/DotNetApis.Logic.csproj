@@ -1,181 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7D23858C-21EB-4F22-A8C2-418C1B9D32FB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DotNetApis.Logic</RootNamespace>
-    <AssemblyName>DotNetApis.Logic</AssemblyName>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
+    <TargetFramework>net46</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.1.1.1\lib\netstandard1.1\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.10.0\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.Comparers.Core, Version=5.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Comparers.Core.5.0.5\lib\netstandard2.0\Nito.Comparers.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Nito.Comparers.Linq, Version=5.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Nito.Comparers.Linq.5.0.5\lib\netstandard2.0\Nito.Comparers.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Common, Version=4.3.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Common.4.3.0\lib\net45\NuGet.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Core, Version=2.14.0.832, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Core.2.14.0\lib\net40-Client\NuGet.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Frameworks, Version=4.3.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Frameworks.4.3.0\lib\net45\NuGet.Frameworks.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Packaging, Version=4.3.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Packaging.4.3.0\lib\net45\NuGet.Packaging.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Packaging.Core, Version=4.3.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Packaging.Core.4.3.0\lib\net45\NuGet.Packaging.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="NuGet.Versioning, Version=4.3.0.5, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\NuGet.Versioning.4.3.0\lib\net45\NuGet.Versioning.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.2.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Threading.Tasks.Dataflow, Version=4.5.24.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Tpl.Dataflow.4.5.24\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Microsoft.Tpl.Dataflow" Version="4.5.24" />
+    <PackageReference Include="Mono.Cecil" Version="0.10.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Assemblies\AssemblyBase.cs" />
-    <Compile Include="Assemblies\AssemblyCollection.cs" />
-    <Compile Include="Assemblies\AssemblyCollectionAssemblyResolver.cs" />
-    <Compile Include="Assemblies\AssemblyIndexer.cs" />
-    <Compile Include="Assemblies\CurrentPackageAssembly.cs" />
-    <Compile Include="Assemblies\DependentPackageAssembly.cs" />
-    <Compile Include="Assemblies\IAssembly.cs" />
-    <Compile Include="Assemblies\PackageAssemblyBase.cs" />
-    <Compile Include="Assemblies\ReferenceAssembly.cs" />
-    <Compile Include="AssemblyScope.cs" />
-    <Compile Include="Formatting\AccessibilityFormatter.cs" />
-    <Compile Include="Formatting\AssemblyFormatter.cs" />
-    <Compile Include="Formatting\AttributeFormatter.cs" />
-    <Compile Include="Formatting\MemberDefinitionFormatter.cs" />
-    <Compile Include="Formatting\DelegateFormatter.cs" />
-    <Compile Include="Formatting\EnumFormatter.cs" />
-    <Compile Include="Formatting\EventFormatter.cs" />
-    <Compile Include="Formatting\FieldFormatter.cs" />
-    <Compile Include="Formatting\GenericsFormatter.cs" />
-    <Compile Include="Formatting\LiteralFormatter.cs" />
-    <Compile Include="Formatting\MethodFormatter.cs" />
-    <Compile Include="Formatting\ModifiersFormatter.cs" />
-    <Compile Include="Formatting\NameFormatter.cs" />
-    <Compile Include="Formatting\PropertyFormatter.cs" />
-    <Compile Include="Formatting\TypeFormatter.cs" />
-    <Compile Include="Formatting\TypeLocator.cs" />
-    <Compile Include="Formatting\TypeReferenceFormatter.cs" />
-    <Compile Include="Formatting\XmldocFormatter.cs" />
-    <Compile Include="GenerationScope.cs" />
-    <Compile Include="Messages\MessageBaseWithLog.cs" />
-    <Compile Include="NugetPackageDependencyResolver.cs" />
-    <Compile Include="Parsing.cs" />
-    <Compile Include="ProcessReferenceXmldocHandler.cs" />
-    <Compile Include="ReferenceAssemblies.cs" />
-    <Compile Include="SemanticOrdering.cs" />
-    <Compile Include="StatusRequestHandler.cs" />
-    <Compile Include="GenerateHandler.cs" />
-    <Compile Include="DocRequestHandler.cs" />
-    <Compile Include="Messages\GenerateRequestMessage.cs" />
-    <Compile Include="Messages\MessageBase.cs" />
-    <Compile Include="PackageDownloader.cs" />
-    <Compile Include="PlatformResolver.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\DotNetApis.Cecil\DotNetApis.Cecil.csproj" />
+    <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj" />
+    <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj" />
+    <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj" />
+    <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DotNetApis.Cecil\DotNetApis.Cecil.csproj">
-      <Project>{f1f7f024-a30f-44db-8a18-eb5b864d9280}</Project>
-      <Name>DotNetApis.Cecil</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj">
-      <Project>{22a1e92a-8ae8-4b36-acb2-3f84a56886c5}</Project>
-      <Name>DotNetApis.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DotNetApis.Nuget\DotNetApis.Nuget.csproj">
-      <Project>{a03471d1-8174-49f7-b537-205f2773606f}</Project>
-      <Name>DotNetApis.Nuget</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj">
-      <Project>{2602dd40-48d0-4172-842c-114caf4cf922}</Project>
-      <Name>DotNetApis.Storage</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DotNetApis.Structure\DotNetApis.Structure.csproj">
-      <Project>{dd42551c-ad74-4b2c-8d84-2643cbb6e22c}</Project>
-      <Name>DotNetApis.Structure</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
-  </Target>
+
 </Project>

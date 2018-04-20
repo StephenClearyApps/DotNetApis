@@ -43,7 +43,7 @@ namespace DotNetApis.Structure.TypeReferences
         public override string ToString()
         {
             var result = Namespace ?? DeclaringType.ToString();
-            result += "." + Name;
+            result = result == "" ? Name : result + "." + Name;
             if (GenericArgumentCount != 0)
             {
                 result += "<" + new string(',', GenericArgumentCount - 1) + ">";
