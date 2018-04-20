@@ -1,9 +1,7 @@
 import * as React from 'react';
 
-import { Hoc } from '.';
-
 /** Displays a component only while a given predicate returns true */
-export function createMaybe<TProps>(predicate: (props: TProps) => boolean): Hoc<TProps> {
-    return Component => props =>
-    predicate(props) ? <Component {...props}/> : null;
-}
+export const createMaybe =
+    <TProps extends {}>(predicate: (props: TProps) => boolean) =>
+    (Component: React.ComponentType<TProps>) =>
+    (props: TProps) => predicate(props) ? <Component {...props}/> : null;

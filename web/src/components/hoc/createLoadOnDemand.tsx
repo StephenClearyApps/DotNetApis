@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { createExecuteOnMount, Hoc } from '.';
+import { createExecuteOnMount } from '.';
 
 interface LoadOnDemandOptions<TProps> {
     /** Gets whether the desired item has started loading; this should return true if the item is loading, loaded, or errored. */
@@ -11,6 +11,8 @@ interface LoadOnDemandOptions<TProps> {
 }
 
 /** Starts loading a resource automatically when the component is mounted. */
-export function createLoadOnDemand<TProps>({ hasStarted, load }: LoadOnDemandOptions<TProps>): Hoc<TProps> {
-    return createExecuteOnMount(props => { if (!hasStarted(props)) load(props); });
+export const createLoadOnDemand =
+<TProps extends {}>({ hasStarted, load }: LoadOnDemandOptions<TProps>) => {
+    const withExecuteOnMount = createExecuteOnMount<TProps>(props => { if (!hasStarted(props)) load(props); });
+    return (Component: React.ComponentType<TProps>) => withExecuteOnMount(Component);
 }
