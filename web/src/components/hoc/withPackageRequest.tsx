@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { RouteComponentProps } from '.';
+import { RouteComponentProps, Hoc, ExtendingHoc } from '.';
 import { State } from '../../reducers';
 import { packageKey, PackageDocumentationRequest } from '../../util';
 
@@ -8,11 +8,14 @@ export interface PackageRequestInjectedProps {
     pkgRequestKey: PackageKey;
     pkgRequestStatus: PackageDocumentationRequest;
 }
+export type PackageRequestRequiredProps = State & RouteComponentProps<PackageKey>;
 
-/** Takes the route parameters `PackageKey`, and injects `PackageRequestInjectedProps` */
-export const withPackageRequest =
-    <TProps extends {}>(Component: React.ComponentType<TProps & PackageRequestInjectedProps>) =>
-    (props: TProps & State & RouteComponentProps<PackageKey>) => {
+function createWithPackageRequest<TProps>(): Hoc<TProps & PackageRequestRequiredProps, TProps & PackageRequestInjectedProps> {
+    return Component => props => {
         const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
         return <Component {...props} pkgRequestStatus={request} pkgRequestKey={props.match.params}/>;
     };
+}
+
+/** Takes the route parameters `PackageKey`, and injects `PackageRequestInjectedProps` */
+export const withPackageRequest : ExtendingHoc<PackageRequestInjectedProps, PackageRequestRequiredProps> = createWithPackageRequest();
