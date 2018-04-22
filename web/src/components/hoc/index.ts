@@ -4,8 +4,8 @@ export interface Hoc<TOuterProps, TInnerProps = TOuterProps> {
     (Component: React.ComponentType<TInnerProps>): React.ComponentType<TOuterProps>;
 }
 
-export interface PassthroughHoc {
-    <TProps>(Component: React.ComponentType<TProps>): React.ComponentType<TProps>;
+export interface PassthroughHoc<TRequiredProps = {}> {
+    <TProps>(Component: React.ComponentType<TProps & TRequiredProps>): React.ComponentType<TProps & TRequiredProps>;
 }
 
 export interface ExtendingHoc<TInjectedProps> {

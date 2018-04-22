@@ -1,13 +1,17 @@
 import * as React from "react";
 
-import { createLoadOnDemand, PackageRequestInjectedProps } from '.';
+import { createLoadOnDemand, PackageRequestInjectedProps, PassthroughHoc, Hoc } from '.';
 import { State } from "../../reducers/index";
 import { Actions } from "../../actions";
 
+type LoadPackageOnDemandRequiredProps = State & Actions & PackageRequestInjectedProps;
+
+function createLoadPackageOnDemand<TProps>(): Hoc<TProps & LoadPackageOnDemandRequiredProps> {
+    return createLoadOnDemand<TProps & LoadPackageOnDemandRequiredProps>({
+        hasStarted: props => !!props.pkgRequestStatus,
+        load: props => props.DocActions.getDoc(props.pkgRequestKey)
+    });
+}
+
 /** Takes the package request props and loads the package */
-export const withLoadPackageOnDemand =
-<TProps extends {}>(Component: React.ComponentType<TProps & State & Actions & PackageRequestInjectedProps>) =>
-createLoadOnDemand<TProps & State & Actions & PackageRequestInjectedProps>({
-    hasStarted: props => !!props.pkgRequestStatus,
-    load: props => props.DocActions.getDoc(props.pkgRequestKey)
-})(Component);
+export const withLoadPackageOnDemand : PassthroughHoc<LoadPackageOnDemandRequiredProps> = createLoadPackageOnDemand();
