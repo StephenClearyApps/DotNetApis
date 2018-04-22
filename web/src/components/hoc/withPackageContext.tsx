@@ -15,4 +15,4 @@ function createWithPackageContext<TProps>(): Hoc<TProps & PackageContextRequired
 }
 
 /** Takes the package request and injects the package context (status and json) */
-export const withPackageContext : ExtendingHoc<PackageContextInjectedProps, State & PackageRequestInjectedProps> = createWithPackageContext();
+export const withPackageContext : ExtendingHoc<PackageContextInjectedProps, PackageContextRequiredProps> = createWithPackageContext();
