@@ -1,14 +1,18 @@
 import * as React from "react";
 
-import { PackageRequestInjectedProps } from '.';
+import { PackageRequestInjectedProps, ExtendingHoc, Hoc } from '.';
 import { State } from "../../reducers";
 import { PackageContext } from "../../util";
 
 export type PackageContextInjectedProps = PackageContext;
+export type PackageContextRequiredProps = State & PackageRequestInjectedProps;
 
-export const withPackageContext =
-    <TProps extends {}>(Component: React.ComponentType<TProps & PackageContextInjectedProps>) =>
-    (props: TProps & State & PackageRequestInjectedProps) => {
+function createWithPackageContext<TProps>(): Hoc<TProps & PackageContextRequiredProps, TProps & PackageContextInjectedProps> {
+    return Component => props => {
         const packageStatus = props.packageDoc.packageDocumentation[props.pkgRequestStatus.normalizedPackageKey];
         return <Component {...props} pkgStatus={packageStatus} pkg={packageStatus.json}/>;
     };
+}
+
+/** Takes the package request and injects the package context (status and json) */
+export const withPackageContext : ExtendingHoc<PackageContextInjectedProps, State & PackageRequestInjectedProps> = createWithPackageContext();

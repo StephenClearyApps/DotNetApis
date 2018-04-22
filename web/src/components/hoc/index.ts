@@ -5,11 +5,11 @@ export interface Hoc<TOuterProps, TInnerProps = TOuterProps> {
 }
 
 export interface PassthroughHoc<TRequiredProps = {}> {
-    <TProps>(Component: React.ComponentType<TProps & TRequiredProps>): React.ComponentType<TProps & TRequiredProps>;
+    <TProps>(Component: React.ComponentType<TProps>): React.ComponentType<TProps & TRequiredProps>;
 }
 
-export interface ExtendingHoc<TInjectedProps> {
-    <TProps>(Component: React.ComponentType<TProps & TInjectedProps>): React.ComponentType<TProps>;
+export interface ExtendingHoc<TInjectedProps, TRequiredProps = {}> {
+    <TProps>(Component: React.ComponentType<TProps & TInjectedProps>): React.ComponentType<TProps & TRequiredProps>;
 }
 
 export * from './createEither';
