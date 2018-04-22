@@ -1,7 +1,6 @@
 export * from 'recompose';
 
 export type Hoc<TOuterProps, TInnerProps = TOuterProps> = (Component: React.ComponentType<TInnerProps>) => React.ComponentType<TOuterProps>;
-export type ExtendingHoc<TOuterProps, TAdditionalProps> = Hoc<TOuterProps, TOuterProps & TAdditionalProps>;
 
 export * from './createEither';
 export * from './createExecuteOnMount';
