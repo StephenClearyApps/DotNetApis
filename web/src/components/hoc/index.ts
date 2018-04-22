@@ -1,6 +1,16 @@
 export * from 'recompose';
 
-export type Hoc<TOuterProps, TInnerProps = TOuterProps> = (Component: React.ComponentType<TInnerProps>) => React.ComponentType<TOuterProps>;
+export interface Hoc<TOuterProps, TInnerProps = TOuterProps> {
+    (Component: React.ComponentType<TInnerProps>): React.ComponentType<TOuterProps>;
+}
+
+export interface PassthroughHoc {
+    <TProps>(Component: React.ComponentType<TProps>): React.ComponentType<TProps>;
+}
+
+export interface ExtendingHoc<TInjectedProps> {
+    <TProps>(Component: React.ComponentType<TProps & TInjectedProps>): React.ComponentType<TProps>;
+}
 
 export * from './createEither';
 export * from './createExecuteOnMount';

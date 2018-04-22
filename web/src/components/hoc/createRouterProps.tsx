@@ -1,10 +1,10 @@
 import { withRouter, RouteComponentProps } from "react-router";
 
+import { ExtendingHoc } from ".";
+
 export { RouteComponentProps } from "react-router";
 
-type RouterExtendingHoc<TRouteProps> = <TProps extends {}>(Component: React.ComponentType<TProps & RouteComponentProps<TRouteProps>>) => React.ComponentType<TProps>;
-
 /** A fixed "withRouter" that properly passes through TProps and provides a strongly-typed RouteComponentProps */
-export function createRouterProps<TRouteProps>() {
-    return withRouter as RouterExtendingHoc<TRouteProps>;
+export function createRouterProps<TRouteProps>(): ExtendingHoc<RouteComponentProps<TRouteProps>> {
+    return withRouter as any;
 }
