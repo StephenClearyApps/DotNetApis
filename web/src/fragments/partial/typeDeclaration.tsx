@@ -22,9 +22,9 @@ function typeDeclarationFull(context: FormatContext, entity: ITypeEntity, typeKe
     ];
 }
 
-function typeDeclarationSimple(context: FormatContext, entity: ITypeEntity, typeKeyword: string, ns: string): ReactFragment {
+function typeDeclarationSimple(context: FormatContext, entity: ITypeEntity, typeKeyword: string, ns: string | undefined): ReactFragment {
     return [
-        (entity.m & EntityModifiers.STATIC) ? [keyword("static"), " "] : null,
+        entity.m && (entity.m & EntityModifiers.STATIC) ? [keyword("static"), " "] : null,
         keyword(typeKeyword), ' ', nameWithGenericParameters(context, entity),
         ns ? " (" + ns + ")" : null
     ];
@@ -33,7 +33,7 @@ function typeDeclarationSimple(context: FormatContext, entity: ITypeEntity, type
 function typeDeclarationTitle(context: FormatContext, entity: ITypeEntity, typeKeyword: string): ReactFragment {
     return [
         [<code>{React.Children.toArray(nameWithGenericParameters(context, entity))}</code>],
-        entity.m & EntityModifiers.STATIC ? ' Static' : null,
+        entity.m && (entity.m & EntityModifiers.STATIC) ? ' Static' : null,
         ' ' + typeKeyword
     ];
 }

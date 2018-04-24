@@ -19,7 +19,7 @@ function eventDeclarationFull(context: FormatContext, entity: IEventEntity): Rea
         keyword('event'), ' ',
         typeReference(context, entity.t), ' ',
         entity.d ? [typeReference(context, entity.d), '.'] : null,
-        entity.n
+        entity.n!
     ];
 
     if (!entity.p && !entity.r)
@@ -42,14 +42,14 @@ function eventDeclarationSimple(context: FormatContext, entity: IEventEntity): R
         keyword('event'), ' ',
         typeReference(context, entity.t), ' ',
         entity.d ? [typeReference(context, entity.d), '.'] : null,
-        entity.n
+        entity.n!
     ];
 }
 
 function eventDeclarationTitle(entity: IEventEntity): ReactFragment {
     return [
         [<code>{entity.n}</code>],
-        entity.m & EntityModifiers.STATIC ? ' Static' : null,
+        entity.m && (entity.m & EntityModifiers.STATIC) ? ' Static' : null,
         ' Event'
     ];
 }

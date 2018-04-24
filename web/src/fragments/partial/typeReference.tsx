@@ -28,4 +28,5 @@ export function typeReference(context: FormatContext, value: ITypeReference): Re
             location(context, value.l, value.n),
             value.a ? ['<', new Array(value.a).join(','), '>'] : null
         ];
+    return null;
 }

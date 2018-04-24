@@ -29,7 +29,7 @@ const PackageFileComponent: React.StatelessComponent<PackageFileProps & RouteCom
         sortEntities(types);
 
         typeList = types.map(x => ({
-            search: x.n,
+            search: x.n!,
             content: <EntityListItem key={x.i} pkgContext={props} entity={x} />
         }));
     }

@@ -83,6 +83,6 @@ function methodDeclarationTitle(context: FormatContext, entity: IMethodEntity): 
     return [
         [<code>{React.Children.toArray(nameWithGenericParameters(context, entity))}({React.Children.toArray(join(array(entity.p).map(x => parameter(context, x)), ', '))})</code>],
         entity.s === MethodStyles.OPERATOR ? ' Operator' :
-            [entity.m & EntityModifiers.STATIC ? ' Static' : null, ' Method']
+            [entity.m && (entity.m & EntityModifiers.STATIC) ? ' Static' : null, ' Method']
     ];
 }

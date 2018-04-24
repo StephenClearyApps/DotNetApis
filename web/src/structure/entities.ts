@@ -214,7 +214,7 @@ export interface IEntityGrouping {
     /** Type entities. */
     t?: IEntity[];
 
-    [groupName: string]: IEntity[];
+    [groupName: string]: IEntity[] | undefined;
 }
 
 export interface IEnumField {

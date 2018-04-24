@@ -11,7 +11,7 @@ export interface PackageLogRequestErrorProps extends PackageLogRequestInjectedPr
 
 export const PackageLogRequestError: React.StatelessComponent<State & PackageLogRequestInjectedProps> = (props) => {
     const { pkgLogRequestStatus, pkgRequestStatus, time } = props;
-    const error = (pkgLogRequestStatus && pkgLogRequestStatus.error) || null;
+    const error = (pkgLogRequestStatus && pkgLogRequestStatus.error) || undefined;
     return (
         <div>
             <div style={{textAlign: "center"}}>

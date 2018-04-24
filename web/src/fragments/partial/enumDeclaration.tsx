@@ -15,7 +15,7 @@ function enumDeclarationFull(context: FormatContext, entity: IEnumEntity): React
     return [
         entity.b ? entity.b.map(x => [attribute(context, x), [<br/>]]) : null,
         accessibility(entity.a),
-        keyword('enum'), ' ', entity.n,
+        keyword('enum'), ' ', entity.n!,
         entity.u ? [': ', entity.u] : null,
         [<br/>],
         '{',
@@ -33,9 +33,9 @@ function enumField(value: IEnumField, entity: IEnumEntity): ReactFragment {
     ];
 }
 
-function enumDeclarationSimple(context: FormatContext, entity: IEnumEntity, ns: string): ReactFragment {
+function enumDeclarationSimple(context: FormatContext, entity: IEnumEntity, ns: string | undefined): ReactFragment {
     return [
-        keyword('enum'), ' ', entity.n,
+        keyword('enum'), ' ', entity.n!,
         ns ? " (" + ns + ")" : null
     ];
 }

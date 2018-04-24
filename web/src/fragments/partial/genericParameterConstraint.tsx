@@ -24,4 +24,5 @@ function genericConstraint(context: FormatContext, value: IGenericConstraint): R
         return keyword('struct');
     else if (isTypeGenericConstrint(value))
         return typeReference(context, value.t);
+    return null;
 }

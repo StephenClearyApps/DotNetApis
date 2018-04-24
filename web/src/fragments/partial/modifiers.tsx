@@ -1,7 +1,8 @@
 import { EntityModifiers } from "../../structure";
 import { ReactFragment, keyword } from ".";
 
-export function modifiers(value: EntityModifiers): ReactFragment {
+export function modifiers(value: EntityModifiers | undefined): ReactFragment {
+    value = value || EntityModifiers.NONE;
     const result = [];
     if (value & EntityModifiers.CONST)
         result.push([keyword('const'), ' ']);

@@ -17,24 +17,24 @@ function fieldDeclarationFull(context: FormatContext, entity: IFieldEntity): Rea
         accessibility(entity.a),
         modifiers(entity.m),
         typeReference(context, entity.t), ' ',
-        entity.n,
-        (entity.m & EntityModifiers.CONST) ? [' = ', literal(context, entity.v)] : null
+        entity.n!,
+        entity.m && (entity.m & EntityModifiers.CONST) ? [' = ', literal(context, entity.v!)] : null
     ];
 }
 
 function fieldDeclarationSimple(context: FormatContext, entity: IFieldEntity): ReactFragment {
     return [
         accessibility(entity.a),
-        (entity.m & EntityModifiers.STATIC) ? [keyword("static"), " "] : null,
+        entity.m && (entity.m & EntityModifiers.STATIC) ? [keyword("static"), " "] : null,
         typeReference(context, entity.t), ' ',
-        entity.n
+        entity.n!
     ];
 }
 
 function fieldDeclarationTitle(entity: IFieldEntity): ReactFragment {
     return [
         [<code>{entity.n}</code>],
-        entity.m & EntityModifiers.STATIC ? ' Static' : null,
+        entity.m && (entity.m & EntityModifiers.STATIC) ? ' Static' : null,
         ' Field'
     ];
 }

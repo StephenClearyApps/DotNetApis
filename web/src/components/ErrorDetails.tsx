@@ -23,7 +23,7 @@ function backendErrorDetails(error: ErrorDetailsType, currentTimestamp: number):
     ];
 }
 
-function javascriptErrorDetails(error: Error, currentTimestamp: number): ReactFragment {
+function javascriptErrorDetails(error: Error | undefined, currentTimestamp: number): ReactFragment {
     if (!error)
         return null;
     if (!isResponseError(error)) {
@@ -45,7 +45,7 @@ function javascriptErrorDetails(error: Error, currentTimestamp: number): ReactFr
 }
 
 export interface ErrorDetailsProps {
-    error: Error,
+    error?: Error,
     currentTimestamp: number
 }
 

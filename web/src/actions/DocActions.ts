@@ -34,7 +34,7 @@ export const DocActions = {
                 } else if (meta) {
                     dispatch(actions.getDocProgress(requestKey, { type: "meta", timestamp: (new Date).getTime(), message: meta }));
                 } else {
-                    dispatch(actions.getDocProgress(requestKey, { type: message.name, timestamp: message.timestamp, message: message.data.message }));
+                    dispatch(actions.getDocProgress(requestKey, { type: message!.name, timestamp: message!.timestamp, message: message!.data.message }));
                 }
             });
             try {

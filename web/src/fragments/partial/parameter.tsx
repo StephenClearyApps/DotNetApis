@@ -2,9 +2,9 @@ import { IParameter, MethodParameterModifiers } from "../../structure";
 import { ReactFragment, FormatContext, array, keyword, literal, typeReference, attribute } from ".";
 
 export function parameter(context: FormatContext, value: IParameter, attributeDivider?: ReactFragment): ReactFragment {
-    attributeDivider = attributeDivider || ' ';
+    const divider = attributeDivider || ' ';
     return [
-        array(value.b).map(x => [attribute(context, x), attributeDivider]),
+        array(value.b).map(x => [attribute(context, x), divider]),
         context.includeParameterModifiers ?
                 (value.m === MethodParameterModifiers.OUT ? [keyword('out'), ' '] :
                 value.m === MethodParameterModifiers.REF ? [keyword('ref'), ' '] :

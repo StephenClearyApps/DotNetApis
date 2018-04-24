@@ -45,7 +45,7 @@ function typesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
     if (types.length === 0)
         return null;
     const items : FilteredListItem[] = types.map(x => ({
-        search: x.n,
+        search: x.n!,
         content: <EntityListItem key={x.i} pkgContext={pkgContext} entity={x}/>
     }));
     return <Tab label="Types" value="types" key="types"><HashFilteredList items={items} hashPrefix="types" /></Tab>;
@@ -72,7 +72,7 @@ function namespacesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
     return <Tab label="Namespaces" value="namespaces" key="namespaces"><HashFilteredList items={items} hashPrefix="namespaces"/></Tab>;
 }
 
-function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[]) {
+function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[] | undefined) {
     if (!assemblies || assemblies.length === 0)
         return null;
     const items : FilteredListItem[] = assemblies.map(x => normalizePath(x.p)).map(path => ({
@@ -85,7 +85,7 @@ function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[]) {
     return <Tab label="Assemblies" value="assemblies" key="assemblies"><HashFilteredList items={items} hashPrefix="assemblies" /></Tab>;
 }
 
-function dependenciesTab(pkgContext: PackageContext, dependencies: IPackageDependency[]) {
+function dependenciesTab(pkgContext: PackageContext, dependencies: IPackageDependency[] | undefined) {
     if (!dependencies || dependencies.length === 0)
         return null;
     const groups: FilteredListItemGroup[] = [

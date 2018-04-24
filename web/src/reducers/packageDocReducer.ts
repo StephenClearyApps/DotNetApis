@@ -87,7 +87,7 @@ function mapPackageKey(state: PackageDocsState, action: A.MapPackageKeyAction): 
 /** The "get doc" command has completed with a redirection */
 function getDocRedirecting(state: PackageDocsState, action: A.GetDocRedirectingAction): PackageDocsState {
     const requestKey = packageKey(action.meta.requestPackageKey);
-    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
+    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey!;
     return {
         ...state,
         packageDocumentationRequests: {
@@ -127,8 +127,9 @@ function getDocProcessing(state: PackageDocsState, action: A.GetDocProcessingAct
 // A progress report from the "get doc" command.
 function getDocProgress(state: PackageDocsState, action: A.GetDocProgressAction): PackageDocsState {
     const requestKey = packageKey(action.meta.requestPackageKey);
-    if (state.packageDocumentationRequests[requestKey].streamingLog === undefined)
-        return;
+    const streamingLog = state.packageDocumentationRequests[requestKey].streamingLog;
+    if (streamingLog === undefined)
+        return state;
     return {
         ...state,
         packageDocumentationRequests: {
@@ -136,7 +137,7 @@ function getDocProgress(state: PackageDocsState, action: A.GetDocProgressAction)
             [requestKey]: {
                 ...state.packageDocumentationRequests[requestKey],
                 streamingLog: [
-                    ...state.packageDocumentationRequests[requestKey].streamingLog,
+                    ...streamingLog,
                     action.payload.logMessage
                 ]
             }
@@ -147,7 +148,7 @@ function getDocProgress(state: PackageDocsState, action: A.GetDocProgressAction)
 /** We have received the documentation for the package */
 function getDocEnd(state: PackageDocsState, action: A.GetDocEndAction): PackageDocsState {
     const requestKey = packageKey(action.meta.requestPackageKey);
-    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
+    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey!;
     return {
         ...state,
         packageDocumentationRequests: {
@@ -172,7 +173,7 @@ function getDocEnd(state: PackageDocsState, action: A.GetDocEndAction): PackageD
 /** The "get doc" command failed on the backend */
 function getDocBackendError(state: PackageDocsState, action: A.GetDocBackendErrorAction): PackageDocsState {
     const requestKey = packageKey(action.meta.requestPackageKey);
-    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey;
+    const normalizedKey = state.packageDocumentationRequests[requestKey].normalizedPackageKey!;
     return {
         ...state,
         packageDocumentationRequests: {

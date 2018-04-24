@@ -25,7 +25,7 @@ function delegateDeclarationFull(context: FormatContext, entity: IDelegateEntity
     ];
 }
 
-function delegateDeclarationSimple(context: FormatContext, entity: IDelegateEntity, ns: string): ReactFragment {
+function delegateDeclarationSimple(context: FormatContext, entity: IDelegateEntity, ns: string | undefined): ReactFragment {
     return [
         keyword('delegate'), ' ',
         typeReference(context, entity.r), ' ',

@@ -2,9 +2,11 @@ import { IEntity } from "../structure";
 
 export function sortEntities(types: IEntity[]) {
     types.sort((x, y) => {
-        if (x.n < y.n)
+        const xKey = x.n || x.i;
+        const yKey = y.n || y.i;
+        if (xKey < yKey)
             return -1;
-        if (x.n > y.n)
+        if (xKey > yKey)
             return 1;
         return 0;
     });

@@ -5,7 +5,7 @@ export const jsonVersion = "0";
 
 /** Query parameters */
 interface Query {
-    [key:string]: string
+    [key:string]: string | undefined;
 }
 
 /** Encodes the query for use in a URI */

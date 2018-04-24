@@ -18,7 +18,7 @@ function propertyDeclarationFull(context: FormatContext, entity: IPropertyEntity
         modifiers(entity.m),
         typeReference(context, entity.t), ' ',
         entity.d ? [typeReference(context, entity.d), '.'] : null,
-        entity.n === 'this' ? keyword(entity.n) : entity.n,
+        entity.n === 'this' ? keyword(entity.n) : entity.n!,
         entity.p ? ['[', join(entity.p.map(x => parameter(context, x)), ', '), ']'] : null
     ];
 
@@ -62,7 +62,7 @@ function propertyDeclarationSimple(context: FormatContext, entity: IPropertyEnti
         modifiers(entity.m),
         typeReference(context, entity.t), ' ',
         entity.d ? [typeReference(context, entity.d), '.'] : null,
-        entity.n === 'this' ? keyword(entity.n) : entity.n,
+        entity.n === 'this' ? keyword(entity.n) : entity.n!,
         entity.p ? ['[', join(entity.p.map(x => parameter(context, x)), ', '), ']'] : null
     ];
 
@@ -84,7 +84,7 @@ function propertyDeclarationSimple(context: FormatContext, entity: IPropertyEnti
 function propertyDeclarationTitle(entity: IPropertyEntity): ReactFragment {
     return [
         [<code>{entity.n}</code>],
-        entity.m & EntityModifiers.STATIC ? ' Static' : null,
+        entity.m && (entity.m & EntityModifiers.STATIC) ? ' Static' : null,
         ' Property'
     ];
 }

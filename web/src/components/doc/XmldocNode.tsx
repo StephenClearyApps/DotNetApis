@@ -5,7 +5,7 @@ import { IXmldocNode, isStringXmldocNode, isSeeXmldocNode, isLinkXmldocNode, Xml
 import { locationLink } from "../../fragments";
 
 interface XmldocProps extends PackageContext {
-    data: IXmldocNode;
+    data?: IXmldocNode;
 }
 
 export const XmldocNode: React.StatelessComponent<XmldocProps> = (props) => {
@@ -15,7 +15,7 @@ export const XmldocNode: React.StatelessComponent<XmldocProps> = (props) => {
     if (isStringXmldocNode(data))
         return <span>{data}</span>;
     else {
-        const children = data.c.map((x, i) => <XmldocNode {...props} data={x} key={i} />);
+        const children = data.c ? data.c.map((x, i) => <XmldocNode {...props} data={x} key={i} />) : [];
         if (isSeeXmldocNode(data))
             return <code>{locationLink(props, data.a && data.a.l, children)}</code>;
         else if (isLinkXmldocNode(data))

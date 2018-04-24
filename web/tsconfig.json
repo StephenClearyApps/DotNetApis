@@ -2,12 +2,14 @@
     "compilerOptions": {
         "outDir": "../docs/",
         "sourceMap": true,
-        "noImplicitAny": true,
         "module": "commonjs",
         "target": "es5", /* IE11 support */
         "lib": [ "es2015", "dom" ],
         "jsx": "react",
-        "traceResolution": true
+        "traceResolution": true,
+
+        "strict": true,
+        "strictFunctionTypes": false,
     },
     "include": [
         "./src/**/*"

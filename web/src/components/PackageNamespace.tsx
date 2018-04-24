@@ -17,15 +17,15 @@ const PackageNamespaceComponent: React.StatelessComponent<PackageNamespaceProps 
     const { pkg, match: { params: { ns } } } = props;
     const types = selectMany(pkg.l, x => x.t).filter(x => x.s === ns);
     types.sort((x, y) => {
-        if (x.n < y.n)
+        if (x.n! < y.n!)
             return -1;
-        if (x.n > y.n)
+        if (x.n! > y.n!)
             return 1;
         return 0;
     });
 
     const typeList = types.map(x => ({
-        search: x.n,
+        search: x.n!,
         content: <EntityListItem key={x.i} pkgContext={props} entity={x}/>
     }));
 

@@ -29,4 +29,5 @@ export function literal(context: FormatContext, value: ILiteral): ReactFragment 
         return value.n ?
             join(value.n.map(x => [typeReference(context, value.t), '.', x]), ' | ') :
             valueString(value);
+    return null;
 }

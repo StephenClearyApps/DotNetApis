@@ -6,7 +6,7 @@ import { PackageContext } from "../../util";
 import { IXmldoc } from "../../structure";
 
 interface XmldocExceptionsProps extends PackageContext {
-    data: IXmldoc;
+    data?: IXmldoc;
 }
 
 export const XmldocExceptions: React.StatelessComponent<XmldocExceptionsProps> = (props) => {

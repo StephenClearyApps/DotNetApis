@@ -2,14 +2,15 @@ import { IEntityBase, IEntity, isType, ITypeEntity, IPackage, IPackageDependency
 
 const entityCollections = ['l', 's', 'i', 't'];
 
-function find(entity: IEntityBase, i: string): IEntity {
+function find(entity: IEntityBase, i: string): IEntity | undefined {
     if (entity.i === i)
         return entity;
 
     if (isType(entity) && entity.e) {
         for (let name of entityCollections) {
-            if (entity.e[name]) {
-                for (let nestedEntity of entity.e[name]) {
+            const nestedEntities = entity.e[name];
+            if (nestedEntities) {
+                for (let nestedEntity of nestedEntities) {
                     const result = find(nestedEntity, i);
                     if (result)
                         return result;
@@ -20,11 +21,12 @@ function find(entity: IEntityBase, i: string): IEntity {
     return undefined;
 }
 
-function findParent(entity: IEntityBase, i: string): ITypeEntity {
+function findParent(entity: IEntityBase, i: string): ITypeEntity | undefined {
     if (isType(entity) && entity.e) {
         for (let name of entityCollections) {
-            if (entity.e[name]) {
-                for (let nestedEntity of entity.e[name]) {
+            const nestedEntities = entity.e[name];
+            if (nestedEntities) {
+                for (let nestedEntity of nestedEntities) {
                     if (nestedEntity.i === i)
                         return entity;
                     const result = findParent(nestedEntity, i);
@@ -38,24 +40,26 @@ function findParent(entity: IEntityBase, i: string): ITypeEntity {
 }
 
 export class PackageDoc implements IPackage {
-    i: string; // Package ID
-    v: string; // Version
-    t: string; // Platform target
-    d: string; // Description / Summary
-    a: string[]; // Authors
-    c: string; // Icon URL
-    p: string; // Project URL
-    f: string[]; // All supported platform targets
-    e: IPackageDependency[]; // Dependencies
-    b: string; // Publication date
-    r: boolean; // Version is a release version (not pre-release).
-    l: IAssembly[]; // .NET files
+    i!: string; // Package ID
+    v!: string; // Version
+    t!: string; // Platform target
+    d?: string; // Description / Summary
+    a?: string[]; // Authors
+    c?: string; // Icon URL
+    p?: string; // Project URL
+    f!: string[]; // All supported platform targets
+    e?: IPackageDependency[]; // Dependencies
+    b!: string; // Publication date
+    r?: boolean; // Version is a release version (not pre-release).
+    l?: IAssembly[]; // .NET files
 
     getPackageKey(): PackageKey {
         return { packageId: this.i, packageVersion: this.v, targetFramework: this.t };
     }
 
-    findEntity(i: string): IEntity {
+    findEntity(i: string): IEntity | undefined {
+        if (!this.l)
+            return undefined;
         for (let dll of this.l) {
             for (let type of dll.t) {
                 const result = find(type, i);
@@ -66,11 +70,13 @@ export class PackageDoc implements IPackage {
         return undefined;
     }
 
-    findEntityParent(i: string): ITypeEntity {
+    findEntityParent(i: string): ITypeEntity | undefined {
+        if (!this.l)
+            return undefined;
         for (let dll of this.l) {
             for (let type of dll.t) {
                 if (type.i === i)
-                    return;
+                    return undefined;
                 const result = findParent(type, i);
                 if (result)
                     return result;
@@ -79,7 +85,9 @@ export class PackageDoc implements IPackage {
         return undefined;
     }
 
-    findEntityAssembly(i: string): IAssembly {
+    findEntityAssembly(i: string): IAssembly | undefined {
+        if (!this.l)
+            return undefined;
         for (let assembly of this.l) {
             for (let type of assembly.t) {
                 if (find(type, i))

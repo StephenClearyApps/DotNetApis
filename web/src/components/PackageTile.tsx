@@ -23,7 +23,7 @@ function humanizedValue(number: number): string {
 export interface PackageTileProps extends PackageKey {
     iconUrl?: string;
     title: string;
-    description: string;
+    description?: string;
     downloads?: number;
 }
 

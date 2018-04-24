@@ -2,7 +2,7 @@ import * as React from "react";
 import { format } from "date-fns";
 
 export interface TimestampProps {
-    timestamp: number;
+    timestamp?: number;
     fullTimestamp: boolean;
 }
 

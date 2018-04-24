@@ -5,7 +5,7 @@ import { RouteComponentProps, createRouterProps } from "./hoc";
 import { HashSettings } from "../logic";
 
 export interface HashTabsProps {
-    defaultTabValue: string;
+    defaultTabValue?: string;
     hashPrefix?: string;
 }
 

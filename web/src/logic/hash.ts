@@ -14,11 +14,11 @@ function pushHash<T extends object>(history: History, value: T) {
 }
 
 interface HashSettingsObject {
-    [key: string]: string;
+    [key: string]: string | undefined;
 }
 
 export class HashSettings {
-    constructor(location: Location, private history: History, prefix: string) {
+    constructor(location: Location, private history: History, prefix?: string) {
         this.hash = getHash<HashSettingsObject>(location);
         this.prefix = prefix ? prefix + "." : "";
     }
@@ -30,7 +30,7 @@ export class HashSettings {
         return this.hash[this.prefix + name] || "";
     }
 
-    setSetting(name: string, value: string) {
+    setSetting(name: string, value?: string) {
         const key = this.prefix + name;
         const replace = (this.hash[key] && value) || (!this.hash[key] && !value);
         this.hash[key] = value ? value : undefined;

@@ -12,7 +12,7 @@ export interface PackageRequestErrorProps extends PackageRequestInjectedProps {
 
 export const PackageRequestError: React.StatelessComponent<State & PackageRequestErrorProps> = (props) => {
     const { pkgRequestKey, pkgRequestStatus, time } = props;
-    const error = (pkgRequestStatus && pkgRequestStatus.error) || null;
+    const error = (pkgRequestStatus && pkgRequestStatus.error) || undefined;
     const backendError = pkgRequestStatus && pkgRequestStatus.status === "BACKEND_ERROR";
     return (
         <div>

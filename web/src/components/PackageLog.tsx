@@ -11,7 +11,7 @@ export interface PackageLogProps extends PackageLogRequestInjectedProps {
 
 const PackageLogComponent: React.StatelessComponent<State & PackageLogProps> = (props) => {
     const { pkgLogRequestStatus, pkgRequestStatus, time } = props;
-    const log = (pkgLogRequestStatus && pkgLogRequestStatus.log) || null;
+    const log = (pkgLogRequestStatus && pkgLogRequestStatus.log) || [];
     return (
         <div>
             <div style={{textAlign: "center"}}>

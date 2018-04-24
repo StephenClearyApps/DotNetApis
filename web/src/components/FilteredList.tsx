@@ -15,12 +15,12 @@ export interface FilteredListItem {
 
 export interface FilteredListProps {
     /** The current filter, treated as a case-insensitive regular expression */
-    filter: string;
+    filter?: string;
     filterChanged: (filter: string | undefined) => void;
     items: FilteredListItem[];
 }
 
-function generateRegex(filter: string) {
+function generateRegex(filter: string | undefined) {
     try { return new RegExp(filter || "", "i"); }
     catch { return new RegExp("", "i"); }
 }

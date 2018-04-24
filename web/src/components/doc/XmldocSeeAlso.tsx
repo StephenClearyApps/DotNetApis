@@ -6,7 +6,7 @@ import { PackageContext } from "../../util";
 import { IXmldoc } from "../../structure";
 
 interface XmldocSeeAlsoProps extends PackageContext {
-    data: IXmldoc;
+    data?: IXmldoc;
 }
 
 export const XmldocSeeAlso: React.StatelessComponent<XmldocSeeAlsoProps> = (props) => {

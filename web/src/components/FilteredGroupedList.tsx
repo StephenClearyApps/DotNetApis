@@ -19,12 +19,12 @@ export interface FilteredListItemGroup {
 
 export interface FilteredGroupedListProps {
     /** The current filter, treated as a case-insensitive regular expression */
-    filter: string;
+    filter?: string;
     filterChanged: (filter: string | undefined) => void;
     groups: FilteredListItemGroup[];
 }
 
-function generateRegex(filter: string) {
+function generateRegex(filter: string | undefined) {
     try { return new RegExp(filter || "", "i"); }
     catch { return new RegExp("", "i"); }
 }
@@ -32,12 +32,12 @@ function generateRegex(filter: string) {
 function headingList(group: FilteredListItemGroup) {
     if (group.items.length === 0)
         return null;
-    return (
+    return [
         <List key={group.heading}>
             <Subheader>{group.heading}</Subheader>
             {group.items.map(x => x.content)}
         </List>
-    );
+    ];
 }
 
 export const FilteredGroupedList: React.StatelessComponent<FilteredGroupedListProps> = ({ filter, filterChanged, groups }) => {
@@ -61,7 +61,7 @@ export const FilteredGroupedList: React.StatelessComponent<FilteredGroupedListPr
                     {clearFilterButton}
                 </ToolbarGroup>
             </Toolbar>
-            {join(filteredGroups.map(x => [headingList(x)]).filter(x => x !== null), [<Divider/>])}
+            {join(filteredGroups.map(x => headingList(x)).filter(x => x !== null), [<Divider/>])}
         </div>
     );
 };

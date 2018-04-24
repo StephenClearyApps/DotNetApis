@@ -8,7 +8,7 @@ function attachAsync(channel: Ably.ablyLib.RealtimeChannel): Promise<void> {
 
 export class LogListener {
     private channel: Ably.ablyLib.RealtimeChannel;
-    constructor(name: string, private handler: (err: Ably.ablyLib.ErrorInfo | Error, message: Ably.ablyLib.Message, meta: string) => void) {
+    constructor(name: string, private handler: (err: Ably.ablyLib.ErrorInfo | Error | undefined, message: Ably.ablyLib.Message | undefined, meta: string | undefined) => void) {
         this.channel = client.channels.get(name);
     }
 

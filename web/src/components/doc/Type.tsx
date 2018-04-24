@@ -15,12 +15,12 @@ interface TypeProps extends PackageContext {
 export const Type: React.StatelessComponent<TypeProps> = (props) => {
     const { data } = props;
     const groups = [
-        memberGrouping("Lifetime", data.e.l, props),
-        memberGrouping("Static", data.e.s, props),
-        memberGrouping("Instance", data.e.i, props),
-        // TODO: ("Protected", data.e.d, pkg),
-        memberGrouping("Nested types", data.e.t, props)
-    ].filter(x => x !== null);
+        memberGrouping("Lifetime", data.e ? data.e.l : [], props),
+        memberGrouping("Static", data.e ? data.e.s : [], props),
+        memberGrouping("Instance", data.e ? data.e.i : [], props),
+        // TODO: ("Protected", data.e ? data.e.d : [], pkg),
+        memberGrouping("Nested types", data.e ? data.e.t : [], props)
+    ].filter(notNull);
     return (
         <div>
             <h1>{titleDeclaration(props, data)}</h1>
@@ -41,14 +41,18 @@ export const Type: React.StatelessComponent<TypeProps> = (props) => {
     );
 };
 
-function memberGrouping(name: string, items: IEntity[], pkgContext: PackageContext): FilteredListItemGroup {
+function memberGrouping(name: string, items: IEntity[] | undefined, pkgContext: PackageContext): FilteredListItemGroup | null {
     if (!items || items.length === 0)
         return null;
     return {
         heading: name,
         items: items.map(x => ({
-                search: x.n,
+                search: x.n!,
                 content: <EntityListItem key={x.i} pkgContext={pkgContext} entity={x} />
         }))
     };
+}
+
+function notNull<T>(value: T | null): value is T {
+    return value !== null;
 }

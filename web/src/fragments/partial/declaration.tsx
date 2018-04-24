@@ -20,4 +20,5 @@ export function declaration(context: FormatContext, entity: IEntity, ns?: string
         return eventDeclaration(context, entity);
     else if (isField(entity))
         return fieldDeclaration(context, entity);
+    return null;
 }
