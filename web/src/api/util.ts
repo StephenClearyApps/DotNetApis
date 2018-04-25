@@ -1,3 +1,4 @@
+import { notUndefined } from "../util";
 import { ErrorDetails, ResponseError } from "./messages";
 
 // This must be kept in sync with DotNetApis.Structure.JsonFactory.Version.
@@ -10,8 +11,8 @@ interface Query {
 
 /** Encodes the query for use in a URI */
 function encodeQuery(data: Query) {
-    return Object.keys(data).filter(key => typeof(data[key]) !== "undefined").map(key =>
-        [key, data[key]].map(encodeURIComponent).join("=")
+    return Object.keys(data).filter(key => notUndefined(data[key])).map(key =>
+        [key, data[key]!].map(encodeURIComponent).join("=")
     ).join("&");
 }
 

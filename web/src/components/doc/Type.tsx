@@ -4,7 +4,7 @@ import { XmldocBasic, XmldocRemarks, XmldocExamples, XmldocSeeAlso } from ".";
 import { HashFilteredGroupedList, FilteredListItemGroup } from "../HashFilteredGroupedList";
 import { EntityListItem } from '../EntityListItem';
 
-import { PackageContext } from "../../util";
+import { PackageContext, notNull } from "../../util";
 import { ITypeEntity, IEntity } from "../../structure";
 import { titleDeclaration, declarationLocation, declaration } from "../../fragments";
 
@@ -51,8 +51,4 @@ function memberGrouping(name: string, items: IEntity[] | undefined, pkgContext: 
                 content: <EntityListItem key={x.i} pkgContext={pkgContext} entity={x} />
         }))
     };
-}
-
-function notNull<T>(value: T | null): value is T {
-    return value !== null;
 }
