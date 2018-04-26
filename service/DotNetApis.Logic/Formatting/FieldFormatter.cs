@@ -31,8 +31,6 @@ namespace DotNetApis.Logic.Formatting
             _xmldocFormatter = xmldocFormatter;
         }
 
-        // TODO: Move all these "XContainer xmldoc" parameters to an implicit context, along with AssemblyCollection and TargetFramework.
-
         /// <summary>
         /// Formats a field declaration, which may be a field or a constant.
         /// </summary>
