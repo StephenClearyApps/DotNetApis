@@ -68,45 +68,45 @@ namespace DotNetApis.Logic.Formatting
 
         // TODO: Check for ToArray(); check for "Structured" in method names.
 
-        /// <summary>
-        /// Formats a method declaration, which may be a method, operator, constructor, destructor, or type constructor.
-        /// </summary>
-        /// <param name="method">The method to format.</param>
-        public MethodEntity Method(MethodDefinition method)
-        {
-            var result = new MethodEntity
-            {
-                DnaId = method.DnaId(),
-                Attributes = _attributeFormatter.Attributes(method).Concat(_attributeFormatter.Attributes(method.MethodReturnType, "return")).ToList(),
-                Parameters = Parameters(method, method.Parameters).ToList(),
-                Accessibility = EntityAccessibility.Hidden,
-                Xmldoc = _xmldocFormatter.Xmldoc(method),
-            };
+	    /// <summary>
+	    /// Formats a method declaration, which may be a method, operator, constructor, destructor, or type constructor.
+	    /// </summary>
+	    /// <param name="method">The method to format.</param>
+	    public MethodEntity Method(MethodDefinition method)
+	    {
+		    var result = new MethodEntity
+		    {
+			    DnaId = method.DnaId(),
+			    Attributes = _attributeFormatter.Attributes(method).Concat(_attributeFormatter.Attributes(method.MethodReturnType, "return")).ToList(),
+			    Parameters = Parameters(method, method.Parameters).ToList(),
+			    Accessibility = EntityAccessibility.Hidden,
+			    Xmldoc = _xmldocFormatter.Xmldoc(method),
+		    };
 
-            var methodName = method.Name.StripBacktickSuffix().Name;
-            var isStaticConstructor = methodName == ".cctor";
-            var isFinalizer = methodName == "Finalize";
-            var explicitInterfaceMethod = method.GetExplicitlyImplementedInterfaceMethod();
-            var hasModifiers = !isFinalizer && !method.DeclaringType.IsInterface && explicitInterfaceMethod == null;
+		    var methodName = method.Name.StripBacktickSuffix().Name;
+		    var isStaticConstructor = methodName == ".cctor";
+		    var isFinalizer = methodName == "Finalize";
+		    var explicitInterfaceMethod = method.GetExplicitlyImplementedInterfaceMethod();
+		    var hasModifiers = !isFinalizer && !method.DeclaringType.IsInterface && explicitInterfaceMethod == null;
 
-            if (hasModifiers && !isStaticConstructor)
-                result.Accessibility = _accessibilityFormatter.MethodAccessibility(method);
-            if (hasModifiers)
-                result.Modifiers = _modifiersFormatter.MethodModifiers(method);
+		    if (hasModifiers && !isStaticConstructor)
+			    result.Accessibility = _accessibilityFormatter.MethodAccessibility(method);
+		    if (hasModifiers)
+			    result.Modifiers = _modifiersFormatter.MethodModifiers(method);
 
-            if (methodName == "op_Implicit" || methodName == "op_Explicit")
-            {
-                result.ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement());
-                result.Styles = methodName == "op_Implicit" ? MethodStyles.Implicit : MethodStyles.Explicit;
-                return result;
-            }
+		    if (methodName == "op_Implicit" || methodName == "op_Explicit")
+		    {
+			    result.ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement());
+			    result.Styles = methodName == "op_Implicit" ? MethodStyles.Implicit : MethodStyles.Explicit;
+			    return result;
+		    }
 
-            var isOperator = false;
-            if (methodName == ".ctor" || isStaticConstructor)
-                methodName = method.DeclaringType.Name.StripBacktickSuffix().Name;
-            else if (isFinalizer)
-                methodName = "~" + method.DeclaringType.Name.StripBacktickSuffix().Name;
-            else if (KnownCsharpOverridableOperatorNames.ContainsKey(methodName))
+		    var isOperator = false;
+		    if (methodName == ".ctor" || isStaticConstructor || isFinalizer)
+		    {
+			    methodName = method.SimpleMethodName();
+		    }
+		    else if (KnownCsharpOverridableOperatorNames.ContainsKey(methodName))
             {
                 isOperator = true;
                 result.ReturnType = _typeReferenceFormatter.TypeReference(method.ReturnType, method.MethodReturnType.GetDynamicReplacement());

@@ -514,8 +514,8 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Equal("O:SampleClass.#ctor", method.OverloadXmldocIdentifier());
             Assert.Equal("SampleClass/.ctor", method.OverloadDnaId());
             xmldoc.AssertXmldoc("Text to find.", method);
-            method.MemberFriendlyName().AssertEqual(".ctor", "SampleClass..ctor", "SampleClass..ctor"); // TODO: expected behavior?
-            method.OverloadFriendlyName().AssertEqual(".ctor", "SampleClass..ctor", "SampleClass..ctor");
+            method.MemberFriendlyName().AssertEqual("SampleClass", "SampleClass.SampleClass", "SampleClass.SampleClass");
+            method.OverloadFriendlyName().AssertEqual("SampleClass", "SampleClass.SampleClass", "SampleClass.SampleClass");
         }
 
         [Fact]
@@ -532,8 +532,8 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Equal("O:SampleClass.#cctor", method.OverloadXmldocIdentifier());
             Assert.Equal("SampleClass/.cctor", method.OverloadDnaId());
             xmldoc.AssertXmldoc("Text to find.", method);
-            method.MemberFriendlyName().AssertEqual(".cctor", "SampleClass..cctor", "SampleClass..cctor"); // TODO: expected behavior?
-            method.OverloadFriendlyName().AssertEqual(".cctor", "SampleClass..cctor", "SampleClass..cctor");
+            method.MemberFriendlyName().AssertEqual("SampleClass", "SampleClass.SampleClass", "SampleClass.SampleClass");
+            method.OverloadFriendlyName().AssertEqual("SampleClass", "SampleClass.SampleClass", "SampleClass.SampleClass");
         }
 
         [Fact]
@@ -550,8 +550,8 @@ namespace DotNetApis.Cecil.UnitTests
             Assert.Equal("O:SampleClass.Finalize", method.OverloadXmldocIdentifier());
             Assert.Equal("SampleClass/Finalize", method.OverloadDnaId());
             xmldoc.AssertXmldoc("Text to find.", method);
-            method.MemberFriendlyName().AssertEqual("Finalize", "SampleClass.Finalize", "SampleClass.Finalize"); // TODO: expected behavior?
-            method.OverloadFriendlyName().AssertEqual("Finalize", "SampleClass.Finalize", "SampleClass.Finalize");
+            method.MemberFriendlyName().AssertEqual("~SampleClass", "SampleClass.~SampleClass", "SampleClass.~SampleClass");
+            method.OverloadFriendlyName().AssertEqual("~SampleClass", "SampleClass.~SampleClass", "SampleClass.~SampleClass");
         }
 
         [Fact]
