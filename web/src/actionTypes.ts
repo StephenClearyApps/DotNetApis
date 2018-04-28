@@ -2,8 +2,6 @@ import { PackageDoc } from "./util";
 import { LogMessage } from "./api";
 
 export const ActionTypes = {
-    TICK: 'TICK',
-
     GET_DOC_BEGIN: 'GET_DOC_BEGIN',
     MAP_PACKAGE_KEY: 'MAP_PACKAGE_KEY',
     GET_DOC_REDIRECTING: 'GET_DOC_REDIRECTING',
@@ -17,10 +15,6 @@ export const ActionTypes = {
     GET_LOG_END: 'GET_LOG_END',
     GET_LOG_ERROR: 'GET_LOG_ERROR'
 };
-
-export type TickAction = PayloadAction<{ timestamp: number }>;
-export const getTick = (timestamp: number): TickAction =>
-    ({ type: ActionTypes.TICK, payload: { timestamp }});
 
 export type GetDocBeginAction = MetaAction<{ requestPackageKey: PackageKey }>;
 export const getDocBegin = (requestPackageKey: PackageKey): GetDocBeginAction =>

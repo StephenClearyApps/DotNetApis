@@ -4,7 +4,7 @@ export * from './packageDocReducer';
 export * from './packageLogReducer';
 import { packageDoc, PackageDocsState } from './packageDocReducer';
 import { packageLog, PackageLogsState } from './packageLogReducer';
-import { time, TimeState } from './timeReducer';
+import { State as TimeState, reducer as time } from '../ducks/time';
 
 export interface State {
     packageDoc: PackageDocsState;

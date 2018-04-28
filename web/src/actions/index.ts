@@ -1,2 +1,2 @@
 export * from './DocActions';
-export * from './TimeActions';
+export { actions as TimeActions } from '../ducks/time';
