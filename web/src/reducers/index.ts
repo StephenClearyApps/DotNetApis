@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 
 export * from './packageDocReducer';
-export * from './packageLogReducer';
+export { PackageLogState } from '../ducks/packageLog';
 import { packageDoc, PackageDocsState } from './packageDocReducer';
-import { packageLog, PackageLogsState } from './packageLogReducer';
 import { State as TimeState, reducer as time } from '../ducks/time';
+import { State as PackageLogsState, reducer as packageLog } from '../ducks/packageLog';
 
 export interface State {
     packageDoc: PackageDocsState;

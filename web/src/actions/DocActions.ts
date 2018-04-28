@@ -60,15 +60,5 @@ export const DocActions = {
         } catch (e) {
             dispatch(actions.getDocError(requestKey, e));
         }
-    },
-
-    getDocLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
-        dispatch(actions.getLogBegin(normalizedKey));
-        try {
-            const result = await api.getPackageLog(logUri);
-            dispatch(actions.getLogEnd(normalizedKey, result));
-        } catch (e) {
-            dispatch(actions.getLogError(normalizedKey, e));
-        }
     }
 }

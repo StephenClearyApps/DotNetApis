@@ -2,7 +2,8 @@ import * as React from 'react';
 
 import { RouteComponentProps, PackageInjectedProps, Hoc, ExtendingHoc } from '.';
 import { State } from '../../reducers';
-import { packageKey, PackageLogState } from '../../util';
+import { packageKey } from '../../util';
+import { PackageLogState } from '../../ducks/packageLog';
 
 // TODO: Consider removing PackageInjectedProps
 export interface PackageLogRequestInjectedProps extends PackageInjectedProps {

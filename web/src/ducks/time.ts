@@ -15,7 +15,7 @@ import { Dispatch } from 'redux';
 // Action strings, types, and creators.
 
 const TICK_UPDATE = 'TICK_UPDATE';
-interface TickUpdateAction extends PayloadAction<{ timestamp: number }> { type: typeof TICK_UPDATE };
+interface TickUpdateAction extends PayloadAction<{ timestamp: number }> { type: typeof TICK_UPDATE; };
 function updateTick(timestamp: number): TickUpdateAction { return { type: TICK_UPDATE, payload: { timestamp }}; }
 
 // Action functions.

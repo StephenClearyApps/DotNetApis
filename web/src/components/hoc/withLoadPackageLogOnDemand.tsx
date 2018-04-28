@@ -9,7 +9,7 @@ type LoadPackageLogOnDemandRequiredProps = State & Actions & PackageLogRequestIn
 function createLoadPackageLogOnDemand<TProps>(): Hoc<TProps & LoadPackageLogOnDemandRequiredProps> {
     return createLoadOnDemand<TProps & LoadPackageLogOnDemandRequiredProps>({
         hasStarted: props => !!props.pkgLogRequestStatus,
-        load: props => props.DocActions.getDocLog(props.pkgRequestStatus.normalizedPackageKey!, props.pkgStatus.logUri!)
+        load: props => props.PackageLogActions.getDocLog(props.pkgRequestStatus.normalizedPackageKey!, props.pkgStatus.logUri!)
     });
 }
 

@@ -1,7 +1,7 @@
 import { PackageDoc } from ".";
 import { PackageDocumentationStatus, PackageDocumentationRequest } from "../reducers";
 
-export { PackageDocumentationStatus, PackageDocumentationRequest, PackageLogState } from "../reducers";
+export { PackageDocumentationStatus, PackageDocumentationRequest } from "../reducers";
 
 export interface PackageContext {
     /** The package key used to request the documentation */
