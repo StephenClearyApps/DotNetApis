@@ -7,5 +7,5 @@ export function createExecuteOnMount<TProps>(action: (props: TProps) => void): H
     return lifecycle<TProps, void>({
         componentDidMount: function() { action(this.props); },
         componentWillReceiveProps: props => action(props)
-    });
+    }) as any;
 }
