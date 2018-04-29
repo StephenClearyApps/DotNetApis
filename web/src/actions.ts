@@ -8,4 +8,6 @@ export const actions = {
     PackageDocActions
 };
 
-export type Actions = typeof actions;
+// https://github.com/Microsoft/TypeScript/issues/14757
+type ActionsAlias = typeof actions;
+export interface Actions extends ActionsAlias {}
