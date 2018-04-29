@@ -9,7 +9,7 @@ type LoadPackageOnDemandRequiredProps = State & Actions & PackageRequestInjected
 function createLoadPackageOnDemand<TProps>(): Hoc<TProps & LoadPackageOnDemandRequiredProps> {
     return createLoadOnDemand<TProps & LoadPackageOnDemandRequiredProps>({
         hasStarted: props => !!props.pkgRequestStatus,
-        load: props => props.DocActions.getDoc(props.pkgRequestKey)
+        load: props => props.PackageDocActions.getDoc(props.pkgRequestKey)
     });
 }
 
