@@ -8,7 +8,7 @@ import "whatwg-fetch";
 
 import { Main } from "./components/Main";
 import { store } from "./store";
-import { actions, TimeActions, Actions } from "./actions";
+import { actions, Actions } from "./actions";
 import { State } from "./reducers";
 
 // Load the stylesheet
@@ -34,5 +34,5 @@ window.onload = () => {
                 </MuiThemeProvider>
             </BrowserRouter>
         </Provider>, document.getElementById("app"));
-    TimeActions.synchronize(store.dispatch);
+    actions.TimeActions.synchronize(store.dispatch);
 };
