@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { createLoadOnDemand, PackageLogRequestInjectedProps, Hoc, PassthroughHoc } from '.';
-import { State } from "../../reducers/index";
+import { State } from "../../reducers";
 import { Actions } from "../../actions";
 
 type LoadPackageLogOnDemandRequiredProps = State & Actions & PackageLogRequestInjectedProps;

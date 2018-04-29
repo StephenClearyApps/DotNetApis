@@ -5,7 +5,7 @@ import { PackageLoading } from "../PackageLoading";
 import { PackageRequestError } from '../PackageRequestError';
 
 import { PackageContextInjectedProps, withPackageContext, PackageRequestInjectedProps, createEither, withLoadPackageOnDemand, withPackageRequest, createRouterProps } from '.';
-import { State } from "../../reducers/index";
+import { State } from "../../reducers";
 
 export type PackageInjectedProps = PackageContextInjectedProps;
 

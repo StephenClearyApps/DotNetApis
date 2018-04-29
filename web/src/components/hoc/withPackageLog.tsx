@@ -5,7 +5,7 @@ import { PackageRequestError } from '../PackageRequestError';
 
 import { Hoc, ExtendingHoc } from ".";
 import { withPackageContext, PackageRequestInjectedProps, createEither, withLoadPackageOnDemand, withPackageRequest, createRouterProps, PackageLogRequestInjectedProps, withPackageLogRequest, withLoadPackageLogOnDemand } from '.';
-import { State } from "../../reducers/index";
+import { State } from "../../reducers";
 import { PackageLogLoading } from "../PackageLogLoading";
 import { PackageLogRequestError } from "../PackageLogRequestError";
 
