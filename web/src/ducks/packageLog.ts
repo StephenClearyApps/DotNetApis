@@ -5,28 +5,28 @@ type LogMessage = api.LogMessage;
 
 // Action strings, types, and creators.
 
-const GETLOG_BEGIN = 'GETLOG_BEGIN';
+const GETLOG_BEGIN = 'packageLog/getLog/BEGIN';
 interface GetLogBeginAction extends MetaAction<{ normalizedPackageKey: string }> { type: typeof GETLOG_BEGIN; };
-function beginGetLog(normalizedPackageKey: string): GetLogBeginAction { return { type: GETLOG_BEGIN, meta: { normalizedPackageKey }}; }
+function getLogBeginAction(normalizedPackageKey: string): GetLogBeginAction { return { type: GETLOG_BEGIN, meta: { normalizedPackageKey }}; }
 
-const GETLOG_END = 'GETLOG_END';
+const GETLOG_END = 'packageLog/getLog/END';
 interface GetLogEndAction extends MetaPayloadAction<{ normalizedPackageKey: string }, { log: LogMessage[] }> { type: typeof GETLOG_END; };
-function endGetLog(normalizedPackageKey: string, log: LogMessage[]): GetLogEndAction { return { type: GETLOG_END, meta: { normalizedPackageKey }, payload: { log }}; }
+function getLogEndAction(normalizedPackageKey: string, log: LogMessage[]): GetLogEndAction { return { type: GETLOG_END, meta: { normalizedPackageKey }, payload: { log }}; }
 
-const GETLOG_ERROR = 'GETLOG_ERROR';
+const GETLOG_ERROR = 'packageLog/getLog/ERROR';
 interface GetLogErrorAction extends MetaErrorAction<{ normalizedPackageKey: string }> { type: typeof GETLOG_ERROR; };
-function errorGetLog(normalizedPackageKey: string, error: Error): GetLogErrorAction { return { type: GETLOG_ERROR, meta: { normalizedPackageKey }, payload: error, error: true }; }
+function getLogErrorAction(normalizedPackageKey: string, error: Error): GetLogErrorAction { return { type: GETLOG_ERROR, meta: { normalizedPackageKey }, payload: error, error: true }; }
 
 // Actions
 
 export const actions = {
-    getDocLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
-        dispatch(beginGetLog(normalizedKey));
+    getLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
+        dispatch(getLogBeginAction(normalizedKey));
         try {
             const result = await api.getPackageLog(logUri);
-            dispatch(endGetLog(normalizedKey, result));
+            dispatch(getLogEndAction(normalizedKey, result));
         } catch (e) {
-            dispatch(errorGetLog(normalizedKey, e));
+            dispatch(getLogErrorAction(normalizedKey, e));
         }
     }    
 };

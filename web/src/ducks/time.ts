@@ -14,9 +14,9 @@ import { Dispatch } from 'redux';
 
 // Action strings, types, and creators.
 
-const TICK_UPDATE = 'TICK_UPDATE';
-interface TickUpdateAction extends PayloadAction<{ timestamp: number }> { type: typeof TICK_UPDATE; };
-function updateTick(timestamp: number): TickUpdateAction { return { type: TICK_UPDATE, payload: { timestamp }}; }
+const TICK = 'time/TICK';
+interface TickAction extends PayloadAction<{ timestamp: number }> { type: typeof TICK; };
+function tickAction(timestamp: number): TickAction { return { type: TICK, payload: { timestamp }}; }
 
 // Action functions.
 
@@ -24,10 +24,10 @@ const millisecondsPerMinute = 60 * 1000;
 function currentMinute() {
     return Math.round(new Date().getTime() / millisecondsPerMinute) * millisecondsPerMinute;
 }
-const synchronize = (dispatch: Dispatch<TickUpdateAction>) => dispatch(updateTick(currentMinute()));
+const synchronize = (dispatch: Dispatch<TickAction>) => dispatch(tickAction(currentMinute()));
 export const actions = {
     synchronize,
-    startTicks: (dispatch: Dispatch<TickUpdateAction>) => {
+    startTicks: (dispatch: Dispatch<TickAction>) => {
         synchronize(dispatch);
         setInterval(() => synchronize(dispatch), millisecondsPerMinute);
     }
@@ -45,7 +45,7 @@ const defaultState: State = {
 
 // Reducers.
 
-function tickUpdate(state: State, action: TickUpdateAction): State {
+function tick(state: State, action: TickAction): State {
     return {
         ...state,
         timestamp: action.payload.timestamp
@@ -54,7 +54,7 @@ function tickUpdate(state: State, action: TickUpdateAction): State {
 
 export function reducer(state: State = defaultState, action: Action): State {
     switch (action.type) {
-        case TICK_UPDATE: return tickUpdate(state, action as TickUpdateAction); // TODO: as-cast is temporary until we have a union Action type.
+        case TICK: return tick(state, action as TickAction); // TODO: as-cast is temporary until we have a union Action type.
         default: return state;
     }
 }
