@@ -19,6 +19,8 @@ const TICK = 'time/TICK';
 const tickAction = (timestamp: number) => createAction(TICK, { timestamp });
 type TickAction = ReturnType<typeof tickAction>;
 
+type Actions = TickAction;
+
 // Action functions.
 
 const millisecondsPerMinute = 60 * 1000;
@@ -53,9 +55,9 @@ function tick(state: State, action: TickAction): State {
     };
 }
 
-export function reducer(state: State = defaultState, action: Action): State {
+export function reducer(state: State = defaultState, action: Actions): State {
     switch (action.type) {
-        case TICK: return tick(state, action as TickAction); // TODO: as-cast is temporary until we have a union Action type.
+        case TICK: return tick(state, action);
         default: return state;
     }
 }

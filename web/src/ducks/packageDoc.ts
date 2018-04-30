@@ -40,6 +40,8 @@ const GETDOC_ERROR = 'packageDoc/getDoc/ERROR';
 const getDocErrorAction = (requestPackageKey: PackageKey, error: Error) => createAction(GETDOC_ERROR, error, { requestPackageKey });
 type GetDocErrorAction = ReturnType<typeof getDocErrorAction>;
 
+type Actions = GetDocBeginAction | GetDocMapPackageKeyAction | GetDocRedirectAction | GetDocProcessAction | GetDocReportProgressAction | GetDocEndAction | GetDocBackendErrorAction | GetDocErrorAction;
+
 // Actions
 
 export const actions = {
@@ -310,16 +312,16 @@ function getDocError(state: State, action: GetDocErrorAction): State {
     };
 }
 
-export function reducer(state: State = defaultState, action: Action): State {
+export function reducer(state: State = defaultState, action: Actions): State {
     switch (action.type) {
-        case GETDOC_BEGIN: return getDocBegin(state, action as GetDocBeginAction); // TODO: as-cast is temporary until we have a union Action type.
-        case GETDOC_MAPPACKAGEKEY: return getDocMapPackageKey(state, action as GetDocMapPackageKeyAction);
-        case GETDOC_REDIRECT: return getDocRedirect(state, action as GetDocRedirectAction);
-        case GETDOC_PROCESS: return getDocProcess(state, action as GetDocProcessAction);
-        case GETDOC_REPORTPROGRESS: return getDocReportProgress(state, action as GetDocReportProgressAction);
-        case GETDOC_END: return getDocEnd(state, action as GetDocEndAction);
-        case GETDOC_BACKENDERROR: return getDocBackendError(state, action as GetDocBackendErrorAction);
-        case GETDOC_ERROR: return getDocError(state, action as GetDocErrorAction);
+        case GETDOC_BEGIN: return getDocBegin(state, action);
+        case GETDOC_MAPPACKAGEKEY: return getDocMapPackageKey(state, action);
+        case GETDOC_REDIRECT: return getDocRedirect(state, action);
+        case GETDOC_PROCESS: return getDocProcess(state, action);
+        case GETDOC_REPORTPROGRESS: return getDocReportProgress(state, action);
+        case GETDOC_END: return getDocEnd(state, action);
+        case GETDOC_BACKENDERROR: return getDocBackendError(state, action);
+        case GETDOC_ERROR: return getDocError(state, action);
         default: return state;
     }
 }

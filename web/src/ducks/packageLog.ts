@@ -18,6 +18,8 @@ const GETLOG_ERROR = 'packageLog/getLog/ERROR';
 const getLogErrorAction = (normalizedPackageKey: string, error: Error) => createAction(GETLOG_ERROR, error, { normalizedPackageKey });
 type GetLogErrorAction = ReturnType<typeof getLogErrorAction>;
 
+type Actions = GetLogBeginAction | GetLogEndAction | GetLogErrorAction;
+
 // Actions
 
 export const actions = {
@@ -98,11 +100,11 @@ function getLogError(state: State, action: GetLogErrorAction): State {
     };
 }
 
-export function reducer(state: State = defaultState, action: Action): State {
+export function reducer(state: State = defaultState, action: Actions): State {
     switch (action.type) {
-        case GETLOG_BEGIN: return getLogBegin(state, action as GetLogBeginAction); // TODO: as-cast is temporary until we have a union Action type.
-        case GETLOG_END: return getLogEnd(state, action as GetLogEndAction);
-        case GETLOG_ERROR: return getLogError(state, action as GetLogErrorAction);
+        case GETLOG_BEGIN: return getLogBegin(state, action);
+        case GETLOG_END: return getLogEnd(state, action);
+        case GETLOG_ERROR: return getLogError(state, action);
         default: return state;
     }
 }
