@@ -4,6 +4,7 @@ import { createAction } from '../util';
 // Naming conventions from https://medium.com/@kylpo/redux-best-practices-eef55a20cc72
 // Ducks from https://github.com/erikras/ducks-modular-redux
 // Typing from https://github.com/piotrwitek/react-redux-typescript-guide and https://github.com/piotrwitek/typesafe-actions#tutorial
+// https://hackernoon.com/redux-flow-type-getting-the-maximum-benefit-from-the-fewest-key-strokes-5c006c54ec87
 
 // Action strings are named `{NOUN}_{VERB}`
 // Action types are named `{Noun}{Verb}Action`, should be an interface type extending one of the generic action types, and specify a `type` of `typeof {NOUN_VERB}`.
