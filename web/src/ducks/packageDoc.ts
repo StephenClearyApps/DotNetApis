@@ -1,44 +1,44 @@
 import { Dispatch } from 'redux';
 import * as api from '../api';
 import { LogListener } from '../logic';
-import { packageKey, PackageDoc } from '../util';
+import { packageKey, PackageDoc, createAction, createMetaAction, createErrorAction } from '../util';
 
 type LogMessage = api.LogMessage;
 type PackageStatus = api.Status;
 
 // Action strings, types, and creators.
 
-const GETDOC_BEGIN = 'GETDOC_BEGIN';
-interface GetDocBeginAction extends MetaAction<{ requestPackageKey: PackageKey }> { type: typeof GETDOC_BEGIN; };
-function getDocBeginAction(requestPackageKey: PackageKey): GetDocBeginAction { return { type: GETDOC_BEGIN, meta: { requestPackageKey } }; }
+const GETDOC_BEGIN = 'packageDoc/getDoc/BEGIN';
+const getDocBeginAction = (requestPackageKey: PackageKey) => createMetaAction(GETDOC_BEGIN, { requestPackageKey });
+type GetDocBeginAction = ReturnType<typeof getDocBeginAction>;
 
-const GETDOC_MAPPACKAGEKEY = 'GETDOC_MAPPACKAGEKEY'
-interface GetDocMapPackageKeyAction extends PayloadAction<{ requestPackageKey: PackageKey, normalizedPackageKey: PackageKey }> { type: typeof GETDOC_MAPPACKAGEKEY; };
-function getDocMapPackageKeyAction(requestPackageKey: PackageKey, normalizedPackageKey: PackageKey): GetDocMapPackageKeyAction { return { type: GETDOC_MAPPACKAGEKEY, payload: { requestPackageKey, normalizedPackageKey } }; }
+const GETDOC_MAPPACKAGEKEY = 'packageDoc/getDoc/MAPPACKAGEKEY'
+const getDocMapPackageKeyAction = (requestPackageKey: PackageKey, normalizedPackageKey: PackageKey) => createAction(GETDOC_MAPPACKAGEKEY, { requestPackageKey, normalizedPackageKey });
+type GetDocMapPackageKeyAction = ReturnType<typeof getDocMapPackageKeyAction>;
 
-const GETDOC_REDIRECT = 'GETDOC_REDIRECT';
-interface GetDocRedirectAction extends MetaPayloadAction<{ requestPackageKey: PackageKey }, { log: LogMessage[], jsonUri: string, logUri: string }> { type: typeof GETDOC_REDIRECT; };
-function getDocRedirectAction(requestPackageKey: PackageKey, log: LogMessage[], jsonUri: string, logUri: string): GetDocRedirectAction { return { type: GETDOC_REDIRECT, meta: { requestPackageKey }, payload: { log, jsonUri, logUri } }; }
+const GETDOC_REDIRECT = 'packageDoc/getDoc/REDIRECT';
+const getDocRedirectAction = (requestPackageKey: PackageKey, log: LogMessage[], jsonUri: string, logUri: string) => createAction(GETDOC_REDIRECT, { log, jsonUri, logUri }, { requestPackageKey });
+type GetDocRedirectAction = ReturnType<typeof getDocRedirectAction>;
 
-const GETDOC_PROCESS = 'GETDOC_PROCESS';
-interface GetDocProcessAction extends MetaPayloadAction<{ requestPackageKey: PackageKey }, { log: LogMessage[] }> { type: typeof GETDOC_PROCESS; };
-function getDocProcessAction(requestPackageKey: PackageKey, log: LogMessage[]): GetDocProcessAction { return { type: GETDOC_PROCESS, meta: { requestPackageKey }, payload: { log } }; }
+const GETDOC_PROCESS = 'packageDoc/getDoc/PROCESS';
+const getDocProcessAction = (requestPackageKey: PackageKey, log: LogMessage[]) => createAction(GETDOC_PROCESS, { log }, { requestPackageKey });
+type GetDocProcessAction = ReturnType<typeof getDocProcessAction>;
 
-const GETDOC_REPORTPROGRESS = 'GETDOC_REPORTPROGRESS';
-interface GetDocReportProgressAction extends MetaPayloadAction<{ requestPackageKey: PackageKey }, { logMessage: LogMessage }> { type: typeof GETDOC_REPORTPROGRESS; };
-function getDocReportProgressAction(requestPackageKey: PackageKey, logMessage: LogMessage): GetDocReportProgressAction { return { type: GETDOC_REPORTPROGRESS, meta: { requestPackageKey }, payload: { logMessage }}; }
+const GETDOC_REPORTPROGRESS = 'packageDoc/getDoc/REPORTPROGRESS';
+const getDocReportProgressAction = (requestPackageKey: PackageKey, logMessage: LogMessage) => createAction(GETDOC_REPORTPROGRESS, { logMessage }, { requestPackageKey });
+type GetDocReportProgressAction = ReturnType<typeof getDocReportProgressAction>;
 
-const GETDOC_END = 'GETDOC_END';
-interface GetDocEndAction extends MetaPayloadAction<{ requestPackageKey: PackageKey }, { data: PackageDoc }> { type: typeof GETDOC_END; };
-function getDocEndAction(requestPackageKey: PackageKey, data: PackageDoc): GetDocEndAction { return { type: GETDOC_END, meta: { requestPackageKey }, payload: { data } }; }
+const GETDOC_END = 'packageDoc/getDoc/END';
+const getDocEndAction = (requestPackageKey: PackageKey, data: PackageDoc) => createAction(GETDOC_END, { data }, { requestPackageKey });
+type GetDocEndAction = ReturnType<typeof getDocEndAction>;
 
-const GETDOC_BACKENDERROR = 'GETDOC_BACKENDERROR';
-interface GetDocBackendErrorAction extends MetaPayloadAction<{ requestPackageKey: PackageKey}, { logUri: string }> { type: typeof GETDOC_BACKENDERROR; };
-function getDocBackendErrorAction(requestPackageKey: PackageKey, logUri: string): GetDocBackendErrorAction { return { type: GETDOC_BACKENDERROR, meta: { requestPackageKey }, payload: { logUri } }; }
+const GETDOC_BACKENDERROR = 'packageDoc/getDoc/BACKENDERROR';
+const getDocBackendErrorAction = (requestPackageKey: PackageKey, logUri: string) => createAction(GETDOC_BACKENDERROR, { logUri }, { requestPackageKey });
+type GetDocBackendErrorAction = ReturnType<typeof getDocBackendErrorAction>;
 
-const GETDOC_ERROR = 'GETDOC_ERROR';
-interface GetDocErrorAction extends MetaErrorAction<{ requestPackageKey: PackageKey }> { type: typeof GETDOC_ERROR; };
-function getDocErrorAction(requestPackageKey: PackageKey, error: Error): GetDocErrorAction { return { type: GETDOC_ERROR, meta: { requestPackageKey }, payload: error, error: true }; }
+const GETDOC_ERROR = 'packageDoc/getDoc/ERROR';
+const getDocErrorAction = (requestPackageKey: PackageKey, error: Error) => createErrorAction(GETDOC_ERROR, error, { requestPackageKey });
+type GetDocErrorAction = ReturnType<typeof getDocErrorAction>;
 
 // Actions
 

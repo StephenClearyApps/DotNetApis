@@ -1,21 +1,22 @@
 import { Dispatch } from 'redux';
 import * as api from '../api';
+import { createAction, createMetaAction, createErrorAction } from '../util';
 
 type LogMessage = api.LogMessage;
 
 // Action strings, types, and creators.
 
 const GETLOG_BEGIN = 'packageLog/getLog/BEGIN';
-interface GetLogBeginAction extends MetaAction<{ normalizedPackageKey: string }> { type: typeof GETLOG_BEGIN; };
-function getLogBeginAction(normalizedPackageKey: string): GetLogBeginAction { return { type: GETLOG_BEGIN, meta: { normalizedPackageKey }}; }
+const getLogBeginAction = (normalizedPackageKey: string) => createMetaAction(GETLOG_BEGIN, { normalizedPackageKey });
+type GetLogBeginAction = ReturnType<typeof getLogBeginAction>;
 
 const GETLOG_END = 'packageLog/getLog/END';
-interface GetLogEndAction extends MetaPayloadAction<{ normalizedPackageKey: string }, { log: LogMessage[] }> { type: typeof GETLOG_END; };
-function getLogEndAction(normalizedPackageKey: string, log: LogMessage[]): GetLogEndAction { return { type: GETLOG_END, meta: { normalizedPackageKey }, payload: { log }}; }
+const getLogEndAction = (normalizedPackageKey: string, log: LogMessage[]) => createAction(GETLOG_END, { log }, { normalizedPackageKey });
+type GetLogEndAction = ReturnType<typeof getLogEndAction>;
 
 const GETLOG_ERROR = 'packageLog/getLog/ERROR';
-interface GetLogErrorAction extends MetaErrorAction<{ normalizedPackageKey: string }> { type: typeof GETLOG_ERROR; };
-function getLogErrorAction(normalizedPackageKey: string, error: Error): GetLogErrorAction { return { type: GETLOG_ERROR, meta: { normalizedPackageKey }, payload: error, error: true }; }
+const getLogErrorAction = (normalizedPackageKey: string, error: Error) => createErrorAction(GETLOG_ERROR, error, { normalizedPackageKey });
+type GetLogErrorAction = ReturnType<typeof getLogErrorAction>;
 
 // Actions
 

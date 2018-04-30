@@ -1,4 +1,5 @@
 import { Dispatch } from 'redux';
+import { createAction } from '../util';
 
 // Naming conventions from https://medium.com/@kylpo/redux-best-practices-eef55a20cc72
 // Ducks from https://github.com/erikras/ducks-modular-redux
@@ -15,8 +16,8 @@ import { Dispatch } from 'redux';
 // Action strings, types, and creators.
 
 const TICK = 'time/TICK';
-interface TickAction extends PayloadAction<{ timestamp: number }> { type: typeof TICK; };
-function tickAction(timestamp: number): TickAction { return { type: TICK, payload: { timestamp }}; }
+const tickAction = (timestamp: number) => createAction(TICK, { timestamp });
+type TickAction = ReturnType<typeof tickAction>;
 
 // Action functions.
 
