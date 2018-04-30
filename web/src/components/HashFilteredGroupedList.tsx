@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { RouteComponentProps, createRouterProps } from "./hoc";
-import { FilteredListItem, FilteredListItemGroup, FilteredGroupedList } from "./FilteredGroupedList";
+import { FilteredListItemGroup, FilteredGroupedList } from "./FilteredGroupedList";
 export { FilteredListItem, FilteredListItemGroup } from "./FilteredGroupedList";
 
 import { HashSettings } from "../logic";

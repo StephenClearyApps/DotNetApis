@@ -1,5 +1,3 @@
-import * as React from "react";
-
 import { createLoadOnDemand, PackageRequestInjectedProps, PassthroughHoc, Hoc } from '.';
 import { State } from "../../reducers";
 import { Actions } from "../../actions";

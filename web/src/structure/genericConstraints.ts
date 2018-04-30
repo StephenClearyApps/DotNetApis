@@ -1,5 +1,4 @@
 import { ITypeReference } from './typeReferences';
-import { IXmldoc } from './xmldoc';
 
 // This must be kept in sync with DotNetApis.Structure.GenericConstraints.GenericConstraintKind
 export const enum GenericConstraintKind {

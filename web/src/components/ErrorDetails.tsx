@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ReactFragment } from '../fragments/partial';
-import { ResponseError, isResponseError, ErrorDetails as ErrorDetailsType, ExceptionDetails } from '../api';
+import { isResponseError, ErrorDetails as ErrorDetailsType, ExceptionDetails } from '../api';
 import { LogMessages } from './LogMessages';
 
 function exceptionDetails(error: ExceptionDetails): ReactFragment {

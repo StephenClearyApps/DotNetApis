@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore, GenericStoreEnhancer } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 import immutableState from 'redux-immutable-state-invariant';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';

@@ -1,5 +1,3 @@
-import * as React from 'react';
-
 import { lifecycle, Hoc } from '.';
 
 /** Executes an action when the component is mounted; the action is also fired whenever props change */

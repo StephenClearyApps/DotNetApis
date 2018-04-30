@@ -3,7 +3,6 @@ import * as React from 'react';
 import { LogMessages } from './LogMessages';
 
 import { PackageLogRequestInjectedProps, withPackageLog } from './hoc';
-import { packageFriendlyName } from '../util';
 import { State } from '../reducers';
 
 export interface PackageLogProps extends PackageLogRequestInjectedProps {

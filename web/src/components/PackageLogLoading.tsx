@@ -3,7 +3,6 @@ import CircularProgress from 'material-ui/CircularProgress';
 
 import { State } from "../reducers";
 import { PackageLogRequestInjectedProps } from "./hoc";
-import { packageFriendlyName } from '../util';
 
 export type PackageLogLoadingProps = State & PackageLogRequestInjectedProps;
 

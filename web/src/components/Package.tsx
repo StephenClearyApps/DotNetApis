@@ -12,13 +12,12 @@ import { EntityListItem } from './EntityListItem';
 import { State } from "../reducers";
 import { Actions } from "../actions";
 import { withPackage, PackageInjectedProps } from "./hoc";
-import { PackageContext, normalizePath, sortEntities, array, selectMany } from "../util";
-import { IEntity, IAssembly, IPackageDependency, IPackageEntity } from "../structure";
-import { packageEntityLink } from "../logic";
+import { PackageContext, normalizePath, sortEntities, selectMany } from "../util";
+import { IAssembly, IPackageDependency, IPackageEntity } from "../structure";
 
 export type PackageProps = State & Actions;
 const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedProps> = props => {
-    const { pkg, packageDoc, pkgRequestKey } = props;
+    const { pkg } = props;
     const types = selectMany(pkg.l, x => x.t);
     sortEntities(types);
     const tabTypes = typesTab(props, types);

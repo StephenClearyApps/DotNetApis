@@ -1,5 +1,5 @@
 import { IAttribute } from './attributes';
-import { IEntity, IPackageEntity } from './entities';
+import { IPackageEntity } from './entities';
 
 /** A package that is a dependency for a primary package */
 export interface IPackageDependency {

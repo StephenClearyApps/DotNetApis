@@ -2,7 +2,6 @@ import * as React from 'react';
 
 import { Enum, Delegate, Method, Property, Event, Field, Type } from './doc';
 
-import { PackageContext } from '../util';
 import { isEnum, isDelegate, isMethod, isProperty, isEvent, isField, isInterface, isStruct, isClass } from '../structure';
 import { PackageInjectedProps, withPackage, createRouterProps, RouteComponentProps } from './hoc';
 import { State } from '../reducers';

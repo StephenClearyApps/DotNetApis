@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import { HashFilteredList, FilteredListItem } from "./HashFilteredList";
+import { HashFilteredList } from "./HashFilteredList";
 import { EntityListItem } from './EntityListItem';
 
 import { PackageInjectedProps, withPackage, RouteComponentProps, createRouterProps } from "./hoc";
