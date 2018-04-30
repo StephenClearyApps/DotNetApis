@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import * as api from '../api';
-import { createAction, createMetaAction } from '../util';
+import { createAction, createMetaAction, createErrorAction } from '../util';
 
 type LogMessage = api.LogMessage;
 
@@ -15,7 +15,7 @@ const getLogEndAction = (normalizedPackageKey: string, log: LogMessage[]) => cre
 type GetLogEndAction = ReturnType<typeof getLogEndAction>;
 
 const GETLOG_ERROR = 'packageLog/getLog/ERROR';
-const getLogErrorAction = (normalizedPackageKey: string, error: Error) => createAction(GETLOG_ERROR, error, { normalizedPackageKey });
+const getLogErrorAction = (normalizedPackageKey: string, error: Error) => createErrorAction(GETLOG_ERROR, error, { normalizedPackageKey });
 type GetLogErrorAction = ReturnType<typeof getLogErrorAction>;
 
 type Actions = GetLogBeginAction | GetLogEndAction | GetLogErrorAction;
