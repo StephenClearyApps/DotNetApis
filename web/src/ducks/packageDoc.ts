@@ -1,7 +1,7 @@
 import { Dispatch } from 'redux';
 import * as api from '../api';
 import { LogListener } from '../logic';
-import { packageKey, PackageDoc, createAction, createMetaAction, createErrorAction } from '../util';
+import { packageKey, PackageDoc, createAction, createMetaAction } from '../util';
 
 type LogMessage = api.LogMessage;
 type PackageStatus = api.Status;
@@ -37,7 +37,7 @@ const getDocBackendErrorAction = (requestPackageKey: PackageKey, logUri: string)
 type GetDocBackendErrorAction = ReturnType<typeof getDocBackendErrorAction>;
 
 const GETDOC_ERROR = 'packageDoc/getDoc/ERROR';
-const getDocErrorAction = (requestPackageKey: PackageKey, error: Error) => createErrorAction(GETDOC_ERROR, error, { requestPackageKey });
+const getDocErrorAction = (requestPackageKey: PackageKey, error: Error) => createAction(GETDOC_ERROR, error, { requestPackageKey });
 type GetDocErrorAction = ReturnType<typeof getDocErrorAction>;
 
 // Actions
