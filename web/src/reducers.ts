@@ -14,4 +14,4 @@ export const reducers = combineReducers({
     packageDoc,
     packageLog,
     time
-});
+} as any); // Temporary any cast; once redux-thunk updates to support redux v4 typings, this should no longer be necessary.
