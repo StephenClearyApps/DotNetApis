@@ -6,30 +6,30 @@ type LogMessage = api.LogMessage;
 
 // Action strings, types, and creators.
 
-const GETLOG_BEGIN = 'packageLog/getLog/BEGIN';
-const getLogBeginAction = (normalizedPackageKey: string) => createMetaAction(GETLOG_BEGIN, { normalizedPackageKey });
-type GetLogBeginAction = ReturnType<typeof getLogBeginAction>;
+const LOG_GET_BEGIN = 'log/get/begin';
+const logGetBeginAction = (normalizedPackageKey: string) => createMetaAction(LOG_GET_BEGIN, { normalizedPackageKey });
+type LogGetBeginAction = ReturnType<typeof logGetBeginAction>;
 
-const GETLOG_END = 'packageLog/getLog/END';
-const getLogEndAction = (normalizedPackageKey: string, log: LogMessage[]) => createAction(GETLOG_END, { log }, { normalizedPackageKey });
-type GetLogEndAction = ReturnType<typeof getLogEndAction>;
+const LOG_GET_END = 'log/get/end';
+const logGetEndAction = (normalizedPackageKey: string, log: LogMessage[]) => createAction(LOG_GET_END, { log }, { normalizedPackageKey });
+type LogGetEndAction = ReturnType<typeof logGetEndAction>;
 
-const GETLOG_ERROR = 'packageLog/getLog/ERROR';
-const getLogErrorAction = (normalizedPackageKey: string, error: Error) => createErrorAction(GETLOG_ERROR, error, { normalizedPackageKey });
-type GetLogErrorAction = ReturnType<typeof getLogErrorAction>;
+const LOG_GET_ERROR = 'log/get/error';
+const logGetErrorAction = (normalizedPackageKey: string, error: Error) => createErrorAction(LOG_GET_ERROR, error, { normalizedPackageKey });
+type LogGetErrorAction = ReturnType<typeof logGetErrorAction>;
 
-type Actions = GetLogBeginAction | GetLogEndAction | GetLogErrorAction;
+type Actions = LogGetBeginAction | LogGetEndAction | LogGetErrorAction;
 
 // Actions
 
 export const actions = {
     getLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
-        dispatch(getLogBeginAction(normalizedKey));
+        dispatch(logGetBeginAction(normalizedKey));
         try {
             const result = await api.getPackageLog(logUri);
-            dispatch(getLogEndAction(normalizedKey, result));
+            dispatch(logGetEndAction(normalizedKey, result));
         } catch (e) {
-            dispatch(getLogErrorAction(normalizedKey, e));
+            dispatch(logGetErrorAction(normalizedKey, e));
         }
     }    
 };
@@ -60,7 +60,7 @@ const defaultState: State = {
 // Reducers
 
 /** The "get log" command has started */
-function getLogBegin(state: State, action: GetLogBeginAction): State {
+function logGetBegin(state: State, action: LogGetBeginAction): State {
     return {
         ...state,
         packageLogs: {
@@ -71,7 +71,7 @@ function getLogBegin(state: State, action: GetLogBeginAction): State {
 }
 
 /** We have received the log for the package */
-function getLogEnd(state: State, action: GetLogEndAction): State {
+function logGetEnd(state: State, action: LogGetEndAction): State {
     return {
         ...state,
         packageLogs: {
@@ -86,7 +86,7 @@ function getLogEnd(state: State, action: GetLogEndAction): State {
 }
 
 /** Some part of the "get log" command has failed */
-function getLogError(state: State, action: GetLogErrorAction): State {
+function logGetError(state: State, action: LogGetErrorAction): State {
     return {
         ...state,
         packageLogs: {
@@ -102,9 +102,9 @@ function getLogError(state: State, action: GetLogErrorAction): State {
 
 export function reducer(state: State = defaultState, action: Actions): State {
     switch (action.type) {
-        case GETLOG_BEGIN: return getLogBegin(state, action);
-        case GETLOG_END: return getLogEnd(state, action);
-        case GETLOG_ERROR: return getLogError(state, action);
+        case LOG_GET_BEGIN: return logGetBegin(state, action);
+        case LOG_GET_END: return logGetEnd(state, action);
+        case LOG_GET_ERROR: return logGetError(state, action);
         default: return state;
     }
 }

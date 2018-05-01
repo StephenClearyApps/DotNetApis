@@ -1,26 +1,34 @@
 import { Dispatch } from 'redux';
 import { createAction } from '../util';
 
+
 // Naming conventions from https://medium.com/@kylpo/redux-best-practices-eef55a20cc72
 // Ducks from https://github.com/erikras/ducks-modular-redux
 // Typing from https://github.com/piotrwitek/react-redux-typescript-guide and https://github.com/piotrwitek/typesafe-actions#tutorial
-// https://hackernoon.com/redux-flow-type-getting-the-maximum-benefit-from-the-fewest-key-strokes-5c006c54ec87
+//  and https://hackernoon.com/redux-flow-type-getting-the-maximum-benefit-from-the-fewest-key-strokes-5c006c54ec87
 
-// Action strings are named `{NOUN}_{VERB}`
-// Action types are named `{Noun}{Verb}Action`, should be an interface type extending one of the generic action types, and specify a `type` of `typeof {NOUN_VERB}`.
-// Action creators are named `{verb}{Noun}` and return `{Noun}{Verb}Action`.
-// Duck module exports an `actions` that contains higher-level actions.
+// Verbs are in present tense.
+// Action types are a `type` alias, set equal to `ReturnType<typeof actionCreator>;`
+// "Action methods" are higher-level actions that take a Dispatch<T> argument.
+// Duck module exports an `actions` that contains action methods.
 // Duck module exports a `State` type.
 // State properties are `readonly`.
 // Duck module exports a `reducer` function.
+// Naming:
+//  Action strings: "{noun}/{verb}[/{notification}]", e.g., "log/get/begin", "doc/get/redirect", "time/synchronize"
+//  Action constants: {NOUN}_{VERB}[_{NOTIFICATION}], e.g., LOG_GET_BEGIN, DOC_GET_REDIRECT, TIME_SYNCHRONIZE
+//  Action types: {Noun}{Verb}[{Notification}]Action, e.g., LogGetBeginAction, DocGetRedirectAction, TimeSynchronizeAction
+//  Action creators: {noun}{Verb}[{Notification}]Action, e.g., logGetBeginAction, docGetRedirectAction, timeSynchronizeAction
+//  Action methods: {verb}{Noun}, e.g., getLog, getDoc, synchronizeTime, startTimeSynchronization
+//  Reducer functions: {noun}{Verb}[{Notification}], e.g., logGetBegin, docGetRedirect, timeSynchronize
 
 // Action strings, types, and creators.
 
-const TICK = 'time/TICK';
-const tickAction = (timestamp: number) => createAction(TICK, { timestamp });
-type TickAction = ReturnType<typeof tickAction>;
+const TIME_SYNCHRONIZE = 'time/synchronize';
+const timeSynchronizeAction = (timestamp: number) => createAction(TIME_SYNCHRONIZE, { timestamp });
+type TimeSynchronizeAction = ReturnType<typeof timeSynchronizeAction>;
 
-type Actions = TickAction;
+type Actions = TimeSynchronizeAction;
 
 // Action functions.
 
@@ -28,12 +36,12 @@ const millisecondsPerMinute = 60 * 1000;
 function currentMinute() {
     return Math.round(new Date().getTime() / millisecondsPerMinute) * millisecondsPerMinute;
 }
-const synchronize = (dispatch: Dispatch<TickAction>) => dispatch(tickAction(currentMinute()));
+const synchronizeTime = (dispatch: Dispatch<TimeSynchronizeAction>) => dispatch(timeSynchronizeAction(currentMinute()));
 export const actions = {
-    synchronize,
-    startTicks: (dispatch: Dispatch<TickAction>) => {
-        synchronize(dispatch);
-        setInterval(() => synchronize(dispatch), millisecondsPerMinute);
+    synchronizeTime,
+    startTimeSynchronization: (dispatch: Dispatch<TimeSynchronizeAction>) => {
+        synchronizeTime(dispatch);
+        setInterval(() => synchronizeTime(dispatch), millisecondsPerMinute);
     }
 }
 
@@ -49,7 +57,7 @@ const defaultState: State = {
 
 // Reducers.
 
-function tick(state: State, action: TickAction): State {
+function timeSynchronize(state: State, action: TimeSynchronizeAction): State {
     return {
         ...state,
         timestamp: action.payload.timestamp
@@ -58,7 +66,7 @@ function tick(state: State, action: TickAction): State {
 
 export function reducer(state: State = defaultState, action: Actions): State {
     switch (action.type) {
-        case TICK: return tick(state, action);
+        case TIME_SYNCHRONIZE: return timeSynchronize(state, action);
         default: return state;
     }
 }
