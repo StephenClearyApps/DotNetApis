@@ -10,7 +10,7 @@ export interface PackageLogRequestInjectedProps extends PackageInjectedProps {
 }
 export type PackageLogRequestRequiredProps = State & PackageInjectedProps;
 
-function createWithPackageLogRequest<TProps>(): Hoc<TProps & PackageLogRequestRequiredProps, TProps & PackageLogRequestInjectedProps> {
+function createWithPackageLogRequest<TProps>(): Hoc<TProps & PackageLogRequestRequiredProps, TProps & PackageLogRequestRequiredProps & PackageLogRequestInjectedProps> {
     return Component => props => {
         const request = props.packageLog.packageLogs[props.pkgRequestStatus.normalizedPackageKey!];
         return <Component {...props} pkgLogRequestStatus={request}/>;

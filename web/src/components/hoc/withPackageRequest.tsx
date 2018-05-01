@@ -10,7 +10,7 @@ export interface PackageRequestInjectedProps {
 }
 export type PackageRequestRequiredProps = State & RouteComponentProps<PackageKey>;
 
-function createWithPackageRequest<TProps>(): Hoc<TProps & PackageRequestRequiredProps, TProps & PackageRequestInjectedProps> {
+function createWithPackageRequest<TProps>(): Hoc<TProps & PackageRequestRequiredProps, TProps & PackageRequestRequiredProps & PackageRequestInjectedProps> {
     return Component => props => {
         const request = props.packageDoc.packageDocumentationRequests[packageKey(props.match.params)];
         return <Component {...props} pkgRequestStatus={request} pkgRequestKey={props.match.params}/>;
