@@ -6,7 +6,7 @@ import { packageKey, PackageDoc, createAction, createMetaAction, createErrorActi
 type LogMessage = api.LogMessage;
 type PackageStatus = api.Status;
 
-// Action strings, types, and creators.
+// Action strings, types, and factories.
 
 const DOC_GET_BEGIN = 'doc/get/begin';
 const docGetBeginAction = (requestPackageKey: PackageKey) => createMetaAction(DOC_GET_BEGIN, { requestPackageKey });
@@ -42,7 +42,7 @@ type DocGetErrorAction = ReturnType<typeof docGetErrorAction>;
 
 type Actions = DocGetBeginAction | DocGetMapPackageKeyAction | DocGetRedirectAction | DocGetProcessAction | DocGetReportProgressAction | DocGetEndAction | DocGetBackendErrorAction | DocGetErrorAction;
 
-// Actions
+// Action dispatchers
 
 export const actions = {
     getDoc: (requestKey: PackageKey) => async (dispatch: Dispatch<any>) => {

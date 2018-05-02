@@ -18,11 +18,11 @@ import { createAction } from '../util';
 //  Action strings: "{noun}/{verb}[/{notification}]", e.g., "log/get/begin", "doc/get/redirect", "time/synchronize"
 //  Action constants: {NOUN}_{VERB}[_{NOTIFICATION}], e.g., LOG_GET_BEGIN, DOC_GET_REDIRECT, TIME_SYNCHRONIZE
 //  Action types: {Noun}{Verb}[{Notification}]Action, e.g., LogGetBeginAction, DocGetRedirectAction, TimeSynchronizeAction
-//  Action creators: {noun}{Verb}[{Notification}]Action, e.g., logGetBeginAction, docGetRedirectAction, timeSynchronizeAction
-//  Action methods: {verb}{Noun}, e.g., getLog, getDoc, synchronizeTime, startTimeSynchronization
+//  Action factories: {noun}{Verb}[{Notification}]Action, e.g., logGetBeginAction, docGetRedirectAction, timeSynchronizeAction
+//  Action dispatchers: {verb}{Noun}, e.g., getLog, getDoc, synchronizeTime, startTimeSynchronization
 //  Reducer functions: {noun}{Verb}[{Notification}], e.g., logGetBegin, docGetRedirect, timeSynchronize
 
-// Action strings, types, and creators.
+// Action strings, types, and factories.
 
 const TIME_SYNCHRONIZE = 'time/synchronize';
 const timeSynchronizeAction = (timestamp: number) => createAction(TIME_SYNCHRONIZE, { timestamp });
@@ -30,7 +30,7 @@ type TimeSynchronizeAction = ReturnType<typeof timeSynchronizeAction>;
 
 type Actions = TimeSynchronizeAction;
 
-// Action functions.
+// Action dispatchers.
 
 const millisecondsPerMinute = 60 * 1000;
 function currentMinute() {

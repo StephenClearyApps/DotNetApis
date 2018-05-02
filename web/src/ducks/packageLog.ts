@@ -4,7 +4,7 @@ import { createAction, createMetaAction, createErrorAction } from '../util';
 
 type LogMessage = api.LogMessage;
 
-// Action strings, types, and creators.
+// Action strings, types, and factories.
 
 const LOG_GET_BEGIN = 'log/get/begin';
 const logGetBeginAction = (normalizedPackageKey: string) => createMetaAction(LOG_GET_BEGIN, { normalizedPackageKey });
@@ -20,7 +20,7 @@ type LogGetErrorAction = ReturnType<typeof logGetErrorAction>;
 
 type Actions = LogGetBeginAction | LogGetEndAction | LogGetErrorAction;
 
-// Actions
+// Action dispatchers
 
 export const actions = {
     getLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
