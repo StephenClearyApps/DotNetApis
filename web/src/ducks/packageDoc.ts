@@ -2,6 +2,7 @@ import { Dispatch } from 'redux';
 import * as api from '../api';
 import { LogListener } from '../logic';
 import { packageKey, PackageDoc, createAction, createMetaAction, createErrorAction } from '../util';
+import { AllActions } from '.';
 
 type LogMessage = api.LogMessage;
 type PackageStatus = api.Status;
@@ -40,7 +41,7 @@ const DOC_GET_ERROR = 'doc/get/error';
 const docGetErrorAction = (requestPackageKey: PackageKey, error: Error) => createErrorAction(DOC_GET_ERROR, error, { requestPackageKey });
 type DocGetErrorAction = ReturnType<typeof docGetErrorAction>;
 
-type Actions = DocGetBeginAction | DocGetMapPackageKeyAction | DocGetRedirectAction | DocGetProcessAction | DocGetReportProgressAction | DocGetEndAction | DocGetBackendErrorAction | DocGetErrorAction;
+export type Actions = DocGetBeginAction | DocGetMapPackageKeyAction | DocGetRedirectAction | DocGetProcessAction | DocGetReportProgressAction | DocGetEndAction | DocGetBackendErrorAction | DocGetErrorAction;
 
 // Action dispatchers
 
@@ -312,7 +313,7 @@ function docGetError(state: State, action: DocGetErrorAction): State {
     };
 }
 
-export function reducer(state: State = defaultState, action: Actions): State {
+export function reducer(state: State = defaultState, action: AllActions): State {
     switch (action.type) {
         case DOC_GET_BEGIN: return docGetBegin(state, action);
         case DOC_GET_MAPPACKAGEKEY: return docGetMapPackageKey(state, action);

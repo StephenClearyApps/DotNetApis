@@ -9,4 +9,4 @@ const middlewareEnhancer = process.env.NODE_ENV !== 'production' ? applyMiddlewa
 const storeEnhancer = composeWithDevTools(middlewareEnhancer);
 
 const factory = storeEnhancer(createStore);
-export const store = factory(reducers);
+export const store = factory(reducers as any);

@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { createAction } from '../util';
-
+import { AllActions } from '.';
 
 // Naming conventions from https://medium.com/@kylpo/redux-best-practices-eef55a20cc72
 // Ducks from https://github.com/erikras/ducks-modular-redux
@@ -28,7 +28,7 @@ const TIME_SYNCHRONIZE = 'time/synchronize';
 const timeSynchronizeAction = (timestamp: number) => createAction(TIME_SYNCHRONIZE, { timestamp });
 type TimeSynchronizeAction = ReturnType<typeof timeSynchronizeAction>;
 
-type Actions = TimeSynchronizeAction;
+export type Actions = TimeSynchronizeAction;
 
 // Action dispatchers.
 
@@ -64,7 +64,7 @@ function timeSynchronize(state: State, action: TimeSynchronizeAction): State {
     };
 }
 
-export function reducer(state: State = defaultState, action: Actions): State {
+export function reducer(state: State = defaultState, action: AllActions): State {
     switch (action.type) {
         case TIME_SYNCHRONIZE: return timeSynchronize(state, action);
         default: return state;

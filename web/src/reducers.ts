@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux';
-
 import { State as PackageDocsState, reducer as packageDoc } from './ducks/packageDoc';
 import { State as TimeState, reducer as time } from './ducks/time';
 import { State as PackageLogsState, reducer as packageLog } from './ducks/packageLog';
+import { AllActions } from './ducks';
+import { AnyAction } from 'redux';
 
 export interface State {
     packageDoc: PackageDocsState;
@@ -10,8 +10,14 @@ export interface State {
     time: TimeState;
 }
 
-export const reducers = combineReducers({
-    packageDoc,
-    packageLog,
-    time
-} as any); // Temporary any cast; once redux-thunk updates to support redux v4 typings, this should no longer be necessary.
+function rootReducer(state: State, action: AllActions): State {
+    return {
+        packageDoc: packageDoc(state ? state.packageDoc : undefined, action),
+        packageLog: packageLog(state ? state.packageLog : undefined, action),
+        time: time(state ? state.time : undefined, action)
+    };
+}
+
+export function reducers(state: State, action: AnyAction): State {
+    return rootReducer(state, action as AllActions);
+}

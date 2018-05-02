@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import * as api from '../api';
 import { createAction, createMetaAction, createErrorAction } from '../util';
+import { AllActions } from '.';
 
 type LogMessage = api.LogMessage;
 
@@ -18,7 +19,7 @@ const LOG_GET_ERROR = 'log/get/error';
 const logGetErrorAction = (normalizedPackageKey: string, error: Error) => createErrorAction(LOG_GET_ERROR, error, { normalizedPackageKey });
 type LogGetErrorAction = ReturnType<typeof logGetErrorAction>;
 
-type Actions = LogGetBeginAction | LogGetEndAction | LogGetErrorAction;
+export type Actions = LogGetBeginAction | LogGetEndAction | LogGetErrorAction;
 
 // Action dispatchers
 
@@ -100,7 +101,7 @@ function logGetError(state: State, action: LogGetErrorAction): State {
     };
 }
 
-export function reducer(state: State = defaultState, action: Actions): State {
+export function reducer(state: State = defaultState, action: AllActions): State {
     switch (action.type) {
         case LOG_GET_BEGIN: return logGetBegin(state, action);
         case LOG_GET_END: return logGetEnd(state, action);
