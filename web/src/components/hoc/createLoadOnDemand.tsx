@@ -9,6 +9,6 @@ interface LoadOnDemandOptions<TProps> {
 }
 
 /** Starts loading a resource automatically when the component is mounted. */
-export function createLoadOnDemand<TProps>({ hasStarted, load }: LoadOnDemandOptions<TProps>): Hoc<TProps> {
+export function createLoadOnDemand<TProps>({ hasStarted, load }: LoadOnDemandOptions<TProps>): Hoc {
     return createExecuteOnMount<TProps>(props => { if (!hasStarted(props)) load(props); });
 }

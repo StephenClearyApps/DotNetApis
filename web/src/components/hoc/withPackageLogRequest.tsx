@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { PackageInjectedProps, Hoc, ExtendingHoc } from '.';
+import { PackageInjectedProps, Hoc } from '.';
 import { State } from '../../reducers';
 import { PackageLogState } from '../../ducks/packageLog';
 
@@ -10,7 +10,7 @@ export interface PackageLogRequestInjectedProps extends PackageInjectedProps {
 }
 export type PackageLogRequestRequiredProps = State & PackageInjectedProps;
 
-function createWithPackageLogRequest<TProps>(): Hoc<TProps & PackageLogRequestRequiredProps, TProps & PackageLogRequestRequiredProps & PackageLogRequestInjectedProps> {
+function createWithPackageLogRequest<TProps>(): Hoc<PackageLogRequestInjectedProps, PackageLogRequestRequiredProps> {
     return Component => props => {
         const request = props.packageLog.packageLogs[props.pkgRequestStatus.normalizedPackageKey!];
         return <Component {...props} pkgLogRequestStatus={request}/>;
@@ -18,4 +18,4 @@ function createWithPackageLogRequest<TProps>(): Hoc<TProps & PackageLogRequestRe
 }
 
 /** Takes the package request parameters and injects `PackageLogRequestInjectedProps` */
-export const withPackageLogRequest : ExtendingHoc<PackageLogRequestInjectedProps, PackageLogRequestRequiredProps> = createWithPackageLogRequest();
+export const withPackageLogRequest = createWithPackageLogRequest();

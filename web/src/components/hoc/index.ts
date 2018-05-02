@@ -1,15 +1,13 @@
-export * from 'recompose';
+type Diff<T extends string, U extends string> = ({[P in T]: P} &
+    {[P in U]: never} & {[x: string]: never})[T]
+type Omit<T, K extends keyof T> = Pick<T, Diff<keyof T, K>>
 
-export interface Hoc<TOuterProps, TInnerProps = TOuterProps> {
-    (Component: React.ComponentType<TInnerProps>): React.ComponentType<TOuterProps>;
-}
-
-export interface PassthroughHoc<TRequiredProps = {}> {
-    <TProps>(Component: React.ComponentType<TProps & TRequiredProps>): React.ComponentType<TProps & TRequiredProps>;
-}
-
-export interface ExtendingHoc<TInjectedProps, TRequiredProps = {}> {
-    <TProps>(Component: React.ComponentType<TProps & TRequiredProps & TInjectedProps>): React.ComponentType<TProps & TRequiredProps>;
+export interface Hoc<TInjectedProps extends {} = {}, TRequiredProps extends {} = {}> {
+    <TProps extends TInjectedProps>(Component: React.ComponentType<TProps>): React.ComponentType<
+        {} extends TInjectedProps ?
+            ({} extends TRequiredProps ? TProps : TRequiredProps & TProps)
+        : ({} extends TRequiredProps ? Omit<TProps, keyof TInjectedProps> : TRequiredProps & Omit<TProps, keyof TInjectedProps>)
+    >;
 }
 
 export * from './createEither';

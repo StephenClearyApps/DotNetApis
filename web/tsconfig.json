@@ -14,8 +14,7 @@
         "noImplicitReturns": true,
         "noUnusedLocals": true,
 
-        "strict": true,
-        "strictFunctionTypes": false,
+        "strict": true
     },
     "include": [
         "./src/**/*"

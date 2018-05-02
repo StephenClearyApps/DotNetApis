@@ -24,7 +24,7 @@ function mapDispatchToProps(dispatch: Dispatch<any>): Actions {
 }
 
 window.onload = () => {
-    const connector = connect<State, Actions>((x: State) => x, mapDispatchToProps);
+    const connector = connect((x: State) => x, mapDispatchToProps);
     const ConnectedMain = withRouter(connector(Main) as any); // https://github.com/ReactTraining/react-router/blob/master/packages/react-router/docs/guides/redux.md
     render(
         <Provider store={store}>
