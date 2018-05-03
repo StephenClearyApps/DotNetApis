@@ -11,7 +11,7 @@ export interface HashFilteredListProps {
     items: FilteredListItem[];
 }
 
-const HashFilteredListComponent: React.StatelessComponent<HashFilteredListProps & RouteComponentProps<any>> =
+const HashFilteredListComponent: React.StatelessComponent<HashFilteredListProps & RouteComponentProps<{}>> =
 ({ items, location, history, hashPrefix }) => {
     const hash = new HashSettings(location, history, hashPrefix);
     return <FilteredList items={items}
@@ -19,4 +19,4 @@ const HashFilteredListComponent: React.StatelessComponent<HashFilteredListProps 
             filterChanged={value => hash.setSetting("filter", value)} />;
 };
 
-export const HashFilteredList = createRouterProps<any>()(HashFilteredListComponent);
+export const HashFilteredList = createRouterProps()(HashFilteredListComponent);

@@ -11,7 +11,7 @@ export interface HashFilteredGroupedListProps {
     groups: FilteredListItemGroup[];
 }
 
-const HashFilteredGroupedListComponent: React.StatelessComponent<HashFilteredGroupedListProps & RouteComponentProps<any>> =
+const HashFilteredGroupedListComponent: React.StatelessComponent<HashFilteredGroupedListProps & RouteComponentProps<{}>> =
 ({ groups, location, history, hashPrefix }) => {
     const hash = new HashSettings(location, history, hashPrefix);
     return <FilteredGroupedList groups={groups}
@@ -19,4 +19,4 @@ const HashFilteredGroupedListComponent: React.StatelessComponent<HashFilteredGro
             filterChanged={value => hash.setSetting("filter", value)} />;
 };
 
-export const HashFilteredGroupedList = createRouterProps<any>()(HashFilteredGroupedListComponent);
+export const HashFilteredGroupedList = createRouterProps()(HashFilteredGroupedListComponent);

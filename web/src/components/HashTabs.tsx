@@ -9,7 +9,7 @@ export interface HashTabsProps {
     hashPrefix?: string;
 }
 
-const HashTabsComponent: React.StatelessComponent<HashTabsProps & RouteComponentProps<any>> =
+const HashTabsComponent: React.StatelessComponent<HashTabsProps & RouteComponentProps<{}>> =
 ({ location, history, hashPrefix, defaultTabValue, children }) => {
     const hash = new HashSettings(location, history, hashPrefix);
     const value = hash.getSetting("tab") || defaultTabValue;
@@ -18,4 +18,4 @@ const HashTabsComponent: React.StatelessComponent<HashTabsProps & RouteComponent
     return <Tabs value={value} onChange={onChange}>{children}</Tabs>;
 };
 
-export const HashTabs = createRouterProps<any>()(HashTabsComponent);
+export const HashTabs = createRouterProps()(HashTabsComponent);
