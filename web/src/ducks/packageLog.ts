@@ -24,7 +24,7 @@ export type Actions = LogGetBeginAction | LogGetEndAction | LogGetErrorAction;
 // Action dispatchers
 
 export const actions = {
-    getLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<any>) => {
+    getLog: (normalizedKey: string, logUri: string) => async (dispatch: Dispatch<Actions>) => {
         dispatch(logGetBeginAction(normalizedKey));
         try {
             const result = await api.getPackageLog(logUri);

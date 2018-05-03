@@ -10,12 +10,13 @@ import { Main } from "./components/Main";
 import { store } from "./store";
 import { actions, Actions } from "./actions";
 import { State } from "./reducers";
+import { AllActions } from "./ducks";
 
 // Load the stylesheet
 import "./site.css";
 
 /** Binds action creators that are in one level of namespacing */
-function mapDispatchToProps(dispatch: Dispatch<any>): Actions {
+function mapDispatchToProps(dispatch: Dispatch<AllActions>): Actions {
     const result : any = { };
     for (let key of Object.keys(actions)) {
         result[key] = bindActionCreators((actions as any)[key], dispatch);

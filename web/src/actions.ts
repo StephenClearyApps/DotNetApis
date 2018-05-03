@@ -1,13 +1,8 @@
-import { actions as TimeActions } from './ducks/time';
-import { actions as PackageLogActions } from './ducks/packageLog';
-import { actions as PackageDocActions } from './ducks/packageDoc';
-
-export const actions = {
-    TimeActions,
-    PackageLogActions,
-    PackageDocActions
-};
+import * as actionDispatchers from './ducks/_actions';
+/** All action dispatchers */
+export const actions = actionDispatchers;
 
 // https://github.com/Microsoft/TypeScript/issues/14757
 type ActionsAlias = typeof actions;
+/** The type of all action dispatchers */
 export interface Actions extends ActionsAlias {}

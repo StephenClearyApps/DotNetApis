@@ -46,7 +46,7 @@ export type Actions = DocGetBeginAction | DocGetMapPackageKeyAction | DocGetRedi
 // Action dispatchers
 
 export const actions = {
-    getDoc: (requestKey: PackageKey) => async (dispatch: Dispatch<any>) => {
+    getDoc: (requestKey: PackageKey) => async (dispatch: Dispatch<Actions>) => {
         dispatch(docGetBeginAction(requestKey));
         try {
             const docGetResponse = await api.getDoc(requestKey);
