@@ -45,7 +45,7 @@
     "typescript": "^2.8.3",
     "webpack": "^4.6.0",
     "webpack-bundle-size-analyzer": "^2.7.0",
-    "webpack-cli": "^2.0.15"
+    "webpack-cli": "^2.1.2"
   },
   "dependencies": {
     "ably": "^1.0.13",
@@ -53,16 +53,16 @@
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
     "material-ui": "^0.20.0",
-    "query-string": "^6.0.0",
+    "query-string": "^6.1.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-flexbox-grid": "^2.0.0",
+    "react-flexbox-grid": "^2.1.0",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "recompose": "^0.27.0",
     "redux": "^3.7.2",
-    "redux-actions": "^2.3.0",
+    "redux-actions": "^2.3.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-immutable-state-invariant": "^2.1.0",
     "redux-thunk": "^2.2.0",
