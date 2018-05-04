@@ -10,13 +10,13 @@ namespace DotNetApis.Storage
 {
     public sealed class PackageJsonCombinedStorage
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<PackageJsonCombinedStorage> _logger;
         private readonly IPackageJsonTable _table;
         private readonly IPackageJsonStorage _storage;
 
-        public PackageJsonCombinedStorage(ILogger logger, IPackageJsonTable table, IPackageJsonStorage storage)
+        public PackageJsonCombinedStorage(ILoggerFactory loggerFactory, IPackageJsonTable table, IPackageJsonStorage storage)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<PackageJsonCombinedStorage>();
             _table = table;
             _storage = storage;
         }
@@ -58,7 +58,7 @@ namespace DotNetApis.Storage
 
         private async Task<Uri> SaveLogAsync(NugetPackageIdVersion idver, PlatformTarget target, bool success)
         {
-            var log = AmbientContext.InMemoryLogger?.Messages;
+            var log = AmbientContext.InMemoryLoggerProvider?.Messages;
             var logJson = JsonConvert.SerializeObject(log, Constants.StorageJsonSerializerSettings);
             return await _storage.WriteLogAsync(idver, target, logJson, success).ConfigureAwait(false);
         }

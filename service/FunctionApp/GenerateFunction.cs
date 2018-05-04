@@ -17,19 +17,19 @@ namespace FunctionApp
     public sealed class GenerateFunction
     {
         private readonly GenerateHandler _handler;
-        private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
 
-        public GenerateFunction(GenerateHandler handler, ILogger logger)
+        public GenerateFunction(GenerateHandler handler, ILoggerFactory loggerFactory)
         {
             _handler = handler;
-            _logger = logger;
+			_loggerFactory = loggerFactory;
         }
 
         public async Task RunAsync(string queueMessage)
         {
             var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage, Constants.CommunicationJsonSerializerSettings);
             AmbientContext.ParentOperationId = message.OperationId;
-            AsyncLocalAblyLogger.TryCreate(message.NormalizedPackageId + "/" + message.NormalizedPackageVersion + "/" + message.NormalizedFrameworkTarget, _logger);
+	        AsyncLocalAblyLoggerProvider.TryCreate(message.NormalizedPackageId + "/" + message.NormalizedPackageVersion + "/" + message.NormalizedFrameworkTarget, _loggerFactory);
 
             await _handler.HandleAsync(message);
         }
@@ -42,9 +42,13 @@ namespace FunctionApp
             try
             {
                 GlobalConfig.Initialize();
-                AmbientContext.InMemoryLogger = new InMemoryLogger();
+                AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
                 AmbientContext.OperationId = context.InvocationId;
-                AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, new TraceWriterLogger(writer), new AsyncLocalAblyLogger()));
+	            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
+				AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new AsyncLocalAblyLoggerProvider());
 
                 var container = await Containers.GetContainerForAsync<GenerateFunction>();
                 using (AsyncScopedLifestyle.BeginScope(container))

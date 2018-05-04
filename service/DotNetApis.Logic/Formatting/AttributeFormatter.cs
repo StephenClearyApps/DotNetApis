@@ -12,7 +12,7 @@ namespace DotNetApis.Logic.Formatting
 {
     public sealed class AttributeFormatter
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<AttributeFormatter> _logger;
         private readonly NameFormatter _nameFormatter;
         private readonly TypeLocator _typeLocator;
         private readonly LiteralFormatter _literalFormatter;
@@ -34,9 +34,9 @@ namespace DotNetApis.Logic.Formatting
             "System.Runtime.CompilerServices.InternalsVisibleToAttribute",
         };
 
-        public AttributeFormatter(ILogger logger, NameFormatter nameFormatter, TypeLocator typeLocator, LiteralFormatter literalFormatter)
+        public AttributeFormatter(ILoggerFactory loggerFactory, NameFormatter nameFormatter, TypeLocator typeLocator, LiteralFormatter literalFormatter)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<AttributeFormatter>();
             _nameFormatter = nameFormatter;
             _typeLocator = typeLocator;
             _literalFormatter = literalFormatter;

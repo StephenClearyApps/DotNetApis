@@ -79,7 +79,7 @@ namespace FunctionApp.CompositionRoot
             }
             catch (Exception ex)
             {
-                AsyncLocalLogger.Logger.LogCritical(0, ex, "Failed to create container composition root");
+                AsyncLocalLoggerFactory.LoggerFactory.CreateLogger("Containers").LogCritical(0, ex, "Failed to create container composition root");
                 throw;
             }
         }
@@ -100,7 +100,7 @@ namespace FunctionApp.CompositionRoot
 
                     // Registrations common for all containers
                     container.UseAutomaticInstanceOf();
-                    container.Register<ILogger, AsyncLocalLogger>();
+                    container.Register<ILoggerFactory, AsyncLocalLoggerFactory>();
 
                     // Container-specific registrations
                     await registrations(container);

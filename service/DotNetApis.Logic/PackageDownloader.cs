@@ -10,14 +10,14 @@ namespace DotNetApis.Logic
     /// </summary>
     public sealed class PackageDownloader
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<PackageDownloader> _logger;
         private readonly IPackageTable _packageTable;
         private readonly IPackageStorage _packageStorage;
         private readonly INugetRepository _nugetRepository;
 
-        public PackageDownloader(ILogger logger, IPackageTable packageTable, IPackageStorage packageStorage, INugetRepository nugetRepository)
+        public PackageDownloader(ILoggerFactory loggerFactory, IPackageTable packageTable, IPackageStorage packageStorage, INugetRepository nugetRepository)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<PackageDownloader>();
             _packageTable = packageTable;
             _packageStorage = packageStorage;
             _nugetRepository = nugetRepository;

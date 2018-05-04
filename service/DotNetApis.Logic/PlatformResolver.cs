@@ -13,13 +13,13 @@ namespace DotNetApis.Logic
 {
     public sealed class PlatformResolver
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<PlatformResolver> _logger;
         private readonly PackageDownloader _packageDownloader;
 
-        public PlatformResolver(ILogger logger, PackageDownloader packageDownloader)
+        public PlatformResolver(ILoggerFactory loggerFactory, PackageDownloader packageDownloader)
         {
-            _logger = logger;
-            _packageDownloader = packageDownloader;
+	        _logger = loggerFactory.CreateLogger<PlatformResolver>();
+			_packageDownloader = packageDownloader;
         }
 
         /// <summary>

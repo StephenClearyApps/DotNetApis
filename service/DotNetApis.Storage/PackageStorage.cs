@@ -26,14 +26,14 @@ namespace DotNetApis.Storage
 
     public sealed class AzurePackageStorage : IPackageStorage
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<AzurePackageStorage> _logger;
         private readonly CloudBlobContainer _container;
 
         public static string ContainerName { get; } = "package";
 
-        public AzurePackageStorage(ILogger logger, CloudBlobContainer container)
+        public AzurePackageStorage(ILoggerFactory loggerFactory, CloudBlobContainer container)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<AzurePackageStorage>();
             _container = container;
         }
 

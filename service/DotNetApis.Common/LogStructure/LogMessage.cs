@@ -16,5 +16,9 @@ namespace DotNetApis.Common.LogStructure
         public DateTimeOffset Timestamp { get; set; }
 
         public string Message { get; set; }
+
+		public string Category { get; set; }
+
+		public int EventId { get; set; }
     }
 }

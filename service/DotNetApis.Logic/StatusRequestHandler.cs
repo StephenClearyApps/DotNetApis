@@ -10,13 +10,13 @@ namespace DotNetApis.Logic
 {
     public sealed class StatusRequestHandler
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<StatusRequestHandler> _logger;
         private readonly IPackageJsonTable _packageJsonTable;
         private readonly Parser _parser;
 
-        public StatusRequestHandler(ILogger logger, IPackageJsonTable packageJsonTable, Parser parser)
+        public StatusRequestHandler(ILoggerFactory loggerFactory, IPackageJsonTable packageJsonTable, Parser parser)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<StatusRequestHandler>();
             _packageJsonTable = packageJsonTable;
             _parser = parser;
         }

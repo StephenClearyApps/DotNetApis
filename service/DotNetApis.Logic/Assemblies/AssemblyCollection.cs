@@ -18,7 +18,7 @@ namespace DotNetApis.Logic.Assemblies
     /// </summary>
     public sealed class AssemblyCollection
     {
-        private readonly ILogger _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly NugetPackage _currentPackage;
         private readonly ReaderParameters _readerParameters;
         private readonly List<CurrentPackageAssembly> _currentPackageAssemblies = new List<CurrentPackageAssembly>();
@@ -35,13 +35,13 @@ namespace DotNetApis.Logic.Assemblies
         /// </summary>
         private readonly Dictionary<string, (ILocation, FriendlyName)?> _dnaidLookupCache = new Dictionary<string, (ILocation, FriendlyName)?>();
 
-        public AssemblyCollection(ILogger logger, NugetPackage currentPackage)
+        public AssemblyCollection(ILoggerFactory loggerFactory, NugetPackage currentPackage)
         {
-            _logger = logger;
+			_loggerFactory = loggerFactory;
             _currentPackage = currentPackage;
             _readerParameters = new ReaderParameters
             {
-                AssemblyResolver = new AssemblyCollectionAssemblyResolver(logger, this),
+                AssemblyResolver = new AssemblyCollectionAssemblyResolver(loggerFactory, this),
             };
         }
 
@@ -93,7 +93,7 @@ namespace DotNetApis.Logic.Assemblies
         /// Adds an assembly in the current NuGet package to this collection. The assembly will be loaded on-demand.
         /// </summary>
         /// <param name="path">The path in the NuGet package of the assembly.</param>
-        public void AddCurrentPackageAssembly(string path) => _currentPackageAssemblies.Add(new CurrentPackageAssembly(_logger, path, _readerParameters, _xmldocIdToDnaId, _currentPackage));
+        public void AddCurrentPackageAssembly(string path) => _currentPackageAssemblies.Add(new CurrentPackageAssembly(_loggerFactory, path, _readerParameters, _xmldocIdToDnaId, _currentPackage));
 
         /// <summary>
         /// Adds an assembly in a dependent NuGet package to this collection. The assembly will be loaded on-demand.
@@ -101,13 +101,13 @@ namespace DotNetApis.Logic.Assemblies
         /// <param name="package">The dependent NuGet package.</param>
         /// <param name="path">The path in that NuGet package of the assembly.</param>
         public void AddDependencyPackageAssembly(NugetPackage package, string path) =>
-            _dependencyPackageAssemblies.Add(new DependencyPackageAssembly(_logger, path, _readerParameters, _xmldocIdToDnaId, package));
+            _dependencyPackageAssemblies.Add(new DependencyPackageAssembly(_loggerFactory, path, _readerParameters, _xmldocIdToDnaId, package));
 
         /// <summary>
         /// Adds a reference (platform) assembly to this collection. The assembly will be loaded on-demand.
         /// </summary>
         /// <param name="path">The path of the assembly. This does not have to be an on-disk path.</param>
         /// <param name="read">A function that reads the assembly as a stream. Must not be <c>null</c>.</param>
-        public void AddReferenceAssembly(string path, Func<Stream> read) => _referenceAssemblies.Add(new ReferenceAssembly(_logger, path, _readerParameters, _xmldocIdToDnaId, read));
+        public void AddReferenceAssembly(string path, Func<Stream> read) => _referenceAssemblies.Add(new ReferenceAssembly(_loggerFactory, path, _readerParameters, _xmldocIdToDnaId, read));
     }
 }

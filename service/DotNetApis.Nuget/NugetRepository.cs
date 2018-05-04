@@ -44,13 +44,13 @@ namespace DotNetApis.Nuget
 
     public sealed class NugetRepository : INugetRepository
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<NugetRepository> _logger;
 
         private readonly IPackageRepository _repository = PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
 
-        public NugetRepository(ILogger logger)
+        public NugetRepository(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<NugetRepository>();
         }
 
         public NugetPackageIdVersion TryLookupLatestPackageVersion(string packageId)

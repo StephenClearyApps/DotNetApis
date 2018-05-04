@@ -16,7 +16,7 @@ namespace DotNetApis.Logic
 {
     public sealed class ProcessReferenceXmldocHandler
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ProcessReferenceXmldocHandler> _logger;
         private readonly Lazy<Task<ReferenceAssemblies>> _referenceAssemblies;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly IReferenceStorage _referenceStorage;
@@ -29,10 +29,10 @@ namespace DotNetApis.Logic
             AssemblyResolver = new NullAssemblyResolver(),
         };
 
-        public ProcessReferenceXmldocHandler(ILogger logger, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceXmldocTable referenceXmldocTable,
+        public ProcessReferenceXmldocHandler(ILoggerFactory loggerFactory, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceXmldocTable referenceXmldocTable,
             IReferenceStorage referenceStorage, IStorageBackend storageBackend)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<ProcessReferenceXmldocHandler>();
             _referenceAssemblies = referenceAssemblies;
             _referenceXmldocTable = referenceXmldocTable;
             _referenceStorage = referenceStorage;
@@ -60,13 +60,13 @@ namespace DotNetApis.Logic
 
         private sealed class ReferenceAssembliesProcessor
         {
-            private readonly ILogger _logger;
+            private readonly ILogger<ProcessReferenceXmldocHandler> _logger;
             private readonly IReferenceXmldocTable _referenceXmldocTable;
             private readonly IReferenceStorage _referenceStorage;
             private readonly ActionBlock<IBatch> _block;
             private readonly int _maxDegreeOfParallelism;
 
-            public ReferenceAssembliesProcessor(ILogger logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend)
+            public ReferenceAssembliesProcessor(ILogger<ProcessReferenceXmldocHandler> logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend)
             {
                 _logger = logger;
                 _referenceXmldocTable = referenceXmldocTable;

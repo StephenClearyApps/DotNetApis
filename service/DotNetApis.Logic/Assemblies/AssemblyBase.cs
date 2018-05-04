@@ -21,15 +21,15 @@ namespace DotNetApis.Logic.Assemblies
         private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
         private readonly Lazy<Dictionary<string, FriendlyName>> _dnaIdToFriendlyName;
 
-        /// <summary>
-        /// Initializes the base type.
-        /// </summary>
-        /// <param name="logger">The logger.</param>
-        /// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
-        /// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
-        /// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
-        protected AssemblyBase(ILogger logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId)
-        {
+		/// <summary>
+		/// Initializes the base type.
+		/// </summary>
+		/// <param name="logger">The logger.</param>
+		/// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
+		/// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
+		/// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
+		protected AssemblyBase(ILogger logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId)
+		{
             _path = path;
             Name = Path.GetFileNameWithoutExtension(path);
             _assemblyDefinition = new Lazy<AssemblyDefinition>(() =>

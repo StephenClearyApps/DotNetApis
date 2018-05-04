@@ -11,13 +11,13 @@ namespace DotNetApis.Logic
 {
     public sealed class NugetPackageDependencyResolver
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<NugetPackageDependencyResolver> _logger;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
 
-        public NugetPackageDependencyResolver(ILogger logger, PackageDownloader packageDownloader, PlatformResolver platformResolver)
+        public NugetPackageDependencyResolver(ILoggerFactory loggerFactory, PackageDownloader packageDownloader, PlatformResolver platformResolver)
         {
-            _logger = logger;
+			_logger = loggerFactory.CreateLogger<NugetPackageDependencyResolver>();
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
         }
@@ -39,7 +39,7 @@ namespace DotNetApis.Logic
     /// </summary>
     public sealed class NugetPackageDependencyResolverState
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<NugetPackageDependencyResolver> _logger;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly PlatformTarget _target;
@@ -47,7 +47,7 @@ namespace DotNetApis.Logic
         private readonly Dictionary<string, NugetPackage> _current;
         private readonly Dictionary<string, NugetPackageDependency> _next;
 
-        public NugetPackageDependencyResolverState(ILogger logger, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackage rootPackage, PlatformTarget target)
+        public NugetPackageDependencyResolverState(ILogger<NugetPackageDependencyResolver> logger, PackageDownloader packageDownloader, PlatformResolver platformResolver, NugetPackage rootPackage, PlatformTarget target)
         {
             _logger = logger;
             _packageDownloader = packageDownloader;

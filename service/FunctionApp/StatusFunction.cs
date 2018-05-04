@@ -21,10 +21,10 @@ namespace FunctionApp
         private readonly StatusRequestHandler _handler;
         private readonly ILogger _logger;
 
-        public StatusFunction(StatusRequestHandler handler, ILogger logger)
+        public StatusFunction(StatusRequestHandler handler, ILoggerFactory loggerFactory)
         {
             _handler = handler;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<StatusFunction>();
         }
 
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
@@ -72,10 +72,14 @@ namespace FunctionApp
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
-            AmbientContext.InMemoryLogger = new InMemoryLogger();
+	        AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
+	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+	        if (req.IsLocal())
+		        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 
             var container = await Containers.GetContainerForAsync<StatusFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))

@@ -17,12 +17,12 @@ namespace FunctionApp
 {
     public sealed class OpsFunction
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<OpsFunction> _logger;
         private readonly ProcessReferenceXmldocHandler _processReferenceXmldocHandler;
 
-        public OpsFunction(ILogger logger, ProcessReferenceXmldocHandler processReferenceXmldocHandler)
+        public OpsFunction(ILoggerFactory loggerFactory, ProcessReferenceXmldocHandler processReferenceXmldocHandler)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<OpsFunction>();
             _processReferenceXmldocHandler = processReferenceXmldocHandler;
         }
 
@@ -51,7 +51,10 @@ namespace FunctionApp
             req.ApplyRequestHandlingDefaults(context);
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
+	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+	        if (req.IsLocal())
+		        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 
             var container = await Containers.GetContainerForAsync<OpsFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))

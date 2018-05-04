@@ -15,13 +15,13 @@ namespace DotNetApis.Logic.Assemblies
     /// </summary>
     public sealed class AssemblyCollectionAssemblyResolver : AssemblyResolverBase
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<AssemblyCollectionAssemblyResolver> _logger;
         private readonly AssemblyCollection _collection;
         private readonly Lazy<IAssemblyResolver> _defaultAssemblyResolver = new Lazy<IAssemblyResolver>(() => new DefaultAssemblyResolver());
 
-        public AssemblyCollectionAssemblyResolver(ILogger logger, AssemblyCollection collection)
+        public AssemblyCollectionAssemblyResolver(ILoggerFactory loggerFactory, AssemblyCollection collection)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<AssemblyCollectionAssemblyResolver>();
             _collection = collection;
         }
 

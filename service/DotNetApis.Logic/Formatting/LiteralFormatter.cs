@@ -16,12 +16,12 @@ namespace DotNetApis.Logic.Formatting
     /// </summary>
     public sealed class LiteralFormatter
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<LiteralFormatter> _logger;
         private readonly TypeReferenceFormatter _typeReferenceFormatter;
 
-        public LiteralFormatter(ILogger logger, TypeReferenceFormatter typeReferenceFormatter)
+        public LiteralFormatter(ILoggerFactory loggerFactory, TypeReferenceFormatter typeReferenceFormatter)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<LiteralFormatter>();
             _typeReferenceFormatter = typeReferenceFormatter;
         }
 

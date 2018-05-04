@@ -20,10 +20,10 @@ namespace DotNetApis.Logic.Formatting
         private readonly EnumFormatter _enumFormatter;
         private readonly DelegateFormatter _delegateFormatter;
         private readonly TypeFormatter _typeFormatter;
-        private readonly ILogger _logger;
+        private readonly ILogger<MemberDefinitionFormatter> _logger;
 
         public MemberDefinitionFormatter(MethodFormatter methodFormatter, PropertyFormatter propertyFormatter, EventFormatter eventFormatter, FieldFormatter fieldFormatter,
-            EnumFormatter enumFormatter, DelegateFormatter delegateFormatter, TypeFormatter typeFormatter, ILogger logger)
+            EnumFormatter enumFormatter, DelegateFormatter delegateFormatter, TypeFormatter typeFormatter, ILoggerFactory loggerFactory)
         {
             _methodFormatter = methodFormatter;
             _propertyFormatter = propertyFormatter;
@@ -32,7 +32,7 @@ namespace DotNetApis.Logic.Formatting
             _enumFormatter = enumFormatter;
             _delegateFormatter = delegateFormatter;
             _typeFormatter = typeFormatter;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<MemberDefinitionFormatter>();
         }
 
         /// <summary>

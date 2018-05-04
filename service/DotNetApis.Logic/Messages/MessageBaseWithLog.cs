@@ -13,6 +13,6 @@ namespace DotNetApis.Logic.Messages
         /// <summary>
         /// The trace log for this request.
         /// </summary>
-        public IReadOnlyList<LogMessage> Log { get; } = AmbientContext.InMemoryLogger?.Messages;
+        public IReadOnlyList<LogMessage> Log { get; } = AmbientContext.InMemoryLoggerProvider?.Messages;
     }
 }

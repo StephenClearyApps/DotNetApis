@@ -30,14 +30,14 @@ namespace DotNetApis.Storage
 
     public sealed class AzurePackageJsonStorage : IPackageJsonStorage
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<AzurePackageJsonStorage> _logger;
         private readonly CloudBlobContainer _container;
 
         public static string ContainerName { get; } = "packagejson" + JsonFactory.Version;
 
-        public AzurePackageJsonStorage(ILogger logger, CloudBlobContainer container)
+        public AzurePackageJsonStorage(ILoggerFactory loggerFactory, CloudBlobContainer container)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<AzurePackageJsonStorage>();
             _container = container;
         }
 

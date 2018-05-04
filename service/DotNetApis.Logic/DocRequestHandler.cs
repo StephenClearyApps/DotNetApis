@@ -11,7 +11,7 @@ namespace DotNetApis.Logic
 {
     public sealed class DocRequestHandler
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<DocRequestHandler> _logger;
         private readonly INugetRepository _nugetRepository;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
@@ -19,10 +19,10 @@ namespace DotNetApis.Logic
         private readonly IPackageJsonTable _packageJsonTable;
         private readonly Parser _parser;
 
-        public DocRequestHandler(ILogger logger, INugetRepository nugetRepository, PackageDownloader packageDownloader, PlatformResolver platformResolver,
+        public DocRequestHandler(ILoggerFactory loggerFactory, INugetRepository nugetRepository, PackageDownloader packageDownloader, PlatformResolver platformResolver,
             PackageJsonCombinedStorage packageJsonCombinedStorage, IPackageJsonTable packageJsonTable, Parser parser)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<DocRequestHandler>();
             _nugetRepository = nugetRepository;
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;

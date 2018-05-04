@@ -15,12 +15,12 @@ namespace DotNetApis.Logic.Formatting
     /// </summary>
     public sealed class TypeLocator
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<TypeLocator> _logger;
         private readonly GenerationScope.Accessor _generationScope;
 
-        public TypeLocator(ILogger logger, GenerationScope.Accessor generationScope)
+        public TypeLocator(ILoggerFactory loggerFactory, GenerationScope.Accessor generationScope)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<TypeLocator>();
             _generationScope = generationScope;
         }
 

@@ -22,13 +22,13 @@ namespace FunctionApp
 {
     public sealed class DocumentationFunction
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<DocumentationFunction> _logger;
         private readonly DocRequestHandler _handler;
         private readonly IPackageJsonTable _packageJsonTable;
 
-        public DocumentationFunction(ILogger logger, DocRequestHandler handler, IPackageJsonTable packageJsonTable)
+        public DocumentationFunction(ILoggerFactory loggerFactory, DocRequestHandler handler, IPackageJsonTable packageJsonTable)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<DocumentationFunction>();
             _handler = handler;
             _packageJsonTable = packageJsonTable;
         }
@@ -107,10 +107,14 @@ namespace FunctionApp
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
-            AmbientContext.InMemoryLogger = new InMemoryLogger();
+            AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
+	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+			AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+			if (req.IsLocal())
+				AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 
             var container = await Containers.GetContainerForAsync<DocumentationFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))

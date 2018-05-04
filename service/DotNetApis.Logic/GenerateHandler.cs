@@ -19,7 +19,8 @@ namespace DotNetApis.Logic
 {
     public sealed class GenerateHandler
     {
-        private readonly ILogger _logger;
+	    private readonly ILoggerFactory _loggerFactory;
+		private readonly ILogger<GenerateHandler> _logger;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly NugetPackageDependencyResolver _dependencyResolver;
@@ -29,11 +30,12 @@ namespace DotNetApis.Logic
         private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
         private readonly INugetRepository _nugetRepository;
 
-        public GenerateHandler(ILogger logger, PackageDownloader packageDownloader, PlatformResolver platformResolver,
+        public GenerateHandler(ILoggerFactory loggerFactory, PackageDownloader packageDownloader, PlatformResolver platformResolver,
             NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter,
             PackageJsonCombinedStorage packageJsonCombinedStorage, INugetRepository nugetRepository)
         {
-            _logger = logger;
+	        _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<GenerateHandler>();
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
             _dependencyResolver = dependencyResolver;
@@ -80,7 +82,7 @@ namespace DotNetApis.Logic
             var currentPackage = publishedPackage.Package;
 
             // Create the assembly collection for this request.
-            var assemblies = new AssemblyCollection(_logger, currentPackage);
+            var assemblies = new AssemblyCollection(_loggerFactory, currentPackage);
 
             // Determine all supported targets for the package.
             var allTargets = await _platformResolver.AllSupportedPlatformsAsync(currentPackage).ConfigureAwait(false);

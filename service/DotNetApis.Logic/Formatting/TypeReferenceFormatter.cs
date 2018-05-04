@@ -16,7 +16,7 @@ namespace DotNetApis.Logic.Formatting
     /// </summary>
     public sealed class TypeReferenceFormatter
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<TypeReferenceFormatter> _logger;
         private readonly NameFormatter _nameFormatter;
         private readonly TypeLocator _typeLocator;
 
@@ -40,9 +40,9 @@ namespace DotNetApis.Logic.Formatting
             { "System.String", "string" },
         };
 
-        public TypeReferenceFormatter(ILogger logger, NameFormatter nameFormatter, TypeLocator typeLocator)
+        public TypeReferenceFormatter(ILoggerFactory loggerFactory, NameFormatter nameFormatter, TypeLocator typeLocator)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<TypeReferenceFormatter>();
             _nameFormatter = nameFormatter;
             _typeLocator = typeLocator;
         }

@@ -21,11 +21,11 @@ namespace FunctionApp
     {
         private static readonly HttpClient NugetClient = new HttpClient();
 
-        private readonly ILogger _logger;
+        private readonly ILogger<NugetSearchFunction> _logger;
 
-        public NugetSearchFunction(ILogger logger)
+        public NugetSearchFunction(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<NugetSearchFunction>();
         }
 
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
@@ -89,10 +89,14 @@ namespace FunctionApp
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
-            AmbientContext.InMemoryLogger = new InMemoryLogger();
+	        AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLogger.Logger = new CompositeLogger(Enumerables.Return(AmbientContext.InMemoryLogger, log, req.IsLocal() ? new TraceWriterLogger(writer) : null));
+	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+	        if (req.IsLocal())
+		        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 
             var container = await Containers.GetContainerForAsync<NugetSearchFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))

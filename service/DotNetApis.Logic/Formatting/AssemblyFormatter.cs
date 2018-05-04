@@ -15,13 +15,13 @@ namespace DotNetApis.Logic.Formatting
     {
         private readonly AttributeFormatter _attributeFormatter;
         private readonly MemberDefinitionFormatter _memberDefinitionFormatter;
-        private readonly ILogger _logger;
+        private readonly ILogger<AssemblyFormatter> _logger;
 
-        public AssemblyFormatter(AttributeFormatter attributeFormatter, MemberDefinitionFormatter memberDefinitionFormatter, ILogger logger)
+        public AssemblyFormatter(AttributeFormatter attributeFormatter, MemberDefinitionFormatter memberDefinitionFormatter, ILoggerFactory loggerFactory)
         {
             _attributeFormatter = attributeFormatter;
             _memberDefinitionFormatter = memberDefinitionFormatter;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<AssemblyFormatter>();
         }
 
         /// <summary>

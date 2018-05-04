@@ -25,7 +25,7 @@ public static class FormatUtility
         container = new Container();
         container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
         container.Options.DefaultLifestyle = Lifestyle.Scoped;
-        container.RegisterInstance<ILogger>(NullLogger.Instance);
+        container.RegisterInstance<ILoggerFactory>(new LoggerFactory());
         container.RegisterInstance<IReferenceXmldocTable>(new NullReferenceXmldocTable());
         container.Register<AttributeFormatter>();
         container.Register<MemberDefinitionFormatter>();
@@ -51,7 +51,7 @@ public static class FormatUtility
 
     private static readonly Container container;
     private static readonly PlatformTarget platformTarget = PlatformTarget.TryParse("net46");
-    private static readonly AssemblyCollection assemblyCollection = new AssemblyCollection(NullLogger.Instance, null);
+    private static readonly AssemblyCollection assemblyCollection = new AssemblyCollection(new LoggerFactory(), null);
 
     private sealed class NullReferenceXmldocTable : IReferenceXmldocTable
     {

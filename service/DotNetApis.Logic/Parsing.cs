@@ -12,11 +12,11 @@ namespace DotNetApis.Logic
 {
     public sealed class Parser
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<Parser> _logger;
 
-        public Parser(ILogger logger)
+        public Parser(ILoggerFactory loggerFactory)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<Parser>();
         }
 
         public NugetVersion ParseVersion(string packageVersion)

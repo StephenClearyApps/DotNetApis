@@ -27,8 +27,8 @@ namespace FunctionApp
             var result = new HttpError(exception, includeErrorDetail: true);
 
             // Attempt to capture a log from the in-memory logger.
-            if (AmbientContext.InMemoryLogger != null)
-                result.Add("log", AmbientContext.InMemoryLogger.Messages);
+            if (AmbientContext.InMemoryLoggerProvider != null)
+                result.Add("log", AmbientContext.InMemoryLoggerProvider.Messages);
 
             // Attempt to write the Application Insights operation id (Azure Functions invocation id).
             var operationId = AmbientContext.OperationId;

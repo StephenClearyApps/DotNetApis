@@ -21,15 +21,15 @@ namespace DotNetApis.Logic.Formatting
     /// </summary>
     public sealed class XmldocFormatter
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<XmldocFormatter> _logger;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly TypeLocator _typeLocator;
         private readonly GenerationScope.Accessor _generationScope;
         private readonly AssemblyScope.Accessor _assemblyScope;
 
-        public XmldocFormatter(ILogger logger, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, GenerationScope.Accessor generationScope, AssemblyScope.Accessor assemblyScope)
+        public XmldocFormatter(ILoggerFactory loggerFactory, IReferenceXmldocTable referenceXmldocTable, TypeLocator typeLocator, GenerationScope.Accessor generationScope, AssemblyScope.Accessor assemblyScope)
         {
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<XmldocFormatter>();
             _referenceXmldocTable = referenceXmldocTable;
             _typeLocator = typeLocator;
             _generationScope = generationScope;

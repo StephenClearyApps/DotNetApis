@@ -15,7 +15,7 @@ namespace DotNetApis.Common
         private static readonly AsyncLocal<Guid> ImplicitOperationId = new AsyncLocal<Guid>();
         private static readonly AsyncLocal<Guid> ImplicitParentOperationId = new AsyncLocal<Guid>();
         private static readonly AsyncLocal<string> ImplicitRequestId = new AsyncLocal<string>();
-        private static readonly AsyncLocal<InMemoryLogger> ImplicitInMemoryLogger = new AsyncLocal<InMemoryLogger>();
+        private static readonly AsyncLocal<InMemoryLoggerProvider> ImplicitInMemoryLoggerProvider = new AsyncLocal<InMemoryLoggerProvider>();
 
         public static Guid OperationId
         {
@@ -40,10 +40,10 @@ namespace DotNetApis.Common
         /// <summary>
         /// May return <c>null</c>.
         /// </summary>
-        public static InMemoryLogger InMemoryLogger
+        public static InMemoryLoggerProvider InMemoryLoggerProvider
         {
-            get => ImplicitInMemoryLogger.Value;
-            set => ImplicitInMemoryLogger.Value = value;
+            get => ImplicitInMemoryLoggerProvider.Value;
+            set => ImplicitInMemoryLoggerProvider.Value = value;
         }
 
         /// <summary>
