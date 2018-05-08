@@ -14,20 +14,28 @@ namespace DotNetApis.Common
         /// </summary>
         /// <param name="data">The data to compress.</param>
         /// <param name="logger">The logger to log compression statistics to. May be <c>null</c>.</param>
-        /// <returns></returns>
-        public static (byte[], int) GzipString(string data, ILogger logger)
+        public static (byte[], int) GzipString(string data, ILoggerFactory loggerFactory)
         {
-            logger?.LogDebug("Before compression, string is {length} characters", data.Length);
+	        var logger = loggerFactory?.CreateLogger<Logging.Compression>();
+
             var dataBytes = Constants.Utf8.GetBytes(data);
-            logger?.LogDebug("Before compression, string is {length} bytes", dataBytes.Length);
             using (var stream = new MemoryStream())
             {
                 using (var gzip = new GZipStream(stream, CompressionMode.Compress, leaveOpen: true))
                     gzip.Write(dataBytes, 0, dataBytes.Length);
                 var length = (int) stream.Position;
-                logger?.LogDebug("After compression, string is {length} bytes", length);
+                logger?.Stats(data.Length, dataBytes.Length, length);
                 return (stream.GetBuffer(), length);
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void Stats(this ILogger<Compression> logger, int uncompressedCharacters, int uncompressedBytes, int compressedBytes) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Before compression, string was {uncompressedBytes} bytes ({uncompressedCharacters} chars); after compression, string is {compressedBytes} bytes",
+				uncompressedBytes, uncompressedCharacters, compressedBytes, null);
+
+		public sealed class Compression { }
+	}
 }

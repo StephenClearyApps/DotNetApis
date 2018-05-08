@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Cecil;
+using DotNetApis.Common;
 using DotNetApis.Structure.Literals;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
@@ -82,7 +83,7 @@ namespace DotNetApis.Logic.Formatting
             var definition = type.Resolve();
             if (!definition.IsEnum)
             {
-                _logger.LogCritical("Unknown literal value type {type}", type.FullName);
+                _logger.UnknownLiteralValueType(type.FullName);
                 throw new NotImplementedException($"Unknown literal value type {type.FullName}");
             }
             var enumValues = definition.Fields.Where(x => x.IsStatic).ToList();
@@ -221,4 +222,10 @@ namespace DotNetApis.Logic.Formatting
             return (ulong)value;
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void UnknownLiteralValueType(this ILogger<LiteralFormatter> logger, string type) =>
+			Logger.Log(logger, 1, LogLevel.Critical, "Unknown literal value type {type}", type, null);
+	}
 }

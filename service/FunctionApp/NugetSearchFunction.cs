@@ -38,8 +38,7 @@ namespace FunctionApp
                 var includePrerelease = query.Optional("includePrerelease", bool.Parse);
                 var includeUnlisted = query.Optional("includeUnlisted", bool.Parse);
 
-                _logger.LogDebug("Received request for query={query}, skip={skip}, includePrerelease={includePrerelease}, includeUnlisted={includeUnlisted}",
-                    q, skip, includePrerelease, includeUnlisted);
+                _logger.RequestReceived(q, skip, includePrerelease, includeUnlisted);
 
                 // Build NuGet API query
                 var uri = new UriBuilder("http://www.nuget.org/api/v2/Search()");
@@ -53,7 +52,7 @@ namespace FunctionApp
                 if (includeUnlisted)
                     args["includeDelisted"] = "true";
                 uri.Query = Nito.UniformResourceIdentifiers.Implementation.UriUtil.FormUrlEncode(args);
-                _logger.LogDebug("Searching on NuGet: {uri}", uri.Uri);
+                _logger.SearchingNuget(uri.Uri);
 
                 // Translate xml to json
                 var result = await NugetClient.GetStringAsync(uri.Uri);
@@ -77,7 +76,7 @@ namespace FunctionApp
             }
             catch (ExpectedException ex)
             {
-                _logger.LogDebug("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
+                _logger.ReturningError((int)ex.HttpStatusCode, ex.Message);
                 return req.CreateErrorResponseWithLog(ex);
             }
         }
@@ -105,4 +104,17 @@ namespace FunctionApp
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void RequestReceived(this ILogger<NugetSearchFunction> logger, string query, int skip, bool includePrerelease, bool includeUnlisted) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Received request for query={query}, skip={skip}, includePrerelease={includePrerelease}, includeUnlisted={includeUnlisted}",
+				query, skip, includePrerelease, includeUnlisted, null);
+
+		public static void SearchingNuget(this ILogger<NugetSearchFunction> logger, Uri uri) =>
+			Logger.Log(logger, 2, LogLevel.Debug, "Searching on NuGet: {uri}", uri, null);
+
+		public static void ReturningError(this ILogger<NugetSearchFunction> logger, int httpStatusCode, string errorMessage) =>
+			Logger.Log(logger, 3, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
+	}
 }

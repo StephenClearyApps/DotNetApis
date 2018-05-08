@@ -66,7 +66,7 @@ namespace DotNetApis.Logic.Formatting
             if (KnownCsharpTypes.ContainsKey(type.FullName))
             {
                 if (type.Resolve() == null)
-                    _logger.LogWarning("Unable to resolve type reference keyword {dnaid} ({keyword})", type.DnaId(), KnownCsharpTypes[type.FullName]);
+                    _logger.KeywordNotFound(type.DnaId(), KnownCsharpTypes[type.FullName]);
                 return new KeywordTypeReference
                 {
                     Name = KnownCsharpTypes[type.FullName],
@@ -85,7 +85,7 @@ namespace DotNetApis.Logic.Formatting
             if (type is RequiredModifierType reqmodType)
             {
                 if (reqmodType.ModifierType.Resolve() == null)
-                    _logger.LogWarning("Unable to resolve required modifier type reference {dnaid}", reqmodType.ModifierType.DnaId());
+                    _logger.ReqmodNotFound(reqmodType.ModifierType.DnaId());
                 return new ReqmodTypeReference
                 {
                     Location = _typeLocator.TryGetLocationFromDnaId(reqmodType.ModifierType.DnaId()),
@@ -124,7 +124,7 @@ namespace DotNetApis.Logic.Formatting
             // It's a fully-qualified reference to a type.
 
             if (type.Resolve() == null)
-                _logger.LogWarning("Unable to resolve type reference {dnaid}", type.DnaId());
+                _logger.TypeNotFound(type.DnaId());
             var name = type.Name.StripBacktickSuffix();
             return new TypeTypeReference
             {
@@ -157,7 +157,7 @@ namespace DotNetApis.Logic.Formatting
         private GenericConcreteType ConcreteTypeReference(ConcreteTypeReference type, DynamicReplacement dynamicReplacement)
         {
             if (type.TypeReference.Resolve() == null)
-                _logger.LogWarning("Unable to resolve concrete generic type {dnaid}", type.TypeReference.DnaId());
+                _logger.GenericTypeNotFound(type.TypeReference.DnaId());
             return new GenericConcreteType
             {
                 Name = _nameFormatter.EscapeIdentifier(type.Name),
@@ -166,4 +166,19 @@ namespace DotNetApis.Logic.Formatting
             };
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void KeywordNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid, string keyword) =>
+			Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve type reference keyword {dnaid} ({keyword})", dnaid, keyword, null);
+
+		public static void ReqmodNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
+			Logger.Log(logger, 2, LogLevel.Warning, "Unable to resolve required modifier type reference {dnaid}", dnaid, null);
+
+		public static void TypeNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
+			Logger.Log(logger, 3, LogLevel.Warning, "Unable to resolve type reference {dnaid}", dnaid, null);
+
+		public static void GenericTypeNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
+			Logger.Log(logger, 4, LogLevel.Warning, "Unable to resolve concrete generic type {dnaid}", dnaid, null);
+	}
 }

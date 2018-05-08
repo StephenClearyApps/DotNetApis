@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
 using Microsoft.Extensions.Logging;
@@ -31,7 +32,7 @@ namespace DotNetApis.Logic
         /// <param name="idver">The package to retrieve.</param>
         public async Task<NugetFullPackage> GetPackageAsync(NugetPackageIdVersion idver)
         {
-            _logger.LogDebug("Retrieving package {idver}", idver);
+            _logger.RetrievingPackage(idver);
             var record = await _packageTable.TryGetRecordAsync(idver).ConfigureAwait(false);
             if (record != null)
             {
@@ -69,4 +70,10 @@ namespace DotNetApis.Logic
             return await GetPackageAsync(idver).ConfigureAwait(false);
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void RetrievingPackage(this ILogger<PackageDownloader> logger, NugetPackageIdVersion idver) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Retrieving package {idver}", idver, null);
+	}
 }

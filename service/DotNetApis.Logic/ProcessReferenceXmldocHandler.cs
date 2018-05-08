@@ -44,12 +44,12 @@ namespace DotNetApis.Logic
             var stopwatch = Stopwatch.StartNew();
             var referenceAssemblies = await _referenceAssemblies.Value.ConfigureAwait(false);
             stopwatch.Stop();
-            _logger.LogDebug("Reference assemblies loaded in {elapsed}", stopwatch.Elapsed);
+            _logger.LoadedReferenceAssemblies(stopwatch.Elapsed);
             var maxDegreeOfParallelism = _storageBackend.SupportsConcurrency ? 64 : 1;
-            _logger.LogInformation("Using {threadCount} threads", maxDegreeOfParallelism);
+            _logger.MaximumParallelism(maxDegreeOfParallelism);
             using (ThreadPoolTurbo.Engage(maxDegreeOfParallelism))
             {
-                var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage, _storageBackend);
+                var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage, _storageBackend, maxDegreeOfParallelism);
                 foreach (var referenceTarget in referenceAssemblies.ReferenceTargets)
                 {
                     await processor.ProcessAsync(referenceTarget).ConfigureAwait(false);
@@ -66,12 +66,12 @@ namespace DotNetApis.Logic
             private readonly ActionBlock<IBatch> _block;
             private readonly int _maxDegreeOfParallelism;
 
-            public ReferenceAssembliesProcessor(ILogger<ProcessReferenceXmldocHandler> logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend)
+            public ReferenceAssembliesProcessor(ILogger<ProcessReferenceXmldocHandler> logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend, int maxDegreeOfParallelism)
             {
                 _logger = logger;
                 _referenceXmldocTable = referenceXmldocTable;
                 _referenceStorage = referenceStorage;
-                _maxDegreeOfParallelism = storageBackend.SupportsConcurrency ? 64 : 1;
+                _maxDegreeOfParallelism = maxDegreeOfParallelism;
                 _block = new ActionBlock<IBatch>(async batch =>
                 {
                     try
@@ -80,7 +80,7 @@ namespace DotNetApis.Logic
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogCritical(0, ex, "Unable to save to reference xmldoc table");
+                        _logger.SaveToReferenceXmldocTableFailed(ex);
                         throw;
                     }
                 }, new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism });
@@ -88,7 +88,7 @@ namespace DotNetApis.Logic
 
             public async Task ProcessAsync(ReferenceAssemblies.ReferenceTarget referenceTarget)
             {
-                _logger.LogInformation("Processing reference target {referenceTarget}", referenceTarget);
+                _logger.ProcessingReferenceTarget(referenceTarget);
 
                 var target = referenceTarget.Target;
                 using (var processor = new PlatformTargetProcessor(_logger, _block, _referenceXmldocTable, target))
@@ -114,17 +114,17 @@ namespace DotNetApis.Logic
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.LogCritical(0, ex, "Internal error");
+                                    _logger.InternalError(ex);
                                     throw;
                                 }
                             }
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogWarning(0, ex, "Unable to load assembly {path}", path);
+                            _logger.LoadAssemblyFailed(path, ex);
                         }
 
-                        _logger.LogInformation("Processed {count} types in assembly {path}", count, path);
+                        _logger.ProcessedAssembly(count, path);
 
                         // If any processing errors yet, fail-fast.
                         if (_block.Completion.IsFaulted)
@@ -139,7 +139,7 @@ namespace DotNetApis.Logic
                 var blockTask = _block.Completion;
                 while (await Task.WhenAny(blockTask, Task.Delay(TimeSpan.FromSeconds(3))) != blockTask)
                 {
-                    _logger.LogDebug("Waiting for processing to complete; remaining items: {count}", _block.InputCount);
+                    _logger.Waiting(_block.InputCount);
                 }
                 await blockTask.ConfigureAwait(false); // propagate exceptions
             }
@@ -222,4 +222,32 @@ namespace DotNetApis.Logic
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void LoadedReferenceAssemblies(this ILogger<ProcessReferenceXmldocHandler> logger, TimeSpan elapsed) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Reference assemblies loaded in {elapsed}", elapsed, null);
+
+		public static void MaximumParallelism(this ILogger<ProcessReferenceXmldocHandler> logger, int threadCount) =>
+			Logger.Log(logger, 2, LogLevel.Information, "Using {threadCount} threads", threadCount, null);
+
+		public static void SaveToReferenceXmldocTableFailed(this ILogger<ProcessReferenceXmldocHandler> logger, Exception exception) =>
+			Logger.Log(logger, 3, LogLevel.Critical, "Unable to save to reference xmldoc table", exception);
+
+		public static void ProcessingReferenceTarget(this ILogger<ProcessReferenceXmldocHandler> logger, ReferenceAssemblies.ReferenceTarget referenceTarget) =>
+			Logger.Log(logger, 4, LogLevel.Information, "Processing reference target {referenceTarget}", referenceTarget, null);
+
+		public static void InternalError(this ILogger<ProcessReferenceXmldocHandler> logger, Exception exception) =>
+			Logger.Log(logger, 5, LogLevel.Critical, "Internal error", exception);
+
+		public static void LoadAssemblyFailed(this ILogger<ProcessReferenceXmldocHandler> logger, string path, Exception exception) =>
+			Logger.Log(logger, 6, LogLevel.Warning, "Unable to load assembly {path}", path, exception);
+
+		public static void ProcessedAssembly(this ILogger<ProcessReferenceXmldocHandler> logger, int count, string path) =>
+			Logger.Log(logger, 7, LogLevel.Information, "Processed {count} types in assembly {path}", count, path, null);
+
+		public static void Waiting(this ILogger<ProcessReferenceXmldocHandler> logger, int count) =>
+			Logger.Log(logger, 8, LogLevel.Debug, "Waiting for processing to complete; remaining items: {count}", count, null);
+
+	}
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading.Tasks;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
 
@@ -83,7 +84,7 @@ namespace DotNetApis.Logic
             var fullPackage = await _packageDownloader.TryGetPackageAsync(packageId, versionRange).ConfigureAwait(false);
             if (fullPackage == null)
             {
-                _logger.LogError("Could not find dependency {packageId}, version {versionRange}", packageId, versionRange);
+                _logger.DependencyNotFound(packageId, versionRange);
                 return null;
             }
             return (packageId, fullPackage.Package);
@@ -107,7 +108,7 @@ namespace DotNetApis.Logic
                     {
                         var merged = NugetVersionRange.TryMerge(dependency.VersionRange, _next[packageId].VersionRange);
                         if (merged == null)
-                            _logger.LogWarning("Unable to resolve dependency version conflict for {packageId} between {versionRange1} and {versionRange2}; choosing {chosenVersionRange} for no reason at all", packageId, dependency.VersionRange, _next[packageId].VersionRange, _next[packageId].VersionRange);
+                            _logger.CannotResolveDependency(packageId, dependency.VersionRange, _next[packageId].VersionRange, _next[packageId].VersionRange);
                         else
                             _next[packageId] = new NugetPackageDependency(packageId, merged);
                     }
@@ -121,4 +122,13 @@ namespace DotNetApis.Logic
             return _resolved.Values.ToArray();
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void DependencyNotFound(this ILogger<NugetPackageDependencyResolver> logger, string packageId, NugetVersionRange versionRange) =>
+			Logger.Log(logger, 1, LogLevel.Error, "Could not find dependency {packageId}, version {versionRange}", packageId, versionRange, null);
+
+		public static void CannotResolveDependency(this ILogger<NugetPackageDependencyResolver> logger, string packageId, NugetVersionRange versionRange1, NugetVersionRange versionRange2, NugetVersionRange chosenVersionRange) =>
+			Logger.Log(logger, 2, LogLevel.Warning, "Unable to resolve dependency version conflict for {packageId} between {versionRange1} and {versionRange2}; choosing {chosenVersionRange} for no reason at all", packageId, versionRange1, versionRange2, chosenVersionRange, null);
+	}
 }

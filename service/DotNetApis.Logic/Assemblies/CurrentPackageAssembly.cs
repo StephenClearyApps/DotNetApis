@@ -5,6 +5,7 @@ using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using DotNetApis.Common;
 using DotNetApis.Nuget;
 using DotNetApis.Structure;
 using DotNetApis.Structure.Locations;
@@ -46,7 +47,7 @@ namespace DotNetApis.Logic.Assemblies
 			    }
 			    catch (Exception ex)
 			    {
-				    logger.LogWarning(0, ex, "Unable to load xmldoc file {path}", xmlPath);
+				    logger.XmldocLoadingFailed(xmlPath, ex);
 				    return null;
 			    }
 		    });
@@ -59,4 +60,10 @@ namespace DotNetApis.Logic.Assemblies
         /// </summary>
         public XDocument Xmldoc => _xmldoc.Value;
     }
+
+	internal static partial class Logging
+	{
+		public static void XmldocLoadingFailed(this ILogger<CurrentPackageAssembly> logger, string path, Exception exception) =>
+			Logger.Log(logger, 301, LogLevel.Warning, "Unable to load xmldoc file {path}", path, exception);
+	}
 }

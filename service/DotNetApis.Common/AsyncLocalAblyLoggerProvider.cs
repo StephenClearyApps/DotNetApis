@@ -22,7 +22,7 @@ namespace DotNetApis.Common
 			}
 			catch (Exception ex)
 			{
-				loggerFactory.CreateLogger("AblyLogger").LogWarning(0, ex, "Could not initialize Ably: {exceptionMessage}", ex.Message);
+				loggerFactory.CreateLogger<Logging.AblyLogger>().AblyInitializationFailed(ex);
 			}
 		}
 
@@ -35,12 +35,30 @@ namespace DotNetApis.Common
 			public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
 			{
 				if (IsEnabled(logLevel))
-					ImplicitChannel.Value?.LogMessage(logLevel.ToString(), formatter(state, exception));
+				{
+					var message = formatter(state, exception) ?? "";
+					if (exception != null)
+					{
+						if (message != "")
+							message += ": ";
+						message += $"[{exception.GetType().Name}]: {exception.Message}";
+					}
+
+					ImplicitChannel.Value?.LogMessage(logLevel.ToString(), message);
+				}
 			}
 
 			public bool IsEnabled(LogLevel logLevel) => ImplicitChannel.Value != null && logLevel >= LogLevel.Information && logLevel != LogLevel.Warning;
 
 			public IDisposable BeginScope<TState>(TState state) => throw new NotImplementedException();
 		}
+	}
+
+	internal static partial class Logging
+	{
+		public static void AblyInitializationFailed(this ILogger<AblyLogger> logger, Exception ex) =>
+			Logger.Log(logger, 1, LogLevel.Warning, "Could not initialize Ably", ex);
+
+		public sealed class AblyLogger { }
 	}
 }

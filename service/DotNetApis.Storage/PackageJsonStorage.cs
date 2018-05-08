@@ -30,20 +30,20 @@ namespace DotNetApis.Storage
 
     public sealed class AzurePackageJsonStorage : IPackageJsonStorage
     {
-        private readonly ILogger<AzurePackageJsonStorage> _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly CloudBlobContainer _container;
 
         public static string ContainerName { get; } = "packagejson" + JsonFactory.Version;
 
         public AzurePackageJsonStorage(ILoggerFactory loggerFactory, CloudBlobContainer container)
         {
-            _logger = loggerFactory.CreateLogger<AzurePackageJsonStorage>();
+	        _loggerFactory = loggerFactory;
             _container = container;
         }
 
         public async Task<Uri> WriteJsonAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
         {
-            var (data, dataLength) = Compression.GzipString(json, _logger);
+            var (data, dataLength) = Compression.GzipString(json, _loggerFactory);
             var blobPath = GetJsonBlobPath(idver, target);
             var blob = _container.GetBlockBlobReference(blobPath);
             await blob.UploadFromByteArrayAsync(data, 0, dataLength).ConfigureAwait(false);
@@ -56,7 +56,7 @@ namespace DotNetApis.Storage
 
         public async Task<Uri> WriteLogAsync(NugetPackageIdVersion idver, PlatformTarget target, string log, bool success)
         {
-            var (data, dataLength) = Compression.GzipString(log, _logger);
+            var (data, dataLength) = Compression.GzipString(log, _loggerFactory);
             var blobPath = GetLogBlobPath(idver, target, success);
             var blob = _container.GetBlockBlobReference(blobPath);
             await blob.UploadFromByteArrayAsync(data, 0, dataLength).ConfigureAwait(false);

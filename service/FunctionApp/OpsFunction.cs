@@ -29,7 +29,7 @@ namespace FunctionApp
         public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
         {
             var command = await req.Content.ReadAsAsync<OpsMessage>();
-            _logger.LogDebug("Received command {command}", JsonConvert.SerializeObject(command, Constants.StorageJsonSerializerSettings));
+            _logger.ReceivedCommand(JsonConvert.SerializeObject(command, Constants.StorageJsonSerializerSettings));
 
             switch (command.Type)
             {
@@ -63,4 +63,10 @@ namespace FunctionApp
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void ReceivedCommand(this ILogger<OpsFunction> logger, string command) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Received command {command}", command, null);
+	}
 }

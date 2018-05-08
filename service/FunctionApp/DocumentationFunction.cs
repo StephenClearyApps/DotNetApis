@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using DotNetApis.Common;
 using FunctionApp.Messages;
 using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
+using DotNetApis.Nuget;
 using DotNetApis.Storage;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -42,12 +45,11 @@ namespace FunctionApp
                 var packageId = query.Required("packageId");
                 var packageVersion = query.Optional("packageVersion");
                 var targetFramework = query.Optional("targetFramework");
-                _logger.LogDebug("Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
-                    jsonVersion, packageId, packageVersion, targetFramework);
+                _logger.RequestReceived(jsonVersion, packageId, packageVersion, targetFramework);
 
                 if (jsonVersion < JsonFactory.Version)
                 {
-                    _logger.LogError("Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}", jsonVersion, JsonFactory.Version);
+                    _logger.UpdateRequired(jsonVersion, JsonFactory.Version);
                     throw new ExpectedException((HttpStatusCode)422, "Application needs to update; refresh the page.");
                 }
 
@@ -58,7 +60,7 @@ namespace FunctionApp
                 var (jsonUri, logUri) = await _handler.TryGetExistingJsonAndLogUriAsync(idver, target);
                 if (jsonUri != null)
                 {
-                    _logger.LogDebug("Redirecting to {uri}", jsonUri);
+                    _logger.Redirecting(jsonUri);
                     var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
                     return req.CreateResponse(HttpStatusCode.OK, new RedirectResponseMessage
                     {
@@ -84,7 +86,7 @@ namespace FunctionApp
                 }, Constants.CommunicationJsonSerializerSettings);
                 await generateQueue.AddAsync(new CloudQueueMessage(message));
 
-                _logger.LogDebug("Enqueued request at {timestamp} for {idver} {target}: {message}", timestamp, idver, target, message);
+                _logger.EnqueuedRequest(timestamp, idver, target, message);
                 return req.CreateResponse(HttpStatusCode.Accepted, new GenerateRequestQueuedResponseMessage
                 {
                     NormalizedPackageId = idver.PackageId,
@@ -94,7 +96,7 @@ namespace FunctionApp
             }
             catch (ExpectedException ex)
             {
-                _logger.LogDebug("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
+                _logger.ReturningError((int)ex.HttpStatusCode, ex.Message);
                 return req.CreateErrorResponseWithLog(ex);
             }
         }
@@ -123,4 +125,24 @@ namespace FunctionApp
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void RequestReceived(this ILogger<DocumentationFunction> logger, int jsonVersion, string packageId, string packageVersion, string targetFramework) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
+				jsonVersion, packageId, packageVersion, targetFramework, null);
+
+		public static void UpdateRequired(this ILogger<DocumentationFunction> logger, int requestedJsonVersion, int currentJsonVersion) =>
+			Logger.Log(logger, 2, LogLevel.Error, "Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}",
+				requestedJsonVersion, currentJsonVersion, null);
+
+		public static void Redirecting(this ILogger<DocumentationFunction> logger, Uri uri) =>
+			Logger.Log(logger, 3, LogLevel.Debug, "Redirecting to {uri}", uri, null);
+
+		public static void EnqueuedRequest(this ILogger<DocumentationFunction> logger, DateTimeOffset timestamp, NugetPackageIdVersion idver, PlatformTarget target, string queueMessage) =>
+			Logger.Log(logger, 4, LogLevel.Debug, "Enqueued request at {timestamp} for {idver} {target}: {queueMessage}", timestamp, idver, target, queueMessage, null);
+
+		public static void ReturningError(this ILogger<DocumentationFunction> logger, int httpStatusCode, string errorMessage) =>
+			Logger.Log(logger, 5, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
+	}
 }

@@ -8,6 +8,7 @@ using DotNetApis.Nuget;
 using Microsoft.Extensions.Logging;
 using Nito.Comparers;
 using NuGet.Frameworks;
+using NuGet.Packaging.Core;
 
 namespace DotNetApis.Logic
 {
@@ -29,7 +30,7 @@ namespace DotNetApis.Logic
         /// <param name="target">The target platform. May be <c>null</c>.</param>
         public Dictionary<string, NugetPackageDependency> GetCompatiblePackageDependencies(NugetPackage package, PlatformTarget target)
         {
-            _logger.LogDebug("Determining package dependencies for {package} targeting {target}", package, target);
+            _logger.DeterminingDependencies(package, target);
 
             var result = new Dictionary<string, NugetPackageDependency>(StringComparer.InvariantCultureIgnoreCase);
             var dependencies = target == null ?
@@ -37,11 +38,11 @@ namespace DotNetApis.Logic
                 NuGetFrameworkUtility.GetNearest(package.Metadata.NuspecReader.GetDependencyGroups(), NuGetFramework.ParseFrameworkName(target.FrameworkName.FullName, DefaultFrameworkNameProvider.Instance))?.Packages;
             if (dependencies == null)
             {
-                _logger.LogDebug("No dependencies found for {package} targeting {target}", package, target);
+                _logger.NoDependenciesFound(package, target);
                 return result;
             }
             var dependencyList = dependencies.ToList();
-            _logger.LogDebug("Full dependency list for {package} targeting {target} is {dependencyList}", package, target, dependencyList.Dump());
+            _logger.AllDependencies(package, target, dependencyList);
             foreach (var dependency in dependencyList)
             {
                 var versionRange = new NugetVersionRange(dependency.VersionRange);
@@ -51,15 +52,14 @@ namespace DotNetApis.Logic
                     if (merged != null)
                         result[dependency.Id] = new NugetPackageDependency(dependency.Id, merged);
                     else
-                        _logger.LogWarning("NuGet client returned multiple incompatible version ranges for {dependencyId}: {versionRange1} and {versionRange2}",
-                            dependency.Id, result[dependency.Id].VersionRange, versionRange);
+                        _logger.IncompatibleDependencyVersions(dependency.Id, result[dependency.Id].VersionRange, versionRange);
                 }
                 else
                 {
                     result.Add(dependency.Id, new NugetPackageDependency(dependency.Id, versionRange));
                 }
             }
-            _logger.LogDebug("Merged dependency list for {package} targeting {target} is {dependencyList}", package, target, result.Values.Dump());
+            _logger.MergedDependencies(package, target, result.Values);
             return result;
         }
 
@@ -70,7 +70,7 @@ namespace DotNetApis.Logic
         /// <param name="package">The package to examine.</param>
         public async Task<PlatformTarget[]> AllSupportedPlatformsAsync(NugetPackage package)
         {
-            _logger.LogDebug("Determining supported platforms for {package}", package);
+            _logger.DeterminingSupportedPlatforms(package);
 
             // If the package declares its platforms, just take those.
             var declaredPlatformSupport = DeclaredPlatforms(package);
@@ -78,7 +78,7 @@ namespace DotNetApis.Logic
                 return declaredPlatformSupport;
 
             // Check all the dependencies for any supported platforms and merge them.
-            _logger.LogDebug("Found no declared platforms for {package}; checking dependencies for declared platforms", package);
+            _logger.NoImmediateSupportedPlatforms(package);
             var result = new List<PlatformTarget>();
             foreach (var dep in GetCompatiblePackageDependencies(package, null))
             {
@@ -104,13 +104,13 @@ namespace DotNetApis.Logic
                 return result.OrderBy(x => x.NuGetFrameworkOrdering()).ThenByDescending(x => x.FrameworkName.Version).ToArray();
 
             // If the package has a dll in a plain "lib" directory, then just assume "net40".
-            _logger.LogDebug("Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package);
+            _logger.AttemptingFallbackPlatform(package);
             var guess = PlatformTarget.TryParse("net40");
             if (package.GetCompatibleAssemblyReferences(guess).Any())
                 return new[] { guess };
 
             // Well, this looks like it might not be a .NET package at all...
-            _logger.LogWarning("Failed to find any supported platforms for package {package}", package);
+            _logger.NoPlatformsFound(package);
             return new PlatformTarget[0];
         }
 
@@ -125,7 +125,7 @@ namespace DotNetApis.Logic
                     {
                         var profileTarget = PlatformTarget.TryParse(profileTargetString);
                         if (profileTarget == null)
-                            _logger.LogWarning("Ignoring {profileTargetString} in {platformTarget} since it failed to parse", profileTargetString, target);
+                            _logger.FailedToParseProfileTarget(profileTargetString, target);
                         else
                             set.Add(profileTarget);
                     }
@@ -135,14 +135,53 @@ namespace DotNetApis.Logic
                     set.Add(target);
                 }
             }
-            _logger.LogDebug("Package {package} declares support for platforms {platforms}", package, set.Dump());
+            _logger.AllPlatforms(package, set);
             var result = set
                 .Where(x => x.IsSupported())
                 .OrderBy(x => x.NuGetFrameworkOrdering())
                 .ThenByDescending(x => x.FrameworkName.Version)
                 .ToArray();
-            _logger.LogDebug("After filtering, package {package} declares support for platforms {platforms}", package, result.Dump());
+            _logger.FilteredPlatforms(package, result);
             return result;
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void DeterminingDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Determining package dependencies for {package} targeting {target}", package, target, null);
+
+		public static void NoDependenciesFound(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target) =>
+			Logger.Log(logger, 2, LogLevel.Debug, "No dependencies found for {package} targeting {target}", package, target, null);
+
+		public static void AllDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target, IReadOnlyList<PackageDependency> dependencies) =>
+			Logger.Log(logger, 3, LogLevel.Debug, "Full dependency list for {package} targeting {target} is {dependencies}", package, target, dependencies.Dumpable(), null);
+
+		public static void IncompatibleDependencyVersions(this ILogger<PlatformResolver> logger, string dependencyId, NugetVersionRange versionRange1, NugetVersionRange versionRange2) =>
+			Logger.Log(logger, 4, LogLevel.Warning, "NuGet client returned multiple incompatible version ranges for {dependencyId}: {versionRange1} and {versionRange2}", dependencyId, versionRange1, versionRange2, null);
+
+		public static void MergedDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target, IEnumerable<NugetPackageDependency> dependencies) =>
+			Logger.Log(logger, 5, LogLevel.Debug, "Merged dependency list for {package} targeting {target} is {dependencies}", package, target, dependencies.Dumpable(), null);
+
+		public static void DeterminingSupportedPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+			Logger.Log(logger, 6, LogLevel.Debug, "Determining supported platforms for {package}", package, null);
+
+		public static void NoImmediateSupportedPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+			Logger.Log(logger, 7, LogLevel.Debug, "Found no declared platforms for {package}; checking dependencies for declared platforms", package, null);
+
+		public static void AttemptingFallbackPlatform(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+			Logger.Log(logger, 8, LogLevel.Debug, "Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package, null);
+
+		public static void NoPlatformsFound(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+			Logger.Log(logger, 9, LogLevel.Warning, "Failed to find any supported platforms for package {package}", package, null);
+
+		public static void FailedToParseProfileTarget(this ILogger<PlatformResolver> logger, string profileTarget, PlatformTarget target) =>
+			Logger.Log(logger, 10, LogLevel.Warning, "Ignoring {profileTarget} in {target} since it failed to parse", profileTarget, target, null);
+
+		public static void AllPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package, IEnumerable<PlatformTarget> targets) =>
+			Logger.Log(logger, 11, LogLevel.Debug, "Package {package} declares support for platforms {targets}", package, targets.Dumpable(), null);
+
+		public static void FilteredPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package, IEnumerable<PlatformTarget> targets) =>
+			Logger.Log(logger, 12, LogLevel.Debug, "After filtering, package {package} declares support for platforms {targets}", package, targets.Dumpable(), null);
+	}
 }

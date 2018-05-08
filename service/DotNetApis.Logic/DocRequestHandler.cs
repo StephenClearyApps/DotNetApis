@@ -35,16 +35,16 @@ namespace DotNetApis.Logic
         {
             // Lookup the package version if unknown.
             var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, _parser.ParseVersion(packageVersion));
-            _logger.LogInformation("Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver);
+            _logger.NormalizedPackage(packageId, packageVersion, idver);
 
             // Guess the target framework if unknown.
             var target = targetFramework == null ? await GuessPackageTargetAsync(idver).ConfigureAwait(false) : _parser.ParsePlatformTarget(targetFramework);
             if (!target.IsSupported())
             {
-                _logger.LogError("Target framework {targetFramework} is not supported", targetFramework);
+                _logger.UnsupportedTargetFramework(targetFramework);
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Target framework {targetFramework} is not supported");
             }
-            _logger.LogInformation("Normalized target framework {targetFramework} to {target} ({targetFrameworkName})", targetFramework, target, target.FrameworkName);
+            _logger.NormalizedTargetFramework(targetFramework, target);
 
             return (idver, target);
         }
@@ -62,7 +62,7 @@ namespace DotNetApis.Logic
             var result = _nugetRepository.TryLookupLatestPackageVersion(packageId);
             if (result == null)
             {
-                _logger.LogError("Could not find package {packageId}", packageId);
+                _logger.PackageNotFound(packageId);
                 throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {packageId}");
             }
             return result;
@@ -76,11 +76,29 @@ namespace DotNetApis.Logic
             var result = platforms.FirstOrDefault();
             if (result == null)
             {
-                _logger.LogError("Package {package} has no supported frameworks", package);
+                _logger.NoSupportedFrameworks(package);
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Package `{package}` has no supported frameworks; the package possibly contains only source files, or is a JavaScript or other front-end package; DotNetApis only works with .NET packages");
             }
 
             return result;
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void NormalizedPackage(this ILogger<DocRequestHandler> logger, string packageId, string packageVersion, NugetPackageIdVersion idver) =>
+			Logger.Log(logger, 1, LogLevel.Information, "Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver, null);
+
+		public static void UnsupportedTargetFramework(this ILogger<DocRequestHandler> logger, string targetFramework) =>
+			Logger.Log(logger, 2, LogLevel.Error, "Target framework {targetFramework} is not supported", targetFramework, null);
+
+		public static void NormalizedTargetFramework(this ILogger<DocRequestHandler> logger, string targetFramework, PlatformTarget target) =>
+			Logger.Log(logger, 3, LogLevel.Information, "Normalized target framework {targetFramework} to {target} ({targetFrameworkName})", targetFramework, target, target.FrameworkName, null);
+
+		public static void PackageNotFound(this ILogger<DocRequestHandler> logger, string packageId) =>
+			Logger.Log(logger, 4, LogLevel.Error, "Could not find package {packageId}", packageId, null);
+
+		public static void NoSupportedFrameworks(this ILogger<DocRequestHandler> logger, NugetFullPackage package) =>
+			Logger.Log(logger, 5, LogLevel.Error, "Package {package} has no supported frameworks", package, null);
+	}
 }

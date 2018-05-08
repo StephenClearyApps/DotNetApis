@@ -13,7 +13,6 @@ using DotNetApis.Storage;
 using DotNetApis.Structure;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace DotNetApis.Logic
 {
@@ -60,7 +59,7 @@ namespace DotNetApis.Logic
             }
             catch (Exception ex)
             {
-                _logger.LogCritical(0, ex, "Error handling message {message}", JsonConvert.SerializeObject(message, Constants.StorageJsonSerializerSettings));
+                _logger.HandlePackageException(message, ex);
                 await _packageJsonCombinedStorage.WriteFailureAsync(idver, target).ConfigureAwait(false);
             }
         }
@@ -69,7 +68,7 @@ namespace DotNetApis.Logic
         {
             var stopwatch = Stopwatch.StartNew();
             var result = await _referenceAssemblies.Value.ConfigureAwait(false);
-            _logger.LogDebug("Reference assemblies loaded in {elapsed}", stopwatch.Elapsed);
+            _logger.ReferenceAssembliesLoaded(stopwatch.Elapsed);
             return result;
         }
 
@@ -90,7 +89,7 @@ namespace DotNetApis.Logic
             // Add assemblies for the current package to our context.
             foreach (var path in publishedPackage.Package.GetCompatibleAssemblyReferences(target))
                 assemblies.AddCurrentPackageAssembly(path);
-            _logger.LogDebug("Documentation will be generated for {assemblies}", assemblies.CurrentPackageAssemblies.Dump());
+            _logger.DocumentingAssemblies(assemblies.CurrentPackageAssemblies);
 
             // Add assemblies for all dependency packages to our context.
             var dependencyPackages = await _dependencyResolver.ResolveAsync(publishedPackage.Package, target).ConfigureAwait(false);
@@ -103,7 +102,7 @@ namespace DotNetApis.Logic
                     assemblies.AddDependencyPackageAssembly(dependentPackage, path);
                 }
             }
-            _logger.LogDebug("Added {assemblyCount} assemblies from {packageCount} dependency packages", dependencyAssemblyCount, dependencyPackages.Count);
+            _logger.AddedDepencencyAssemblies(dependencyAssemblyCount, dependencyPackages.Count);
 
             // Sanity check: we'd better have something to generate documentation on.
             if (assemblies.CurrentPackageAssemblies.Count == 0 && assemblies.DependencyPackageAssemblies.Count == 0)
@@ -125,7 +124,7 @@ namespace DotNetApis.Logic
             catch (NeedsFSharpCoreException)
             {
                 // https://fsharp.github.io/2015/04/18/fsharp-core-notes.html#a-c-project-referencing-an-f-dll-or-nuget-package-may-need-to-also-have-a-reference-to-fsharpcoredll
-                _logger.LogInformation("Detected implicit dependency on FSharp.Core. Retrying...");
+                _logger.DetectedFSharp();
 
                 // Attempt to load all versions of FSharp.Core from highest to lowest until we find one compatible with this target.
                 var found = false;
@@ -137,7 +136,7 @@ namespace DotNetApis.Logic
                     var compatibleReferences = fsharp.Package.GetCompatibleAssemblyReferences(target).ToList();
                     if (compatibleReferences.Count == 0)
                     {
-                        _logger.LogDebug("Rejecting {idver} because it does not support target {target}", fsharpIdver, target);
+                        _logger.FSharpCoreNotCompatibleWithTarget(fsharpIdver, target);
                     }
                     else
                     {
@@ -149,7 +148,7 @@ namespace DotNetApis.Logic
                 }
                 if (!found)
                 {
-                    _logger.LogError("Could not find compatible version of FSharp.Core");
+                    _logger.FSharpCoreNotFound();
                     throw new ExpectedException(HttpStatusCode.BadRequest, "Could not find compatible version of FSharp.Core");
                 }
                 return GenerateAsync(target, assemblies, publishedPackage, dependencyPackages, allTargets);
@@ -197,4 +196,28 @@ namespace DotNetApis.Logic
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void HandlePackageException(this ILogger<GenerateHandler> logger, GenerateRequestMessage message, Exception exception) =>
+			Logger.Log(logger, 1, LogLevel.Critical, "Error handling message {message}", message, exception);
+
+		public static void ReferenceAssembliesLoaded(this ILogger<GenerateHandler> logger, TimeSpan elapsed) =>
+			Logger.Log(logger, 2, LogLevel.Debug, "Reference assemblies loaded in {elapsed}", elapsed, null);
+
+		public static void DocumentingAssemblies(this ILogger<GenerateHandler> logger, IReadOnlyList<CurrentPackageAssembly> assemblies) =>
+			Logger.Log(logger, 3, LogLevel.Debug, "Documentation will be generated for {assemblies}", assemblies.Dumpable(), null);
+
+		public static void AddedDepencencyAssemblies(this ILogger<GenerateHandler> logger, int assemblyCount, int packageCount) =>
+			Logger.Log(logger, 4, LogLevel.Debug, "Added {assemblyCount} assemblies from {packageCount} dependency packages", assemblyCount, packageCount, null);
+
+		public static void DetectedFSharp(this ILogger<GenerateHandler> logger) =>
+			Logger.Log(logger, 5, LogLevel.Information, "Detected implicit dependency on FSharp.Core. Retrying...", null);
+
+		public static void FSharpCoreNotCompatibleWithTarget(this ILogger<GenerateHandler> logger, NugetPackageIdVersion idver, PlatformTarget target) =>
+			Logger.Log(logger, 6, LogLevel.Debug, "Rejecting {idver} because it does not support target {target}", idver, target, null);
+
+		public static void FSharpCoreNotFound(this ILogger<GenerateHandler> logger) =>
+			Logger.Log(logger, 7, LogLevel.Error, "Could not find compatible version of FSharp.Core", null);
+	}
 }

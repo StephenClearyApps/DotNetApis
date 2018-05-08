@@ -19,7 +19,7 @@ namespace FunctionApp
     public sealed class StatusFunction
     {
         private readonly StatusRequestHandler _handler;
-        private readonly ILogger _logger;
+        private readonly ILogger<StatusFunction> _logger;
 
         public StatusFunction(StatusRequestHandler handler, ILoggerFactory loggerFactory)
         {
@@ -36,12 +36,11 @@ namespace FunctionApp
                 var packageId = query.Required("packageId");
                 var packageVersion = query.Required("packageVersion");
                 var targetFramework = query.Required("targetFramework");
-                _logger.LogDebug("Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
-                    jsonVersion, packageId, packageVersion, targetFramework);
+                _logger.RequestReceived(jsonVersion, packageId, packageVersion, targetFramework);
 
                 if (jsonVersion < JsonFactory.Version)
                 {
-                    _logger.LogError("Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}", jsonVersion, JsonFactory.Version);
+                    _logger.UpdateRequired(jsonVersion, JsonFactory.Version);
                     throw new ExpectedException((HttpStatusCode)422, "Application needs to update; refresh the page.");
                 }
 
@@ -61,7 +60,7 @@ namespace FunctionApp
             }
             catch (ExpectedException ex)
             {
-                _logger.LogDebug("Returning {httpStatusCode}: {errorMessage}", (int)ex.HttpStatusCode, ex.Message);
+                _logger.ReturningError((int)ex.HttpStatusCode, ex.Message);
                 return req.CreateErrorResponseWithLog(ex);
             }
         }
@@ -88,4 +87,18 @@ namespace FunctionApp
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void RequestReceived(this ILogger<StatusFunction> logger, int jsonVersion, string packageId, string packageVersion, string targetFramework) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
+				jsonVersion, packageId, packageVersion, targetFramework, null);
+
+		public static void UpdateRequired(this ILogger<StatusFunction> logger, int requestedJsonVersion, int currentJsonVersion) =>
+			Logger.Log(logger, 2, LogLevel.Error, "Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}",
+				requestedJsonVersion, currentJsonVersion, null);
+
+		public static void ReturningError(this ILogger<StatusFunction> logger, int httpStatusCode, string errorMessage) =>
+			Logger.Log(logger, 3, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
+	}
 }

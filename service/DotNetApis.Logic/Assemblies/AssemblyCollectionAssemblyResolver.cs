@@ -48,16 +48,25 @@ namespace DotNetApis.Logic.Assemblies
                 throw new NeedsFSharpCoreException();
 
             // As a last-ditch resort, check the GAC on whatever machine we're on.
-            _logger.LogWarning("Unable to resolve assembly {name}; falling back on GAC as a last-ditch effort", name.FullName);
+            _logger.FallingBackToGac(name.FullName);
             try
             {
                 return _defaultAssemblyResolver.Value.Resolve(name, parameters);
             }
             catch
             {
-                _logger.LogError("Unable to resolve assembly {name}", name.FullName);
+                _logger.AssemblyResolutionFailed(name.FullName);
                 return null;
             }
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void FallingBackToGac(this ILogger<AssemblyCollectionAssemblyResolver> logger, string fullName) =>
+			Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve assembly {fullName}; falling back on GAC as a last-ditch effort", fullName, null);
+
+		public static void AssemblyResolutionFailed(this ILogger<AssemblyCollectionAssemblyResolver> logger, string fullName) =>
+			Logger.Log(logger, 2, LogLevel.Error, "Unable to resolve assembly {fullName}", fullName, null);
+	}
 }

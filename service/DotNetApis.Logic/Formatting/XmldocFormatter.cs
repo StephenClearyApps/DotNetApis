@@ -49,7 +49,7 @@ namespace DotNetApis.Logic.Formatting
             var doc = xmldoc.Descendants("member").FirstOrDefault(x => x.Attribute("name")?.Value == memberXmldocId);
             if (doc == null)
             {
-                _logger.LogTrace("Unable to find xmldoc <member> tag with attribute @name matching {xmldocid}", memberXmldocId);
+                _logger.MemberNotFound(memberXmldocId);
                 return null;
             }
 
@@ -107,7 +107,7 @@ namespace DotNetApis.Logic.Formatting
             var typeparamDoc = doc.Elements("typeparam").FirstOrDefault(y => y.Attribute("name")?.Value == parameterName);
             if (typeparamDoc == null)
             {
-                _logger.LogWarning("Unable to find xmldoc <typeparam> tag with attribute @name matching {name} for member {xmldocid}", parameterName, memberXmldocId);
+                _logger.TypeparamNotFound(parameterName, memberXmldocId);
                 return null;
             }
             return XmldocNode(typeparamDoc);
@@ -132,7 +132,7 @@ namespace DotNetApis.Logic.Formatting
             var paramDoc = doc.Elements("param").FirstOrDefault(y => y.Attribute("name")?.Value == parameterName);
             if (paramDoc == null)
             {
-                _logger.LogWarning("Unable to find xmldoc <param> tag with attribute @name matching {name} for member {xmldocid}", parameterName, memberXmldocId);
+                _logger.ParamNotFound(parameterName, memberXmldocId);
                 return null;
             }
             return XmldocNode(paramDoc);
@@ -202,7 +202,7 @@ namespace DotNetApis.Logic.Formatting
                 var cref = source.Attribute("cref")?.Value;
                 if (cref == null)
                 {
-                    _logger.LogWarning("Xmldoc error: <see> or <seealso> element does not have langword or cref attributes");
+                    _logger.MissingSeeTarget();
                     return null;
                 }
                 if (cref.StartsWith("!:") || cref.StartsWith("N:"))
@@ -259,7 +259,7 @@ namespace DotNetApis.Logic.Formatting
                 return XmldocNode(source, XmlXmldocNodeKind.ListItem);
 
             // All other elements are assumed to be HTML, and are treated as a <span>, extracting text nodes and transforming any child nodes.
-            _logger.LogWarning("Unrecognized xmldoc tag {tag}", source.Name);
+            _logger.UnrecognizedTag(source.Name.ToString());
             return XmldocNode(source, XmlXmldocNodeKind.Span);
         }
 
@@ -312,4 +312,22 @@ namespace DotNetApis.Logic.Formatting
             return (null, null);
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void MemberNotFound(this ILogger<XmldocFormatter> logger, string xmldocid) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Unable to find xmldoc <member> tag with attribute @name matching {xmldocid}", xmldocid, null);
+
+		public static void TypeparamNotFound(this ILogger<XmldocFormatter> logger, string name, string xmldocid) =>
+			Logger.Log(logger, 2, LogLevel.Warning, "Unable to find xmldoc <typeparam> tag with attribute @name matching {name} for member {xmldocid}", name, xmldocid, null);
+
+		public static void ParamNotFound(this ILogger<XmldocFormatter> logger, string name, string xmldocid) =>
+			Logger.Log(logger, 3, LogLevel.Warning, "Unable to find xmldoc <param> tag with attribute @name matching {name} for member {xmldocid}", name, xmldocid, null);
+
+		public static void MissingSeeTarget(this ILogger<XmldocFormatter> logger) =>
+			Logger.Log(logger, 4, LogLevel.Warning, "Xmldoc error: <see> or <seealso> element does not have langword or cref attributes", null);
+
+		public static void UnrecognizedTag(this ILogger<XmldocFormatter> logger, string tag) =>
+			Logger.Log(logger, 5, LogLevel.Warning, "Unrecognized xmldoc tag {tag}", tag, null);
+	}
 }

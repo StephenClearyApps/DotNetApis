@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Cecil;
+using DotNetApis.Common;
 using DotNetApis.Structure.Entities;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
@@ -41,7 +42,7 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="member">The member to format.</param>
         public IEntity MemberDefinition(IMemberDefinition member)
         {
-            _logger.LogDebug("Processing entity {entity}", member.FullName);
+            _logger.ProcessingEntity(member.FullName);
             if (member is MethodDefinition method)
                 return _methodFormatter.Method(method);
             if (member is PropertyDefinition property)
@@ -58,4 +59,10 @@ namespace DotNetApis.Logic.Formatting
             return _typeFormatter.Type(type, MemberDefinition);
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void ProcessingEntity(this ILogger<MemberDefinitionFormatter> logger, string entity) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Processing entity {entity}", entity, null);
+	}
 }

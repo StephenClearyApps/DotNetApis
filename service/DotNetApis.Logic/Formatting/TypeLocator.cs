@@ -32,7 +32,7 @@ namespace DotNetApis.Logic.Formatting
         {
             var result = _generationScope.Current.Asssemblies.TryGetLocationAndFriendlyNameFromDnaId(dnaid);
             if (result == null)
-                _logger.LogWarning("Unable to find entity {dnaid}", dnaid);
+                _logger.EntityNotFound(dnaid);
             return result;
         }
 
@@ -50,7 +50,7 @@ namespace DotNetApis.Logic.Formatting
         {
             var result = _generationScope.Current.Asssemblies.TryGetLocationAndFriendlyNameFromXmldocId(xmldocid);
             if (result == null)
-                _logger.LogWarning("Unable to find xmldoc entity {xmldocid}", xmldocid);
+                _logger.XmldocEntityNotFound(xmldocid);
             return result;
         }
 
@@ -60,4 +60,13 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="xmldocid">The xmldocid of the entity being referenced.</param>
         public ILocation TryGetLocationFromXmldocId(string xmldocid) => TryGetLocationAndFriendlyNameFromXmldocId(xmldocid)?.Location;
     }
+
+	internal static partial class Logging
+	{
+		public static void EntityNotFound(this ILogger<TypeLocator> logger, string dnaid) =>
+			Logger.Log(logger, 1, LogLevel.Warning, "Unable to find entity {dnaid}", dnaid, null);
+
+		public static void XmldocEntityNotFound(this ILogger<TypeLocator> logger, string xmldocid) =>
+			Logger.Log(logger, 2, LogLevel.Warning, "Unable to find xmldoc entity {xmldocid}", xmldocid, null);
+	}
 }

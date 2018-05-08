@@ -79,12 +79,12 @@ namespace FunctionApp.CompositionRoot
             }
             catch (Exception ex)
             {
-                AsyncLocalLoggerFactory.LoggerFactory.CreateLogger("Containers").LogCritical(0, ex, "Failed to create container composition root");
+                AsyncLocalLoggerFactory.LoggerFactory.CreateLogger<Logging.Containers>().ContainerCreationFailed(ex);
                 throw;
             }
         }
 
-        private static class ContainerFor<T>
+		private static class ContainerFor<T>
             where T : class
         {
             // ReSharper disable once StaticMemberInGenericType
@@ -120,4 +120,12 @@ namespace FunctionApp.CompositionRoot
             public static Task<Container> GetAsync() => _instance.Value;
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void ContainerCreationFailed(this ILogger<Containers> logger, Exception ex) =>
+			Logger.Log(logger, 1, LogLevel.Critical, "Failed to create container composition root", ex);
+
+		public sealed class Containers { }
+	}
 }

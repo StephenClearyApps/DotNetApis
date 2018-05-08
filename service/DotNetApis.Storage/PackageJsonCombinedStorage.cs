@@ -30,10 +30,10 @@ namespace DotNetApis.Storage
         public async Task WriteSuccessAsync(NugetPackageIdVersion idver, PlatformTarget target, string docJson)
         {
             // Save the JSON documentation to blob storage.
-            _logger.LogDebug("Saving json for {idver} target {target}", idver, target);
+            _logger.SavingJson(idver, target);
             var stopwatch = Stopwatch.StartNew();
             var jsonUri = await _storage.WriteJsonAsync(idver, target, docJson).ConfigureAwait(false);
-            _logger.LogDebug("Saved json for {idver} target {target} at {url} in {elapsed}", idver, target, jsonUri, stopwatch.Elapsed);
+            _logger.SavedJson(idver, target, jsonUri, stopwatch.Elapsed);
 
             // Save the processing log to blob storage.
             var logUri = await SaveLogAsync(idver, target, success: true).ConfigureAwait(false);
@@ -63,4 +63,13 @@ namespace DotNetApis.Storage
             return await _storage.WriteLogAsync(idver, target, logJson, success).ConfigureAwait(false);
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void SavingJson(this ILogger<PackageJsonCombinedStorage> logger, NugetPackageIdVersion idver, PlatformTarget target) =>
+			Logger.Log(logger, 1, LogLevel.Debug, "Saving json for {idver} target {target}", idver, target, null);
+
+		public static void SavedJson(this ILogger<PackageJsonCombinedStorage> logger, NugetPackageIdVersion idver, PlatformTarget target, Uri uri, TimeSpan elapsed) =>
+			Logger.Log(logger, 2, LogLevel.Debug, "Saved json for {idver} target {target} at {uri} in {elapsed}", idver, target, uri, elapsed, null);
+	}
 }

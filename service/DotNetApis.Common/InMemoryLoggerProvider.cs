@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using DotNetApis.Common.LogStructure;
 using Microsoft.Extensions.Logging;
 
@@ -10,7 +11,12 @@ namespace DotNetApis.Common
 	/// </summary>
 	public sealed class InMemoryLoggerProvider : ILoggerProvider
 	{
-		public List<LogMessage> Messages { get; } = new List<LogMessage>();
+		private readonly List<LogMessage> _messages = new List<LogMessage>();
+
+		public List<LogMessage> Messages
+		{
+			get { lock (_messages) return _messages.ToList(); }
+		}
 
 		void IDisposable.Dispose() { }
 
@@ -18,14 +24,17 @@ namespace DotNetApis.Common
 
 		private void Log<TState>(string categoryName, LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
 		{
-			Messages.Add(new LogMessage
+			var message = new LogMessage
 			{
 				Type = logLevel,
 				Timestamp = DateTimeOffset.UtcNow,
 				Message = formatter(state, exception) + (exception == null ? "" : "\r\n" + exception),
 				Category = categoryName,
 				EventId = eventId.Id,
-			});
+			};
+
+			lock (_messages)
+				_messages.Add(message);
 		}
 
 		private sealed class InMemoryLogger : ILogger

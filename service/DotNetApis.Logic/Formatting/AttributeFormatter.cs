@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DotNetApis.Cecil;
+using DotNetApis.Common;
 using DotNetApis.Structure;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
@@ -73,7 +74,7 @@ namespace DotNetApis.Logic.Formatting
         private AttributeJson Attribute(CustomAttribute attribute, string target = null)
         {
             if (attribute.AttributeType.Resolve() == null)
-                _logger.LogWarning("Unable to resolve custom attribute type {dnaid}", attribute.AttributeType.DnaId());
+                _logger.TypeResolutionFailed(attribute.AttributeType.DnaId());
             var name = attribute.AttributeType.Name;
             if (name.EndsWith("Attribute"))
                 name = name.Substring(0, name.Length - 9);
@@ -99,4 +100,10 @@ namespace DotNetApis.Logic.Formatting
             };
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void TypeResolutionFailed(this ILogger<AttributeFormatter> logger, string dnaid) =>
+			Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve custom attribute type {dnaid}", dnaid, null);
+	}
 }

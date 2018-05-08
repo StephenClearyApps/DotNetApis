@@ -24,7 +24,7 @@ namespace DotNetApis.Logic
             var result = NugetVersion.TryParse(packageVersion);
             if (result == null)
             {
-                _logger.LogError("Could not parse version {packageVersion}", packageVersion);
+                _logger.CannotParseVersion(packageVersion);
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse version `{packageVersion}`");
             }
             return result;
@@ -35,10 +35,19 @@ namespace DotNetApis.Logic
             var result = PlatformTarget.TryParse(targetFramework);
             if (result == null)
             {
-                _logger.LogError("Could not parse target framework {targetFramework}", targetFramework);
+                _logger.CannotParseTarget(targetFramework);
                 throw new ExpectedException(HttpStatusCode.BadRequest, $"Could not parse target framework `{targetFramework}`");
             }
             return result;
         }
     }
+
+	internal static partial class Logging
+	{
+		public static void CannotParseVersion(this ILogger<Parser> logger, string packageVersion) =>
+			Logger.Log(logger, 1, LogLevel.Error, "Could not parse version {packageVersion}", packageVersion, null);
+
+		public static void CannotParseTarget(this ILogger<Parser> logger, string targetFramework) =>
+			Logger.Log(logger, 1, LogLevel.Error, "Could not parse target framework {targetFramework}", targetFramework, null);
+	}
 }
