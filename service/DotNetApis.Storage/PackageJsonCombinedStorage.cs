@@ -21,13 +21,14 @@ namespace DotNetApis.Storage
             _storage = storage;
         }
 
-        /// <summary>
-        /// Writes a complete JSON string to storage.
-        /// </summary>
-        /// <param name="idver">The id and version of the package.</param>
-        /// <param name="target">The target for the package.</param>
-        /// <param name="docJson">The JSON documentation for the specified package id, version, and target.</param>
-        public async Task WriteSuccessAsync(NugetPackageIdVersion idver, PlatformTarget target, string docJson)
+		/// <summary>
+		/// Writes a complete JSON string to storage.
+		/// </summary>
+		/// <param name="idver">The id and version of the package.</param>
+		/// <param name="target">The target for the package.</param>
+		/// <param name="docJson">The JSON documentation for the specified package id, version, and target.</param>
+		/// <param name="log">The log writer.</param>
+        public async Task WriteSuccessAsync(NugetPackageIdVersion idver, PlatformTarget target, string docJson, IJsonBlobWriter log)
         {
             // Save the JSON documentation to blob storage.
             _logger.SavingJson(idver, target);
@@ -36,31 +37,32 @@ namespace DotNetApis.Storage
             _logger.SavedJson(idver, target, jsonUri, stopwatch.Elapsed);
 
             // Save the processing log to blob storage.
-            var logUri = await SaveLogAsync(idver, target, success: true).ConfigureAwait(false);
+            var logUri = await SaveLogAsync(log).ConfigureAwait(false);
 
             // Mark the processing as complete.
             await _table.SetRecordAsync(idver, target, Status.Succeeded, logUri, jsonUri).ConfigureAwait(false);
         }
 
-        /// <summary>
-        /// Writes a failure notification to storage.
-        /// </summary>
-        /// <param name="idver">The id and version of the package.</param>
-        /// <param name="target">The target for the package.</param>
-        public async Task WriteFailureAsync(NugetPackageIdVersion idver, PlatformTarget target)
+		/// <summary>
+		/// Writes a failure notification to storage.
+		/// </summary>
+		/// <param name="idver">The id and version of the package.</param>
+		/// <param name="target">The target for the package.</param>
+		/// <param name="log">The log writer.</param>
+		public async Task WriteFailureAsync(NugetPackageIdVersion idver, PlatformTarget target, IJsonBlobWriter log)
         {
             // Save the processing log to blob storage.
-            var logUri = await SaveLogAsync(idver, target, success: false).ConfigureAwait(false);
+            var logUri = await SaveLogAsync(log).ConfigureAwait(false);
 
             // Mark the processing as failed.
             await _table.SetRecordAsync(idver, target, Status.Failed, logUri, null).ConfigureAwait(false);
         }
 
-        private async Task<Uri> SaveLogAsync(NugetPackageIdVersion idver, PlatformTarget target, bool success)
+        private static async Task<Uri> SaveLogAsync(IJsonBlobWriter log)
         {
-            var log = AmbientContext.InMemoryLoggerProvider?.Messages;
-            var logJson = JsonConvert.SerializeObject(log, Constants.StorageJsonSerializerSettings);
-            return await _storage.WriteLogAsync(idver, target, logJson, success).ConfigureAwait(false);
+	        await (AmbientContext.JsonLoggerProvider?.StopAsync() ?? Task.CompletedTask).ConfigureAwait(false);
+	        await log.CommitAsync().ConfigureAwait(false);
+	        return log.Uri;
         }
     }
 

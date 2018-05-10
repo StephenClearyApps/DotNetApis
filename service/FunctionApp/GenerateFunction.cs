@@ -42,10 +42,10 @@ namespace FunctionApp
             try
             {
                 GlobalConfig.Initialize();
-                AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
+                AmbientContext.JsonLoggerProvider = new JsonLoggerProvider();
                 AmbientContext.OperationId = context.InvocationId;
 	            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.JsonLoggerProvider);
 	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
 	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 				AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new AsyncLocalAblyLoggerProvider());
