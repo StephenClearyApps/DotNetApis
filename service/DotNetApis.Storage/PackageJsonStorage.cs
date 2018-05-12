@@ -13,20 +13,13 @@ namespace DotNetApis.Storage
 {
     public interface IPackageJsonStorage
     {
-        /// <summary>
-        /// Writes JSON data to storage and returns the direct-access URI.
-        /// </summary>
-        /// <param name="idver">The id and version of the package.</param>
-        /// <param name="target">The target for the package.</param>
-        /// <param name="json">The JSON documentation for the specified package id, version, and target.</param>
-        Task<Uri> WriteJsonAsync(NugetPackageIdVersion idver, PlatformTarget target, string json);
-
-		/// <summary>
-		/// Opens a writer that streams JSON writes to a blob.
-		/// </summary>
-		/// <param name="idver">The id and version of the package.</param>
-		/// <param name="target">The target for the package.</param>
-	    Task<IJsonBlobWriter> OpenLogAsync(NugetPackageIdVersion idver, PlatformTarget target);
+	    /// <summary>
+	    /// Opens a writer that streams JSON writes to a blob.
+	    /// </summary>
+	    /// <param name="idver">The id and version of the package.</param>
+	    /// <param name="target">The target for the package.</param>
+	    /// <param name="isLog">Whether this blob is for a log.</param>
+	    Task<IJsonBlobWriter> OpenJsonBlobAsync(NugetPackageIdVersion idver, PlatformTarget target, bool isLog);
     }
 
     public sealed class AzurePackageJsonStorage : IPackageJsonStorage
@@ -42,30 +35,15 @@ namespace DotNetApis.Storage
             _container = container;
         }
 
-        public async Task<Uri> WriteJsonAsync(NugetPackageIdVersion idver, PlatformTarget target, string json)
-        {
-            var (data, dataLength) = Compression.GzipString(json, _loggerFactory);
-            var blobPath = GetJsonBlobPath(idver, target);
-            var blob = _container.GetBlockBlobReference(blobPath);
-            await blob.UploadFromByteArrayAsync(data, 0, dataLength).ConfigureAwait(false);
-            blob.Properties.CacheControl = "public, max-age=31536000";
-            blob.Properties.ContentType = "application/json; charset=utf-8";
-            blob.Properties.ContentEncoding = "gzip";
-            await blob.SetPropertiesAsync().ConfigureAwait(false);
-            return blob.Uri;
-        }
-
-	    public async Task<IJsonBlobWriter> OpenLogAsync(NugetPackageIdVersion idver, PlatformTarget target)
+	    public async Task<IJsonBlobWriter> OpenJsonBlobAsync(NugetPackageIdVersion idver, PlatformTarget target, bool isLog)
 	    {
-		    var blobPath = GetLogBlobPath(idver, target);
+		    var blobPath = GetLogBlobPath(idver, target, isLog);
 		    var blob = _container.GetBlockBlobReference(blobPath);
 		    var blobStream = await blob.OpenWriteAsync().ConfigureAwait(false);
 		    return new BlobWriteContext(blob, blobStream);
 	    }
 
-		private static string GetJsonBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => idver.PackageId + "/" + idver.Version + "/" + target + ".json";
-
-	    private static string GetLogBlobPath(NugetPackageIdVersion idver, PlatformTarget target) => $"{idver.PackageId}/{idver.Version}/{target}/{Guid.NewGuid():N}.log.json";
+		private static string GetLogBlobPath(NugetPackageIdVersion idver, PlatformTarget target, bool isLog) => $"{idver.PackageId}/{idver.Version}/{target}/{Guid.NewGuid():N}{(isLog?".log":"")}.json";
 
 	    private sealed class BlobWriteContext: IJsonBlobWriter
 		{

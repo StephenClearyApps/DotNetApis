@@ -53,13 +53,12 @@ namespace DotNetApis.Logic
             var target = PlatformTarget.TryParse(message.NormalizedFrameworkTarget);
             if (idver == null || target == null)
                 throw new InvalidOperationException("Invalid generation request");
-	        var log = await _packageJsonStorage.OpenLogAsync(idver, target);
+	        var log = await _packageJsonStorage.OpenJsonBlobAsync(idver, target, isLog: true);
 			AmbientContext.JsonLoggerProvider?.Start(log.JsonWriter);
             try
 			{
                 var doc = await HandleAsync(idver, target).ConfigureAwait(false);
-                var docJson = JsonConvert.SerializeObject(doc, Constants.StorageJsonSerializerSettings);
-                await _packageJsonCombinedStorage.WriteSuccessAsync(idver, target, docJson, log).ConfigureAwait(false);
+                await _packageJsonCombinedStorage.WriteSuccessAsync(idver, target, doc, log).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -76,7 +75,7 @@ namespace DotNetApis.Logic
             return result;
         }
 
-        private async Task<PackageJson> HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
+        private async Task<IBlobWriter> HandleAsync(NugetPackageIdVersion idver, PlatformTarget target)
         {
             var referenceAssembliesTask = LoadReferenceAssembliesAsync();
 
@@ -123,7 +122,7 @@ namespace DotNetApis.Logic
 
             try
             {
-                return GenerateAsync(target, assemblies, publishedPackage, dependencyPackages, allTargets);
+                return await GenerateAsync(idver, target, assemblies, publishedPackage, dependencyPackages, allTargets).ConfigureAwait(false);
             }
             catch (NeedsFSharpCoreException)
             {
@@ -155,12 +154,13 @@ namespace DotNetApis.Logic
                     _logger.FSharpCoreNotFound();
                     throw new ExpectedException(HttpStatusCode.BadRequest, "Could not find compatible version of FSharp.Core");
                 }
-                return GenerateAsync(target, assemblies, publishedPackage, dependencyPackages, allTargets);
+                return await GenerateAsync(idver, target, assemblies, publishedPackage, dependencyPackages, allTargets).ConfigureAwait(false);
             }
         }
 
-        private PackageJson GenerateAsync(PlatformTarget target, AssemblyCollection assemblies, NugetFullPackage publishedPackage, IEnumerable<NugetPackage> dependencyPackages, IEnumerable<PlatformTarget> allTargets)
+        private async Task<IBlobWriter> GenerateAsync(NugetPackageIdVersion idver, PlatformTarget target, AssemblyCollection assemblies, NugetFullPackage publishedPackage, IEnumerable<NugetPackage> dependencyPackages, IEnumerable<PlatformTarget> allTargets)
         {
+	        var doc = new StreamingJsonWriter(await _packageJsonStorage.OpenJsonBlobAsync(idver, target, isLog: false).ConfigureAwait(false));
             using (GenerationScope.Create(target, assemblies))
             {
                 // Produce JSON structure for all package dependencies.
@@ -182,21 +182,25 @@ namespace DotNetApis.Logic
                 }).OrderBy(x => x.VersionRange == null).ThenBy(x => x.PackageId, StringComparer.InvariantCultureIgnoreCase).ToList();
 
                 // Produce JSON structure for the primary package.
-                return new PackageJson
-                {
-                    PackageId = publishedPackage.Package.Metadata.PackageId,
-                    Version = publishedPackage.Package.Metadata.Version.ToString(),
-                    Target = target.ToString(),
-                    Description = publishedPackage.Package.Metadata.Description,
-                    Authors = publishedPackage.Package.Metadata.Authors,
-                    IconUrl = publishedPackage.Package.Metadata.IconUrl,
-                    ProjectUrl = publishedPackage.Package.Metadata.ProjectUrl,
-                    SupportedTargets = allTargets.Select(x => x.ToString()).ToList(),
-                    Dependencies = dependencies,
-                    Published = publishedPackage.ExternalMetadata.Published,
-                    IsReleaseVersion = publishedPackage.Package.Metadata.Version.IsReleaseVersion,
-                    Assemblies = assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null).Select(_assemblyFormatter.Assembly).ToList(),
-                };
+				doc.WriteStartObject();
+				doc.WriteProperty("i", publishedPackage.Package.Metadata.PackageId);
+	            doc.WriteProperty("v", publishedPackage.Package.Metadata.Version.ToString());
+	            doc.WriteProperty("t", target.ToString());
+	            doc.WriteProperty("d", publishedPackage.Package.Metadata.Description);
+	            doc.WriteProperty("a", publishedPackage.Package.Metadata.Authors);
+	            doc.WriteProperty("c", publishedPackage.Package.Metadata.IconUrl);
+	            doc.WriteProperty("p", publishedPackage.Package.Metadata.ProjectUrl);
+	            doc.WriteProperty("f", allTargets.Select(x => x.ToString()).ToList());
+	            doc.WriteProperty("e", dependencies);
+	            doc.WriteProperty("b", publishedPackage.ExternalMetadata.Published);
+	            doc.WriteProperty("r", publishedPackage.Package.Metadata.Version.IsReleaseVersion);
+				doc.WritePropertyName("l");
+				doc.WriteStartArray();
+	            foreach (var assembly in assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null))
+		            _assemblyFormatter.Assembly(assembly, doc);
+	            doc.WriteEndArray();
+				doc.WriteEndObject();
+	            return doc;
             }
         }
     }

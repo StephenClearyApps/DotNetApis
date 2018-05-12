@@ -4,10 +4,8 @@ using Newtonsoft.Json;
 
 namespace DotNetApis.Storage
 {
-    public interface IJsonBlobWriter
+    public interface IJsonBlobWriter: IBlobWriter
     {
-	    Task CommitAsync();
-		Uri Uri { get; }
 		JsonWriter JsonWriter { get; }
     }
 }

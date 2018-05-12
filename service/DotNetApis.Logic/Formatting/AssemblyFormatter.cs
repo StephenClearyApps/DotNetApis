@@ -25,26 +25,29 @@ namespace DotNetApis.Logic.Formatting
             _logger = loggerFactory.CreateLogger<AssemblyFormatter>();
         }
 
-        /// <summary>
-        /// Formats an assembly. This method establishes its own <see cref="AssemblyScope"/>.
-        /// </summary>
-        /// <param name="assembly">The assembly to format.</param>
-        public AssemblyJson Assembly(CurrentPackageAssembly assembly)
+	    /// <summary>
+	    /// Formats an assembly. This method establishes its own <see cref="AssemblyScope"/>.
+	    /// </summary>
+	    /// <param name="assembly">The assembly to format.</param>
+	    /// <param name="doc">The string JSON documentation.</param>
+	    public void Assembly(CurrentPackageAssembly assembly, StreamingJsonWriter doc)
         {
             _logger.ProcessingAssembly(assembly.Path);
             using (AssemblyScope.Create(assembly.Xmldoc))
             {
                 var stopwatch = Stopwatch.StartNew();
-                var result = new AssemblyJson
-                {
-                    FullName = assembly.AssemblyDefinition.FullName,
-                    Path = assembly.Path,
-                    FileLength = assembly.FileLength,
-                    Attributes = _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList(),
-                    Types = assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()).Select(x => _memberDefinitionFormatter.MemberDefinition(x)).ToList(),
-                };
+				doc.WriteStartObject();
+				doc.WriteProperty("n", assembly.AssemblyDefinition.FullName);
+	            doc.WriteProperty("p", assembly.Path);
+	            doc.WriteProperty("s", assembly.FileLength);
+	            doc.WriteProperty("b", _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList());
+				doc.WritePropertyName("t");
+				doc.WriteStartArray();
+				foreach (var t in assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()))
+					doc.SerializeObject(_memberDefinitionFormatter.MemberDefinition(t));
+				doc.WriteEndArray();
+				doc.WriteEndObject();
                 _logger.ProcessedAssembly(assembly.Path, stopwatch.Elapsed);
-                return result;
             }
         }
     }
