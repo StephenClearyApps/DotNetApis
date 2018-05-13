@@ -45,7 +45,7 @@ namespace FunctionApp
 
         [FunctionName("OpsFunction")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Function, "post", Route = "ops")]HttpRequestMessage req,
-            ILogger log, TraceWriter writer, ExecutionContext context)
+            ILogger log, ExecutionContext context)
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
@@ -53,8 +53,6 @@ namespace FunctionApp
             AmbientContext.RequestId = req.TryGetRequestId();
 	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
 	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-	        if (req.IsLocal())
-		        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 
             var container = await Containers.GetContainerForAsync<OpsFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))

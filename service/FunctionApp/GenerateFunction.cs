@@ -37,7 +37,7 @@ namespace FunctionApp
         [FunctionName("GenerateFunction")]
         public static async Task Run([QueueTrigger("generate")]string queueMessage,
             [Queue("generate-poison")] IAsyncCollector<CloudQueueMessage> generatePoisonQueue,
-            ILogger log, TraceWriter writer, ExecutionContext context)
+            ILogger log, ExecutionContext context)
         {
             try
             {
@@ -47,7 +47,6 @@ namespace FunctionApp
 	            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
 	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.JsonLoggerProvider);
 	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 				AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new AsyncLocalAblyLoggerProvider());
 
                 var container = await Containers.GetContainerForAsync<GenerateFunction>();

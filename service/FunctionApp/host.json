@@ -1,2 +1,9 @@
 {
+  "logger": {
+    "categoryFilter": {
+      "categoryLevels": {
+        "Function": "Debug"
+      }
+    }
+  }
 }

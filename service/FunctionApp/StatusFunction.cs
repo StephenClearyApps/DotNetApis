@@ -67,7 +67,7 @@ namespace FunctionApp
 
         [FunctionName("StatusFunction")]
         public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/status")]HttpRequestMessage req,
-            ILogger log, TraceWriter writer, ExecutionContext context)
+            ILogger log, ExecutionContext context)
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
@@ -77,8 +77,6 @@ namespace FunctionApp
 	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
 	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
 	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-	        if (req.IsLocal())
-		        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new TraceWriterLoggerProvider(writer));
 
             var container = await Containers.GetContainerForAsync<StatusFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
