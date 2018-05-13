@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Cecil;
 using DotNetApis.Common;
-using DotNetApis.Nuget;
 using DotNetApis.Storage;
 using DotNetApis.Structure.Locations;
 using DotNetApis.Structure.Xmldoc;
@@ -46,7 +45,7 @@ namespace DotNetApis.Logic.Formatting
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
-            var doc = xmldoc.Descendants("member").FirstOrDefault(x => x.Attribute("name")?.Value == memberXmldocId);
+            var doc = xmldoc.Descendants(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
             if (doc == null)
             {
                 _logger.MemberNotFound(memberXmldocId);
@@ -56,31 +55,31 @@ namespace DotNetApis.Logic.Formatting
             var result = new Xmldoc();
 
             // First, try to find <summary>, and fall back on <value> if not found.
-            var basicDoc = doc.Element("summary") ?? doc.Element("value");
+            var basicDoc = doc.Element(XNames.Summary) ?? doc.Element(XNames.Value);
             if (basicDoc != null)
                 result.Basic = XmldocNode(basicDoc);
 
-            var remarksDoc = doc.Element("remarks");
+            var remarksDoc = doc.Element(XNames.Remarks);
             if (remarksDoc != null)
                 result.Remarks = XmldocNode(remarksDoc);
 
-            var examplesDoc = doc.Elements("example");
+            var examplesDoc = doc.Elements(XNames.Example);
             if (examplesDoc.Any())
                 result.Examples = examplesDoc.Select(XmldocNode).ToList();
 
             // <seealso> tags can be used either at the top-level or inline.
-            var seealsoDoc = doc.Descendants("seealso");
+            var seealsoDoc = doc.Descendants(XNames.Seealso);
             if (seealsoDoc.Any())
                 result.SeeAlso = seealsoDoc.Select(XmldocNode).ToList();
 
-            var exceptionsDoc = doc.Elements("exception");
+            var exceptionsDoc = doc.Elements(XNames.Exception);
             if (exceptionsDoc.Any())
                 result.Exceptions = exceptionsDoc.Select(XmldocNode).ToList();
 
             var method = TryGetXmldocRepresentativeMethod(member);
             if (method != null)
             {
-                var returnsDoc = doc.Element("returns");
+                var returnsDoc = doc.Element(XNames.Returns);
                 if (returnsDoc != null)
                     result.Returns = XmldocNode(returnsDoc);
             }
@@ -99,12 +98,12 @@ namespace DotNetApis.Logic.Formatting
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
-            var doc = xmldoc.Descendants("member").FirstOrDefault(x => x.Attribute("name")?.Value == memberXmldocId);
+            var doc = xmldoc.Descendants(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
             if (doc == null)
                 return null;
 
             var parameterName = parameter.Name;
-            var typeparamDoc = doc.Elements("typeparam").FirstOrDefault(y => y.Attribute("name")?.Value == parameterName);
+            var typeparamDoc = doc.Elements(XNames.Typeparam).FirstOrDefault(y => y.Attribute(XNames.Name)?.Value == parameterName);
             if (typeparamDoc == null)
             {
                 _logger.TypeparamNotFound(parameterName, memberXmldocId);
@@ -124,12 +123,12 @@ namespace DotNetApis.Logic.Formatting
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
-            var doc = xmldoc.Descendants("member").FirstOrDefault(x => x.Attribute("name")?.Value == memberXmldocId);
+            var doc = xmldoc.Descendants(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
             if (doc == null)
                 return null;
 
             var parameterName = parameter.Name;
-            var paramDoc = doc.Elements("param").FirstOrDefault(y => y.Attribute("name")?.Value == parameterName);
+            var paramDoc = doc.Elements(XNames.Param).FirstOrDefault(y => y.Attribute(XNames.Name)?.Value == parameterName);
             if (paramDoc == null)
             {
                 _logger.ParamNotFound(parameterName, memberXmldocId);
@@ -159,47 +158,47 @@ namespace DotNetApis.Logic.Formatting
         private IXmldocNode XmldocNode(XElement source)
         {
             // Top-level entries are output as divs.
-            if (source.Name == "summary" || source.Name == "value" || source.Name == "remarks" || source.Name == "example" ||
-                source.Name == "exception" || source.Name == "typeparam" || source.Name == "returns" || source.Name == "param")
+            if (source.Name == XNames.Summary || source.Name == XNames.Value || source.Name == XNames.Remarks || source.Name == XNames.Example ||
+                source.Name == XNames.Exception || source.Name == XNames.Typeparam || source.Name == XNames.Returns || source.Name == XNames.Param)
                 return XmldocNode(source, XmlXmldocNodeKind.Div);
 
             // <c> tags represent inline code.
-            if (source.Name == "c")
+            if (source.Name == XNames.C)
                 return XmldocNode(source, XmlXmldocNodeKind.InlineCode);
 
             // <code> tags represent block code.
-            if (source.Name == "code")
+            if (source.Name == XNames.Code)
                 return XmldocNode(source, XmlXmldocNodeKind.BlockCode);
 
             // <filterpriority> is an undocumented extension used by VB intellisense; we ignore it.
-            if (source.Name == "filterpriority")
+            if (source.Name == XNames.Filterpriority)
                 return null;
 
             // <para> is for paragraphs.
-            if (source.Name == "para")
+            if (source.Name == XNames.Para)
                 return XmldocNode(source, XmlXmldocNodeKind.Div);
 
             // <paramref> refers to a named parameter.
-            if (source.Name == "paramref")
-                return XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(source.Attribute("name")?.Value));
+            if (source.Name == XNames.Paramref)
+                return XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(source.Attribute(XNames.Name)?.Value));
 
             // <typeparamref> refers to a type parameter.
-            if (source.Name == "typeparamref")
-                return XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(source.Attribute("name")?.Value));
+            if (source.Name == XNames.Typeparamref)
+                return XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(source.Attribute(XNames.Name)?.Value));
 
             // <permission> is something no one understands, and there are no occurrences of it in the wild, so we just ignore it.
-            if (source.Name == "permission")
+            if (source.Name == XNames.Permission)
                 return null;
 
             // <see> and <seealso> refer to another member.
-            if (source.Name == "see" || source.Name == "seealso")
+            if (source.Name == XNames.See || source.Name == XNames.Seealso)
             {
                 var hasContents = source.Nodes().Any();
-                var langword = source.Attribute("langword")?.Value;
+                var langword = source.Attribute(XNames.Langword)?.Value;
                 if (langword != null)
                     return hasContents ? XmldocNode(source, XmlXmldocNodeKind.InlineCode) : XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(langword));
 
-                var cref = source.Attribute("cref")?.Value;
+                var cref = source.Attribute(XNames.Cref)?.Value;
                 if (cref == null)
                 {
                     _logger.MissingSeeTarget();
@@ -207,8 +206,8 @@ namespace DotNetApis.Logic.Formatting
                 }
                 if (cref.StartsWith("!:") || cref.StartsWith("N:"))
                     return XmldocNode(XmlXmldocNodeKind.InlineCode, null, XmldocNode(cref.Substring(2)));
-                var useQualifiedName = source.Attribute("qualifyHint")?.Value == "true";
-                var useOverload = source.Attribute("autoUpgrade")?.Value == "true";
+                var useQualifiedName = source.Attribute(XNames.QualifyHint)?.Value == "true";
+                var useOverload = source.Attribute(XNames.AutoUpgrade)?.Value == "true";
                 var (structuredLocation, friendlyName) = TryResolveXmldocIdentifier(cref);
                 var defaultText = (useQualifiedName ? friendlyName?.QualifiedName : friendlyName?.SimpleName) ?? cref;
                 var attributes = new { l = structuredLocation, t = friendlyName?.FullyQualifiedName };
@@ -218,44 +217,44 @@ namespace DotNetApis.Logic.Formatting
             }
 
             // <list> is half-baked support for lists and tables. It's defined to work for definition lists, too, but no one else supports that, so we don't either.
-            if (source.Name == "list")
+            if (source.Name == XNames.List)
             {
-                var type = source.Attribute("type")?.Value ?? "bullet";
+                var type = source.Attribute(XNames.Type)?.Value ?? "bullet";
                 if (type != "table")
                     return XmldocNode(type == "number" ? XmlXmldocNodeKind.OrderedList : XmlXmldocNodeKind.UnorderedList, null,
-                        source.Descendants("description").Select(x => XmldocNode(x, XmlXmldocNodeKind.ListItem)));
-                var header = source.Element("listheader");
+                        source.Descendants(XNames.Description).Select(x => XmldocNode(x, XmlXmldocNodeKind.ListItem)));
+                var header = source.Element(XNames.Listheader);
                 var structuredHeader = header == null ? null :
-                    XmldocNode(XmlXmldocNodeKind.TableRow, null, header.Descendants("term").Select(x => XmldocNode(x, XmlXmldocNodeKind.TableHeaderData)));
+                    XmldocNode(XmlXmldocNodeKind.TableRow, null, header.Descendants(XNames.Term).Select(x => XmldocNode(x, XmlXmldocNodeKind.TableHeaderData)));
                 return XmldocNode(XmlXmldocNodeKind.Table, null, Return(structuredHeader).Concat(
-                    source.Elements("item").Select(item => XmldocNode(XmlXmldocNodeKind.TableRow, null,
-                        item.Descendants("description").Select(x => XmldocNode(x, XmlXmldocNodeKind.TableData))))
+                    source.Elements(XNames.Item).Select(item => XmldocNode(XmlXmldocNodeKind.TableRow, null,
+                        item.Descendants(XNames.Description).Select(x => XmldocNode(x, XmlXmldocNodeKind.TableData))))
                     ));
             }
 
             // Supported HTML tags.
 
-            if (source.Name == "div" || source.Name == "p")
+            if (source.Name == XNames.Div || source.Name == XNames.P)
                 return XmldocNode(source, XmlXmldocNodeKind.Div);
-            if (source.Name == "i")
+            if (source.Name == XNames.I)
                 return XmldocNode(source, XmlXmldocNodeKind.Italic);
-            if (source.Name == "b")
+            if (source.Name == XNames.B)
                 return XmldocNode(source, XmlXmldocNodeKind.Bold);
-            if (source.Name == "a" && source.Attribute("href")?.Value != null)
-                return XmldocNode(source, XmlXmldocNodeKind.Link, new { h = source.Attribute("href")?.Value });
-            if (source.Name == "table")
+            if (source.Name == XNames.A && source.Attribute(XNames.Href)?.Value != null)
+                return XmldocNode(source, XmlXmldocNodeKind.Link, new { h = source.Attribute(XNames.Href)?.Value });
+            if (source.Name == XNames.Table)
                 return XmldocNode(source, XmlXmldocNodeKind.Table);
-            if (source.Name == "tr")
+            if (source.Name == XNames.Tr)
                 return XmldocNode(source, XmlXmldocNodeKind.TableRow);
-            if (source.Name == "th")
+            if (source.Name == XNames.Th)
                 return XmldocNode(source, XmlXmldocNodeKind.TableHeaderData);
-            if (source.Name == "td")
+            if (source.Name == XNames.Td)
                 return XmldocNode(source, XmlXmldocNodeKind.TableData);
-            if (source.Name == "ol")
+            if (source.Name == XNames.Ol)
                 return XmldocNode(source, XmlXmldocNodeKind.OrderedList);
-            if (source.Name == "ul")
+            if (source.Name == XNames.Ul)
                 return XmldocNode(source, XmlXmldocNodeKind.UnorderedList);
-            if (source.Name == "li")
+            if (source.Name == XNames.Li)
                 return XmldocNode(source, XmlXmldocNodeKind.ListItem);
 
             // All other elements are assumed to be HTML, and are treated as a <span>, extracting text nodes and transforming any child nodes.
@@ -311,7 +310,53 @@ namespace DotNetApis.Logic.Formatting
 
             return (null, null);
         }
-    }
+
+	    private static class XNames
+	    {
+		    public static readonly XName A = "a";
+		    public static readonly XName AutoUpgrade = "autoUpgrade";
+		    public static readonly XName B = "b";
+		    public static readonly XName C = "c";
+		    public static readonly XName Code = "code";
+		    public static readonly XName Cref = "cref";
+		    public static readonly XName Description = "description";
+		    public static readonly XName Div = "div";
+		    public static readonly XName Example = "example";
+		    public static readonly XName Exception = "exception";
+		    public static readonly XName Filterpriority = "filterpriority";
+		    public static readonly XName Href = "href";
+		    public static readonly XName I = "i";
+		    public static readonly XName Item = "item";
+		    public static readonly XName Langword = "langword";
+		    public static readonly XName Li = "li";
+		    public static readonly XName List = "list";
+		    public static readonly XName Listheader = "listheader";
+		    public static readonly XName Member = "member";
+		    public static readonly XName Name = "name";
+		    public static readonly XName Ol = "ol";
+		    public static readonly XName P = "p";
+		    public static readonly XName Para = "para";
+		    public static readonly XName Param = "param";
+		    public static readonly XName Paramref = "paramref";
+		    public static readonly XName Permission = "permission";
+		    public static readonly XName QualifyHint = "qualifyHint";
+		    public static readonly XName Remarks = "remarks";
+		    public static readonly XName Returns = "returns";
+		    public static readonly XName See = "see";
+		    public static readonly XName Seealso = "seealso";
+		    public static readonly XName Summary = "summary";
+		    public static readonly XName Table = "table";
+		    public static readonly XName Td = "td";
+		    public static readonly XName Term = "term";
+		    public static readonly XName Th = "th";
+		    public static readonly XName Tr = "tr";
+		    public static readonly XName Type = "type";
+			public static readonly XName Typeparam = "typeparam";
+		    public static readonly XName Typeparamref = "typeparamref";
+		    public static readonly XName Ul = "ul";
+			public static readonly XName Value = "value";
+	    }
+	}
 
 	internal static partial class Logging
 	{
