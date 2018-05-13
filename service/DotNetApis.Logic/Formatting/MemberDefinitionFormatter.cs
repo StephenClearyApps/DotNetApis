@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Cecil;
 using DotNetApis.Common;
+using DotNetApis.Storage;
 using DotNetApis.Structure.Entities;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;
@@ -40,24 +41,28 @@ namespace DotNetApis.Logic.Formatting
         /// Formats a member definition.
         /// </summary>
         /// <param name="member">The member to format.</param>
-        public IEntity MemberDefinition(IMemberDefinition member)
+        public void MemberDefinition(IMemberDefinition member, StreamingJsonWriter doc)
         {
             _logger.ProcessingEntity(member.FullName);
             if (member is MethodDefinition method)
-                return _methodFormatter.Method(method);
-            if (member is PropertyDefinition property)
-                return _propertyFormatter.Property(property);
-            if (member is EventDefinition @event)
-                return _eventFormatter.Event(@event);
-            if (member is FieldDefinition field)
-                return _fieldFormatter.Field(field);
-            var type = (TypeDefinition)member;
-            if (type.IsEnum)
-                return _enumFormatter.Enum(type);
-            if (type.IsDelegate())
-                return _delegateFormatter.Delegate(type);
-            return _typeFormatter.Type(type, MemberDefinition);
-        }
+                doc.SerializeObject(_methodFormatter.Method(method));
+            else if (member is PropertyDefinition property)
+                doc.SerializeObject(_propertyFormatter.Property(property));
+            else if (member is EventDefinition @event)
+                doc.SerializeObject(_eventFormatter.Event(@event));
+            else if (member is FieldDefinition field)
+                doc.SerializeObject(_fieldFormatter.Field(field));
+            else
+            {
+	            var type = (TypeDefinition)member;
+	            if (type.IsEnum)
+		            doc.SerializeObject(_enumFormatter.Enum(type));
+	            else if (type.IsDelegate())
+		            doc.SerializeObject(_delegateFormatter.Delegate(type));
+	            else
+		            _typeFormatter.Type(type, MemberDefinition, doc);
+            }
+		}
     }
 
 	internal static partial class Logging

@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using Xunit;
-using static FormatUtility;
+using static DotNetApis.Logic.UnitTests.FormattingHelpers.FormatUtility;
 
 namespace DotNetApis.Logic.UnitTests
 {

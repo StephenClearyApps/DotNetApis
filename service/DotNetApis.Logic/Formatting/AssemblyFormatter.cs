@@ -44,7 +44,7 @@ namespace DotNetApis.Logic.Formatting
 				doc.WritePropertyName("t");
 				doc.WriteStartArray();
 				foreach (var t in assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()))
-					doc.SerializeObject(_memberDefinitionFormatter.MemberDefinition(t));
+					_memberDefinitionFormatter.MemberDefinition(t, doc);
 				doc.WriteEndArray();
 				doc.WriteEndObject();
                 _logger.ProcessedAssembly(assembly.Path, stopwatch.Elapsed);
