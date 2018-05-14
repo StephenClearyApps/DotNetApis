@@ -12,10 +12,10 @@ namespace DotNetApis.Logic
     {
         private AssemblyScope(XContainer xmldoc)
         {
-            Xmldoc = xmldoc;
+	        Xmldoc = new XmldocIndex(xmldoc);
         }
 
-        public XContainer Xmldoc { get; }
+        public XmldocIndex Xmldoc { get; }
 
         public static IDisposable Create(XContainer xmldoc) => Create(new AssemblyScope(xmldoc));
     }
