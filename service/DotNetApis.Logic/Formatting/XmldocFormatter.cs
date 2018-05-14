@@ -45,7 +45,7 @@ namespace DotNetApis.Logic.Formatting
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
-            var doc = xmldoc.Descendants(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
+            var doc = xmldoc.Element(XNames.Doc)?.Element(XNames.Members)?.Elements(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
             if (doc == null)
             {
                 _logger.MemberNotFound(memberXmldocId);
@@ -98,7 +98,7 @@ namespace DotNetApis.Logic.Formatting
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
-            var doc = xmldoc.Descendants(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
+            var doc = xmldoc.Element(XNames.Doc)?.Element(XNames.Members)?.Elements(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
             if (doc == null)
                 return null;
 
@@ -123,7 +123,7 @@ namespace DotNetApis.Logic.Formatting
             if (xmldoc == null)
                 return null;
             var memberXmldocId = member.MemberXmldocIdentifier();
-            var doc = xmldoc.Descendants(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
+            var doc = xmldoc.Element(XNames.Doc)?.Element(XNames.Members)?.Elements(XNames.Member).FirstOrDefault(x => x.Attribute(XNames.Name)?.Value == memberXmldocId);
             if (doc == null)
                 return null;
 
@@ -321,6 +321,7 @@ namespace DotNetApis.Logic.Formatting
 		    public static readonly XName Cref = "cref";
 		    public static readonly XName Description = "description";
 		    public static readonly XName Div = "div";
+		    public static readonly XName Doc = "doc";
 		    public static readonly XName Example = "example";
 		    public static readonly XName Exception = "exception";
 		    public static readonly XName Filterpriority = "filterpriority";
@@ -332,6 +333,7 @@ namespace DotNetApis.Logic.Formatting
 		    public static readonly XName List = "list";
 		    public static readonly XName Listheader = "listheader";
 		    public static readonly XName Member = "member";
+		    public static readonly XName Members = "members";
 		    public static readonly XName Name = "name";
 		    public static readonly XName Ol = "ol";
 		    public static readonly XName P = "p";
