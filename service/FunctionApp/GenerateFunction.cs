@@ -22,14 +22,14 @@ namespace FunctionApp
         public GenerateFunction(GenerateHandler handler, ILoggerFactory loggerFactory)
         {
             _handler = handler;
-			_loggerFactory = loggerFactory;
+            _loggerFactory = loggerFactory;
         }
 
         public async Task RunAsync(string queueMessage)
         {
             var message = JsonConvert.DeserializeObject<GenerateRequestMessage>(queueMessage, Constants.CommunicationJsonSerializerSettings);
             AmbientContext.ParentOperationId = message.OperationId;
-	        AsyncLocalAblyLoggerProvider.TryCreate(message.NormalizedPackageId + "/" + message.NormalizedPackageVersion + "/" + message.NormalizedFrameworkTarget, _loggerFactory);
+            AsyncLocalAblyLoggerProvider.TryCreate(message.NormalizedPackageId + "/" + message.NormalizedPackageVersion + "/" + message.NormalizedFrameworkTarget, _loggerFactory);
 
             await _handler.HandleAsync(message);
         }
@@ -44,10 +44,10 @@ namespace FunctionApp
                 GlobalConfig.Initialize();
                 AmbientContext.JsonLoggerProvider = new JsonLoggerProvider();
                 AmbientContext.OperationId = context.InvocationId;
-	            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.JsonLoggerProvider);
-	            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-				AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new AsyncLocalAblyLoggerProvider());
+                AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.JsonLoggerProvider);
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new AsyncLocalAblyLoggerProvider());
 
                 var container = await Containers.GetContainerForAsync<GenerateFunction>();
                 using (AsyncScopedLifestyle.BeginScope(container))

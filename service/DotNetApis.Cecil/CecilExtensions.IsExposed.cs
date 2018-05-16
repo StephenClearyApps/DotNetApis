@@ -53,7 +53,7 @@ namespace DotNetApis.Cecil
         /// Whether this property is accessible from another assembly (assuming its declaring type is accessible).
         /// </summary>
         public static bool IsExposed(this PropertyDefinition property) =>
-			(property.GetMethod != null && property.GetMethod.IsExposed()) || (property.SetMethod != null && property.SetMethod.IsExposed());
+            (property.GetMethod != null && property.GetMethod.IsExposed()) || (property.SetMethod != null && property.SetMethod.IsExposed());
 
         /// <summary>
         /// Whether this event is accessible from another assembly (assuming its declaring type is accessible).

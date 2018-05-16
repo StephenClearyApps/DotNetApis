@@ -18,8 +18,8 @@ namespace DotNetApis.Logic
 {
     public sealed class GenerateHandler
     {
-	    private readonly ILoggerFactory _loggerFactory;
-		private readonly ILogger<GenerateHandler> _logger;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<GenerateHandler> _logger;
         private readonly PackageDownloader _packageDownloader;
         private readonly PlatformResolver _platformResolver;
         private readonly NugetPackageDependencyResolver _dependencyResolver;
@@ -28,13 +28,13 @@ namespace DotNetApis.Logic
         private readonly AssemblyFormatter _assemblyFormatter;
         private readonly PackageJsonCombinedStorage _packageJsonCombinedStorage;
         private readonly INugetRepository _nugetRepository;
-	    private readonly IPackageJsonStorage _packageJsonStorage;
+        private readonly IPackageJsonStorage _packageJsonStorage;
 
-	    public GenerateHandler(ILoggerFactory loggerFactory, PackageDownloader packageDownloader, PlatformResolver platformResolver,
+        public GenerateHandler(ILoggerFactory loggerFactory, PackageDownloader packageDownloader, PlatformResolver platformResolver,
             NugetPackageDependencyResolver dependencyResolver, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceStorage referenceStorage, AssemblyFormatter assemblyFormatter,
             PackageJsonCombinedStorage packageJsonCombinedStorage, INugetRepository nugetRepository, IPackageJsonStorage packageJsonStorage)
         {
-	        _loggerFactory = loggerFactory;
+            _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<GenerateHandler>();
             _packageDownloader = packageDownloader;
             _platformResolver = platformResolver;
@@ -44,7 +44,7 @@ namespace DotNetApis.Logic
             _assemblyFormatter = assemblyFormatter;
             _packageJsonCombinedStorage = packageJsonCombinedStorage;
             _nugetRepository = nugetRepository;
-	        _packageJsonStorage = packageJsonStorage;
+            _packageJsonStorage = packageJsonStorage;
         }
         
         public async Task HandleAsync(GenerateRequestMessage message)
@@ -53,10 +53,10 @@ namespace DotNetApis.Logic
             var target = PlatformTarget.TryParse(message.NormalizedFrameworkTarget);
             if (idver == null || target == null)
                 throw new InvalidOperationException("Invalid generation request");
-	        var log = await _packageJsonStorage.OpenJsonBlobAsync(idver, target, isLog: true);
-			AmbientContext.JsonLoggerProvider?.Start(log.JsonWriter);
+            var log = await _packageJsonStorage.OpenJsonBlobAsync(idver, target, isLog: true);
+            AmbientContext.JsonLoggerProvider?.Start(log.JsonWriter);
             try
-			{
+            {
                 var doc = await HandleAsync(idver, target).ConfigureAwait(false);
                 await _packageJsonCombinedStorage.WriteSuccessAsync(idver, target, doc, log).ConfigureAwait(false);
             }
@@ -160,7 +160,7 @@ namespace DotNetApis.Logic
 
         private async Task<IBlobWriter> GenerateAsync(NugetPackageIdVersion idver, PlatformTarget target, AssemblyCollection assemblies, NugetFullPackage publishedPackage, IEnumerable<NugetPackage> dependencyPackages, IEnumerable<PlatformTarget> allTargets)
         {
-	        var doc = new StreamingJsonWriter(await _packageJsonStorage.OpenJsonBlobAsync(idver, target, isLog: false).ConfigureAwait(false));
+            var doc = new StreamingJsonWriter(await _packageJsonStorage.OpenJsonBlobAsync(idver, target, isLog: false).ConfigureAwait(false));
             using (GenerationScope.Create(target, assemblies))
             {
                 // Produce JSON structure for all package dependencies.
@@ -182,50 +182,50 @@ namespace DotNetApis.Logic
                 }).OrderBy(x => x.VersionRange == null).ThenBy(x => x.PackageId, StringComparer.InvariantCultureIgnoreCase).ToList();
 
                 // Produce JSON structure for the primary package.
-				doc.WriteStartObject();
-				doc.WriteProperty("i", publishedPackage.Package.Metadata.PackageId);
-	            doc.WriteProperty("v", publishedPackage.Package.Metadata.Version.ToString());
-	            doc.WriteProperty("t", target.ToString());
-	            doc.WriteProperty("d", publishedPackage.Package.Metadata.Description);
-	            doc.WriteProperty("a", publishedPackage.Package.Metadata.Authors);
-	            doc.WriteProperty("c", publishedPackage.Package.Metadata.IconUrl);
-	            doc.WriteProperty("p", publishedPackage.Package.Metadata.ProjectUrl);
-	            doc.WriteProperty("f", allTargets.Select(x => x.ToString()).ToList());
-	            doc.WriteProperty("e", dependencies);
-	            doc.WriteProperty("b", publishedPackage.ExternalMetadata.Published);
-	            doc.WriteProperty("r", publishedPackage.Package.Metadata.Version.IsReleaseVersion);
-				doc.WritePropertyName("l");
-				doc.WriteStartArray();
-	            foreach (var assembly in assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null))
-		            _assemblyFormatter.Assembly(assembly, doc);
-	            doc.WriteEndArray();
-				doc.WriteEndObject();
-	            return doc;
+                doc.WriteStartObject();
+                doc.WriteProperty("i", publishedPackage.Package.Metadata.PackageId);
+                doc.WriteProperty("v", publishedPackage.Package.Metadata.Version.ToString());
+                doc.WriteProperty("t", target.ToString());
+                doc.WriteProperty("d", publishedPackage.Package.Metadata.Description);
+                doc.WriteProperty("a", publishedPackage.Package.Metadata.Authors);
+                doc.WriteProperty("c", publishedPackage.Package.Metadata.IconUrl);
+                doc.WriteProperty("p", publishedPackage.Package.Metadata.ProjectUrl);
+                doc.WriteProperty("f", allTargets.Select(x => x.ToString()).ToList());
+                doc.WriteProperty("e", dependencies);
+                doc.WriteProperty("b", publishedPackage.ExternalMetadata.Published);
+                doc.WriteProperty("r", publishedPackage.Package.Metadata.Version.IsReleaseVersion);
+                doc.WritePropertyName("l");
+                doc.WriteStartArray();
+                foreach (var assembly in assemblies.CurrentPackageAssemblies.Where(x => x.AssemblyDefinition != null))
+                    _assemblyFormatter.Assembly(assembly, doc);
+                doc.WriteEndArray();
+                doc.WriteEndObject();
+                return doc;
             }
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void HandlePackageException(this ILogger<GenerateHandler> logger, GenerateRequestMessage message, Exception exception) =>
-			Logger.Log(logger, 1, LogLevel.Critical, "Error handling message {message}", message, exception);
+    internal static partial class Logging
+    {
+        public static void HandlePackageException(this ILogger<GenerateHandler> logger, GenerateRequestMessage message, Exception exception) =>
+            Logger.Log(logger, 1, LogLevel.Critical, "Error handling message {message}", message, exception);
 
-		public static void ReferenceAssembliesLoaded(this ILogger<GenerateHandler> logger, TimeSpan elapsed) =>
-			Logger.Log(logger, 2, LogLevel.Debug, "Reference assemblies loaded in {elapsed}", elapsed, null);
+        public static void ReferenceAssembliesLoaded(this ILogger<GenerateHandler> logger, TimeSpan elapsed) =>
+            Logger.Log(logger, 2, LogLevel.Debug, "Reference assemblies loaded in {elapsed}", elapsed, null);
 
-		public static void DocumentingAssemblies(this ILogger<GenerateHandler> logger, IReadOnlyList<CurrentPackageAssembly> assemblies) =>
-			Logger.Log(logger, 3, LogLevel.Debug, "Documentation will be generated for {assemblies}", assemblies.Dumpable(), null);
+        public static void DocumentingAssemblies(this ILogger<GenerateHandler> logger, IReadOnlyList<CurrentPackageAssembly> assemblies) =>
+            Logger.Log(logger, 3, LogLevel.Debug, "Documentation will be generated for {assemblies}", assemblies.Dumpable(), null);
 
-		public static void AddedDepencencyAssemblies(this ILogger<GenerateHandler> logger, int assemblyCount, int packageCount) =>
-			Logger.Log(logger, 4, LogLevel.Debug, "Added {assemblyCount} assemblies from {packageCount} dependency packages", assemblyCount, packageCount, null);
+        public static void AddedDepencencyAssemblies(this ILogger<GenerateHandler> logger, int assemblyCount, int packageCount) =>
+            Logger.Log(logger, 4, LogLevel.Debug, "Added {assemblyCount} assemblies from {packageCount} dependency packages", assemblyCount, packageCount, null);
 
-		public static void DetectedFSharp(this ILogger<GenerateHandler> logger) =>
-			Logger.Log(logger, 5, LogLevel.Information, "Detected implicit dependency on FSharp.Core. Retrying...", null);
+        public static void DetectedFSharp(this ILogger<GenerateHandler> logger) =>
+            Logger.Log(logger, 5, LogLevel.Information, "Detected implicit dependency on FSharp.Core. Retrying...", null);
 
-		public static void FSharpCoreNotCompatibleWithTarget(this ILogger<GenerateHandler> logger, NugetPackageIdVersion idver, PlatformTarget target) =>
-			Logger.Log(logger, 6, LogLevel.Debug, "Rejecting {idver} because it does not support target {target}", idver, target, null);
+        public static void FSharpCoreNotCompatibleWithTarget(this ILogger<GenerateHandler> logger, NugetPackageIdVersion idver, PlatformTarget target) =>
+            Logger.Log(logger, 6, LogLevel.Debug, "Rejecting {idver} because it does not support target {target}", idver, target, null);
 
-		public static void FSharpCoreNotFound(this ILogger<GenerateHandler> logger) =>
-			Logger.Log(logger, 7, LogLevel.Error, "Could not find compatible version of FSharp.Core", null);
-	}
+        public static void FSharpCoreNotFound(this ILogger<GenerateHandler> logger) =>
+            Logger.Log(logger, 7, LogLevel.Error, "Could not find compatible version of FSharp.Core", null);
+    }
 }

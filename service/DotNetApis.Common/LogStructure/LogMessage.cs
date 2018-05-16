@@ -17,8 +17,8 @@ namespace DotNetApis.Common.LogStructure
 
         public string Message { get; set; }
 
-		public string Category { get; set; }
+        public string Category { get; set; }
 
-		public int EventId { get; set; }
+        public int EventId { get; set; }
     }
 }

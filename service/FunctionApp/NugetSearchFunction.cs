@@ -88,12 +88,12 @@ namespace FunctionApp
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
-	        AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
+            AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
-	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
 
             var container = await Containers.GetContainerForAsync<NugetSearchFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
@@ -103,16 +103,16 @@ namespace FunctionApp
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void RequestReceived(this ILogger<NugetSearchFunction> logger, string query, int skip, bool includePrerelease, bool includeUnlisted) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Received request for query={query}, skip={skip}, includePrerelease={includePrerelease}, includeUnlisted={includeUnlisted}",
-				query, skip, includePrerelease, includeUnlisted, null);
+    internal static partial class Logging
+    {
+        public static void RequestReceived(this ILogger<NugetSearchFunction> logger, string query, int skip, bool includePrerelease, bool includeUnlisted) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Received request for query={query}, skip={skip}, includePrerelease={includePrerelease}, includeUnlisted={includeUnlisted}",
+                query, skip, includePrerelease, includeUnlisted, null);
 
-		public static void SearchingNuget(this ILogger<NugetSearchFunction> logger, Uri uri) =>
-			Logger.Log(logger, 2, LogLevel.Debug, "Searching on NuGet: {uri}", uri, null);
+        public static void SearchingNuget(this ILogger<NugetSearchFunction> logger, Uri uri) =>
+            Logger.Log(logger, 2, LogLevel.Debug, "Searching on NuGet: {uri}", uri, null);
 
-		public static void ReturningError(this ILogger<NugetSearchFunction> logger, int httpStatusCode, string errorMessage) =>
-			Logger.Log(logger, 3, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
-	}
+        public static void ReturningError(this ILogger<NugetSearchFunction> logger, int httpStatusCode, string errorMessage) =>
+            Logger.Log(logger, 3, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
+    }
 }

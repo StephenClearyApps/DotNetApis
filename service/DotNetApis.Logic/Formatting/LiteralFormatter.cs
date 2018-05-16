@@ -223,9 +223,9 @@ namespace DotNetApis.Logic.Formatting
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void UnknownLiteralValueType(this ILogger<LiteralFormatter> logger, string type) =>
-			Logger.Log(logger, 1, LogLevel.Critical, "Unknown literal value type {type}", type, null);
-	}
+    internal static partial class Logging
+    {
+        public static void UnknownLiteralValueType(this ILogger<LiteralFormatter> logger, string type) =>
+            Logger.Log(logger, 1, LogLevel.Critical, "Unknown literal value type {type}", type, null);
+    }
 }

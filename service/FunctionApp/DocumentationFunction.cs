@@ -112,9 +112,9 @@ namespace FunctionApp
             AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
-			AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
 
             var container = await Containers.GetContainerForAsync<DocumentationFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
@@ -124,23 +124,23 @@ namespace FunctionApp
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void RequestReceived(this ILogger<DocumentationFunction> logger, int jsonVersion, string packageId, string packageVersion, string targetFramework) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
-				jsonVersion, packageId, packageVersion, targetFramework, null);
+    internal static partial class Logging
+    {
+        public static void RequestReceived(this ILogger<DocumentationFunction> logger, int jsonVersion, string packageId, string packageVersion, string targetFramework) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
+                jsonVersion, packageId, packageVersion, targetFramework, null);
 
-		public static void UpdateRequired(this ILogger<DocumentationFunction> logger, int requestedJsonVersion, int currentJsonVersion) =>
-			Logger.Log(logger, 2, LogLevel.Error, "Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}",
-				requestedJsonVersion, currentJsonVersion, null);
+        public static void UpdateRequired(this ILogger<DocumentationFunction> logger, int requestedJsonVersion, int currentJsonVersion) =>
+            Logger.Log(logger, 2, LogLevel.Error, "Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}",
+                requestedJsonVersion, currentJsonVersion, null);
 
-		public static void Redirecting(this ILogger<DocumentationFunction> logger, Uri uri) =>
-			Logger.Log(logger, 3, LogLevel.Debug, "Redirecting to {uri}", uri, null);
+        public static void Redirecting(this ILogger<DocumentationFunction> logger, Uri uri) =>
+            Logger.Log(logger, 3, LogLevel.Debug, "Redirecting to {uri}", uri, null);
 
-		public static void EnqueuedRequest(this ILogger<DocumentationFunction> logger, DateTimeOffset timestamp, NugetPackageIdVersion idver, PlatformTarget target, string queueMessage) =>
-			Logger.Log(logger, 4, LogLevel.Debug, "Enqueued request at {timestamp} for {idver} {target}: {queueMessage}", timestamp, idver, target, queueMessage, null);
+        public static void EnqueuedRequest(this ILogger<DocumentationFunction> logger, DateTimeOffset timestamp, NugetPackageIdVersion idver, PlatformTarget target, string queueMessage) =>
+            Logger.Log(logger, 4, LogLevel.Debug, "Enqueued request at {timestamp} for {idver} {target}: {queueMessage}", timestamp, idver, target, queueMessage, null);
 
-		public static void ReturningError(this ILogger<DocumentationFunction> logger, int httpStatusCode, string errorMessage) =>
-			Logger.Log(logger, 5, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
-	}
+        public static void ReturningError(this ILogger<DocumentationFunction> logger, int httpStatusCode, string errorMessage) =>
+            Logger.Log(logger, 5, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
+    }
 }

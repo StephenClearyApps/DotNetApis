@@ -37,7 +37,7 @@ namespace DotNetApis.Logic.Assemblies
 
         public AssemblyCollection(ILoggerFactory loggerFactory, NugetPackage currentPackage)
         {
-			_loggerFactory = loggerFactory;
+            _loggerFactory = loggerFactory;
             _currentPackage = currentPackage;
             _readerParameters = new ReaderParameters
             {

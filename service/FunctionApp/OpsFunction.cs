@@ -51,8 +51,8 @@ namespace FunctionApp
             req.ApplyRequestHandlingDefaults(context);
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
 
             var container = await Containers.GetContainerForAsync<OpsFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
@@ -62,9 +62,9 @@ namespace FunctionApp
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void ReceivedCommand(this ILogger<OpsFunction> logger, string command) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Received command {command}", command, null);
-	}
+    internal static partial class Logging
+    {
+        public static void ReceivedCommand(this ILogger<OpsFunction> logger, string command) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Received command {command}", command, null);
+    }
 }

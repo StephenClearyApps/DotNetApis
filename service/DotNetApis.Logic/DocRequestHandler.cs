@@ -84,21 +84,21 @@ namespace DotNetApis.Logic
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void NormalizedPackage(this ILogger<DocRequestHandler> logger, string packageId, string packageVersion, NugetPackageIdVersion idver) =>
-			Logger.Log(logger, 1, LogLevel.Information, "Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver, null);
+    internal static partial class Logging
+    {
+        public static void NormalizedPackage(this ILogger<DocRequestHandler> logger, string packageId, string packageVersion, NugetPackageIdVersion idver) =>
+            Logger.Log(logger, 1, LogLevel.Information, "Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver, null);
 
-		public static void UnsupportedTargetFramework(this ILogger<DocRequestHandler> logger, string targetFramework) =>
-			Logger.Log(logger, 2, LogLevel.Error, "Target framework {targetFramework} is not supported", targetFramework, null);
+        public static void UnsupportedTargetFramework(this ILogger<DocRequestHandler> logger, string targetFramework) =>
+            Logger.Log(logger, 2, LogLevel.Error, "Target framework {targetFramework} is not supported", targetFramework, null);
 
-		public static void NormalizedTargetFramework(this ILogger<DocRequestHandler> logger, string targetFramework, PlatformTarget target) =>
-			Logger.Log(logger, 3, LogLevel.Information, "Normalized target framework {targetFramework} to {target} ({targetFrameworkName})", targetFramework, target, target.FrameworkName, null);
+        public static void NormalizedTargetFramework(this ILogger<DocRequestHandler> logger, string targetFramework, PlatformTarget target) =>
+            Logger.Log(logger, 3, LogLevel.Information, "Normalized target framework {targetFramework} to {target} ({targetFrameworkName})", targetFramework, target, target.FrameworkName, null);
 
-		public static void PackageNotFound(this ILogger<DocRequestHandler> logger, string packageId) =>
-			Logger.Log(logger, 4, LogLevel.Error, "Could not find package {packageId}", packageId, null);
+        public static void PackageNotFound(this ILogger<DocRequestHandler> logger, string packageId) =>
+            Logger.Log(logger, 4, LogLevel.Error, "Could not find package {packageId}", packageId, null);
 
-		public static void NoSupportedFrameworks(this ILogger<DocRequestHandler> logger, NugetFullPackage package) =>
-			Logger.Log(logger, 5, LogLevel.Error, "Package {package} has no supported frameworks", package, null);
-	}
+        public static void NoSupportedFrameworks(this ILogger<DocRequestHandler> logger, NugetFullPackage package) =>
+            Logger.Log(logger, 5, LogLevel.Error, "Package {package} has no supported frameworks", package, null);
+    }
 }

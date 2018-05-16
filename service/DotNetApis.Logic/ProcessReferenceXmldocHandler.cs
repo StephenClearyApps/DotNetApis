@@ -223,31 +223,31 @@ namespace DotNetApis.Logic
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void LoadedReferenceAssemblies(this ILogger<ProcessReferenceXmldocHandler> logger, TimeSpan elapsed) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Reference assemblies loaded in {elapsed}", elapsed, null);
+    internal static partial class Logging
+    {
+        public static void LoadedReferenceAssemblies(this ILogger<ProcessReferenceXmldocHandler> logger, TimeSpan elapsed) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Reference assemblies loaded in {elapsed}", elapsed, null);
 
-		public static void MaximumParallelism(this ILogger<ProcessReferenceXmldocHandler> logger, int threadCount) =>
-			Logger.Log(logger, 2, LogLevel.Information, "Using {threadCount} threads", threadCount, null);
+        public static void MaximumParallelism(this ILogger<ProcessReferenceXmldocHandler> logger, int threadCount) =>
+            Logger.Log(logger, 2, LogLevel.Information, "Using {threadCount} threads", threadCount, null);
 
-		public static void SaveToReferenceXmldocTableFailed(this ILogger<ProcessReferenceXmldocHandler> logger, Exception exception) =>
-			Logger.Log(logger, 3, LogLevel.Critical, "Unable to save to reference xmldoc table", exception);
+        public static void SaveToReferenceXmldocTableFailed(this ILogger<ProcessReferenceXmldocHandler> logger, Exception exception) =>
+            Logger.Log(logger, 3, LogLevel.Critical, "Unable to save to reference xmldoc table", exception);
 
-		public static void ProcessingReferenceTarget(this ILogger<ProcessReferenceXmldocHandler> logger, ReferenceAssemblies.ReferenceTarget referenceTarget) =>
-			Logger.Log(logger, 4, LogLevel.Information, "Processing reference target {referenceTarget}", referenceTarget, null);
+        public static void ProcessingReferenceTarget(this ILogger<ProcessReferenceXmldocHandler> logger, ReferenceAssemblies.ReferenceTarget referenceTarget) =>
+            Logger.Log(logger, 4, LogLevel.Information, "Processing reference target {referenceTarget}", referenceTarget, null);
 
-		public static void InternalError(this ILogger<ProcessReferenceXmldocHandler> logger, Exception exception) =>
-			Logger.Log(logger, 5, LogLevel.Critical, "Internal error", exception);
+        public static void InternalError(this ILogger<ProcessReferenceXmldocHandler> logger, Exception exception) =>
+            Logger.Log(logger, 5, LogLevel.Critical, "Internal error", exception);
 
-		public static void LoadAssemblyFailed(this ILogger<ProcessReferenceXmldocHandler> logger, string path, Exception exception) =>
-			Logger.Log(logger, 6, LogLevel.Warning, "Unable to load assembly {path}", path, exception);
+        public static void LoadAssemblyFailed(this ILogger<ProcessReferenceXmldocHandler> logger, string path, Exception exception) =>
+            Logger.Log(logger, 6, LogLevel.Warning, "Unable to load assembly {path}", path, exception);
 
-		public static void ProcessedAssembly(this ILogger<ProcessReferenceXmldocHandler> logger, int count, string path) =>
-			Logger.Log(logger, 7, LogLevel.Information, "Processed {count} types in assembly {path}", count, path, null);
+        public static void ProcessedAssembly(this ILogger<ProcessReferenceXmldocHandler> logger, int count, string path) =>
+            Logger.Log(logger, 7, LogLevel.Information, "Processed {count} types in assembly {path}", count, path, null);
 
-		public static void Waiting(this ILogger<ProcessReferenceXmldocHandler> logger, int count) =>
-			Logger.Log(logger, 8, LogLevel.Debug, "Waiting for processing to complete; remaining items: {count}", count, null);
+        public static void Waiting(this ILogger<ProcessReferenceXmldocHandler> logger, int count) =>
+            Logger.Log(logger, 8, LogLevel.Debug, "Waiting for processing to complete; remaining items: {count}", count, null);
 
-	}
+    }
 }

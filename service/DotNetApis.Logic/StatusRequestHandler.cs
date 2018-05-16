@@ -51,21 +51,21 @@ namespace DotNetApis.Logic
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void NormalizedPackage(this ILogger<StatusRequestHandler> logger, string packageId, string packageVersion, NugetPackageIdVersion idver) =>
-			Logger.Log(logger, 1, LogLevel.Information, "Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver, null);
+    internal static partial class Logging
+    {
+        public static void NormalizedPackage(this ILogger<StatusRequestHandler> logger, string packageId, string packageVersion, NugetPackageIdVersion idver) =>
+            Logger.Log(logger, 1, LogLevel.Information, "Normalized package id {packageId} version {packageVersion} to {idver}", packageId, packageVersion, idver, null);
 
-		public static void UnsupportedTargetFramework(this ILogger<StatusRequestHandler> logger, string targetFramework) =>
-			Logger.Log(logger, 2, LogLevel.Error, "Target framework {targetFramework} is not supported", targetFramework, null);
+        public static void UnsupportedTargetFramework(this ILogger<StatusRequestHandler> logger, string targetFramework) =>
+            Logger.Log(logger, 2, LogLevel.Error, "Target framework {targetFramework} is not supported", targetFramework, null);
 
-		public static void NormalizedTargetFramework(this ILogger<StatusRequestHandler> logger, string targetFramework, PlatformTarget target) =>
-			Logger.Log(logger, 3, LogLevel.Information, "Normalized target framework {targetFramework} to {target} ({targetFrameworkName})", targetFramework, target, target.FrameworkName, null);
+        public static void NormalizedTargetFramework(this ILogger<StatusRequestHandler> logger, string targetFramework, PlatformTarget target) =>
+            Logger.Log(logger, 3, LogLevel.Information, "Normalized target framework {targetFramework} to {target} ({targetFrameworkName})", targetFramework, target, target.FrameworkName, null);
 
-		public static void StatusNotFound(this ILogger<StatusRequestHandler> logger, NugetPackageIdVersion idver, PlatformTarget target) =>
-			Logger.Log(logger, 4, LogLevel.Debug, "Status for {idver} target {target} was not found", idver, target, null);
+        public static void StatusNotFound(this ILogger<StatusRequestHandler> logger, NugetPackageIdVersion idver, PlatformTarget target) =>
+            Logger.Log(logger, 4, LogLevel.Debug, "Status for {idver} target {target} was not found", idver, target, null);
 
-		public static void Status(this ILogger<StatusRequestHandler> logger, NugetPackageIdVersion idver, PlatformTarget target, Status status, Uri logUri, Uri jsonUri) =>
-			Logger.Log(logger, 5, LogLevel.Debug, "Status for {idver} target {target} is {status}, {logUri}, {jsonUri}", idver, target, status, logUri, jsonUri, null);
-	}
+        public static void Status(this ILogger<StatusRequestHandler> logger, NugetPackageIdVersion idver, PlatformTarget target, Status status, Uri logUri, Uri jsonUri) =>
+            Logger.Log(logger, 5, LogLevel.Debug, "Status for {idver} target {target} is {status}, {logUri}, {jsonUri}", idver, target, status, logUri, jsonUri, null);
+    }
 }

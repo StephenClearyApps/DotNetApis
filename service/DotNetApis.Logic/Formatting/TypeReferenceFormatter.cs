@@ -167,18 +167,18 @@ namespace DotNetApis.Logic.Formatting
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void KeywordNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid, string keyword) =>
-			Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve type reference keyword {dnaid} ({keyword})", dnaid, keyword, null);
+    internal static partial class Logging
+    {
+        public static void KeywordNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid, string keyword) =>
+            Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve type reference keyword {dnaid} ({keyword})", dnaid, keyword, null);
 
-		public static void ReqmodNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
-			Logger.Log(logger, 2, LogLevel.Warning, "Unable to resolve required modifier type reference {dnaid}", dnaid, null);
+        public static void ReqmodNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
+            Logger.Log(logger, 2, LogLevel.Warning, "Unable to resolve required modifier type reference {dnaid}", dnaid, null);
 
-		public static void TypeNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
-			Logger.Log(logger, 3, LogLevel.Warning, "Unable to resolve type reference {dnaid}", dnaid, null);
+        public static void TypeNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
+            Logger.Log(logger, 3, LogLevel.Warning, "Unable to resolve type reference {dnaid}", dnaid, null);
 
-		public static void GenericTypeNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
-			Logger.Log(logger, 4, LogLevel.Warning, "Unable to resolve concrete generic type {dnaid}", dnaid, null);
-	}
+        public static void GenericTypeNotFound(this ILogger<TypeReferenceFormatter> logger, string dnaid) =>
+            Logger.Log(logger, 4, LogLevel.Warning, "Unable to resolve concrete generic type {dnaid}", dnaid, null);
+    }
 }

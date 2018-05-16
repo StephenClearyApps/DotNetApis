@@ -21,15 +21,15 @@ namespace DotNetApis.Logic.Assemblies
         private readonly Lazy<AssemblyDefinition> _assemblyDefinition;
         private readonly Lazy<Dictionary<string, FriendlyName>> _dnaIdToFriendlyName;
 
-		/// <summary>
-		/// Initializes the base type.
-		/// </summary>
-		/// <param name="logger">The logger. This base type reserves the event ids 1-100.</param>
-		/// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
-		/// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
-		/// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
-		protected AssemblyBase(ILogger<AssemblyBase> logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId)
-		{
+        /// <summary>
+        /// Initializes the base type.
+        /// </summary>
+        /// <param name="logger">The logger. This base type reserves the event ids 1-100.</param>
+        /// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
+        /// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
+        /// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
+        protected AssemblyBase(ILogger<AssemblyBase> logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId)
+        {
             _path = path;
             Name = Path.GetFileNameWithoutExtension(path);
             _assemblyDefinition = new Lazy<AssemblyDefinition>(() =>
@@ -105,12 +105,12 @@ namespace DotNetApis.Logic.Assemblies
         public override string ToString() => _path;
     }
 
-	internal static partial class Logging
-	{
-		public static void AssemblyLoadFailed(this ILogger<AssemblyBase> logger, string type, string path, Exception exception) =>
-			Logger.Log(logger, 1, LogLevel.Warning, "Unable to load {type} assembly from {path}", type, path, exception);
+    internal static partial class Logging
+    {
+        public static void AssemblyLoadFailed(this ILogger<AssemblyBase> logger, string type, string path, Exception exception) =>
+            Logger.Log(logger, 1, LogLevel.Warning, "Unable to load {type} assembly from {path}", type, path, exception);
 
-		public static void AssemblyProcessingFailed(this ILogger<AssemblyBase> logger, string type, string path, Exception exception) =>
-			Logger.Log(logger, 2, LogLevel.Warning, "Unable to process assembly {type} from {path}", type, path, exception);
-	}
+        public static void AssemblyProcessingFailed(this ILogger<AssemblyBase> logger, string type, string path, Exception exception) =>
+            Logger.Log(logger, 2, LogLevel.Warning, "Unable to process assembly {type} from {path}", type, path, exception);
+    }
 }

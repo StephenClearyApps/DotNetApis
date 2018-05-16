@@ -59,18 +59,18 @@ namespace DotNetApis.Storage
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void LoadingNupkg(this ILogger<AzurePackageStorage> logger, string path) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Loading nupkg from blob {path}", path, null);
+    internal static partial class Logging
+    {
+        public static void LoadingNupkg(this ILogger<AzurePackageStorage> logger, string path) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Loading nupkg from blob {path}", path, null);
 
-		public static void LoadedNupkg(this ILogger<AzurePackageStorage> logger, string path, TimeSpan elapsed) =>
-			Logger.Log(logger, 2, LogLevel.Debug, "Successfully loaded nupkg from blob {path} in {elapsed}", path, elapsed, null);
+        public static void LoadedNupkg(this ILogger<AzurePackageStorage> logger, string path, TimeSpan elapsed) =>
+            Logger.Log(logger, 2, LogLevel.Debug, "Successfully loaded nupkg from blob {path} in {elapsed}", path, elapsed, null);
 
-		public static void SavingNupkg(this ILogger<AzurePackageStorage> logger, NugetPackage package, string path) =>
-			Logger.Log(logger, 3, LogLevel.Debug, "Saving nupkg {package} to blob {path}", package, path, null);
+        public static void SavingNupkg(this ILogger<AzurePackageStorage> logger, NugetPackage package, string path) =>
+            Logger.Log(logger, 3, LogLevel.Debug, "Saving nupkg {package} to blob {path}", package, path, null);
 
-		public static void SavedNupkg(this ILogger<AzurePackageStorage> logger, NugetPackage package, string path, TimeSpan elapsed) =>
-			Logger.Log(logger, 4, LogLevel.Debug, "Successfully saved nupkg {package} to blob {path} in {elapsed}", package, path, elapsed, null);
-	}
+        public static void SavedNupkg(this ILogger<AzurePackageStorage> logger, NugetPackage package, string path, TimeSpan elapsed) =>
+            Logger.Log(logger, 4, LogLevel.Debug, "Successfully saved nupkg {package} to blob {path} in {elapsed}", package, path, elapsed, null);
+    }
 }

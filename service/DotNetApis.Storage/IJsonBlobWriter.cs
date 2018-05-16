@@ -6,6 +6,6 @@ namespace DotNetApis.Storage
 {
     public interface IJsonBlobWriter: IBlobWriter
     {
-		JsonWriter JsonWriter { get; }
+        JsonWriter JsonWriter { get; }
     }
 }

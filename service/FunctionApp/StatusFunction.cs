@@ -71,12 +71,12 @@ namespace FunctionApp
         {
             GlobalConfig.Initialize();
             req.ApplyRequestHandlingDefaults(context);
-	        AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
+            AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
             AmbientContext.OperationId = context.InvocationId;
             AmbientContext.RequestId = req.TryGetRequestId();
-	        AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
-	        AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
 
             var container = await Containers.GetContainerForAsync<StatusFunction>();
             using (AsyncScopedLifestyle.BeginScope(container))
@@ -86,17 +86,17 @@ namespace FunctionApp
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void RequestReceived(this ILogger<StatusFunction> logger, int jsonVersion, string packageId, string packageVersion, string targetFramework) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
-				jsonVersion, packageId, packageVersion, targetFramework, null);
+    internal static partial class Logging
+    {
+        public static void RequestReceived(this ILogger<StatusFunction> logger, int jsonVersion, string packageId, string packageVersion, string targetFramework) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Received request for jsonVersion={jsonVersion}, packageId={packageId}, packageVersion={packageVersion}, targetFramework={targetFramework}",
+                jsonVersion, packageId, packageVersion, targetFramework, null);
 
-		public static void UpdateRequired(this ILogger<StatusFunction> logger, int requestedJsonVersion, int currentJsonVersion) =>
-			Logger.Log(logger, 2, LogLevel.Error, "Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}",
-				requestedJsonVersion, currentJsonVersion, null);
+        public static void UpdateRequired(this ILogger<StatusFunction> logger, int requestedJsonVersion, int currentJsonVersion) =>
+            Logger.Log(logger, 2, LogLevel.Error, "Requested JSON version {requestedJsonVersion} is old; current JSON version is {currentJsonVersion}",
+                requestedJsonVersion, currentJsonVersion, null);
 
-		public static void ReturningError(this ILogger<StatusFunction> logger, int httpStatusCode, string errorMessage) =>
-			Logger.Log(logger, 3, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
-	}
+        public static void ReturningError(this ILogger<StatusFunction> logger, int httpStatusCode, string errorMessage) =>
+            Logger.Log(logger, 3, LogLevel.Debug, "Returning {httpStatusCode}: {errorMessage}", httpStatusCode, errorMessage, null);
+    }
 }

@@ -61,12 +61,12 @@ namespace DotNetApis.Logic.Formatting
         public ILocation TryGetLocationFromXmldocId(string xmldocid) => TryGetLocationAndFriendlyNameFromXmldocId(xmldocid)?.Location;
     }
 
-	internal static partial class Logging
-	{
-		public static void EntityNotFound(this ILogger<TypeLocator> logger, string dnaid) =>
-			Logger.Log(logger, 1, LogLevel.Warning, "Unable to find entity {dnaid}", dnaid, null);
+    internal static partial class Logging
+    {
+        public static void EntityNotFound(this ILogger<TypeLocator> logger, string dnaid) =>
+            Logger.Log(logger, 1, LogLevel.Warning, "Unable to find entity {dnaid}", dnaid, null);
 
-		public static void XmldocEntityNotFound(this ILogger<TypeLocator> logger, string xmldocid) =>
-			Logger.Log(logger, 2, LogLevel.Warning, "Unable to find xmldoc entity {xmldocid}", xmldocid, null);
-	}
+        public static void XmldocEntityNotFound(this ILogger<TypeLocator> logger, string xmldocid) =>
+            Logger.Log(logger, 2, LogLevel.Warning, "Unable to find xmldoc entity {xmldocid}", xmldocid, null);
+    }
 }

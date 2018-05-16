@@ -61,12 +61,12 @@ namespace DotNetApis.Logic.Assemblies
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void FallingBackToGac(this ILogger<AssemblyCollectionAssemblyResolver> logger, string fullName) =>
-			Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve assembly {fullName}; falling back on GAC as a last-ditch effort", fullName, null);
+    internal static partial class Logging
+    {
+        public static void FallingBackToGac(this ILogger<AssemblyCollectionAssemblyResolver> logger, string fullName) =>
+            Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve assembly {fullName}; falling back on GAC as a last-ditch effort", fullName, null);
 
-		public static void AssemblyResolutionFailed(this ILogger<AssemblyCollectionAssemblyResolver> logger, string fullName) =>
-			Logger.Log(logger, 2, LogLevel.Error, "Unable to resolve assembly {fullName}", fullName, null);
-	}
+        public static void AssemblyResolutionFailed(this ILogger<AssemblyCollectionAssemblyResolver> logger, string fullName) =>
+            Logger.Log(logger, 2, LogLevel.Error, "Unable to resolve assembly {fullName}", fullName, null);
+    }
 }

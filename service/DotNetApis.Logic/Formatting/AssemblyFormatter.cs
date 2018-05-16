@@ -25,39 +25,39 @@ namespace DotNetApis.Logic.Formatting
             _logger = loggerFactory.CreateLogger<AssemblyFormatter>();
         }
 
-	    /// <summary>
-	    /// Formats an assembly. This method establishes its own <see cref="AssemblyScope"/>.
-	    /// </summary>
-	    /// <param name="assembly">The assembly to format.</param>
-	    /// <param name="doc">The string JSON documentation.</param>
-	    public void Assembly(CurrentPackageAssembly assembly, StreamingJsonWriter doc)
+        /// <summary>
+        /// Formats an assembly. This method establishes its own <see cref="AssemblyScope"/>.
+        /// </summary>
+        /// <param name="assembly">The assembly to format.</param>
+        /// <param name="doc">The string JSON documentation.</param>
+        public void Assembly(CurrentPackageAssembly assembly, StreamingJsonWriter doc)
         {
             _logger.ProcessingAssembly(assembly.Path);
             using (AssemblyScope.Create(assembly.Xmldoc))
             {
                 var stopwatch = Stopwatch.StartNew();
-				doc.WriteStartObject();
-				doc.WriteProperty("n", assembly.AssemblyDefinition.FullName);
-	            doc.WriteProperty("p", assembly.Path);
-	            doc.WriteProperty("s", assembly.FileLength);
-	            doc.WriteProperty("b", _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList());
-				doc.WritePropertyName("t");
-				doc.WriteStartArray();
-				foreach (var t in assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()))
-					_memberDefinitionFormatter.MemberDefinition(t, doc);
-				doc.WriteEndArray();
-				doc.WriteEndObject();
+                doc.WriteStartObject();
+                doc.WriteProperty("n", assembly.AssemblyDefinition.FullName);
+                doc.WriteProperty("p", assembly.Path);
+                doc.WriteProperty("s", assembly.FileLength);
+                doc.WriteProperty("b", _attributeFormatter.Attributes(assembly.AssemblyDefinition, "assembly").ToList());
+                doc.WritePropertyName("t");
+                doc.WriteStartArray();
+                foreach (var t in assembly.AssemblyDefinition.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()))
+                    _memberDefinitionFormatter.MemberDefinition(t, doc);
+                doc.WriteEndArray();
+                doc.WriteEndObject();
                 _logger.ProcessedAssembly(assembly.Path, stopwatch.Elapsed);
             }
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void ProcessingAssembly(this ILogger<AssemblyFormatter> logger, string path) =>
-			Logger.Log(logger, 1, LogLevel.Information, "Processing {path}", path, null);
+    internal static partial class Logging
+    {
+        public static void ProcessingAssembly(this ILogger<AssemblyFormatter> logger, string path) =>
+            Logger.Log(logger, 1, LogLevel.Information, "Processing {path}", path, null);
 
-		public static void ProcessedAssembly(this ILogger<AssemblyFormatter> logger, string path, TimeSpan elapsed) =>
-			Logger.Log(logger, 2, LogLevel.Information, "Processed {path} in {elapsed}", path, elapsed, null);
-	}
+        public static void ProcessedAssembly(this ILogger<AssemblyFormatter> logger, string path, TimeSpan elapsed) =>
+            Logger.Log(logger, 2, LogLevel.Information, "Processed {path} in {elapsed}", path, elapsed, null);
+    }
 }

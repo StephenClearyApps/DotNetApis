@@ -19,8 +19,8 @@ namespace DotNetApis.Logic
 
         public PlatformResolver(ILoggerFactory loggerFactory, PackageDownloader packageDownloader)
         {
-	        _logger = loggerFactory.CreateLogger<PlatformResolver>();
-			_packageDownloader = packageDownloader;
+            _logger = loggerFactory.CreateLogger<PlatformResolver>();
+            _packageDownloader = packageDownloader;
         }
 
         /// <summary>
@@ -146,42 +146,42 @@ namespace DotNetApis.Logic
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void DeterminingDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Determining package dependencies for {package} targeting {target}", package, target, null);
+    internal static partial class Logging
+    {
+        public static void DeterminingDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Determining package dependencies for {package} targeting {target}", package, target, null);
 
-		public static void NoDependenciesFound(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target) =>
-			Logger.Log(logger, 2, LogLevel.Debug, "No dependencies found for {package} targeting {target}", package, target, null);
+        public static void NoDependenciesFound(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target) =>
+            Logger.Log(logger, 2, LogLevel.Debug, "No dependencies found for {package} targeting {target}", package, target, null);
 
-		public static void AllDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target, IReadOnlyList<PackageDependency> dependencies) =>
-			Logger.Log(logger, 3, LogLevel.Debug, "Full dependency list for {package} targeting {target} is {dependencies}", package, target, dependencies.Dumpable(), null);
+        public static void AllDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target, IReadOnlyList<PackageDependency> dependencies) =>
+            Logger.Log(logger, 3, LogLevel.Debug, "Full dependency list for {package} targeting {target} is {dependencies}", package, target, dependencies.Dumpable(), null);
 
-		public static void IncompatibleDependencyVersions(this ILogger<PlatformResolver> logger, string dependencyId, NugetVersionRange versionRange1, NugetVersionRange versionRange2) =>
-			Logger.Log(logger, 4, LogLevel.Warning, "NuGet client returned multiple incompatible version ranges for {dependencyId}: {versionRange1} and {versionRange2}", dependencyId, versionRange1, versionRange2, null);
+        public static void IncompatibleDependencyVersions(this ILogger<PlatformResolver> logger, string dependencyId, NugetVersionRange versionRange1, NugetVersionRange versionRange2) =>
+            Logger.Log(logger, 4, LogLevel.Warning, "NuGet client returned multiple incompatible version ranges for {dependencyId}: {versionRange1} and {versionRange2}", dependencyId, versionRange1, versionRange2, null);
 
-		public static void MergedDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target, IEnumerable<NugetPackageDependency> dependencies) =>
-			Logger.Log(logger, 5, LogLevel.Debug, "Merged dependency list for {package} targeting {target} is {dependencies}", package, target, dependencies.Dumpable(), null);
+        public static void MergedDependencies(this ILogger<PlatformResolver> logger, NugetPackage package, PlatformTarget target, IEnumerable<NugetPackageDependency> dependencies) =>
+            Logger.Log(logger, 5, LogLevel.Debug, "Merged dependency list for {package} targeting {target} is {dependencies}", package, target, dependencies.Dumpable(), null);
 
-		public static void DeterminingSupportedPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package) =>
-			Logger.Log(logger, 6, LogLevel.Debug, "Determining supported platforms for {package}", package, null);
+        public static void DeterminingSupportedPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+            Logger.Log(logger, 6, LogLevel.Debug, "Determining supported platforms for {package}", package, null);
 
-		public static void NoImmediateSupportedPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package) =>
-			Logger.Log(logger, 7, LogLevel.Debug, "Found no declared platforms for {package}; checking dependencies for declared platforms", package, null);
+        public static void NoImmediateSupportedPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+            Logger.Log(logger, 7, LogLevel.Debug, "Found no declared platforms for {package}; checking dependencies for declared platforms", package, null);
 
-		public static void AttemptingFallbackPlatform(this ILogger<PlatformResolver> logger, NugetPackage package) =>
-			Logger.Log(logger, 8, LogLevel.Debug, "Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package, null);
+        public static void AttemptingFallbackPlatform(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+            Logger.Log(logger, 8, LogLevel.Debug, "Package {package} does not have any dependencies with any supported platforms; trying desktop (net40) as a last resort", package, null);
 
-		public static void NoPlatformsFound(this ILogger<PlatformResolver> logger, NugetPackage package) =>
-			Logger.Log(logger, 9, LogLevel.Warning, "Failed to find any supported platforms for package {package}", package, null);
+        public static void NoPlatformsFound(this ILogger<PlatformResolver> logger, NugetPackage package) =>
+            Logger.Log(logger, 9, LogLevel.Warning, "Failed to find any supported platforms for package {package}", package, null);
 
-		public static void FailedToParseProfileTarget(this ILogger<PlatformResolver> logger, string profileTarget, PlatformTarget target) =>
-			Logger.Log(logger, 10, LogLevel.Warning, "Ignoring {profileTarget} in {target} since it failed to parse", profileTarget, target, null);
+        public static void FailedToParseProfileTarget(this ILogger<PlatformResolver> logger, string profileTarget, PlatformTarget target) =>
+            Logger.Log(logger, 10, LogLevel.Warning, "Ignoring {profileTarget} in {target} since it failed to parse", profileTarget, target, null);
 
-		public static void AllPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package, IEnumerable<PlatformTarget> targets) =>
-			Logger.Log(logger, 11, LogLevel.Debug, "Package {package} declares support for platforms {targets}", package, targets.Dumpable(), null);
+        public static void AllPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package, IEnumerable<PlatformTarget> targets) =>
+            Logger.Log(logger, 11, LogLevel.Debug, "Package {package} declares support for platforms {targets}", package, targets.Dumpable(), null);
 
-		public static void FilteredPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package, IEnumerable<PlatformTarget> targets) =>
-			Logger.Log(logger, 12, LogLevel.Debug, "After filtering, package {package} declares support for platforms {targets}", package, targets.Dumpable(), null);
-	}
+        public static void FilteredPlatforms(this ILogger<PlatformResolver> logger, NugetPackage package, IEnumerable<PlatformTarget> targets) =>
+            Logger.Log(logger, 12, LogLevel.Debug, "After filtering, package {package} declares support for platforms {targets}", package, targets.Dumpable(), null);
+    }
 }

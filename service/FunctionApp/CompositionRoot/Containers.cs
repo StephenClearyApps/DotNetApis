@@ -84,7 +84,7 @@ namespace FunctionApp.CompositionRoot
             }
         }
 
-		private static class ContainerFor<T>
+        private static class ContainerFor<T>
             where T : class
         {
             // ReSharper disable once StaticMemberInGenericType
@@ -121,11 +121,11 @@ namespace FunctionApp.CompositionRoot
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void ContainerCreationFailed(this ILogger<Containers> logger, Exception ex) =>
-			Logger.Log(logger, 1, LogLevel.Critical, "Failed to create container composition root", ex);
+    internal static partial class Logging
+    {
+        public static void ContainerCreationFailed(this ILogger<Containers> logger, Exception ex) =>
+            Logger.Log(logger, 1, LogLevel.Critical, "Failed to create container composition root", ex);
 
-		public sealed class Containers { }
-	}
+        public sealed class Containers { }
+    }
 }

@@ -311,67 +311,67 @@ namespace DotNetApis.Logic.Formatting
             return (null, null);
         }
 
-	    private static class XNames
-	    {
-		    public static readonly XName A = "a";
-		    public static readonly XName AutoUpgrade = "autoUpgrade";
-		    public static readonly XName B = "b";
-		    public static readonly XName C = "c";
-		    public static readonly XName Code = "code";
-		    public static readonly XName Cref = "cref";
-		    public static readonly XName Description = "description";
-		    public static readonly XName Div = "div";
-		    public static readonly XName Example = "example";
-		    public static readonly XName Exception = "exception";
-		    public static readonly XName Filterpriority = "filterpriority";
-		    public static readonly XName Href = "href";
-		    public static readonly XName I = "i";
-		    public static readonly XName Item = "item";
-		    public static readonly XName Langword = "langword";
-		    public static readonly XName Li = "li";
-		    public static readonly XName List = "list";
-		    public static readonly XName Listheader = "listheader";
-		    public static readonly XName Name = "name";
-		    public static readonly XName Ol = "ol";
-		    public static readonly XName P = "p";
-		    public static readonly XName Para = "para";
-		    public static readonly XName Param = "param";
-		    public static readonly XName Paramref = "paramref";
-		    public static readonly XName Permission = "permission";
-		    public static readonly XName QualifyHint = "qualifyHint";
-		    public static readonly XName Remarks = "remarks";
-		    public static readonly XName Returns = "returns";
-		    public static readonly XName See = "see";
-		    public static readonly XName Seealso = "seealso";
-		    public static readonly XName Summary = "summary";
-		    public static readonly XName Table = "table";
-		    public static readonly XName Td = "td";
-		    public static readonly XName Term = "term";
-		    public static readonly XName Th = "th";
-		    public static readonly XName Tr = "tr";
-		    public static readonly XName Type = "type";
-			public static readonly XName Typeparam = "typeparam";
-		    public static readonly XName Typeparamref = "typeparamref";
-		    public static readonly XName Ul = "ul";
-			public static readonly XName Value = "value";
-	    }
-	}
+        private static class XNames
+        {
+            public static readonly XName A = "a";
+            public static readonly XName AutoUpgrade = "autoUpgrade";
+            public static readonly XName B = "b";
+            public static readonly XName C = "c";
+            public static readonly XName Code = "code";
+            public static readonly XName Cref = "cref";
+            public static readonly XName Description = "description";
+            public static readonly XName Div = "div";
+            public static readonly XName Example = "example";
+            public static readonly XName Exception = "exception";
+            public static readonly XName Filterpriority = "filterpriority";
+            public static readonly XName Href = "href";
+            public static readonly XName I = "i";
+            public static readonly XName Item = "item";
+            public static readonly XName Langword = "langword";
+            public static readonly XName Li = "li";
+            public static readonly XName List = "list";
+            public static readonly XName Listheader = "listheader";
+            public static readonly XName Name = "name";
+            public static readonly XName Ol = "ol";
+            public static readonly XName P = "p";
+            public static readonly XName Para = "para";
+            public static readonly XName Param = "param";
+            public static readonly XName Paramref = "paramref";
+            public static readonly XName Permission = "permission";
+            public static readonly XName QualifyHint = "qualifyHint";
+            public static readonly XName Remarks = "remarks";
+            public static readonly XName Returns = "returns";
+            public static readonly XName See = "see";
+            public static readonly XName Seealso = "seealso";
+            public static readonly XName Summary = "summary";
+            public static readonly XName Table = "table";
+            public static readonly XName Td = "td";
+            public static readonly XName Term = "term";
+            public static readonly XName Th = "th";
+            public static readonly XName Tr = "tr";
+            public static readonly XName Type = "type";
+            public static readonly XName Typeparam = "typeparam";
+            public static readonly XName Typeparamref = "typeparamref";
+            public static readonly XName Ul = "ul";
+            public static readonly XName Value = "value";
+        }
+    }
 
-	internal static partial class Logging
-	{
-		public static void MemberNotFound(this ILogger<XmldocFormatter> logger, string xmldocid) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Unable to find xmldoc <member> tag with attribute @name matching {xmldocid}", xmldocid, null);
+    internal static partial class Logging
+    {
+        public static void MemberNotFound(this ILogger<XmldocFormatter> logger, string xmldocid) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Unable to find xmldoc <member> tag with attribute @name matching {xmldocid}", xmldocid, null);
 
-		public static void TypeparamNotFound(this ILogger<XmldocFormatter> logger, string name, string xmldocid) =>
-			Logger.Log(logger, 2, LogLevel.Warning, "Unable to find xmldoc <typeparam> tag with attribute @name matching {name} for member {xmldocid}", name, xmldocid, null);
+        public static void TypeparamNotFound(this ILogger<XmldocFormatter> logger, string name, string xmldocid) =>
+            Logger.Log(logger, 2, LogLevel.Warning, "Unable to find xmldoc <typeparam> tag with attribute @name matching {name} for member {xmldocid}", name, xmldocid, null);
 
-		public static void ParamNotFound(this ILogger<XmldocFormatter> logger, string name, string xmldocid) =>
-			Logger.Log(logger, 3, LogLevel.Warning, "Unable to find xmldoc <param> tag with attribute @name matching {name} for member {xmldocid}", name, xmldocid, null);
+        public static void ParamNotFound(this ILogger<XmldocFormatter> logger, string name, string xmldocid) =>
+            Logger.Log(logger, 3, LogLevel.Warning, "Unable to find xmldoc <param> tag with attribute @name matching {name} for member {xmldocid}", name, xmldocid, null);
 
-		public static void MissingSeeTarget(this ILogger<XmldocFormatter> logger) =>
-			Logger.Log(logger, 4, LogLevel.Warning, "Xmldoc error: <see> or <seealso> element does not have langword or cref attributes", null);
+        public static void MissingSeeTarget(this ILogger<XmldocFormatter> logger) =>
+            Logger.Log(logger, 4, LogLevel.Warning, "Xmldoc error: <see> or <seealso> element does not have langword or cref attributes", null);
 
-		public static void UnrecognizedTag(this ILogger<XmldocFormatter> logger, string tag) =>
-			Logger.Log(logger, 5, LogLevel.Warning, "Unrecognized xmldoc tag {tag}", tag, null);
-	}
+        public static void UnrecognizedTag(this ILogger<XmldocFormatter> logger, string tag) =>
+            Logger.Log(logger, 5, LogLevel.Warning, "Unrecognized xmldoc tag {tag}", tag, null);
+    }
 }

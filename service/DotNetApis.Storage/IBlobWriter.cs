@@ -8,7 +8,7 @@ namespace DotNetApis.Storage
 {
     public interface IBlobWriter
     {
-	    Task CommitAsync();
-	    Uri Uri { get; }
+        Task CommitAsync();
+        Uri Uri { get; }
     }
 }

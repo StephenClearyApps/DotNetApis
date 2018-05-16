@@ -16,7 +16,7 @@ namespace DotNetApis.Common
         /// <param name="logger">The logger to log compression statistics to. May be <c>null</c>.</param>
         public static (byte[], int) GzipString(string data, ILoggerFactory loggerFactory)
         {
-	        var logger = loggerFactory?.CreateLogger<Logging.Compression>();
+            var logger = loggerFactory?.CreateLogger<Logging.Compression>();
 
             var dataBytes = Constants.Utf8.GetBytes(data);
             using (var stream = new MemoryStream())
@@ -30,12 +30,12 @@ namespace DotNetApis.Common
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void Stats(this ILogger<Compression> logger, int uncompressedCharacters, int uncompressedBytes, int compressedBytes) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Before compression, string was {uncompressedBytes} bytes ({uncompressedCharacters} chars); after compression, string is {compressedBytes} bytes",
-				uncompressedBytes, uncompressedCharacters, compressedBytes, null);
+    internal static partial class Logging
+    {
+        public static void Stats(this ILogger<Compression> logger, int uncompressedCharacters, int uncompressedBytes, int compressedBytes) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Before compression, string was {uncompressedBytes} bytes ({uncompressedCharacters} chars); after compression, string is {compressedBytes} bytes",
+                uncompressedBytes, uncompressedCharacters, compressedBytes, null);
 
-		public sealed class Compression { }
-	}
+        public sealed class Compression { }
+    }
 }

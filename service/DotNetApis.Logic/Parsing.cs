@@ -42,12 +42,12 @@ namespace DotNetApis.Logic
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void CannotParseVersion(this ILogger<Parser> logger, string packageVersion) =>
-			Logger.Log(logger, 1, LogLevel.Error, "Could not parse version {packageVersion}", packageVersion, null);
+    internal static partial class Logging
+    {
+        public static void CannotParseVersion(this ILogger<Parser> logger, string packageVersion) =>
+            Logger.Log(logger, 1, LogLevel.Error, "Could not parse version {packageVersion}", packageVersion, null);
 
-		public static void CannotParseTarget(this ILogger<Parser> logger, string targetFramework) =>
-			Logger.Log(logger, 1, LogLevel.Error, "Could not parse target framework {targetFramework}", targetFramework, null);
-	}
+        public static void CannotParseTarget(this ILogger<Parser> logger, string targetFramework) =>
+            Logger.Log(logger, 1, LogLevel.Error, "Could not parse target framework {targetFramework}", targetFramework, null);
+    }
 }

@@ -18,15 +18,15 @@ namespace DotNetApis.Logic.Assemblies
     {
         private readonly Func<Stream> _read;
 
-		/// <summary>
-		/// Initializes the assembly.
-		/// </summary>
-		/// <param name="loggerFactory">The logger factory.</param>
-		/// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
-		/// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
-		/// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
-		/// <param name="read">A function that reads the assembly as a stream. Must not be <c>null</c>.</param>
-		public ReferenceAssembly(ILoggerFactory loggerFactory, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId, Func<Stream> read)
+        /// <summary>
+        /// Initializes the assembly.
+        /// </summary>
+        /// <param name="loggerFactory">The logger factory.</param>
+        /// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
+        /// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
+        /// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
+        /// <param name="read">A function that reads the assembly as a stream. Must not be <c>null</c>.</param>
+        public ReferenceAssembly(ILoggerFactory loggerFactory, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId, Func<Stream> read)
             : base(loggerFactory.CreateLogger<ReferenceAssembly>(), path, readerParameters, xmldocIdToDnaId)
         {
             _read = read;

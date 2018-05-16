@@ -16,9 +16,9 @@ namespace DotNetApis.Common
         private static readonly AsyncLocal<Guid> ImplicitParentOperationId = new AsyncLocal<Guid>();
         private static readonly AsyncLocal<string> ImplicitRequestId = new AsyncLocal<string>();
         private static readonly AsyncLocal<InMemoryLoggerProvider> ImplicitInMemoryLoggerProvider = new AsyncLocal<InMemoryLoggerProvider>();
-	    private static readonly AsyncLocal<JsonLoggerProvider> ImplicitJsonLoggerProvider = new AsyncLocal<JsonLoggerProvider>();
+        private static readonly AsyncLocal<JsonLoggerProvider> ImplicitJsonLoggerProvider = new AsyncLocal<JsonLoggerProvider>();
 
-		public static Guid OperationId
+        public static Guid OperationId
         {
             get => ImplicitOperationId.Value;
             set => ImplicitOperationId.Value = value;
@@ -47,14 +47,14 @@ namespace DotNetApis.Common
             set => ImplicitInMemoryLoggerProvider.Value = value;
         }
 
-	    /// <summary>
-	    /// May return <c>null</c>.
-	    /// </summary>
-	    public static JsonLoggerProvider JsonLoggerProvider
-	    {
-		    get => ImplicitJsonLoggerProvider.Value;
-		    set => ImplicitJsonLoggerProvider.Value = value;
-	    }
+        /// <summary>
+        /// May return <c>null</c>.
+        /// </summary>
+        public static JsonLoggerProvider JsonLoggerProvider
+        {
+            get => ImplicitJsonLoggerProvider.Value;
+            set => ImplicitJsonLoggerProvider.Value = value;
+        }
 
         /// <summary>
         /// Sets the values for HTTP-triggered API functions.

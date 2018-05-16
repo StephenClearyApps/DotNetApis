@@ -23,10 +23,10 @@ namespace DotNetApis.Nuget
 
             private static string NullIfEmpty(string data) => data == "" ? null : data;
 
-			/// <summary>
+            /// <summary>
             /// Gets the .nuspec reader for this package.
             /// </summary>
-			public NuspecReader NuspecReader { get; }
+            public NuspecReader NuspecReader { get; }
 
             public string PackageId { get; }
 

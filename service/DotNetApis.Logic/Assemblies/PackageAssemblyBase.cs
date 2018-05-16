@@ -15,15 +15,15 @@ namespace DotNetApis.Logic.Assemblies
     /// </summary>
     public abstract class PackageAssemblyBase : AssemblyBase
     {
-		/// <summary>
-		/// Initializes the base type.
-		/// </summary>
-		/// <param name="logger">The logger. This base type reserves the event ids 1-200.</param>
-		/// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
-		/// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
-		/// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
-		/// <param name="package">The package conaining the assembly.</param>
-		protected PackageAssemblyBase(ILogger<PackageAssemblyBase> logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId, NugetPackage package)
+        /// <summary>
+        /// Initializes the base type.
+        /// </summary>
+        /// <param name="logger">The logger. This base type reserves the event ids 1-200.</param>
+        /// <param name="path">The path of the assembly. This can include path segments, the file name, and the extension.</param>
+        /// <param name="readerParameters">The parameters used when processing the assembly by Cecil.</param>
+        /// <param name="xmldocIdToDnaId">A reference to the shared xmldoc to dnaid mapping, which is updated when the assembly is processed.</param>
+        /// <param name="package">The package conaining the assembly.</param>
+        protected PackageAssemblyBase(ILogger<PackageAssemblyBase> logger, string path, ReaderParameters readerParameters, IDictionary<string, string> xmldocIdToDnaId, NugetPackage package)
             : base(logger, path, readerParameters, xmldocIdToDnaId)
         {
             Package = package;

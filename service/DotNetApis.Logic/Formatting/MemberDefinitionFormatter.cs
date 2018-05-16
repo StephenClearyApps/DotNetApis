@@ -54,20 +54,20 @@ namespace DotNetApis.Logic.Formatting
                 doc.SerializeObject(_fieldFormatter.Field(field));
             else
             {
-	            var type = (TypeDefinition)member;
-	            if (type.IsEnum)
-		            doc.SerializeObject(_enumFormatter.Enum(type));
-	            else if (type.IsDelegate())
-		            doc.SerializeObject(_delegateFormatter.Delegate(type));
-	            else
-		            _typeFormatter.Type(type, MemberDefinition, doc);
+                var type = (TypeDefinition)member;
+                if (type.IsEnum)
+                    doc.SerializeObject(_enumFormatter.Enum(type));
+                else if (type.IsDelegate())
+                    doc.SerializeObject(_delegateFormatter.Delegate(type));
+                else
+                    _typeFormatter.Type(type, MemberDefinition, doc);
             }
-		}
+        }
     }
 
-	internal static partial class Logging
-	{
-		public static void ProcessingEntity(this ILogger<MemberDefinitionFormatter> logger, string entity) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Processing entity {entity}", entity, null);
-	}
+    internal static partial class Logging
+    {
+        public static void ProcessingEntity(this ILogger<MemberDefinitionFormatter> logger, string entity) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Processing entity {entity}", entity, null);
+    }
 }

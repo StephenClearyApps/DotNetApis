@@ -101,9 +101,9 @@ namespace DotNetApis.Logic.Formatting
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void TypeResolutionFailed(this ILogger<AttributeFormatter> logger, string dnaid) =>
-			Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve custom attribute type {dnaid}", dnaid, null);
-	}
+    internal static partial class Logging
+    {
+        public static void TypeResolutionFailed(this ILogger<AttributeFormatter> logger, string dnaid) =>
+            Logger.Log(logger, 1, LogLevel.Warning, "Unable to resolve custom attribute type {dnaid}", dnaid, null);
+    }
 }

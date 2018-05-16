@@ -71,9 +71,9 @@ namespace DotNetApis.Logic
         }
     }
 
-	internal static partial class Logging
-	{
-		public static void RetrievingPackage(this ILogger<PackageDownloader> logger, NugetPackageIdVersion idver) =>
-			Logger.Log(logger, 1, LogLevel.Debug, "Retrieving package {idver}", idver, null);
-	}
+    internal static partial class Logging
+    {
+        public static void RetrievingPackage(this ILogger<PackageDownloader> logger, NugetPackageIdVersion idver) =>
+            Logger.Log(logger, 1, LogLevel.Debug, "Retrieving package {idver}", idver, null);
+    }
 }

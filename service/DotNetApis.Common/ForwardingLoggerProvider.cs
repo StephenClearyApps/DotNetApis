@@ -7,20 +7,20 @@ using Microsoft.Extensions.Logging;
 
 namespace DotNetApis.Common
 {
-	/// <summary>
-	/// A logger provider whose loggers all forward to a single underlying <see cref="ILogger"/>.
-	/// </summary>
+    /// <summary>
+    /// A logger provider whose loggers all forward to a single underlying <see cref="ILogger"/>.
+    /// </summary>
     public sealed class ForwardingLoggerProvider: ILoggerProvider
     {
-	    private readonly ILogger _logger;
+        private readonly ILogger _logger;
 
-	    public ForwardingLoggerProvider(ILogger logger)
-	    {
-		    _logger = logger;
-	    }
+        public ForwardingLoggerProvider(ILogger logger)
+        {
+            _logger = logger;
+        }
 
-	    void IDisposable.Dispose() { }
+        void IDisposable.Dispose() { }
 
-	    public ILogger CreateLogger(string categoryName) => _logger;
+        public ILogger CreateLogger(string categoryName) => _logger;
     }
 }

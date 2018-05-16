@@ -41,67 +41,67 @@ namespace DotNetApis.Logic.Formatting
         /// <param name="formatMemberDefinition">The formatter for members.</param>
         public void Type(TypeDefinition type, Action<IMemberDefinition, StreamingJsonWriter> formatMemberDefinition, StreamingJsonWriter doc)
         {
-			EntityKind kind;
-			IReadOnlyList<AttributeJson> attributes = _attributeFormatter.Attributes(type).ToList();
-			var accessibility = _accessibilityFormatter.TypeDefinitionAccessibility(type);
-			var modifiers = EntityModifiers.None;
-			IReadOnlyList<ITypeReference> baseTypesAndInterfaces = null;
-			string ns = null;
+            EntityKind kind;
+            IReadOnlyList<AttributeJson> attributes = _attributeFormatter.Attributes(type).ToList();
+            var accessibility = _accessibilityFormatter.TypeDefinitionAccessibility(type);
+            var modifiers = EntityModifiers.None;
+            IReadOnlyList<ITypeReference> baseTypesAndInterfaces = null;
+            string ns = null;
 
-			if (type.IsInterface)
-				kind = EntityKind.Interface;
-			else if (type.IsValueType)
-				kind = EntityKind.Struct;
-			else
-			{
-				modifiers = _modifiersFormatter.TypeDefinitionModifiers(type);
-				kind = EntityKind.Class;
-			}
+            if (type.IsInterface)
+                kind = EntityKind.Interface;
+            else if (type.IsValueType)
+                kind = EntityKind.Struct;
+            else
+            {
+                modifiers = _modifiersFormatter.TypeDefinitionModifiers(type);
+                kind = EntityKind.Class;
+            }
 
-			var allGenericDeclaringTypesAndThis = type.GenericDeclaringTypesAndThis().ToArray();
-			var typeWithGenericParameters = allGenericDeclaringTypesAndThis[allGenericDeclaringTypesAndThis.Length - 1];
-			if (allGenericDeclaringTypesAndThis.Length == 1)
-				ns = allGenericDeclaringTypesAndThis[0].Reference.Namespace;
+            var allGenericDeclaringTypesAndThis = type.GenericDeclaringTypesAndThis().ToArray();
+            var typeWithGenericParameters = allGenericDeclaringTypesAndThis[allGenericDeclaringTypesAndThis.Length - 1];
+            if (allGenericDeclaringTypesAndThis.Length == 1)
+                ns = allGenericDeclaringTypesAndThis[0].Reference.Namespace;
 
-			if (type.BaseTypeAndInterfaces().Any())
-				baseTypesAndInterfaces = type.BaseTypeAndInterfaces().Select(_typeReferenceFormatter.TypeReference).ToList();
+            if (type.BaseTypeAndInterfaces().Any())
+                baseTypesAndInterfaces = type.BaseTypeAndInterfaces().Select(_typeReferenceFormatter.TypeReference).ToList();
 
-			var members = type.ExposedMembers().ToList();
-			doc.WriteStartObject();
-			doc.WriteProperty("i", type.DnaId());
-			doc.WriteProperty("k", kind);
-			doc.WriteProperty("b", attributes);
-			doc.WriteProperty("a", accessibility);
-			doc.WriteProperty("n", _nameFormatter.EscapeIdentifier(typeWithGenericParameters.Name));
-			doc.WriteProperty("m", modifiers);
-			doc.WriteProperty("s", ns);
-			doc.WriteProperty("g", _genericsFormatter.GenericParameters(type, typeWithGenericParameters.GenericParameters).ToList());
-			doc.WriteProperty("t", baseTypesAndInterfaces);
-			doc.WriteProperty("x", _xmldocFormatter.Xmldoc(type));
-			doc.WritePropertyName("e");
-			doc.WriteStartObject();
-			doc.WritePropertyName("l");
-			doc.WriteStartArray();
-			foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 0).OrderBy(x => x, SemanticOrdering.MemberComparer))
-				formatMemberDefinition(member, doc);
-			doc.WriteEndArray();
-			doc.WritePropertyName("s");
-			doc.WriteStartArray();
-			foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 1).OrderBy(x => x, SemanticOrdering.MemberComparer))
-		        formatMemberDefinition(member, doc);
-			doc.WriteEndArray();
-			doc.WritePropertyName("i");
-			doc.WriteStartArray();
-			foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 2).OrderBy(x => x, SemanticOrdering.MemberComparer))
-		        formatMemberDefinition(member, doc);
-			doc.WriteEndArray();
-			doc.WritePropertyName("t");
-			doc.WriteStartArray();
-			foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 10).OrderBy(x => x, SemanticOrdering.MemberComparer))
-		        formatMemberDefinition(member, doc);
-			doc.WriteEndArray();
-			doc.WriteEndObject();
-			doc.WriteEndObject();
-		}
-	}
+            var members = type.ExposedMembers().ToList();
+            doc.WriteStartObject();
+            doc.WriteProperty("i", type.DnaId());
+            doc.WriteProperty("k", kind);
+            doc.WriteProperty("b", attributes);
+            doc.WriteProperty("a", accessibility);
+            doc.WriteProperty("n", _nameFormatter.EscapeIdentifier(typeWithGenericParameters.Name));
+            doc.WriteProperty("m", modifiers);
+            doc.WriteProperty("s", ns);
+            doc.WriteProperty("g", _genericsFormatter.GenericParameters(type, typeWithGenericParameters.GenericParameters).ToList());
+            doc.WriteProperty("t", baseTypesAndInterfaces);
+            doc.WriteProperty("x", _xmldocFormatter.Xmldoc(type));
+            doc.WritePropertyName("e");
+            doc.WriteStartObject();
+            doc.WritePropertyName("l");
+            doc.WriteStartArray();
+            foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 0).OrderBy(x => x, SemanticOrdering.MemberComparer))
+                formatMemberDefinition(member, doc);
+            doc.WriteEndArray();
+            doc.WritePropertyName("s");
+            doc.WriteStartArray();
+            foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 1).OrderBy(x => x, SemanticOrdering.MemberComparer))
+                formatMemberDefinition(member, doc);
+            doc.WriteEndArray();
+            doc.WritePropertyName("i");
+            doc.WriteStartArray();
+            foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 2).OrderBy(x => x, SemanticOrdering.MemberComparer))
+                formatMemberDefinition(member, doc);
+            doc.WriteEndArray();
+            doc.WritePropertyName("t");
+            doc.WriteStartArray();
+            foreach (var member in members.Where(x => SemanticOrdering.PrimaryMemberGrouping(x) / 10 == 10).OrderBy(x => x, SemanticOrdering.MemberComparer))
+                formatMemberDefinition(member, doc);
+            doc.WriteEndArray();
+            doc.WriteEndObject();
+            doc.WriteEndObject();
+        }
+    }
 }
