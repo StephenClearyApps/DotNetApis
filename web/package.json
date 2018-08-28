@@ -41,7 +41,7 @@
     "redux-immutable-state-invariant": "^2.1.0",
     "rimraf": "^2.6.2",
     "source-map-loader": "^0.2.3",
-    "style-loader": "0.21.0",
+    "style-loader": "0.23.0",
     "typescript": "^2.8.3",
     "webpack": "^4.6.0",
     "webpack-bundle-size-analyzer": "^2.7.0",
