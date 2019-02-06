@@ -48,7 +48,7 @@
     "webpack-cli": "^2.1.2"
   },
   "dependencies": {
-    "ably": "^1.0.13",
+    "ably": "1.1.2",
     "bluebird": "^3.5.1",
     "date-fns": "^1.29.0",
     "history": "^4.7.2",
