@@ -30,7 +30,7 @@
     "@types/react-redux": "^5.0.19",
     "@types/react-router": "^4.0.24",
     "@types/react-router-dom": "^4.2.6",
-    "@types/recompose": "^0.26.1",
+    "@types/recompose": "0.30.4",
     "@types/redux-actions": "^2.2.4",
     "@types/redux-immutable-state-invariant": "^2.0.4",
     "@types/redux-thunk": "^2.1.32",
