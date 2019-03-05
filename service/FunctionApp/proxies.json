@@ -32,7 +32,7 @@
           "OPTIONS"
         ]
       },
-      "backendUri": "https://%WEBSITE_HOSTNAME%/api/{url}"
+      "backendUri": "https://localhost/api/{url}"
     }
   }
 }

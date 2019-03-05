@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using DotNetApis.Common;
 using DotNetApis.Nuget;
-using DotNetApis.Structure;
 using DotNetApis.Structure.Locations;
 using Microsoft.Extensions.Logging;
 using Mono.Cecil;

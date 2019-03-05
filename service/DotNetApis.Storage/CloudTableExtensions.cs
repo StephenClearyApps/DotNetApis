@@ -25,7 +25,7 @@ namespace DotNetApis.Storage
         private static async Task<DynamicTableEntity> FindOrDefaultCore(CloudTable @this, string partitionKey, string rowKey, bool sync)
         {
             var operation = TableOperation.Retrieve(partitionKey, rowKey);
-            var result = sync ? @this.Execute(operation) : await @this.ExecuteAsync(operation).ConfigureAwait(false);
+            var result = sync ? @this.ExecuteAsync(operation).GetAwaiter().GetResult() : await @this.ExecuteAsync(operation).ConfigureAwait(false);
             if ((HttpStatusCode)result.HttpStatusCode == HttpStatusCode.NotFound)
                 return null;
             return (DynamicTableEntity)result.Result;

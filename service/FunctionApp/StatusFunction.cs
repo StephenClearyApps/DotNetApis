@@ -1,18 +1,18 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using DotNetApis.Common;
-using FunctionApp.Messages;
 using DotNetApis.Logic;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Logging;
-using SimpleInjector.Lifestyles;
 using DotNetApis.Structure;
 using FunctionApp.CompositionRoot;
+using FunctionApp.Messages;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
+using SimpleInjector.Lifestyles;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace FunctionApp
 {
@@ -27,21 +27,20 @@ namespace FunctionApp
             _logger = loggerFactory.CreateLogger<StatusFunction>();
         }
 
-        public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
+        public async Task<IActionResult> RunAsync(HttpRequest req)
         {
             try
             {
-                var query = req.GetQueryNameValuePairs().ToList();
-                var jsonVersion = query.Required("jsonVersion", int.Parse);
-                var packageId = query.Required("packageId");
-                var packageVersion = query.Required("packageVersion");
-                var targetFramework = query.Required("targetFramework");
+                var jsonVersion = req.Query.Required("jsonVersion", int.Parse);
+                var packageId = req.Query.Required("packageId");
+                var packageVersion = req.Query.Required("packageVersion");
+                var targetFramework = req.Query.Required("targetFramework");
                 _logger.RequestReceived(jsonVersion, packageId, packageVersion, targetFramework);
 
                 if (jsonVersion < JsonFactory.Version)
                 {
                     _logger.UpdateRequired(jsonVersion, JsonFactory.Version);
-                    throw new ExpectedException((HttpStatusCode)422, "Application needs to update; refresh the page.");
+                    throw new ExpectedException(StatusCodes.Status422UnprocessableEntity, "Application needs to update; refresh the page.");
                 }
 
                 // Parse and normalize the user request.
@@ -49,9 +48,9 @@ namespace FunctionApp
 
                 var result = await _handler.TryGetStatusAsync(idver, target);
                 if (result == null)
-                    throw new ExpectedException(HttpStatusCode.NotFound, "Request status not found.");
+                    throw new ExpectedException(StatusCodes.Status404NotFound, "Request status not found.");
 
-                return req.CreateResponse(HttpStatusCode.OK, new StatusResponseMessage
+                return new OkObjectResult(new StatusResponseMessage
                 {
                     Status = result.Value.Status,
                     LogUri = result.Value.LogUri,
@@ -61,27 +60,39 @@ namespace FunctionApp
             catch (ExpectedException ex)
             {
                 _logger.ReturningError((int)ex.HttpStatusCode, ex.Message);
-                return req.CreateErrorResponseWithLog(ex);
+                throw;
             }
         }
 
         [FunctionName("StatusFunction")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/status")]HttpRequestMessage req,
-            ILogger log, ExecutionContext context)
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/status")]HttpRequest req,
+            ILogger log,
+            ExecutionContext context)
         {
-            GlobalConfig.Initialize();
-            req.ApplyRequestHandlingDefaults(context);
-            AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
-            AmbientContext.OperationId = context.InvocationId;
-            AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
-            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-
-            var container = await Containers.GetContainerForAsync<StatusFunction>();
-            using (AsyncScopedLifestyle.BeginScope(container))
+            try
             {
-                return await container.GetInstance<StatusFunction>().RunAsync(req);
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile(Path.Combine(context.FunctionAppDirectory, "local.settings.json"), optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+                GlobalConfig.Initialize();
+                AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
+                AmbientContext.OperationId = context.InvocationId;
+                AmbientContext.ConfigurationRoot = config; // TODO: DI the options pattern
+                AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+
+                var container = await Containers.GetContainerForAsync<StatusFunction>();
+                using (AsyncScopedLifestyle.BeginScope(container))
+                {
+                    return await container.GetInstance<StatusFunction>().RunAsync(req);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Helpers.DetailExceptionResponse(ex);
             }
         }
     }

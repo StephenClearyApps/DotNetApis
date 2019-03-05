@@ -85,7 +85,7 @@ namespace DotNetApis.Storage
                 _jsonTextWriter.Close();
 
                 // Commit the stream.
-                await Task.Factory.FromAsync(_blobStream.BeginCommit, _blobStream.EndCommit, null);
+                await _blobStream.CommitAsync();
 
                 // Set the blob properties.
                 _blob.Properties.ContentType = "application/json; charset=utf-8";

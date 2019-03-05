@@ -70,7 +70,7 @@ namespace DotNetApis.Storage
             var result = new MemoryStream();
             var blob = _container.GetBlockBlobReference(path);
             if (sync)
-                blob.DownloadToStream(result);
+                blob.DownloadToStreamAsync(result).GetAwaiter().GetResult();
             else
                 await blob.DownloadToStreamAsync(result).ConfigureAwait(false);
             result.Position = 0;

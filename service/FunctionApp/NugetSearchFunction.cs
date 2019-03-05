@@ -1,24 +1,27 @@
+using DotNetApis.Common;
+using FunctionApp.CompositionRoot;
+using FunctionApp.Messages;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.Extensions.Logging;
+using SimpleInjector.Lifestyles;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using DotNetApis.Common;
-using FunctionApp.Messages;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Logging;
-using SimpleInjector.Lifestyles;
-using System.Collections.Generic;
-using FunctionApp.CompositionRoot;
+using Microsoft.Extensions.Configuration;
 
 namespace FunctionApp
 {
     public sealed class NugetSearchFunction
     {
+        // TODO: Factory
         private static readonly HttpClient NugetClient = new HttpClient();
 
         private readonly ILogger<NugetSearchFunction> _logger;
@@ -28,15 +31,14 @@ namespace FunctionApp
             _logger = loggerFactory.CreateLogger<NugetSearchFunction>();
         }
 
-        public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req)
+        public async Task<IActionResult> RunAsync(HttpRequest req)
         {
             try
             {
-                var query = req.GetQueryNameValuePairs().ToList();
-                var q = query.Optional("query") ?? "";
-                var skip = query.Optional("skip", int.Parse);
-                var includePrerelease = query.Optional("includePrerelease", bool.Parse);
-                var includeUnlisted = query.Optional("includeUnlisted", bool.Parse);
+                var q = req.Query.Optional("query") ?? "";
+                var skip = req.Query.Optional("skip", int.Parse);
+                var includePrerelease = req.Query.Optional("includePrerelease", bool.Parse);
+                var includeUnlisted = req.Query.Optional("includeUnlisted", bool.Parse);
 
                 _logger.RequestReceived(q, skip, includePrerelease, includeUnlisted);
 
@@ -72,33 +74,44 @@ namespace FunctionApp
                         TotalDownloads = properties.Element(dataservices + "DownloadCount").Value
                     });
 
-                return req.CreateResponse(HttpStatusCode.OK, new SearchResponseMessage { Hits = hits.ToList() });
+                return new OkObjectResult(new SearchResponseMessage { Hits = hits.ToList() });
             }
             catch (ExpectedException ex)
             {
-                _logger.ReturningError((int)ex.HttpStatusCode, ex.Message);
-                return req.CreateErrorResponseWithLog(ex);
+                _logger.ReturningError(ex.HttpStatusCode, ex.Message);
+                throw;
             }
         }
 
         [FunctionName("NugetSearch")]
-        public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/search")] HttpRequestMessage req,
-            ILogger log, ExecutionContext context)
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/search")] HttpRequest req,
+            ILogger log,
+            ExecutionContext context)
         {
-            GlobalConfig.Initialize();
-            req.ApplyRequestHandlingDefaults(context);
-            AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
-            AmbientContext.OperationId = context.InvocationId;
-            AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
-            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-
-            var container = await Containers.GetContainerForAsync<NugetSearchFunction>();
-            using (AsyncScopedLifestyle.BeginScope(container))
+            try
             {
-                return await container.GetInstance<NugetSearchFunction>().RunAsync(req);
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile(Path.Combine(context.FunctionAppDirectory, "local.settings.json"), optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+                GlobalConfig.Initialize();
+                AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
+                AmbientContext.OperationId = context.InvocationId;
+                AmbientContext.ConfigurationRoot = config; // TODO: DI the options pattern
+                AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+
+                var container = await Containers.GetContainerForAsync<NugetSearchFunction>();
+                using (AsyncScopedLifestyle.BeginScope(container))
+                {
+                    return await container.GetInstance<NugetSearchFunction>().RunAsync(req);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Helpers.DetailExceptionResponse(ex);
             }
         }
     }

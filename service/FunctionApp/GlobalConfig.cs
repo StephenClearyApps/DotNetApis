@@ -22,9 +22,6 @@ namespace FunctionApp
         {
             SetDefaultJsonNetSerialization.EnsureInitialized();
             SetDefaultThreadCurrentCulture.EnsureInitialized();
-
-            // Ensure our current thread is using invariant culture.
-            CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
         }
 
         private static readonly ISingleton<object> SetDefaultJsonNetSerialization = Singleton.Create(() =>

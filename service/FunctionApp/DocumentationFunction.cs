@@ -1,25 +1,23 @@
-using System;
-using System.Collections.Concurrent;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using DotNetApis.Common;
-using FunctionApp.Messages;
 using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
+using DotNetApis.Structure;
+using FunctionApp.CompositionRoot;
+using FunctionApp.Messages;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
 using SimpleInjector.Lifestyles;
-using DotNetApis.Structure;
-using FunctionApp.CompositionRoot;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace FunctionApp
 {
@@ -36,21 +34,20 @@ namespace FunctionApp
             _packageJsonTable = packageJsonTable;
         }
 
-        public async Task<HttpResponseMessage> RunAsync(HttpRequestMessage req, IAsyncCollector<CloudQueueMessage> generateQueue)
+        public async Task<IActionResult> RunAsync(HttpRequest req, IAsyncCollector<CloudQueueMessage> generateQueue)
         {
             try
             {
-                var query = req.GetQueryNameValuePairs().ToList();
-                var jsonVersion = query.Required("jsonVersion", int.Parse);
-                var packageId = query.Required("packageId");
-                var packageVersion = query.Optional("packageVersion");
-                var targetFramework = query.Optional("targetFramework");
+                var jsonVersion = req.Query.Required("jsonVersion", int.Parse);
+                var packageId = req.Query.Required("packageId");
+                var packageVersion = req.Query.Optional("packageVersion");
+                var targetFramework = req.Query.Optional("targetFramework");
                 _logger.RequestReceived(jsonVersion, packageId, packageVersion, targetFramework);
 
                 if (jsonVersion < JsonFactory.Version)
                 {
                     _logger.UpdateRequired(jsonVersion, JsonFactory.Version);
-                    throw new ExpectedException((HttpStatusCode)422, "Application needs to update; refresh the page.");
+                    throw new ExpectedException(StatusCodes.Status422UnprocessableEntity, "Application needs to update; refresh the page.");
                 }
 
                 // Normalize the user request (determine version and target framework if not specified).
@@ -62,7 +59,7 @@ namespace FunctionApp
                 {
                     _logger.Redirecting(jsonUri);
                     var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
-                    return req.CreateResponse(HttpStatusCode.OK, new RedirectResponseMessage
+                    return new OkObjectResult(new RedirectResponseMessage
                     {
                         NormalizedPackageId = idver.PackageId,
                         NormalizedPackageVersion = idver.Version.ToString(),
@@ -87,7 +84,7 @@ namespace FunctionApp
                 await generateQueue.AddAsync(new CloudQueueMessage(message));
 
                 _logger.EnqueuedRequest(timestamp, idver, target, message);
-                return req.CreateResponse(HttpStatusCode.Accepted, new GenerateRequestQueuedResponseMessage
+                return new OkObjectResult(new GenerateRequestQueuedResponseMessage
                 {
                     NormalizedPackageId = idver.PackageId,
                     NormalizedPackageVersion = idver.Version.ToString(),
@@ -96,30 +93,41 @@ namespace FunctionApp
             }
             catch (ExpectedException ex)
             {
-                _logger.ReturningError((int)ex.HttpStatusCode, ex.Message);
-                return req.CreateErrorResponseWithLog(ex);
+                _logger.ReturningError(ex.HttpStatusCode, ex.Message);
+                throw;
             }
         }
 
         [FunctionName("Documentation")]
-        public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")] HttpRequestMessage req,
+        public static async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "0/doc")] HttpRequest req,
             [Queue("generate")] IAsyncCollector<CloudQueueMessage> generateQueue,
-            ILogger log, ExecutionContext context)
+            ILogger log,
+            ExecutionContext context)
         {
-            GlobalConfig.Initialize();
-            req.ApplyRequestHandlingDefaults(context);
-            AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
-            AmbientContext.OperationId = context.InvocationId;
-            AmbientContext.RequestId = req.TryGetRequestId();
-            AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
-            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
-            AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
-
-            var container = await Containers.GetContainerForAsync<DocumentationFunction>();
-            using (AsyncScopedLifestyle.BeginScope(container))
+            try
             {
-                return await container.GetInstance<DocumentationFunction>().RunAsync(req, generateQueue);
+                var config = new ConfigurationBuilder()
+                    .AddJsonFile(Path.Combine(context.FunctionAppDirectory, "local.settings.json"), optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+                GlobalConfig.Initialize();
+                AmbientContext.InMemoryLoggerProvider = new InMemoryLoggerProvider();
+                AmbientContext.OperationId = context.InvocationId;
+                AmbientContext.ConfigurationRoot = config; // TODO: DI the options pattern
+                AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.InMemoryLoggerProvider);
+                AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));
+
+                var container = await Containers.GetContainerForAsync<DocumentationFunction>();
+                using (AsyncScopedLifestyle.BeginScope(container))
+                {
+                    return await container.GetInstance<DocumentationFunction>().RunAsync(req, generateQueue);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Helpers.DetailExceptionResponse(ex);
             }
         }
     }
