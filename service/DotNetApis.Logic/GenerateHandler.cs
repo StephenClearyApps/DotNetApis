@@ -131,7 +131,7 @@ namespace DotNetApis.Logic
 
                 // Attempt to load all versions of FSharp.Core from highest to lowest until we find one compatible with this target.
                 var found = false;
-                var versions = _nugetRepository.GetPackageVersions("FSharp.Core");
+                var versions = await _nugetRepository.GetPackageVersionsAsync("FSharp.Core");
                 foreach (var version in versions.Where(x => !x.IsPrerelease).Concat(versions.Where(x => x.IsPrerelease)))
                 {
                     var fsharpIdver = new NugetPackageIdVersion("FSharp.Core", version);
