@@ -10,7 +10,7 @@
           "OPTIONS"
         ]
       },
-      "backendUri": "https://%SPA_APP%/static/{url}"
+      "backendUri": "%SPA_APP%/static/{url}"
     },
     "app": {
       "matchCondition": {
@@ -21,7 +21,7 @@
           "OPTIONS"
         ]
       },
-      "backendUri": "https://%SPA_APP%/"
+      "backendUri": "%SPA_APP%/"
     },
     "api": {
       "matchCondition": {

@@ -53,7 +53,8 @@ namespace FunctionApp
             try
             {
                 var config = new ConfigurationBuilder()
-                    .AddJsonFile(Path.Combine(context.FunctionAppDirectory, "local.settings.json"), optional: true)
+                    .SetBasePath(context.FunctionAppDirectory)
+                    .AddJsonFile("local.secrets.json", optional: true)
                     .AddEnvironmentVariables()
                     .Build();
                 GlobalConfig.Initialize();
