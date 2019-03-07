@@ -12,6 +12,7 @@ using SimpleInjector.Lifestyles;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace FunctionApp
@@ -29,7 +30,7 @@ namespace FunctionApp
 
         public async Task<IActionResult> RunAsync(HttpRequest req)
         {
-            var command = new OpsMessage();//TODO: await req.Content.ReadAsAsync<OpsMessage>();
+            var command = JsonConvert.DeserializeObject<OpsMessage>(await req.ReadAsStringAsync());
             _logger.ReceivedCommand(JsonConvert.SerializeObject(command, Constants.StorageJsonSerializerSettings));
 
             switch (command.Type)
