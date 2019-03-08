@@ -6,11 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Nito.Comparers" Version="5.0.7" />
-    <PackageReference Include="NuGet.Frameworks" Version="4.9.3" />
-    <PackageReference Include="NuGet.Packaging" Version="4.9.3" />
-    <PackageReference Include="NuGet.Protocol" Version="4.9.3" />
-    <PackageReference Include="NuGet.Resolver" Version="4.9.3" />
-    <PackageReference Include="NuGet.Versioning" Version="4.9.3" />
+    <PackageReference Include="NuGet.Frameworks" Version="5.0.0-rtm.5856" />
+    <PackageReference Include="NuGet.Packaging" Version="5.0.0-rtm.5856" />
+    <PackageReference Include="NuGet.Protocol" Version="5.0.0-rtm.5856" />
+    <PackageReference Include="NuGet.Resolver" Version="5.0.0-rtm.5856" />
+    <PackageReference Include="NuGet.Versioning" Version="5.0.0-rtm.5856" />
   </ItemGroup>
 
   <ItemGroup>
