@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="ably.io" Version="0.8.9" />
-    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.4" />
+    <PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.5" />
     <PackageReference Include="Microsoft.Tpl.Dataflow" Version="4.5.24" />
     <PackageReference Include="Nito.Disposables" Version="2.0.0" />
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
