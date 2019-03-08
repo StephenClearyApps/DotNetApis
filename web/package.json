@@ -53,7 +53,7 @@
     "history": "^4.7.2",
     "material-ui": "^0.20.0",
     "query-string": "^6.1.0",
-    "react": "^16.3.2",
+    "react": "^16.8.4",
     "react-dom": "^16.3.2",
     "react-flexbox-grid": "^2.1.0",
     "react-redux": "^5.0.7",
