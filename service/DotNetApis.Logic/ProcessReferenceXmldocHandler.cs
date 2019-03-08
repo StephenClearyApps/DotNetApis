@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using DotNetApis.Cecil;
 using DotNetApis.Common;
+using DotNetApis.Logic.Assemblies;
 using DotNetApis.Nuget;
 using DotNetApis.Storage;
 using Microsoft.Extensions.Logging;
@@ -17,22 +18,19 @@ namespace DotNetApis.Logic
     public sealed class ProcessReferenceXmldocHandler
     {
         private readonly ILogger<ProcessReferenceXmldocHandler> _logger;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly Lazy<Task<ReferenceAssemblies>> _referenceAssemblies;
         private readonly IReferenceXmldocTable _referenceXmldocTable;
         private readonly IReferenceStorage _referenceStorage;
         private readonly IStorageBackend _storageBackend;
 
         private const int BatchSize = 20;
-        private static readonly ReaderParameters ReaderParameters = new ReaderParameters
-        {
-            // We are only processing xmldoc and dnaids for accessible classes/members in each assembly, not processing anything like attributes which require assembly resolution.
-            AssemblyResolver = new NullAssemblyResolver(),
-        };
 
         public ProcessReferenceXmldocHandler(ILoggerFactory loggerFactory, Lazy<Task<ReferenceAssemblies>> referenceAssemblies, IReferenceXmldocTable referenceXmldocTable,
             IReferenceStorage referenceStorage, IStorageBackend storageBackend)
         {
             _logger = loggerFactory.CreateLogger<ProcessReferenceXmldocHandler>();
+            _loggerFactory = loggerFactory;
             _referenceAssemblies = referenceAssemblies;
             _referenceXmldocTable = referenceXmldocTable;
             _referenceStorage = referenceStorage;
@@ -49,7 +47,7 @@ namespace DotNetApis.Logic
             _logger.MaximumParallelism(maxDegreeOfParallelism);
             using (ThreadPoolTurbo.Engage(maxDegreeOfParallelism))
             {
-                var processor = new ReferenceAssembliesProcessor(_logger, _referenceXmldocTable, _referenceStorage, _storageBackend, maxDegreeOfParallelism);
+                var processor = new ReferenceAssembliesProcessor(_loggerFactory, _logger, _referenceXmldocTable, _referenceStorage, _storageBackend, maxDegreeOfParallelism);
                 foreach (var referenceTarget in referenceAssemblies.ReferenceTargets)
                 {
                     await processor.ProcessAsync(referenceTarget).ConfigureAwait(false);
@@ -60,14 +58,16 @@ namespace DotNetApis.Logic
 
         private sealed class ReferenceAssembliesProcessor
         {
+            private readonly ILoggerFactory _loggerFactory;
             private readonly ILogger<ProcessReferenceXmldocHandler> _logger;
             private readonly IReferenceXmldocTable _referenceXmldocTable;
             private readonly IReferenceStorage _referenceStorage;
             private readonly ActionBlock<IBatch> _block;
             private readonly int _maxDegreeOfParallelism;
 
-            public ReferenceAssembliesProcessor(ILogger<ProcessReferenceXmldocHandler> logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend, int maxDegreeOfParallelism)
+            public ReferenceAssembliesProcessor(ILoggerFactory loggerFactory, ILogger<ProcessReferenceXmldocHandler> logger, IReferenceXmldocTable referenceXmldocTable, IReferenceStorage referenceStorage, IStorageBackend storageBackend, int maxDegreeOfParallelism)
             {
+                _loggerFactory = loggerFactory;
                 _logger = logger;
                 _referenceXmldocTable = referenceXmldocTable;
                 _referenceStorage = referenceStorage;
@@ -90,6 +90,10 @@ namespace DotNetApis.Logic
             {
                 _logger.ProcessingReferenceTarget(referenceTarget);
 
+                var dllPaths = referenceTarget.Paths.Where(x => x.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase)).ToList();
+                var readerParameters = new ReaderParameters();
+                var assemblyResolver = new SimpleAssemblyResolver(dllPaths.Select(path => new ReferenceAssembly(_loggerFactory, path, readerParameters, new Dictionary<string, string>(), () => _referenceStorage.Download(path))).ToList());
+                readerParameters.AssemblyResolver = assemblyResolver;
                 var target = referenceTarget.Target;
                 using (var processor = new PlatformTargetProcessor(_logger, _block, _referenceXmldocTable, target))
                 {
@@ -102,7 +106,7 @@ namespace DotNetApis.Logic
                         try
                         {
                             // Load it into Cecil.
-                            var assembly = AssemblyDefinition.ReadAssembly(stream, ReaderParameters);
+                            var assembly = AssemblyDefinition.ReadAssembly(stream, readerParameters);
 
                             // Process every member.
                             foreach (var type in assembly.Modules.SelectMany(x => x.Types).Where(x => x.IsExposed()))

@@ -1,9 +1,9 @@
 {
-  "logger": {
-    "categoryFilter": {
-      "categoryLevels": {
-        "Function": "Debug"
-      }
+  "version": "2.0",
+  "functionTimeout": "20:00:00",
+  "logging": {
+    "logLevel": {
+      "default": "Debug"
     }
   }
 }

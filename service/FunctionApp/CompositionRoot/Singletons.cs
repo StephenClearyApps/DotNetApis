@@ -7,6 +7,7 @@ using DotNetApis.Common;
 using DotNetApis.Logic;
 using DotNetApis.SimpleInjector;
 using DotNetApis.Storage;
+using Microsoft.Extensions.Configuration;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
@@ -74,7 +75,7 @@ namespace FunctionApp.CompositionRoot
 
         public static readonly ISingleton<CloudStorageAccount> CloudStorageAccountInstance = Singleton.Create(() =>
         {
-            var connectionString = Config.GetSetting("StorageConnectionString");
+            var connectionString = AmbientContext.ConfigurationRoot.GetValue<string>("StorageConnectionString", null);
             if (connectionString == null)
                 throw new InvalidOperationException("No StorageConnectionString setting found; update your copy of local.settings.json to include this value.");
             return CloudStorageAccount.Parse(connectionString);

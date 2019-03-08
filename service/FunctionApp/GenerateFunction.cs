@@ -1,16 +1,17 @@
-using System;
 using DotNetApis.Common;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
-using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Queue;
-using SimpleInjector.Lifestyles;
-using System.Threading.Tasks;
-using FunctionApp.Messages;
 using DotNetApis.Logic;
 using DotNetApis.Logic.Messages;
 using FunctionApp.CompositionRoot;
+using FunctionApp.Messages;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Newtonsoft.Json;
+using SimpleInjector.Lifestyles;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace FunctionApp
 {
@@ -35,15 +36,23 @@ namespace FunctionApp
         }
 
         [FunctionName("GenerateFunction")]
-        public static async Task Run([QueueTrigger("generate")]string queueMessage,
+        public static async Task Run(
+            [QueueTrigger("generate")]string queueMessage,
             [Queue("generate-poison")] IAsyncCollector<CloudQueueMessage> generatePoisonQueue,
-            ILogger log, ExecutionContext context)
+            ILogger log,
+            ExecutionContext context)
         {
             try
             {
+                var config = new ConfigurationBuilder()
+                    .SetBasePath(context.FunctionAppDirectory)
+                    .AddJsonFile("local.secrets.json", optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
                 GlobalConfig.Initialize();
                 AmbientContext.JsonLoggerProvider = new JsonLoggerProvider();
                 AmbientContext.OperationId = context.InvocationId;
+                AmbientContext.ConfigurationRoot = config; // TODO: DI the options pattern
                 AsyncLocalLoggerFactory.LoggerFactory = new LoggerFactory();
                 AsyncLocalLoggerFactory.LoggerFactory.AddProvider(AmbientContext.JsonLoggerProvider);
                 AsyncLocalLoggerFactory.LoggerFactory.AddProvider(new ForwardingLoggerProvider(log));

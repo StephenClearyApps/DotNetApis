@@ -18,10 +18,5 @@ namespace DotNetApis.Logic.Messages
         /// The AppInsights parent operation id.
         /// </summary>
         public Guid ParentOperationId { get; set; } = AmbientContext.ParentOperationId;
-
-        /// <summary>
-        /// The HTTP request id.
-        /// </summary>
-        public string RequestId { get; set; } = AmbientContext.RequestId;
     }
 }

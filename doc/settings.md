@@ -12,4 +12,4 @@ The connection string used by Azure Functions to connect to Azure Storage for ap
 
 ## `SPA_APP`
 
-The hostname where the SPA is hosted. May also contain a path, but should not contain a protocol or a trailing slash. E.g., `stephenclearyapps.github.io/DotNetApis`.
+The hostname where the SPA is hosted. Must contain a protocol and hostname; may also contain a path; must not contain a trailing slash. E.g., `https://stephenclearyapps.github.io/DotNetApis`.

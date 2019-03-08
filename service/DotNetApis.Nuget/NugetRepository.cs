@@ -4,9 +4,17 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using DotNetApis.Common;
 using Microsoft.Extensions.Logging;
-using NuGet;
+using Nito.AsyncEx;
+using NuGet.Configuration;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
 
 namespace DotNetApis.Nuget
 {
@@ -19,7 +27,7 @@ namespace DotNetApis.Nuget
         /// Attempts to find the latest package version, preferring released versions over unreleased. Only listed versions are considered. Returns <c>null</c> if no package is found.
         /// </summary>
         /// <param name="id">The package id.</param>
-        NugetPackageIdVersion TryLookupLatestPackageVersion(string id);
+        Task<NugetPackageIdVersion> TryLookupLatestPackageVersionAsync(string id);
 
         /// <summary>
         /// Attempts to find a specified package version matching a version range. Returns <c>null</c> if no matching package version is found.
@@ -27,100 +35,174 @@ namespace DotNetApis.Nuget
         /// <param name="id">The package id.</param>
         /// <param name="versionRange">The version range the package must match.</param>
         /// <returns></returns>
-        NugetPackageIdVersion TryLookupPackage(string id, NugetVersionRange versionRange);
+        Task<NugetPackageIdVersion> TryLookupPackageAsync(string id, NugetVersionRange versionRange);
 
         /// <summary>
         /// Downloads a specific package from Nuget. Throws <see cref="ExpectedException"/> (404) if not found.
         /// </summary>
         /// <param name="idver">The identity of the package.</param>
-        NugetFullPackage DownloadPackage(NugetPackageIdVersion idver);
+        Task<NugetFullPackage> DownloadPackageAsync(NugetPackageIdVersion idver);
 
         /// <summary>
         /// Gets all versions for a package, including prerelease versions.
         /// </summary>
         /// <param name="packageId">The package id.</param>
-        IReadOnlyList<NugetVersion> GetPackageVersions(string packageId);
+        Task<IReadOnlyList<NugetVersion>> GetPackageVersionsAsync(string packageId);
     }
 
     public sealed class NugetRepository : INugetRepository
     {
         private readonly ILogger<NugetRepository> _logger;
+        private readonly NuGet.Common.ILogger _nugetLogger;
 
-        private readonly IPackageRepository _repository = PackageRepositoryFactory.Default.CreateRepository("https://packages.nuget.org/api/v2");
+        private readonly ISettings _nugetSettings;
+        private readonly SourceCacheContext _nugetCache;
+        private readonly AsyncLazy<MetadataResource> _metadataResource;
+        private readonly AsyncLazy<PackageMetadataResource> _packageMetadataResource;
+        private readonly AsyncLazy<DownloadResource> _downloadResource;
 
         public NugetRepository(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<NugetRepository>();
+            _nugetLogger = NuGet.Common.NullLogger.Instance;
+            _nugetCache = new SourceCacheContext() { DirectDownload = true, NoCache = true };
+            _nugetSettings = Settings.LoadDefaultSettings(null);
+            var repositories = new SourceRepositoryProvider(_nugetSettings, Repository.Provider.GetCoreV3())
+                .GetRepositories();
+            _metadataResource = new AsyncLazy<MetadataResource>(() => FindResource<MetadataResource>(repositories));
+            _packageMetadataResource = new AsyncLazy<PackageMetadataResource>(() => FindResource<PackageMetadataResource>(repositories));
+            _downloadResource = new AsyncLazy<DownloadResource>(() => FindResource<DownloadResource>(repositories));
         }
 
-        public NugetPackageIdVersion TryLookupLatestPackageVersion(string packageId)
+        private async Task<T> FindResource<T>(IEnumerable<SourceRepository> repositories) where T : class, INuGetResource
+        {
+            foreach (var repository in repositories)
+            {
+                var result = await repository.GetResourceAsync<T>();
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
+
+        public async Task<NugetPackageIdVersion> TryLookupLatestPackageVersionAsync(string packageId)
         {
             _logger.LookingUpLatestVersion(packageId);
             var stopwatch = Stopwatch.StartNew();
-            var package = _repository.FindPackage(packageId, version: null, allowPrereleaseVersions: false, allowUnlisted: false);
-            if (package == null)
+
+            var resource = await _metadataResource;
+            var version = await resource.GetLatestVersion(
+                packageId,
+                includePrerelease: false,
+                includeUnlisted: false,
+                sourceCacheContext: _nugetCache,
+                log: _nugetLogger,
+                token: CancellationToken.None);
+            if (version == null)
             {
                 _logger.LookingUpLatestPrereleaseVersion(packageId);
-                package = _repository.FindPackage(packageId, version: null, allowPrereleaseVersions: true, allowUnlisted: false);
+                version = await resource.GetLatestVersion(
+                    packageId,
+                    includePrerelease: true,
+                    includeUnlisted: false,
+                    sourceCacheContext: _nugetCache,
+                    log: _nugetLogger,
+                    token: CancellationToken.None);
             }
-            if (package == null)
+            if (version == null)
             {
                 _logger.NoVersionFound(packageId, stopwatch.Elapsed);
                 return null;
             }
-            var idver = new NugetPackageIdVersion(packageId, new NugetVersion(package.Version));
+            var idver = new NugetPackageIdVersion(packageId, new NugetVersion(version));
             _logger.FoundLatestVersion(idver, packageId, stopwatch.Elapsed);
             return idver;
         }
 
-        public IReadOnlyList<NugetVersion> GetPackageVersions(string packageId)
+        public async Task<IReadOnlyList<NugetVersion>> GetPackageVersionsAsync(string packageId)
         {
             _logger.LookingUpAllVersions(packageId);
             var stopwatch = Stopwatch.StartNew();
-            var results = _repository.FindPackages(packageId, versionSpec: null, allowPrereleaseVersions: true, allowUnlisted: false).ToList();
+            var resource = await _metadataResource;
+            var versions = await resource.GetVersions(
+                packageId,
+                includePrerelease: true,
+                includeUnlisted: false,
+                sourceCacheContext: _nugetCache,
+                log: _nugetLogger,
+                token: CancellationToken.None);
+            var results = versions.ToList();
             if (results.Count == 0)
             {
                 _logger.NoVersionFound(packageId, stopwatch.Elapsed);
                 return new NugetVersion[0];
             }
-            var result = results.Select(x => new NugetVersion(x.Version)).ToList();
+            var result = results.Select(x => new NugetVersion(x)).ToList();
             _logger.FoundVersions(result, packageId, stopwatch.Elapsed);
             return result;
         }
 
-        public NugetPackageIdVersion TryLookupPackage(string packageId, NugetVersionRange versionRange)
+        public async Task<NugetPackageIdVersion> TryLookupPackageAsync(string packageId, NugetVersionRange versionRange)
         {
             _logger.LookingUpVersionRange(packageId, versionRange);
             var stopwatch = Stopwatch.StartNew();
-            var package = _repository.FindPackage(packageId, versionRange.ToVersionSpec(), allowPrereleaseVersions: true, allowUnlisted: true);
-            if (package == null)
+            var vr = versionRange.ToVersionRange();
+            var resource = await _metadataResource;
+            var versions = await resource.GetVersions(
+                packageId,
+                includePrerelease: true,
+                includeUnlisted: true,
+                sourceCacheContext: _nugetCache,
+                log: _nugetLogger,
+                token: CancellationToken.None);
+            var all = versions.ToList();
+            all.Sort(new VersionComparer());
+            var result = all.FirstOrDefault(x => vr.Satisfies(x));
+            if (result == null)
             {
                 _logger.VersionRangeNotFound(packageId, versionRange, stopwatch.Elapsed);
                 return null;
             }
-            var idver = new NugetPackageIdVersion(packageId, NugetVersion.FromSemanticVersion(package.Version));
+            foreach (var version in all)
+                if (vr.IsBetter(result, version))
+                    result = version;
+            var idver = new NugetPackageIdVersion(packageId, new NugetVersion(result));
             _logger.VersionRangeResolved(packageId, versionRange, idver, stopwatch.Elapsed);
             return idver;
         }
 
-        public NugetFullPackage DownloadPackage(NugetPackageIdVersion idver)
+        public async Task<NugetFullPackage> DownloadPackageAsync(NugetPackageIdVersion idver)
         {
             _logger.DownloadingPackage(idver);
             var stopwatch = Stopwatch.StartNew();
-            var package = _repository.FindPackage(idver.PackageId, idver.Version.ToSemanticVersion(), allowPrereleaseVersions: true, allowUnlisted: true);
-            if (package == null)
+            var identity = new PackageIdentity(idver.PackageId, idver.Version.ToNuGetVersion());
+            var downloadResource = await _downloadResource;
+            var packageMetadataResource = await _packageMetadataResource;
+            var metadata = await packageMetadataResource.GetMetadataAsync(identity, _nugetCache, _nugetLogger, CancellationToken.None);
+            var packageDownloadContext = new PackageDownloadContext(_nugetCache, _nugetCache.GeneratedTempFolder, directDownload: true)
+            {
+                ClientPolicyContext = ClientPolicyContext.GetClientPolicy(_nugetSettings, _nugetLogger),
+            };
+            var downloadResult = await downloadResource.GetDownloadResourceResultAsync(
+                identity,
+                packageDownloadContext,
+                SettingsUtility.GetGlobalPackagesFolder(_nugetSettings),
+                _nugetLogger,
+                CancellationToken.None);
+            if (downloadResult.Status != DownloadResourceResultStatus.Available)
             {
                 _logger.PackageNotFound(idver, stopwatch.Elapsed);
                 throw new ExpectedException(HttpStatusCode.NotFound, $"Could not find package {idver} on Nuget; this error can happen if NuGet is currently indexing this package; if this is a newly released version, try again in 5 minutes or so.");
             }
-            var published = package.Published;
-            if (published == null)
+
+            if (metadata.Published == null)
             {
                 _logger.NoPublishedMetadata(idver, stopwatch.Elapsed);
                 throw new InvalidDataException($"Package {idver} from Nuget does not have Published metadata");
             }
 
-            var result = new NugetFullPackage(new DotNetApis.Nuget.NugetPackage(package.GetStream()), new NugetPackageExternalMetadata(published.Value));
+            var result = new NugetFullPackage(new NugetPackage(downloadResult.PackageStream), new NugetPackageExternalMetadata(metadata.Published.Value));
             _logger.PackageDownloaded(idver, result, stopwatch.Elapsed);
             return result;
         }

@@ -21,11 +21,6 @@ namespace DotNetApis.Nuget
             _version = version ?? throw new InvalidOperationException("version cannot be null");
         }
 
-        internal NugetVersion(NuGet.SemanticVersion version)
-            : this(new NuGetVersion(version.Version, version.SpecialVersion))
-        {
-        }
-
         /// <summary>
         /// Gets the major version number.
         /// </summary>
@@ -71,17 +66,6 @@ namespace DotNetApis.Nuget
         /// </summary>
         /// <param name="version">The version, as a string.</param>
         public static NugetVersion TryParse(string version) => NuGetVersion.TryParse(version, out NuGetVersion result) ? new NugetVersion(result) : null;
-
-        /// <summary>
-        /// Method to construct a <see cref="SemanticVersion"/> from this Nuget version.
-        /// </summary>
-        internal NuGet.SemanticVersion ToSemanticVersion() => new NuGet.SemanticVersion(_version.Version, Prerelease);
-
-        /// <summary>
-        /// Method to construct a Nuget version from a <see cref="SemanticVersion"/>.
-        /// </summary>
-        /// <param name="version">The semantic version.</param>
-        internal static NugetVersion FromSemanticVersion(NuGet.SemanticVersion version) => new NugetVersion(version);
 
         internal NuGetVersion ToNuGetVersion() => _version;
 

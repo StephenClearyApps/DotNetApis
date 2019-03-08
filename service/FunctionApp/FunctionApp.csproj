@@ -1,24 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AzureFunctionsVersion>v2</AzureFunctionsVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-  <ItemGroup>    
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.1.1" />    
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.1.1" />    
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.13" />    
-    <PackageReference Include="Nito.Comparers.Core" Version="5.0.5" />    
-    <PackageReference Include="SimpleInjector" Version="4.1.1" />    
-    <PackageReference Include="System.IO.Compression" Version="4.3.0" />    
-    <PackageReference Include="System.ValueTuple" Version="4.4.0" />    
-    <PackageReference Include="WindowsAzure.Storage" Version="7.2.1" />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.2" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="3.0.3" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="1.0.25" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetApis.Common\DotNetApis.Common.csproj" />
@@ -28,16 +16,18 @@
     <ProjectReference Include="..\DotNetApis.Storage\DotNetApis.Storage.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="proxies.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="local.secrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
     <None Update="local.settings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </None>
+    <None Update="proxies.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

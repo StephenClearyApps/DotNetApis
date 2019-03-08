@@ -34,7 +34,7 @@ namespace DotNetApis.Logic
         public async Task<(NugetPackageIdVersion, PlatformTarget)> NormalizeRequestAsync(string packageId, string packageVersion, string targetFramework)
         {
             // Lookup the package version if unknown.
-            var idver = packageVersion == null ? LookupLatestPackageVersion(packageId) : new NugetPackageIdVersion(packageId, _parser.ParseVersion(packageVersion));
+            var idver = packageVersion == null ? await LookupLatestPackageVersionAsync(packageId) : new NugetPackageIdVersion(packageId, _parser.ParseVersion(packageVersion));
             _logger.NormalizedPackage(packageId, packageVersion, idver);
 
             // Guess the target framework if unknown.
@@ -57,9 +57,9 @@ namespace DotNetApis.Logic
             return (result.Value.JsonUri, result.Value.LogUri);
         }
 
-        private NugetPackageIdVersion LookupLatestPackageVersion(string packageId)
+        private async Task<NugetPackageIdVersion> LookupLatestPackageVersionAsync(string packageId)
         {
-            var result = _nugetRepository.TryLookupLatestPackageVersion(packageId);
+            var result = await _nugetRepository.TryLookupLatestPackageVersionAsync(packageId);
             if (result == null)
             {
                 _logger.PackageNotFound(packageId);

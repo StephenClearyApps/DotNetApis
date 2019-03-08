@@ -5,12 +5,16 @@ namespace DotNetApis.Common
 {
     public sealed class ExpectedException : Exception
     {
-        public ExpectedException(HttpStatusCode httpStatusCode, string message, Exception innerException = null)
+        public ExpectedException(int httpStatusCode, string message, Exception innerException = null)
             : base(message, innerException)
         {
             HttpStatusCode = httpStatusCode;
         }
-        
-        public HttpStatusCode HttpStatusCode { get; }
+
+        public ExpectedException(HttpStatusCode httpStatusCode, string message, Exception innerException = null)
+            : this((int)httpStatusCode, message, innerException)
+        { }
+
+        public int HttpStatusCode { get; }
     }
 }

@@ -43,7 +43,7 @@ namespace DotNetApis.Logic
             else
             {
                 // Download it from NuGet.
-                var package = _nugetRepository.DownloadPackage(idver);
+                var package = await _nugetRepository.DownloadPackageAsync(idver);
                 var published = package.ExternalMetadata.Published;
 
                 // Save it in our own storage.
@@ -64,7 +64,7 @@ namespace DotNetApis.Logic
         /// <param name="versionRange">The version range the package must match.</param>
         public async Task<NugetFullPackage> TryGetPackageAsync(string id, NugetVersionRange versionRange)
         {
-            var idver = _nugetRepository.TryLookupPackage(id, versionRange);
+            var idver = await _nugetRepository.TryLookupPackageAsync(id, versionRange);
             if (idver == null)
                 return null;
             return await GetPackageAsync(idver).ConfigureAwait(false);

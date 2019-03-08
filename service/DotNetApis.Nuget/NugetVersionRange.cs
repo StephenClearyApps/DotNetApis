@@ -19,24 +19,7 @@ namespace DotNetApis.Nuget
             _versionRange = versionRange;
         }
 
-        public NugetVersionRange(NuGet.IVersionSpec versionSpec)
-        {
-            _versionRange = new VersionRange(NugetVersion.FromSemanticVersion(versionSpec.MinVersion).ToNuGetVersion(), versionSpec.IsMinInclusive,
-                NugetVersion.FromSemanticVersion(versionSpec.MaxVersion).ToNuGetVersion(), versionSpec.IsMaxInclusive);
-        }
-
         public VersionRange ToVersionRange() => _versionRange;
-
-        public NuGet.IVersionSpec ToVersionSpec()
-        {
-            return new NuGet.VersionSpec
-            {
-                IsMaxInclusive = _versionRange.IsMaxInclusive,
-                IsMinInclusive = _versionRange.IsMinInclusive,
-                MaxVersion = _versionRange.MaxVersion == null ? null : NugetVersion.FromNuGetVersion(_versionRange.MaxVersion).ToSemanticVersion(),
-                MinVersion = _versionRange.MinVersion == null ? null : NugetVersion.FromNuGetVersion(_versionRange.MinVersion).ToSemanticVersion()
-            };
-        }
 
         public static NugetVersionRange TryMerge(NugetVersionRange a, NugetVersionRange b)
         {
