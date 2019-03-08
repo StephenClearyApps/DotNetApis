@@ -2,13 +2,13 @@ import * as Ably from 'ably';
 
 const client = new Ably.Realtime("uL8XyQ.FPHeQA:YpGFe6_ONYbEA4M_");
 
-function attachAsync(channel: Ably.ablyLib.RealtimeChannel): Promise<void> {
+function attachAsync(channel: Ably.Types.RealtimeChannelCallbacks): Promise<void> {
     return new Promise((resolve, reject) => channel.attach(err => err ? reject(err) : resolve()));
 }
 
 export class LogListener {
-    private channel: Ably.ablyLib.RealtimeChannel;
-    constructor(name: string, private handler: (err: Ably.ablyLib.ErrorInfo | Error | undefined, message: Ably.ablyLib.Message | undefined, meta: string | undefined) => void) {
+    private channel: Ably.Types.RealtimeChannelCallbacks;
+    constructor(name: string, private handler: (err: Ably.Types.ErrorInfo | Error | undefined, message: Ably.Types.Message | undefined, meta: string | undefined) => void) {
         this.channel = client.channels.get(name);
     }
 
