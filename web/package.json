@@ -55,7 +55,7 @@
     "query-string": "^6.1.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-flexbox-grid": "^2.1.0",
+    "react-flexbox-grid": "^2.1.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
