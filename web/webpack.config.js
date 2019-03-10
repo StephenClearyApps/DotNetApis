@@ -1,6 +1,7 @@
 const { CheckerPlugin } = require("awesome-typescript-loader");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const WebpackBundleSizeAnalyzerPlugin = require('webpack-bundle-size-analyzer').WebpackBundleSizeAnalyzerPlugin;
+const Webpack = require("webpack");
 
 module.exports = env => {
     console.log(env.prod ? "Production build." : "Debug build.");
@@ -49,7 +50,12 @@ module.exports = env => {
                 inject: false,
                 minify: env.prod ? { collapseWhitespace: true } : false
             }),
-            env.prod ? null : new WebpackBundleSizeAnalyzerPlugin("bundlesize.txt")
+            env.prod ? null : new WebpackBundleSizeAnalyzerPlugin("bundlesize.txt"),
+            new Webpack.DefinePlugin({
+                "process.env": {
+                    NODE_ENV: env.prod ? JSON.stringify("production") : JSON.stringify("debug")
+                }
+            })
         ].filter(x => x !== null)
     };
 }

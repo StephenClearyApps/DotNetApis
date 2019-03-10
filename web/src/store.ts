@@ -5,6 +5,12 @@ import thunk from 'redux-thunk';
 
 import { reducers, State } from './reducers';
 
+declare var process : {
+    env: {
+        NODE_ENV: string
+    }
+}
+
 const middlewareEnhancer = process.env.NODE_ENV !== 'production' ? applyMiddleware(immutableState(), thunk) : applyMiddleware(thunk);
 const storeEnhancer = composeWithDevTools(middlewareEnhancer);
 
