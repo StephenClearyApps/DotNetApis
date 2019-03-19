@@ -9,7 +9,10 @@ export const enum XmlXmldocNodeKind {
     SPAN = 4,
     BOLD = 5,
     ITALIC = 6,
-    LINK = 7
+    LINK = 7,
+    UNORDERED_LIST = 8,
+    ORDERED_LIST = 9,
+    LIST_ITEM = 10,
     // TODO: others
 };
 

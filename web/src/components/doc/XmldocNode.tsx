@@ -26,6 +26,9 @@ export const XmldocNode: React.StatelessComponent<XmldocProps> = (props) => {
             case XmlXmldocNodeKind.SPAN: return <span>{children}</span>;
             case XmlXmldocNodeKind.BOLD: return <b>{children}</b>;
             case XmlXmldocNodeKind.ITALIC: return <i>{children}</i>;
+            case XmlXmldocNodeKind.ORDERED_LIST: return <ol>{children}</ol>;
+            case XmlXmldocNodeKind.UNORDERED_LIST: return <ul>{children}</ul>;
+            case XmlXmldocNodeKind.LIST_ITEM: return <li>{children}</li>;
             default: return <div>{children}</div>;
         }
     }
