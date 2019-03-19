@@ -51,6 +51,7 @@ export const FilteredGroupedList: React.StatelessComponent<FilteredGroupedListPr
     const filteredCount = filteredGroups.reduce((sum, value) => sum + value.items.length, 0);
     const filteredMessage = !filter ? null : <span>{filteredCount} of {fullCount}</span>;
     const clearFilterButton = !filter ? null : <Tooltip title="Clear filter"><IconButton onClick={() => filterChanged(undefined)}><ClearIcon/></IconButton></Tooltip>;
+    let dividerKey = 0;
 
     return (
         <div>
@@ -63,7 +64,7 @@ export const FilteredGroupedList: React.StatelessComponent<FilteredGroupedListPr
                     {clearFilterButton}
                 </ToolbarGroup>
             </Toolbar>
-            {join(filteredGroups.map(x => headingList(x)).filter(x => x !== null), [<Divider/>])}
+            {join(filteredGroups.map(x => headingList(x)).filter(x => x !== null), [<Divider key={dividerKey++}/>])}
         </div>
     );
 };
