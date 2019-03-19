@@ -84,12 +84,15 @@ namespace FunctionApp
                 await generateQueue.AddAsync(new CloudQueueMessage(message));
 
                 _logger.EnqueuedRequest(timestamp, idver, target, message);
-                return new OkObjectResult(new GenerateRequestQueuedResponseMessage
+                return new ObjectResult(new GenerateRequestQueuedResponseMessage
                 {
                     NormalizedPackageId = idver.PackageId,
                     NormalizedPackageVersion = idver.Version.ToString(),
                     NormalizedFrameworkTarget = target.ToString(),
-                });
+                })
+                {
+                    StatusCode = StatusCodes.Status202Accepted,
+                };
             }
             catch (ExpectedException ex)
             {
