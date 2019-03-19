@@ -3,7 +3,7 @@ import immutableState from 'redux-immutable-state-invariant';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-import { reducers, State } from './reducers';
+import { reducers } from './reducers';
 
 declare var process : {
     env: {
@@ -12,7 +12,7 @@ declare var process : {
 }
 
 const middlewareEnhancer = process.env.NODE_ENV !== 'production' ? applyMiddleware(immutableState(), thunk) : applyMiddleware(thunk);
-const storeEnhancer = composeWithDevTools<State, {}>(middlewareEnhancer);
+const storeEnhancer = composeWithDevTools(middlewareEnhancer);
 
 const factory = storeEnhancer(createStore);
-export const store = factory(reducers);
+export const store = factory(reducers as any);

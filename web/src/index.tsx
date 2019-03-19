@@ -19,7 +19,7 @@ import "./site.css";
 function mapDispatchToProps(dispatch: Dispatch<AllActions>): Actions {
     const result : any = { };
     for (let key of Object.keys(actions)) {
-        result[key] = bindActionCreators((actions as any)[key], dispatch);
+        result[key] = bindActionCreators((actions as any)[key], dispatch as any);
     }
     return result;
 }
