@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nito.Comparers" Version="5.0.7" />
+    <PackageReference Include="Nito.Comparers" Version="6.0.0" />
     <PackageReference Include="NuGet.Frameworks" Version="5.0.0-rtm.5856" />
     <PackageReference Include="NuGet.Packaging" Version="5.0.0-rtm.5856" />
     <PackageReference Include="NuGet.Protocol" Version="5.0.0-rtm.5856" />
