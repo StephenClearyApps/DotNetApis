@@ -50,12 +50,12 @@ namespace FunctionApp
                 if (result == null)
                     throw new ExpectedException(StatusCodes.Status404NotFound, "Request status not found.");
 
-                return new OkObjectResult(new StatusResponseMessage
+                return new JsonResult(new StatusResponseMessage
                 {
                     Status = result.Value.Status,
                     LogUri = result.Value.LogUri,
                     JsonUri = result.Value.JsonUri,
-                });
+                }, Constants.CommunicationJsonSerializerSettings);
             }
             catch (ExpectedException ex)
             {

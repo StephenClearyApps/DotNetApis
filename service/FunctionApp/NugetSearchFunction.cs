@@ -74,7 +74,7 @@ namespace FunctionApp
                         TotalDownloads = properties.Element(dataservices + "DownloadCount").Value
                     });
 
-                return new OkObjectResult(new SearchResponseMessage { Hits = hits.ToList() });
+                return new JsonResult(new SearchResponseMessage { Hits = hits.ToList() }, Constants.CommunicationJsonSerializerSettings);
             }
             catch (ExpectedException ex)
             {

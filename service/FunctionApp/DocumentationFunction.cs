@@ -59,14 +59,14 @@ namespace FunctionApp
                 {
                     _logger.Redirecting(jsonUri);
                     var cacheTime = packageVersion == null || targetFramework == null ? TimeSpan.FromDays(1) : TimeSpan.FromDays(7);
-                    return new OkObjectResult(new RedirectResponseMessage
+                    return new JsonResult(new RedirectResponseMessage
                     {
                         NormalizedPackageId = idver.PackageId,
                         NormalizedPackageVersion = idver.Version.ToString(),
                         NormalizedFrameworkTarget = target.ToString(),
                         JsonUri = jsonUri,
                         LogUri = logUri,
-                    }).EnableCacheHeaders(cacheTime);
+                    }, Constants.CommunicationJsonSerializerSettings).EnableCacheHeaders(cacheTime);
                 }
 
                 // Make a note that it is in progress.
@@ -84,12 +84,12 @@ namespace FunctionApp
                 await generateQueue.AddAsync(new CloudQueueMessage(message));
 
                 _logger.EnqueuedRequest(timestamp, idver, target, message);
-                return new ObjectResult(new GenerateRequestQueuedResponseMessage
+                return new JsonResult(new GenerateRequestQueuedResponseMessage
                 {
                     NormalizedPackageId = idver.PackageId,
                     NormalizedPackageVersion = idver.Version.ToString(),
                     NormalizedFrameworkTarget = target.ToString(),
-                })
+                }, Constants.CommunicationJsonSerializerSettings)
                 {
                     StatusCode = StatusCodes.Status202Accepted,
                 };

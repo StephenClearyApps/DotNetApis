@@ -52,55 +52,44 @@ namespace FunctionApp
             }
         }
 
-        public static IActionResult EnableCacheHeaders(this IActionResult response, TimeSpan time)
+public static IActionResult EnableCacheHeaders(this IActionResult response, TimeSpan time)
+{
+    return new HeaderActionResult(response)
+    {
+        Headers =
         {
-            return new HeaderActionResult(response)
+            CacheControl = new CacheControlHeaderValue
             {
-                Headers =
-                {
-                    CacheControl = new CacheControlHeaderValue
-                    {
-                        Public = true,
-                        MaxAge = time,
-                    },
-                    Expires = DateTimeOffset.UtcNow + time,
-                },
-            };
-        }
+                Public = true,
+                MaxAge = time,
+            },
+            Expires = DateTimeOffset.UtcNow + time,
+        },
+    };
+}
 
-        public static IActionResult WithLocationHeader(this IActionResult response, Uri location)
-        {
-            return new HeaderActionResult(response)
-            {
-                Headers =
-                {
-                    Location = location,
-                },
-            };
-        }
+private sealed class HeaderActionResult : IActionResult
+{
+    private readonly IActionResult _result;
 
-        private sealed class HeaderActionResult : IActionResult
-        {
-            private readonly IActionResult _result;
+    public HeaderActionResult(IActionResult result)
+    {
+        _result = result;
+        HeaderDictionary = new HeaderDictionary();
+        Headers = new ResponseHeaders(HeaderDictionary);
+    }
 
-            public HeaderActionResult(IActionResult result)
-            {
-                _result = result;
-                HeaderDictionary = new HeaderDictionary();
-                Headers = new ResponseHeaders(HeaderDictionary);
-            }
+    public IHeaderDictionary HeaderDictionary { get; }
 
-            public IHeaderDictionary HeaderDictionary { get; }
+    public ResponseHeaders Headers { get; }
 
-            public ResponseHeaders Headers { get; }
-
-            public async Task ExecuteResultAsync(ActionContext context)
-            {
-                foreach (var header in HeaderDictionary)
-                    context.HttpContext.Response.Headers.Append(header.Key, header.Value);
-                await _result.ExecuteResultAsync(context);
-            }
-        }
+    public async Task ExecuteResultAsync(ActionContext context)
+    {
+        foreach (var header in HeaderDictionary)
+            context.HttpContext.Response.Headers.Append(header.Key, header.Value);
+        await _result.ExecuteResultAsync(context);
+    }
+}
 
         public static IActionResult DetailExceptionResponse(Exception exception)
         {
