@@ -2,7 +2,7 @@ import { Location, History } from "history";
 import { parse, stringify } from "query-string";
 
 function getHash<T extends object>(location: Location): T {
-    return parse(location.hash);
+    return parse(location.hash) as any;
 }
 
 function replaceHash<T extends object>(history: History, value: T) {
