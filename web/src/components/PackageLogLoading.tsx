@@ -1,5 +1,5 @@
 import * as React from 'react';
-import CircularProgress from 'material-ui/CircularProgress';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { State } from "../reducers";
 import { PackageLogRequestInjectedProps } from "./hoc";

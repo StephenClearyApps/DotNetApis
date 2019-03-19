@@ -1,5 +1,5 @@
 import * as React from "react";
-import ListItem from 'material-ui/List/ListItem';
+import ListItem from '@material-ui/core/ListItem';
 
 import { PackageEntityLink } from "./links";
 

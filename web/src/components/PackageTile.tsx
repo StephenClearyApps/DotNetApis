@@ -1,6 +1,8 @@
 import * as React from "react";
-import { Card, CardHeader, CardTitle, CardText } from "material-ui/Card";
-import { CardTitleProps, CardHeaderProps } from "material-ui";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import { CardHeaderProps } from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
 
 import { PackageLink } from "./links";
 
@@ -32,20 +34,20 @@ export const PackageTile: React.StatelessComponent<PackageTileProps> = (props) =
     const { packageId, packageVersion } = without$(props);
     const iconUrl = props.iconUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=';
     const idver = <code>{packageVersion ? packageId + " " + packageVersion : packageId}</code>;
-    const titleProps: CardTitleProps = {
+    const titleProps: CardHeaderProps = {
         title: title ? <span>{title} &mdash; {idver}</span> : <span>{idver}</span>
     };
     if (downloads)
-        titleProps.subtitle = humanizedValue(downloads) + " downloads";
+        titleProps.subheader = humanizedValue(downloads) + " downloads";
     const headerProps: CardHeaderProps = {
         avatar: <img src={iconUrl} alt={'Icon for ' + packageId}></img>,
-        title: <CardTitle {...titleProps}/>
+        title: <CardHeader {...titleProps}/>
     };
     return (
     <PackageLink {...props}>
         <Card>
             <CardHeader {...headerProps} />
-            <CardText>{description}</CardText>
+            <CardContent>{description}</CardContent>
         </Card>
     </PackageLink>
     );

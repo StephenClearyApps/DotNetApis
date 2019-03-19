@@ -3,7 +3,6 @@ import { render } from "react-dom";
 import { bindActionCreators, Dispatch } from "redux";
 import { Provider, connect } from "react-redux";
 import { BrowserRouter, withRouter } from 'react-router-dom';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import "whatwg-fetch";
 
 import { Main } from "./components/Main";
@@ -30,9 +29,7 @@ window.onload = () => {
     render(
         <Provider store={store}>
             <BrowserRouter>
-                <MuiThemeProvider>
-                    <ConnectedMain />
-                </MuiThemeProvider>
+                <ConnectedMain />
             </BrowserRouter>
         </Provider>, document.getElementById("app"));
     actions.TimeActions.synchronizeTime(store.dispatch);

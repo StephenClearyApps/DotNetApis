@@ -1,6 +1,6 @@
 import * as React from "react";
-import ListItem from 'material-ui/List/ListItem';
-import Tab from "material-ui/Tabs/Tab";
+import ListItem from '@material-ui/core/ListItem';
+import Tab from '@material-ui/core/Tab';
 
 import { HashTabs } from "./HashTabs";
 import { FilteredListItem, HashFilteredList } from "./HashFilteredList";
@@ -20,37 +20,42 @@ const PackageComponent: React.StatelessComponent<PackageProps & PackageInjectedP
     const { pkg } = props;
     const types = selectMany(pkg.l, x => x.t);
     sortEntities(types);
-    const tabTypes = typesTab(props, types);
-    const tabNamespaces = namespacesTab(props, types);
-    const tabAssemblies = assembliesTab(props, pkg.l);
-    const tabDependencies = dependenciesTab(props, pkg.e);
+    const typesContent = typesTabContent(props, types);
+    const namespacesContent = namespacesTabContent(props, types);
+    const assembliesContent = assembliesTabContent(props, pkg.l);
+    const dependenciesContent = dependenciesTabContent(props, pkg.e);
 
-    const defaultTabValue = tabTypes ? "types" :
-        tabNamespaces ? "namespaces" :
-        tabAssemblies ? "assemblies" :
-        tabDependencies ? "dependencies" : undefined;
+    const defaultTabValue = typesContent ? "types" :
+        namespacesContent ? "namespaces" :
+        assembliesContent ? "assemblies" :
+        dependenciesContent ? "dependencies" : undefined;
     return (
-    <HashTabs defaultTabValue={defaultTabValue}>
-        {tabTypes}
-        {tabNamespaces}
-        {tabAssemblies}
-        {tabDependencies}
+    <HashTabs defaultTabValue={defaultTabValue} content={{
+        "types": typesContent,
+        "namespaces": namespacesContent,
+        "assemblies": assembliesContent,
+        "dependencies": dependenciesContent
+    }}>
+        <Tab label="Types" value="types" key="types"/>
+        <Tab label="Namespaces" value="namespaces" key="namespaces"/>
+        <Tab label="Assemblies" value="assemblies" key="assemblies"/>
+        <Tab label="Dependencies" value="dependencies" key="dependencies"/>
     </HashTabs>);
 }
 
 export const Package = withPackage(PackageComponent);
 
-function typesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
+function typesTabContent(pkgContext: PackageContext, types: IPackageEntity[]) {
     if (types.length === 0)
         return null;
     const items : FilteredListItem[] = types.map(x => ({
         search: x.n!,
         content: <EntityListItem key={x.i} pkgContext={pkgContext} entity={x}/>
     }));
-    return <Tab label="Types" value="types" key="types"><HashFilteredList items={items} hashPrefix="types" /></Tab>;
+    return <HashFilteredList items={items} hashPrefix="types" />;
 }
 
-function namespacesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
+function namespacesTabContent(pkgContext: PackageContext, types: IPackageEntity[]) {
     if (types.length === 0)
         return null;
     const namespaceMap : { [key: string]: 0 } = {};
@@ -68,10 +73,10 @@ function namespacesTab(pkgContext: PackageContext, types: IPackageEntity[]) {
                 <ListItem><code>{x}</code></ListItem>
             </PackageNamespaceLink>
     }));
-    return <Tab label="Namespaces" value="namespaces" key="namespaces"><HashFilteredList items={items} hashPrefix="namespaces"/></Tab>;
+    return <HashFilteredList items={items} hashPrefix="namespaces"/>;
 }
 
-function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[] | undefined) {
+function assembliesTabContent(pkgContext: PackageContext, assemblies: IAssembly[] | undefined) {
     if (!assemblies || assemblies.length === 0)
         return null;
     const items : FilteredListItem[] = assemblies.map(x => normalizePath(x.p)).map(path => ({
@@ -81,10 +86,10 @@ function assembliesTab(pkgContext: PackageContext, assemblies: IAssembly[] | und
                 <ListItem><code>{path}</code></ListItem>
             </PackageFileLink>
     }));
-    return <Tab label="Assemblies" value="assemblies" key="assemblies"><HashFilteredList items={items} hashPrefix="assemblies" /></Tab>;
+    return <HashFilteredList items={items} hashPrefix="assemblies" />;
 }
 
-function dependenciesTab(pkgContext: PackageContext, dependencies: IPackageDependency[] | undefined) {
+function dependenciesTabContent(pkgContext: PackageContext, dependencies: IPackageDependency[] | undefined) {
     if (!dependencies || dependencies.length === 0)
         return null;
     const groups: FilteredListItemGroup[] = [
@@ -103,5 +108,5 @@ function dependenciesTab(pkgContext: PackageContext, dependencies: IPackageDepen
             }))
         }
     ];
-    return <Tab label="Dependencies" value="dependencies" key="dependencies"><HashFilteredGroupedList groups={groups} hashPrefix="dependencies" /></Tab>;
+    return <HashFilteredGroupedList groups={groups} hashPrefix="dependencies" />;
 }
