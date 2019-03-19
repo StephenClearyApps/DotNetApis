@@ -12,7 +12,7 @@ declare var process : {
 }
 
 const middlewareEnhancer = process.env.NODE_ENV !== 'production' ? applyMiddleware(immutableState(), thunk) : applyMiddleware(thunk);
-const storeEnhancer = composeWithDevTools(middlewareEnhancer);
+const storeEnhancer = composeWithDevTools<State, {}>(middlewareEnhancer);
 
-const factory = storeEnhancer<State>(createStore);
+const factory = storeEnhancer(createStore);
 export const store = factory(reducers);
