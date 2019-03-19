@@ -9,8 +9,9 @@ export type PackageContextRequiredProps = State & PackageRequestInjectedProps;
 
 function createWithPackageContext<TProps>(): Hoc<PackageContextInjectedProps, PackageContextRequiredProps> {
     return Component => props => {
+        let TComponent: any = Component; // we pass extra props
         const packageStatus = props.packageDoc.packageDocumentation[props.pkgRequestStatus.normalizedPackageKey!];
-        return <Component {...props} pkgStatus={packageStatus} pkg={packageStatus.json!}/>;
+        return <TComponent {...props} pkgStatus={packageStatus} pkg={packageStatus.json!}/>;
     };
 }
 

@@ -13,7 +13,8 @@ export type PackageLogRequestRequiredProps = State & PackageInjectedProps;
 function createWithPackageLogRequest<TProps>(): Hoc<PackageLogRequestInjectedProps, PackageLogRequestRequiredProps> {
     return Component => props => {
         const request = props.packageLog.packageLogs[props.pkgRequestStatus.normalizedPackageKey!];
-        return <Component {...props} pkgLogRequestStatus={request}/>;
+        let TComponent: any = Component; // we pass extra props
+        return <TComponent {...props} pkgLogRequestStatus={request}/>;
     };
 }
 
