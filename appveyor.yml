@@ -5,9 +5,12 @@ environment:
 branches:
   only:
     - master
+
 build_script:
   - ps: >-
     git checkout master
+    
     ./build/build.ps1
+
 on_success:
   - ps: ./build/deploy.ps1
