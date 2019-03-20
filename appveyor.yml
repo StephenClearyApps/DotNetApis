@@ -7,10 +7,11 @@ branches:
     - master
 
 build_script:
-  - ps: >-
+build_script:
+- ps: >-
     git checkout master
-    
+
     ./build/build.ps1
 
 on_success:
-  - ps: ./build/deploy.ps1
+- ps: ./build/deploy.ps1
