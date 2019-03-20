@@ -1,0 +1,13 @@
+image: Visual Studio 2017
+environment:
+  access_token:
+    secure: RvbBgngx7HEQ8X2qnomFRc0NOZ7bgpW3tYjv/mAQRsXciazeG9JU5Pw4dMICEwar
+branches:
+  only:
+    - master
+build_script:
+  - ps: >-
+    git checkout master
+    ./build/build.ps1
+on_success:
+  - ps: ./build/deploy.ps1
