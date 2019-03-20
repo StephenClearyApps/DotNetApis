@@ -1,5 +1,3 @@
-$ErrorActionPreference = "Stop"
-
 Function WriteAndExecute([string]$command) {
 	Write-Output $command
 	Invoke-Expression $command
