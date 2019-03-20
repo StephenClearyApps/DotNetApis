@@ -6,5 +6,8 @@
     "AzureWebJobsDashboard": "UseDevelopmentStorage=true",
     "StorageConnectionString": "UseDevelopmentStorage=true",
     "SPA_APP": "127.0.0.1:8080"
+  },
+  "Host": {
+    "FunctionTimeout": "20:00:00"
   }
 }
