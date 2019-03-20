@@ -7,7 +7,6 @@ branches:
     - master
 
 build_script:
-build_script:
 - ps: >-
     git checkout master
 
