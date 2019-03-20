@@ -51,7 +51,6 @@ If in a production environment (not local), you'll need to specify a function ke
 - Create an Azure Function app and an Azure Storage account.
 - Set the required [application settings](./settings.md) for the app:
   - `StorageConnectionString` should be the connection string for the Azure Storage account you just created.
-  - `SPA_APP` should be your GitHub Pages address, including the `https://` prefix and without a trailing slash. E.g., `https://username.github.io/DotNetApis`
-  - Turn on `Diagnostic logs` - `Detailed error messages`.
+  - `SPA_APP` should be your GitHub Pages address, without the `https://` prefix and without a trailing slash. E.g., `username.github.io/DotNetApis`
 - Set up your source control to autodeploy to the Azure Function app.
 - Follow the instructions for [uploading reference assemblies](#upload-reference-assemblies), above.
