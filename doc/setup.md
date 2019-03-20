@@ -5,6 +5,8 @@
 ### Local dev setup
 
 - Clone the project locally.
+- Edit `.git/info/exclude` and add a line containing `docs`
+- Run `git update-index --assume-unchanged docs/index.html`
 - From the `web` directory, run `npm install` and `npm run dev`. This will generate a debug build of the frontend.
 
 ### Upload reference assemblies
