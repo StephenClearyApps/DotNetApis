@@ -5,6 +5,8 @@ environment:
 branches:
   only:
     - master
+skip_commits:
+  author: AppVeyor
 
 build_script:
 - ps: >-
