@@ -8,7 +8,7 @@
     <body>
         <div id="app"></div>
 
-        <script src="//cdn.jsdelivr.net/bluebird/3.5.0/bluebird.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/bluebird/3.5.0/bluebird.min.js"></script>
         <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
             <script src="/<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
         <% } %>
