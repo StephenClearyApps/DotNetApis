@@ -23,7 +23,7 @@ export function isInProgressResponse(response: InProgressResponse | RedirectResp
 }
 
 export async function getDoc(key: PackageKey): Promise<InProgressResponse | RedirectResponse> {
-    const response = await getJsonResponse<InProgressResponse | RedirectResponse>("http://localhost:7071/api/0/doc", {...without$(key)});
+    const response = await getJsonResponse<InProgressResponse | RedirectResponse>(BACKEND + "0/doc", {...without$(key)});
     if (response.status === 202)
         return {...response.json as InProgressResponse, _type: "InProgressResponse"};
     return {...response.json as RedirectResponse, _type: "RedirectResponse"};

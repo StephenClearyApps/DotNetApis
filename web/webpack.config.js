@@ -52,8 +52,9 @@ module.exports = env => {
             }),
             env.prod ? null : new WebpackBundleSizeAnalyzerPlugin("bundlesize.txt"),
             new Webpack.DefinePlugin({
+                "BACKEND": JSON.stringify(env.prod ? "https://dotnetapis2.azurewebsites.net/api/" : "http://localhost:7071/api/"),
                 "process.env": {
-                    NODE_ENV: env.prod ? JSON.stringify("production") : JSON.stringify("debug")
+                    NODE_ENV: JSON.stringify(env.prod ? "production" : "debug")
                 }
             })
         ].filter(x => x !== null)

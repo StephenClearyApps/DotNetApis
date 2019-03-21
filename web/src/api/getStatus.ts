@@ -10,4 +10,4 @@ export interface StatusResponse extends MessageBase {
 }
 
 export const getStatus = (key: PackageKey) =>
-    getJson<StatusResponse>("http://localhost:7071/api/0/status", {...without$(key)});
+    getJson<StatusResponse>(BACKEND + "0/status", {...without$(key)});
