@@ -46,7 +46,7 @@
     "webpack-cli": "^3.3.0"
   },
   "dependencies": {
-    "@material-ui/core": "^3.9.2",
+    "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "ably": "^1.1.6",
     "bluebird": "^3.5.3",
